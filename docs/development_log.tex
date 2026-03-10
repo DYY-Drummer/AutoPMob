@@ -1,0 +1,145 @@
+% 開発記録（ゼミ報告・将来の研究論文用）
+% 物理モデル自動構築（GNN）のための数式抽出パイプライン
+\documentclass[11pt,a4paper]{jsarticle}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{url,hyperref}
+\usepackage{enumitem}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{開発記録：科学文献からの数式抽出パイプライン}
+\author{AutoPMob プロジェクト}
+\date{更新日：\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\clearpage
+
+%----------------------------------------------------------------------
+\section{概要}
+%----------------------------------------------------------------------
+本ドキュメントは、GNN（グラフニューラルネットワーク）を用いた物理モデル自動構築の研究の一環として開発している、科学文献PDFから数式と変数定義を抽出するパイプラインの開発記録である。
+記録内容は研究室ゼミの報告および将来の研究論文の素材として利用する。
+
+\textbf{パイプラインの目的}
+\begin{itemize}[nosep]
+  \item 科学文献のPDFを入力とし、番号付き数式および付録の数式を LaTeX 形式で抽出する。
+  \item 各数式について変数定義（variable definitions）と物理的意味（context）を周辺テキストから抽出する。
+  \item 抽出結果を JSON 形式で保存し、物理モデル自動生成モデルの訓練データとして利用する。
+\end{itemize}
+
+\textbf{技術スタック}
+\begin{itemize}[nosep]
+  \item API: Google Gemini API（\texttt{gemini-2.5-flash}）
+  \item SDK: \texttt{google-genai}（PDF 直接アップロード、Structured Output 対応）
+  \item スキーマ検証: Pydantic
+  \item 出力: \texttt{extracted\_equations.json}（および表記正規化版 \texttt{extracted\_equations\_normalized.json}）
+\end{itemize}
+
+%----------------------------------------------------------------------
+\section{遭遇した問題と解決策}
+%----------------------------------------------------------------------
+
+\subsection{API モデル 404（モデル未提供）}
+\textbf{現象}
+\begin{itemize}[nosep]
+  \item \texttt{gemini-1.5-pro} を指定して \texttt{generateContent} を呼ぶと、API から \texttt{404 NOT\_FOUND} が返る。
+  \item エラーメッセージ: ``models/gemini-1.5-pro is not found for API version v1beta''.
+\end{itemize}
+
+\textbf{原因}
+\begin{itemize}[nosep]
+  \item 利用環境（API version v1beta）では \texttt{gemini-1.5-pro} が提供されていない、またはモデルIDが変更されている。
+\end{itemize}
+
+\textbf{対応}
+\begin{itemize}[nosep]
+  \item 呼び出しモデルを \texttt{gemini-2.0-flash} に変更。のちに無料枠の都合で \texttt{gemini-2.5-flash} に変更。
+  \item 利用可能なモデル一覧は \url{https://ai.google.dev/gemini-api/docs/models} 等で確認する。
+\end{itemize}
+
+%----------------------------------------------------------------------
+\subsection{レートリミット（429 RESOURCE\_EXHAUSTED）}
+\textbf{現象}
+\begin{itemize}[nosep]
+  \item リクエスト直後に \texttt{429 RESOURCE\_EXHAUSTED} が返る。
+  \item メッセージに ``Quota exceeded for metric: ... generate\_content\_free\_tier\_..., limit: 0'' とあり、無料枠のリクエスト数・トークン数が 0 に制限されている。
+\end{itemize}
+
+\textbf{原因}
+\begin{itemize}[nosep]
+  \item 無料ティアのクォータが枯渇している、または当該プロジェクトでは \texttt{gemini-2.0-flash} の無料枠が 0 に設定されている。
+\end{itemize}
+
+\textbf{対応}
+\begin{itemize}[nosep]
+  \item 利用可能なモデルに変更：\texttt{gemini-2.5-flash} では「1分あたり5回（5 RPM）」の枠が利用可能であったため、モデルを \texttt{gemini-2.5-flash} に統一。
+  \item 5 RPM を超えないよう、\texttt{generate\_content} の呼び出し前に「前回呼び出しから最低12秒（60/5）経過するまで待機」する処理を追加。
+  \item リトライ回数・待機時間は当初「12回・最大300秒」としていたが、ユーザ体験を考慮して「5回・初回15秒・最大60秒」に短縮（レートリミット時のみリトライ）。
+\end{itemize}
+
+%----------------------------------------------------------------------
+\subsection{数式内の変数表記の揺れ（$c_w$ と $c_p$）}
+\textbf{現象}
+\begin{itemize}[nosep]
+  \item 論文では5番・6番の式で「水の比熱」を明示するため $c_w$ を用いているが、抽出結果ではすべて $c_p$ になっていた（eq\_5, eq\_6）。
+\end{itemize}
+
+\textbf{原因（推定）}
+\begin{itemize}[nosep]
+  \item \textbf{LLM の記号正規化}：熱力学では比熱の記号として $c_p$ が一般的なため、モデルが $c_w$ を $c_p$ に「統一」して出力した可能性。
+  \item \textbf{PDF の見た目}：フォントによっては下付きの $w$ と $p$ が似て見え、誤読した可能性。
+  \item \textbf{意味の同一視}：「水で満たされている」という文脈で $c_w$ と $c_p$ を同一視し、$c_p$ に揃えた可能性。
+\end{itemize}
+
+\textbf{対応}
+\begin{itemize}[nosep]
+  \item プロンプトを強化：「変数記号・添字は文献の表記をそのまま抽出する。$c_w$ を $c_p$ に変更しない」旨を明記。
+  \item 訓練用には「同じ物理意味の変数は正規化する」方針とし、\texttt{config/notation\_map.json} と \texttt{normalize\_notation.py} を用意。$c_w$/Cp/cp 等を $c_p$ に統一する後処理を導入。抽出はできるだけ原文のまま、訓練前に正規化する二段構えにした。
+\end{itemize}
+
+%----------------------------------------------------------------------
+\subsection{変数表記の統一（訓練用正規化）}
+\textbf{要望}
+\begin{itemize}[nosep]
+  \item 物理モデル自動生成モデルの訓練のため、同じ物理意味を持つ変数の表記をすべて統一したい（モデル誤読・論文側の表記揺れのいずれも吸収）。
+\end{itemize}
+
+\textbf{対応}
+\begin{itemize}[nosep]
+  \item \texttt{config/notation\_map.json} で「正規表記（canonical）」と「揺れ（alternatives）」を定義。
+  \item \texttt{normalize\_notation.py} で、抽出済み JSON の \texttt{equation} および \texttt{variables} のキー・説明文に置換を適用し、\texttt{*\_normalized.json} を出力。
+  \item 抽出パイプラインに \texttt{--normalize} オプションを追加し、抽出直後に正規化版を保存できるようにした。
+\end{itemize}
+
+%----------------------------------------------------------------------
+\section{技術メモ}
+%----------------------------------------------------------------------
+\begin{itemize}[nosep]
+  \item \textbf{Structured Output}：Pydantic の \texttt{model\_json\_schema()} で配列スキーマを組み、\texttt{response\_mime\_type: application/json} と \texttt{response\_json\_schema} を渡して JSON 配列を取得。
+  \item \textbf{ファイルアップロード}：\texttt{client.files.upload()} で PDF をアップロードし、\texttt{state} が \texttt{ACTIVE} になるまでポーリング。\texttt{Part.from\_uri()} でコンテンツに含める。
+  \item \textbf{環境変数}：\texttt{GEMINI\_API\_KEY} または \texttt{GOOGLE\_API\_KEY}。オプションで \texttt{EXTRACT\_EQUATIONS\_MIN\_INTERVAL}（5 RPM 用）、\texttt{EXTRACT\_EQUATIONS\_MAX\_RETRIES} 等。
+\end{itemize}
+
+%----------------------------------------------------------------------
+\section{今後の予定・TODO}
+%----------------------------------------------------------------------
+\begin{itemize}[nosep]
+  \item 複数 PDF の一括処理と正規化の一括適用。
+  \item 正規化ルール（\texttt{notation\_map.json}）のドメイン別拡張。
+  \item 抽出結果の検証用テスト（期待する数式との差分チェック）。
+  \item GitHub との同期と CI（テスト・リント）の検討。
+\end{itemize}
+
+%----------------------------------------------------------------------
+\section{更新履歴}
+%----------------------------------------------------------------------
+\begin{itemize}[nosep]
+  \item 初版：モデル変更、レートリミット対策、$c_w$/正規化の記録を追加。
+\end{itemize}
+
+\end{document}

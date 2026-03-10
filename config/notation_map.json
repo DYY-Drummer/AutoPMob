@@ -1,0 +1,32 @@
+{
+  "description": "同じ物理意味を持つ変数表記を正規化するためのマッピング。キーが文献表記・揺れ、値が訓練用の正規表記（canonical）。",
+  "variable_normalization": {
+    "specific_heat": {
+      "canonical": "c_p",
+      "canonical_latex": "c_{p}",
+      "alternatives": ["c_w", "c_{w}", "Cp", "C_p", "cp", "c_{pj}", "Cpj", "C_{pj}"]
+    },
+    "density": {
+      "canonical": "\\rho",
+      "canonical_latex": "\\rho",
+      "alternatives": ["ρ", "rho", "P", "\\rho_j", "\\rho_{j}", "ρj", "Pj", "P_j"]
+    },
+    "pre_exponential_factor": {
+      "canonical": "k_0",
+      "canonical_latex": "k_{0}",
+      "alternatives": ["k_o", "k_{o}", "ko", "k0"]
+    }
+  },
+  "replacements_order": [
+    ["c_{w}", "c_{p}"],
+    ["c_w", "c_p"],
+    ["c_{pj}", "c_{p}"],
+    ["C_{pj}", "c_{p}"],
+    ["Cpj", "c_p"],
+    ["Cp", "c_p"],
+    ["C_p", "c_p"],
+    ["k_{o}", "k_{0}"],
+    ["k_o", "k_0"],
+    ["ko", "k_0"]
+  ]
+}
