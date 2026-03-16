@@ -5,7 +5,7 @@
   pip install google-genai pydantic
 
 【環境変数】
-  - APIキー（必須）: GEMINI_API_KEY または GOOGLE_API_KEY
+  - APIキー: GEMINI_API_KEY または GOOGLE_API_KEY（未設定時はデフォルトキーを使用）
   - レートリミット時: EXTRACT_EQUATIONS_MAX_RETRIES, EXTRACT_EQUATIONS_BASE_DELAY, EXTRACT_EQUATIONS_MAX_DELAY
   - 5 RPM用: EXTRACT_EQUATIONS_MIN_INTERVAL（既定12秒＝1分あたり5回を超えない）
 
@@ -140,12 +140,11 @@ def extract_equations(pdf_path: str | Path) -> list[Equation]:
     if not pdf_path.is_file():
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
-    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        raise ExtractionError(
-            "Set GEMINI_API_KEY or GOOGLE_API_KEY in the environment."
-        )
-
+    api_key = (
+        os.environ.get("GEMINI_API_KEY")
+        or os.environ.get("GOOGLE_API_KEY")
+        or "AIzaSyD5GuIuXVUSeLavZc7_Q0J_muL8Mycwp70"
+    )
     client = genai.Client(api_key=api_key)
     source_id = pdf_path.name
 
@@ -197,7 +196,7 @@ def extract_equations(pdf_path: str | Path) -> list[Equation]:
             _last_generate_content_time = time.monotonic()
 
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-2.5-pro",
                 contents=contents,
                 config={
                     "response_mime_type": "application/json",

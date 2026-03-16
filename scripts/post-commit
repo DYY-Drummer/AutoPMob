@@ -1,0 +1,11 @@
+#!/bin/sh
+# コミット後に自動で GitHub へ push する。
+# インストール: scripts/install-git-hooks.sh を実行するか、
+#   cp scripts/post-commit .git/hooks/post-commit && chmod +x .git/hooks/post-commit
+set -e
+branch=$(git branch --show-current 2>/dev/null) || true
+if [ -n "$branch" ]; then
+  if git remote get-url origin >/dev/null 2>&1; then
+    git push origin "$branch" 2>/dev/null || echo "post-commit: git push failed. Run 'git push' manually."
+  fi
+fi

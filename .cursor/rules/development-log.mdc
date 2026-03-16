@@ -1,0 +1,48 @@
+---
+description: 問題・解決策が出たら development_log.tex に必ず追記する
+alwaysApply: true
+---
+
+# 開発記録の自動追記
+
+このプロジェクトでは、**遭遇した問題と解決策**を `docs/development_log.tex` に記録する（ゼミ・論文用）。
+
+## あなたがやること
+
+**バグ修正・エラー対応・回避策の実装・技術的な決定をしたときは、必ず `docs/development_log.tex` を更新する。**
+
+1. **「遭遇した問題と解決策」に追記**
+   - `\section{遭遇した問題と解決策}` の直後、既存の `\subsection` の**前**に、新しい `\subsection{...}` を追加する。
+   - 次の3ブロックを書く:
+     - `\textbf{現象}` … 何が起きたか（箇条書き可）。
+     - `\textbf{原因}` … 原因の説明。
+     - `\textbf{対応}` … 実施した対応（箇条書き可）。
+   - 既存の \subsection は「API モデル 404」などなので、その**上**に新しい \subsection を挿入する。
+
+2. **「更新履歴」に追記**
+   - `\section{更新履歴}` 内の `\begin{itemize}...\end{itemize}` に、先頭で新しい `\item 日付または内容：…` を1行追加する。
+
+## 記述例（問題・解決策）
+
+```latex
+\subsection{〇〇というエラー}
+\textbf{現象}
+\begin{itemize}[nosep]
+  \item 〇〇を実行すると △△ というエラーが出た。
+\end{itemize}
+
+\textbf{原因}
+\begin{itemize}[nosep]
+  \item 〇〇のため。
+\end{itemize}
+
+\textbf{対応}
+\begin{itemize}[nosep]
+  \item 〇〇を実施した。
+\end{itemize}
+```
+
+## 注意
+
+- 開発中に「問題を切り分けた」「修正した」「仕様を決めた」といった出来事があれば、その都度このルールに従って `development_log.tex` を編集する。
+- 既存の \subsection や \item のフォーマット（\texttt{}, \url{} 等）に合わせて書く。

@@ -41,6 +41,7 @@ ENV/
 # 出力（必要に応じてコミットする場合はコメントアウト）
 extracted_equations.json
 extracted_equations_normalized.json
+unified_equations.json
 *.pdf
 !docs/*.pdf
 

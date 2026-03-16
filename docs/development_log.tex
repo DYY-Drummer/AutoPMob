@@ -123,6 +123,15 @@
   \item \textbf{Structured Output}：Pydantic の \texttt{model\_json\_schema()} で配列スキーマを組み、\texttt{response\_mime\_type: application/json} と \texttt{response\_json\_schema} を渡して JSON 配列を取得。
   \item \textbf{ファイルアップロード}：\texttt{client.files.upload()} で PDF をアップロードし、\texttt{state} が \texttt{ACTIVE} になるまでポーリング。\texttt{Part.from\_uri()} でコンテンツに含める。
   \item \textbf{環境変数}：\texttt{GEMINI\_API\_KEY} または \texttt{GOOGLE\_API\_KEY}。オプションで \texttt{EXTRACT\_EQUATIONS\_MIN\_INTERVAL}（5 RPM 用）、\texttt{EXTRACT\_EQUATIONS\_MAX\_RETRIES} 等。
+  \item \textbf{開発記録の自動追記}：Cursor のルール（\texttt{.cursor/rules/development-log.mdc}）で、問題・解決策が出た際に \texttt{development\_log.tex} へ追記するよう指示。
+  \item \textbf{コミット時の自動 push}：\texttt{.git/hooks/post-commit} で \texttt{git commit} のたびに \texttt{git push} を実行し、GitHub へ自動同期。
+  \item \textbf{統合パイプライン \texttt{build\_equation\_graph.py}}：\texttt{input\_pdfs/} 内の「未抽出」PDF のみ一括処理（処理済みは \texttt{processed\_pdfs.json} で管理、1ファイルごとに 15\,s 待機で 5\,RPM 対策）。LLM 知識から化学工学基礎式を 20 個生成（Handbook）。抽出・生成結果を単一の \texttt{unified\_equations.json} に統合（既存時は追記、\texttt{source\_id}+\texttt{eq\_id} で重複排除）。\texttt{--mode pdf|handbook|all}、\texttt{--processed-list} で処理済み一覧を指定可能。
+  \item \textbf{API モデル}：当初 \texttt{gemini-1.5-pro}、のち \texttt{gemini-2.5-flash}（5 RPM）、RPD 制限対策で \texttt{gemini-2.0-flash} に変更後、高性能化のため \texttt{gemini-2.5-pro} に統一。
+  \item \textbf{デフォルト API キー}：環境変数未設定時に限り、開発用デフォルトキーを使用するように変更（\texttt{extract\_equations.py}、\texttt{build\_equation\_graph.py}、\texttt{test\_api.py}）。
+  \item \textbf{論文メタデータ取得 \texttt{fetch\_papers.py}}：Semantic Scholar API でクエリ A/B 各 50 件のメタデータを取得し、\texttt{paper\_dataset\_links.json} に保存。オープンアクセス PDF URL を \texttt{has\_open\_access\_pdf}、\texttt{open\_access\_pdf\_url} で明示。429 時はリトライと \texttt{SEMANTIC\_SCHOLAR\_API\_KEY} 対応。
+  \item \textbf{グラフ前処理 \texttt{build\_graph\_data.py}}：\texttt{unified\_equations.json} を PyTorch Geometric の \texttt{Data(x, edge\_index)} に変換。ノードは数式、エッジは変数共有、特徴量は CodeBERT の [CLS] ベクトル（768次元）。\texttt{equation\_graph.pt} として保存。
+  \item \textbf{訓練ケース生成 \texttt{generate\_training\_cases.py}}：LLM で約150件のコアケースを生成（\texttt{context}、\texttt{input\_variables}、\texttt{output\_variables}、\texttt{correct\_model\_ids}）。正解モデルは「入力が与えられれば出力を解ける」「十分かつ最小限の数式群」となるようプロンプトで制約。Python で入出力スワップ・ランダム入出力・context 言い換えにより 1 コアから 5--6 バリアントを生成し、900件以上を \texttt{training\_cases.json} に保存。
+  \item \textbf{可視化・分析 \texttt{analyze\_dataset.py}}：数式グラフ・訓練ケースの統計と可視化。ドメイン分布、次数分布、埋め込みの PCA（ドメイン色分け）、変数共起ネットワーク、訓練ケースの variant 分布・正解モデル数分布。論文付録向け \texttt{dataset\_report.txt} と \texttt{figures/*.png} を出力。
 \end{itemize}
 
 %----------------------------------------------------------------------
@@ -139,6 +148,9 @@
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 開発ログに変動履歴を追記：モデル（gemini-2.5-pro 等）、デフォルト API キー、処理済み PDF 管理、\texttt{fetch\_papers.py}、\texttt{build\_graph\_data.py}、\texttt{generate\_training\_cases.py}（correct\_model\_ids の条件含む）、\texttt{analyze\_dataset.py}。GitHub 同期はコミット・push で行う。
+  \item \texttt{build\_equation\_graph.py} を追加（PDF 一括、Handbook 生成、\texttt{unified\_equations.json} 統合）。処理済み PDF を \texttt{processed\_pdfs.json} で管理し未抽出のみ処理するよう変更。
+  \item 開発記録の自動追記ルール（Cursor）とコミット時自動 push（post-commit フック）を導入。
   \item 初版：モデル変更、レートリミット対策、$c_w$/正規化の記録を追加。
 \end{itemize}
 

@@ -1,0 +1,1 @@
+# PDF をこのフォルダに置くと build_equation_graph.py --mode pdf または --mode all で一括処理されます。
