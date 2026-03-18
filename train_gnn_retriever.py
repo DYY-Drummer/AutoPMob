@@ -88,8 +88,10 @@ class TrainConfig:
     batch_size: int = 64
     lr: float = 2e-3
     weight_decay: float = 1e-4
-    epochs: int = 1
+    epochs: int = 3
     device: str = "cpu"
+    use_gnn: bool = True
+    temperature: float = 0.07
 
 
 class GCNEncoder(nn.Module):
@@ -159,7 +161,26 @@ def recall_at_k(ranks: list[int], k: int) -> float:
 
 
 def main() -> None:
+    import argparse
+
+    p = argparse.ArgumentParser()
+    p.add_argument("--epochs", type=int, default=3)
+    p.add_argument("--use-gnn", action="store_true", default=False)
+    p.add_argument("--no-gnn", action="store_true", default=False)
+    p.add_argument("--test-ratio", type=float, default=0.2)
+    p.add_argument("--neg-per-case", type=int, default=64)
+    p.add_argument("--batch-size", type=int, default=64)
+    args = p.parse_args()
+
     cfg = TrainConfig()
+    cfg.epochs = int(args.epochs)
+    cfg.test_ratio = float(args.test_ratio)
+    cfg.neg_per_case = int(args.neg_per_case)
+    cfg.batch_size = int(args.batch_size)
+    if args.use_gnn:
+        cfg.use_gnn = True
+    if args.no_gnn:
+        cfg.use_gnn = False
     torch.manual_seed(cfg.seed)
     random.seed(cfg.seed)
 
@@ -183,7 +204,9 @@ def main() -> None:
 
     data = torch.load(GRAPH_PT, weights_only=False)
     assert getattr(data, "edge_index", None) is not None
+    assert getattr(data, "x", None) is not None
     edge_index = data.edge_index
+    x_graph = data.x
     if data.num_nodes != len(eq_keys):
         raise ValueError(f"Graph nodes ({data.num_nodes}) != equations ({len(eq_keys)}). Rebuild graph or align ordering.")
 
@@ -203,7 +226,7 @@ def main() -> None:
     X_eq = vectorizer.fit_transform(eq_texts)
     svd = TruncatedSVD(n_components=cfg.svd_dim, random_state=cfg.seed)
     X_eq_svd = svd.fit_transform(X_eq)
-    eq_svd = torch.tensor(X_eq_svd, dtype=torch.float32)
+    eq_svd = torch.tensor(X_eq_svd, dtype=torch.float32)  # used for analysis/debug; not for eq embeddings
 
     def case_vec(i: int) -> torch.Tensor:
         # Include variable symbols, since many cases are disambiguated primarily by I/O.
@@ -220,6 +243,9 @@ def main() -> None:
         z = svd.transform(v)[0]
         return torch.tensor(z, dtype=torch.float32)
 
+    # Precompute all case vectors once (major speed-up)
+    case_vecs = torch.stack([case_vec(i) for i in range(len(cases))], dim=0)  # [n_cases, svd_dim]
+
     # Filter cases that have at least one valid correct_model_id
     def valid_pos_indices(i: int) -> list[int]:
         mids = [norm(m) for m in (cases[i].get("correct_model_ids") or [])]
@@ -229,15 +255,16 @@ def main() -> None:
     test_case_idx = [i for i in test_case_idx if valid_pos_indices(i)]
 
     # Models
-    # Start from TF-IDF+SVD cosine space (stable baseline). Optionally refine equation embeddings with a GCN in the same space.
-    use_gnn = False
-    eq_gnn = (GCNEncoder(in_dim=cfg.svd_dim, hidden_dim=cfg.svd_dim, out_dim=cfg.svd_dim, dropout=0.1).to(cfg.device) if use_gnn else None)
+    # Query encoder learns to map (context + IO vars) -> same space as equation node embeddings (768).
+    q_encoder = QueryEncoder(in_dim=cfg.svd_dim, out_dim=int(x_graph.shape[1]), dropout=0.1).to(cfg.device)
+    # Equation encoder: start from graph node features x (768). Optionally refine via GCN.
+    eq_gnn = (GCNEncoder(in_dim=int(x_graph.shape[1]), hidden_dim=768, out_dim=int(x_graph.shape[1]), dropout=0.1).to(cfg.device) if cfg.use_gnn else None)
 
-    params = (list(eq_gnn.parameters()) if eq_gnn is not None else [])
-    opt = torch.optim.AdamW(params, lr=cfg.lr, weight_decay=cfg.weight_decay) if params else None
+    params = list(q_encoder.parameters()) + (list(eq_gnn.parameters()) if eq_gnn is not None else [])
+    opt = torch.optim.AdamW(params, lr=cfg.lr, weight_decay=cfg.weight_decay)
 
     edge_index_dev = edge_index.to(cfg.device)
-    eq_svd_dev = eq_svd.to(cfg.device)
+    x_dev = x_graph.to(cfg.device)
 
     def sample_negs(exclude: set[int], n: int) -> list[int]:
         res = []
@@ -248,62 +275,65 @@ def main() -> None:
             res.append(j)
         return res
 
-    # Train 1 epoch
+    # Train
+    q_encoder.train()
     if eq_gnn is not None:
         eq_gnn.train()
     rng = random.Random(cfg.seed)
-    rng.shuffle(train_case_idx)
-
     total_loss = 0.0
     n_steps = 0
+    for _ep in range(cfg.epochs):
+        rng.shuffle(train_case_idx)
+        for start in range(0, len(train_case_idx), cfg.batch_size):
+            batch = train_case_idx[start : start + cfg.batch_size]
+            if not batch:
+                continue
 
-    for start in range(0, len(train_case_idx), cfg.batch_size):
-        batch = train_case_idx[start : start + cfg.batch_size]
-        if not batch:
-            continue
+            # equation embeddings (full graph)
+            if eq_gnn is None:
+                # fixed embeddings: no need to recompute every step
+                z_eq = F.normalize(x_dev, p=2, dim=-1)
+            else:
+                z_eq = eq_gnn(F.normalize(x_dev, p=2, dim=-1), edge_index_dev)
 
-        z_eq = F.normalize(eq_svd_dev, p=2, dim=-1)
-        if eq_gnn is not None:
-            z_eq = eq_gnn(z_eq, edge_index_dev)
+            losses = []
+            for i in batch:
+                pos_list = valid_pos_indices(i)
+                pos = rng.choice(pos_list)
+                negs = sample_negs(exclude=set(pos_list), n=cfg.neg_per_case)
+                cand = [pos] + negs
 
-        losses = []
-        for i in batch:
-            pos_list = valid_pos_indices(i)
-            pos = rng.choice(pos_list)
-            negs = sample_negs(exclude=set(pos_list), n=cfg.neg_per_case)
-            cand = [pos] + negs
+                q = case_vecs[i].to(cfg.device)
+                qz = q_encoder(q.unsqueeze(0)).squeeze(0)
 
-            q = case_vec(i).to(cfg.device)
-            qz = F.normalize(q, p=2, dim=-1)
+                logits = (z_eq[cand] @ qz) / float(cfg.temperature)
+                target = torch.tensor([0], dtype=torch.long, device=cfg.device)
+                loss = F.cross_entropy(logits.unsqueeze(0), target)
+                losses.append(loss)
 
-            logits = (z_eq[cand] @ qz) / 0.07  # temperature
-            target = torch.tensor([0], dtype=torch.long, device=cfg.device)
-            loss = F.cross_entropy(logits.unsqueeze(0), target)
-            losses.append(loss)
-
-        loss_batch = torch.stack(losses).mean()
-        if opt is not None:
+            loss_batch = torch.stack(losses).mean()
             opt.zero_grad()
             loss_batch.backward()
             opt.step()
 
-        total_loss += float(loss_batch.item())
-        n_steps += 1
+            total_loss += float(loss_batch.item())
+            n_steps += 1
 
     avg_loss = total_loss / max(1, n_steps)
 
     # Eval
+    q_encoder.eval()
     if eq_gnn is not None:
         eq_gnn.eval()
     with torch.no_grad():
-        z_eq = F.normalize(eq_svd_dev, p=2, dim=-1)
+        z_eq = F.normalize(x_dev, p=2, dim=-1)
         if eq_gnn is not None:
             z_eq = eq_gnn(z_eq, edge_index_dev)
         ranks: list[int] = []
         for i in test_case_idx[:500]:  # cap for quick sanity
             pos_list = set(valid_pos_indices(i))
-            q = case_vec(i).to(cfg.device)
-            qz = F.normalize(q, p=2, dim=-1)
+            q = case_vecs[i].to(cfg.device)
+            qz = q_encoder(q.unsqueeze(0)).squeeze(0)
             scores = (z_eq @ qz).detach().cpu()
             ranked = torch.argsort(scores, descending=True)
             best_rank = None
