@@ -1,0 +1,398 @@
+{
+  "device": "cpu",
+  "seed": 42,
+  "split": {
+    "train": [
+      "038.pdf",
+      "1-s2.0-0009250974800898-main.pdf",
+      "2018_Book_ProcessControl.pdf",
+      "2018_Book_ProcessControl_Chapter1.pdf",
+      "9781852337766-c1.pdf",
+      "Basic_Dyn_Con_Textbook_free.pdf",
+      "Chemical Process Dynamics.pdf",
+      "Process_Control_Chapter4.pdf",
+      "Process_Control_Symbols_and_Acronyms.pdf",
+      "WJET_2015040715405408.pdf",
+      "applsci-10-00992-v2.pdf",
+      "kinetics_soybean_oil.pdf",
+      "matecconf_cscc2019_01027.pdf",
+      "s41598-024-60757-5.pdf"
+    ],
+    "val": [
+      "Process_Control_Chapter3.pdf",
+      "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf",
+      "handbook_chemeng",
+      "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf"
+    ],
+    "test": [
+      "1-s2.0-S1369703X09000059-main.pdf",
+      "2018_Book_ProcessControl_Chapter1_6.pdf",
+      "energies-17-01344.pdf",
+      "vol20no2p7.pdf"
+    ]
+  },
+  "counts": {
+    "train_cases": 612,
+    "val_cases": 729,
+    "test_cases": 45
+  },
+  "results": [
+    {
+      "method": "baseline_mix",
+      "params": {
+        "w_text": 0.7,
+        "w_var": 0.3
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.9532731290961743,
+        "Recall@1": 0.9135802469135802,
+        "Recall@3": 0.9931412894375857,
+        "Recall@5": 0.9945130315500685,
+        "Recall@10": 1.0
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.8993041526374859,
+        "Recall@1": 0.8888888888888888,
+        "Recall@3": 0.8888888888888888,
+        "Recall@5": 0.8888888888888888,
+        "Recall@10": 0.9333333333333333
+      },
+      "seconds": 0.7466409206390381
+    },
+    {
+      "method": "svd_cos",
+      "params": {
+        "svd_dim": 256
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.7620613191674892,
+        "Recall@1": 0.6515775034293553,
+        "Recall@3": 0.8518518518518519,
+        "Recall@5": 0.879286694101509,
+        "Recall@10": 0.9506172839506173
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.7740740740740741,
+        "Recall@1": 0.6444444444444445,
+        "Recall@3": 0.9555555555555556,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0
+      },
+      "seconds": 0.04523587226867676
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.001,
+        "wd": 0.0,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.015038178051002766,
+        "Recall@1": 0.0,
+        "Recall@3": 0.010973936899862825,
+        "Recall@5": 0.012345679012345678,
+        "Recall@10": 0.024691358024691357
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0017627051583198586,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.8551270961761475
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.0005,
+        "wd": 0.0,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.012888230916754818,
+        "Recall@1": 0.0,
+        "Recall@3": 0.012345679012345678,
+        "Recall@5": 0.012345679012345678,
+        "Recall@10": 0.012345679012345678
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0018552334345030602,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.838076114654541
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.0002,
+        "wd": 0.0,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.006613469758854362,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0022273111887634884,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.813629150390625
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.001,
+        "wd": 0.0001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.015369235244326896,
+        "Recall@1": 0.0,
+        "Recall@3": 0.010973936899862825,
+        "Recall@5": 0.012345679012345678,
+        "Recall@10": 0.024691358024691357
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0016775069600705598,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.8356947898864746
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.0005,
+        "wd": 0.0001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.011890854219400506,
+        "Recall@1": 0.0,
+        "Recall@3": 0.012345679012345678,
+        "Recall@5": 0.012345679012345678,
+        "Recall@10": 0.012345679012345678
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0016477594305782035,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.8830211162567139
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.0002,
+        "wd": 0.0001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.007365110235994422,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.010973936899862825
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0016789667328631313,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.9234578609466553
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.001,
+        "wd": 0.001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.014953913797757526,
+        "Recall@1": 0.0,
+        "Recall@3": 0.012345679012345678,
+        "Recall@5": 0.012345679012345678,
+        "Recall@10": 0.024691358024691357
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0015499904356743878,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.8694140911102295
+    },
+    {
+      "method": "q_mlp_to_x",
+      "params": {
+        "lr": 0.0005,
+        "wd": 0.001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.010704541624820702,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.009602194787379973,
+        "Recall@10": 0.013717421124828532
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.0017315562245314238,
+        "Recall@1": 0.0,
+        "Recall@3": 0.0,
+        "Recall@5": 0.0,
+        "Recall@10": 0.0
+      },
+      "seconds": 1.8605749607086182
+    },
+    {
+      "method": "gnn_refine_svd_residual",
+      "params": {
+        "lr": 0.0005,
+        "wd": 0.0001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.7637751542735343,
+        "Recall@1": 0.654320987654321,
+        "Recall@3": 0.8532235939643347,
+        "Recall@5": 0.879286694101509,
+        "Recall@10": 0.9506172839506173
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.7777777777777778,
+        "Recall@1": 0.6444444444444445,
+        "Recall@3": 0.9555555555555556,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0
+      },
+      "seconds": 13.667911052703857
+    },
+    {
+      "method": "gnn_refine_svd_residual",
+      "params": {
+        "lr": 0.0002,
+        "wd": 0.0001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.7616275622522508,
+        "Recall@1": 0.6515775034293553,
+        "Recall@3": 0.8518518518518519,
+        "Recall@5": 0.879286694101509,
+        "Recall@10": 0.9506172839506173
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.7740740740740741,
+        "Recall@1": 0.6444444444444445,
+        "Recall@3": 0.9555555555555556,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0
+      },
+      "seconds": 13.295622825622559
+    },
+    {
+      "method": "gnn_refine_svd_residual",
+      "params": {
+        "lr": 0.0005,
+        "wd": 0.001,
+        "epochs": 5,
+        "neg_per_case": 128
+      },
+      "val": {
+        "n": 729.0,
+        "MRR": 0.7637828883585848,
+        "Recall@1": 0.654320987654321,
+        "Recall@3": 0.8532235939643347,
+        "Recall@5": 0.879286694101509,
+        "Recall@10": 0.9506172839506173
+      },
+      "test": {
+        "n": 45.0,
+        "MRR": 0.7777777777777778,
+        "Recall@1": 0.6444444444444445,
+        "Recall@3": 0.9555555555555556,
+        "Recall@5": 1.0,
+        "Recall@10": 1.0
+      },
+      "seconds": 12.171722888946533
+    }
+  ],
+  "best_by_val_mrr": {
+    "method": "baseline_mix",
+    "params": {
+      "w_text": 0.7,
+      "w_var": 0.3
+    },
+    "val": {
+      "n": 729.0,
+      "MRR": 0.9532731290961743,
+      "Recall@1": 0.9135802469135802,
+      "Recall@3": 0.9931412894375857,
+      "Recall@5": 0.9945130315500685,
+      "Recall@10": 1.0
+    },
+    "test": {
+      "n": 45.0,
+      "MRR": 0.8993041526374859,
+      "Recall@1": 0.8888888888888888,
+      "Recall@3": 0.8888888888888888,
+      "Recall@5": 0.8888888888888888,
+      "Recall@10": 0.9333333333333333
+    },
+    "seconds": 0.7466409206390381
+  }
+}

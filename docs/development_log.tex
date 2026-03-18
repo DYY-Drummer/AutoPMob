@@ -148,6 +148,7 @@
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-03-18（方式比較とハイパラ探索）：retrieval方式（\texttt{baseline\_mix}, \texttt{svd\_cos}, \texttt{q\_mlp\_to\_x}, \texttt{gnn\_refine\_svd\_residual}）を同一の train/val/test（source\_id 単位）で比較し、学習率・重み減衰のグリッド探索を自動実行するランナー \texttt{run\_retrieval\_experiments.py} を追加。結果は \texttt{experiments/retrieval\_experiments.md} に表で出力し、現状では \texttt{baseline\_mix}（TF-IDF+変数Jaccard）が最良であることを確認。
   \item 2026-03-18（GNN次ステップ）：SVD+I/O 文字列ベースラインを維持したままグラフ構造の寄与を検証するため、SVD空間上で式埋め込みをGCNで\textbf{残差的に}更新する実験スクリプト \texttt{train\_gnn\_refine\_svd.py} を追加。素朴なGCNは埋め込みを崩して性能低下したため、学習開始時はベースライン同等（$\alpha=0$）になる残差混合に変更して安定化。
   \item 2026-03-18：データセット解析と訓練準備を拡張。`dataset_report.txt` の変数TOP15に物理意味を併記し、ドメインを論文用に合併して図（ドメイン分布・埋め込み）を可読化。訓練ケースに `context_paraphrased` を追加し、健全性チェック（ID整合・変数整合・重複）とベースライン評価を実装。さらに PyG の `equation_graph.pt` を用いた retriever の1epoch動作確認スクリプトを追加（context+I/O 変数をクエリ特徴に含めて改善）。
   \item 運用ルール変更：全ての変動を開発ログに書き、変更のたびに \texttt{git commit} と \texttt{git push} で GitHub へ自動同期するよう Cursor ルールを強化（\texttt{.cursor/rules/development-log.mdc} および本ドキュメント技術メモを更新）。
