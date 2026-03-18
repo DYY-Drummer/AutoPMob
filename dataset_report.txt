@@ -1,0 +1,90 @@
+======================================================================
+  Dataset Statistics: Equation Graph and Training Cases
+  (Appendix-style report for manuscript reuse)
+======================================================================
+
+1.  Equation Dataset (unified_equations.json)
+--------------------------------------------------
+   Total number of equations (nodes):  975
+   Unique variable symbols (across all equations):  1099
+   Variables per equation:  min = 0, max = 29, mean = 5.46
+
+   Table 1. Domain distribution (top 20).
+   ----------------------------------------
+    1. State-Space Models                                 52
+    2. CSTR Kinetics                                      45
+    3. Laplace Transform                                  43
+    4. Biodiesel Transesterification                      42
+    5. System Identification                              33
+    6. Blending Process                                   22
+    7. Second-Order Systems                               21
+    8. CSTR Modeling                                      19
+    9. Reaction Kinetics                                  17
+   10. Thermodynamics                                     16
+   11. Linear Systems Theory                              16
+   12. Frequency Response                                 15
+   13. Heat Exchanger Dynamics                            14
+   14. Double-Pipe Heat Exchanger                         14
+   15. Hybrid CSTR Plant: Heat Transfer                   13
+   16. Transesterification Kinetics                       13
+   17. Surge Tank Dynamics                                13
+   18. Co-current Heat Exchanger                          13
+   19. Isothermal CSTR                                    13
+   20. Electrical Circuits                                13
+
+   Table 2. Top 15 variable symbols by frequency, with physical meaning.
+   ----------------------------------------
+    1. t                            305  |  Time
+    2. V                            152  |  Reactor volume
+    3. F                            119  |  Volumetric flow rate
+    4. T                             91  |  Temperature inside the reactor
+    5. \rho                          90  |  Density of the fluid
+    6. \tau                          89  |  Space time (reactor volume divided by volumetric flow rate)
+    7. s                             81  |  scaled time
+    8. A                             68  |  Heat transfer area
+    9. k                             64  |  Reaction rate constant
+   10. C_A                           55  |  Concentration of component A
+   11. S                             54  |  tank cross-sectional area
+   12. f(t)                          51  |  input or forcing function
+   13. F_0                           50  |  flow rate through the reactor vessel at steady-state
+   14. C                             49  |  ideal transient concentration
+   15. x                             49  |  state vector of dimension n
+   domain_distribution.png  — Equation domain distribution (merged, bar chart).
+   variable_network.png  — Variable co-occurrence network (same equation); top variables by degree.
+
+
+2.  Equation Graph (equation_graph.pt)
+--------------------------------------------------
+   Number of nodes:  975
+   Number of edges:  165806
+   Node degree:  min = 1, max = 501, mean = 176.01
+   degree_histogram.png  — Node degree distribution of the equation graph.
+   equation_embeddings_2d.png  — PCA of equation embeddings; points colored by merged domain.
+
+
+3.  Training Cases (training_cases.json)
+--------------------------------------------------
+   Total number of training cases:  1386
+   Table 3. Variant type distribution.
+   ----------------------------------------
+      original                                154
+      random_io_from_models                   616
+      swap_io                                 154
+      context_paraphrased                     462
+   Correct model equations per case:  min = 1, max = 5, mean = 1.41
+   Input variables per case:  min = 1, max = 23, mean = 4.80
+   Output variables per case:  min = 1, max = 18, mean = 1.90
+   training_variant_distribution.png  — Training case variant type (original / context_paraphrased / swap_io / random_io_from_models).
+   training_model_count_histogram.png  — Number of correct model equations per training case.
+
+
+4.  Generated figures (figures/)
+--------------------------------------------------
+   domain_distribution.png  — Equation domain distribution (merged, bar chart).
+   degree_histogram.png  — Node degree distribution of the equation graph.
+   equation_embeddings_2d.png  — PCA of equation embeddings; points colored by merged domain.
+   variable_network.png  — Variable co-occurrence network (same equation); top variables by degree.
+   training_variant_distribution.png  — Training case variant type (original / context_paraphrased / swap_io / random_io_from_models).
+   training_model_count_histogram.png  — Number of correct model equations per training case.
+
+======================================================================

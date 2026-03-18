@@ -1,0 +1,62 @@
+{
+  "n_equations": 975,
+  "n_cases_total": 1386,
+  "n_cases_evaluable": 45,
+  "split": {
+    "type": "paper_level_source_id_casesplit",
+    "test_ratio": 0.2,
+    "seed": 42,
+    "n_source_ids_train": 18,
+    "n_source_ids_test": 4,
+    "n_candidate_equations": 975,
+    "n_test_cases": 45
+  },
+  "weights": {
+    "w_text": 0.7,
+    "w_var": 0.3
+  },
+  "metrics": {
+    "MRR": 0.8993041526374859
+  },
+  "recall_at_k": {
+    "1": 0.8888888888888888,
+    "3": 0.8888888888888888,
+    "5": 0.8888888888888888,
+    "10": 0.9333333333333333
+  },
+  "per_variant_metrics": {
+    "swap_io": {
+      "MRR": 0.8166666666666667,
+      "Recall@1": 0.8,
+      "Recall@3": 0.8,
+      "Recall@5": 0.8,
+      "Recall@10": 0.8,
+      "n": 5.0
+    },
+    "random_io_from_models": {
+      "MRR": 1.0,
+      "Recall@1": 1.0,
+      "Recall@3": 1.0,
+      "Recall@5": 1.0,
+      "Recall@10": 1.0,
+      "n": 20.0
+    },
+    "original": {
+      "MRR": 0.8181818181818181,
+      "Recall@1": 0.8,
+      "Recall@3": 0.8,
+      "Recall@5": 0.8,
+      "Recall@10": 0.8,
+      "n": 5.0
+    },
+    "context_paraphrased": {
+      "MRR": 0.8196296296296296,
+      "Recall@1": 0.8,
+      "Recall@3": 0.8,
+      "Recall@5": 0.8,
+      "Recall@10": 0.9333333333333333,
+      "n": 15.0
+    }
+  },
+  "notes": []
+}

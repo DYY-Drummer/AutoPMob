@@ -1,0 +1,33 @@
+{
+  "config": {
+    "seed": 42,
+    "test_ratio": 0.2,
+    "svd_dim": 256,
+    "neg_per_case": 64,
+    "batch_size": 64,
+    "lr": 0.002,
+    "weight_decay": 0.0001,
+    "epochs": 1,
+    "device": "cpu"
+  },
+  "data": {
+    "n_equations": 975,
+    "n_cases_total": 1386,
+    "n_cases_train": 1341,
+    "n_cases_test": 45,
+    "n_sources_train": 18,
+    "n_sources_test": 4
+  },
+  "train": {
+    "avg_loss": 0.5986257053556896,
+    "steps": 21
+  },
+  "eval": {
+    "n_evaluated": 45,
+    "Recall@1": 0.6444444444444445,
+    "Recall@3": 0.9555555555555556,
+    "Recall@5": 1.0,
+    "Recall@10": 1.0,
+    "MRR": 0.7740740740740741
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "n_equations": 975,
+  "n_cases": 924,
+  "missing_equation_ids_total": 0,
+  "cases_with_missing_equation_ids": 0,
+  "cases_missing_fields": {},
+  "io_not_in_any_correct_model_vars_cases": 46,
+  "io_not_in_any_correct_model_vars_total_vars": 84,
+  "io_not_in_any_correct_model_vars_examples": [
+    {
+      "case_id": "core_107_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "s"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.168"
+      ]
+    },
+    {
+      "case_id": "core_058_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "C'_{A}(s)",
+        "C'_{A}(\\infty)"
+      ],
+      "n_missing_vars": 2,
+      "correct_model_ids": [
+        "Process_Control_Chapter4.pdf__4.28"
+      ]
+    },
+    {
+      "case_id": "core_047_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "\\rho"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "Process_Control_Chapter3.pdf__eq_3_9"
+      ]
+    },
+    {
+      "case_id": "core_080_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "V",
+        "F",
+        "S_f",
+        "Y_{X/S}"
+      ],
+      "n_missing_vars": 4,
+      "correct_model_ids": [
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-93",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-94",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-95"
+      ]
+    },
+    {
+      "case_id": "core_033_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "t"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.175"
+      ]
+    },
+    {
+      "case_id": "core_067_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "\\tau"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-26"
+      ]
+    },
+    {
+      "case_id": "core_080_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "V",
+        "F",
+        "S_f",
+        "Y_{X/S}"
+      ],
+      "n_missing_vars": 4,
+      "correct_model_ids": [
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-93",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-94",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-95"
+      ]
+    },
+    {
+      "case_id": "core_047_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "\\rho"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "Process_Control_Chapter3.pdf__eq_3_9"
+      ]
+    },
+    {
+      "case_id": "core_106_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "s"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.158"
+      ]
+    },
+    {
+      "case_id": "core_033_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "t"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.175"
+      ]
+    },
+    {
+      "case_id": "core_067_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "\\tau"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-26"
+      ]
+    },
+    {
+      "case_id": "core_032_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "t"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.175"
+      ]
+    },
+    {
+      "case_id": "core_061_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "G_1(s)",
+        "G_2(s)"
+      ],
+      "n_missing_vars": 2,
+      "correct_model_ids": [
+        "Process_Control_Chapter4.pdf__4.61"
+      ]
+    },
+    {
+      "case_id": "core_149_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "n_missing_vars": 4,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.133",
+        "2018_Book_ProcessControl.pdf__eq_1.135"
+      ]
+    },
+    {
+      "case_id": "core_027_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "C_p",
+        "k"
+      ],
+      "n_missing_vars": 2,
+      "correct_model_ids": [
+        "Chemical Process Dynamics.pdf__eq_6",
+        "Chemical Process Dynamics.pdf__eq_20",
+        "Chemical Process Dynamics.pdf__eq_23"
+      ]
+    },
+    {
+      "case_id": "core_043_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "C_{A0s}"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "Process_Control_Chapter3.pdf__eq_3_44",
+        "Process_Control_Chapter3.pdf__eq_3_45"
+      ]
+    },
+    {
+      "case_id": "core_107_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "s"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.168"
+      ]
+    },
+    {
+      "case_id": "core_135_v1",
+      "variant_type": "original",
+      "missing_vars": [
+        "r_p"
+      ],
+      "n_missing_vars": 1,
+      "correct_model_ids": [
+        "s41598-024-60757-5.pdf__eq_19"
+      ]
+    },
+    {
+      "case_id": "core_056_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "C'_{A}(t)|_{t=0}",
+        "C'_{A0}(s)"
+      ],
+      "n_missing_vars": 2,
+      "correct_model_ids": [
+        "Process_Control_Chapter4.pdf__4.17"
+      ]
+    },
+    {
+      "case_id": "core_104_v2",
+      "variant_type": "swap_io",
+      "missing_vars": [
+        "n",
+        "i"
+      ],
+      "n_missing_vars": 2,
+      "correct_model_ids": [
+        "2018_Book_ProcessControl.pdf__eq_1.190",
+        "2018_Book_ProcessControl.pdf__eq_1.192"
+      ]
+    }
+  ],
+  "duplicate_signature_groups": 16,
+  "duplicate_signature_cases": 33,
+  "variant_type_counts": {
+    "original": 154,
+    "random_io_from_models": 616,
+    "swap_io": 154
+  },
+  "n_correct_models_hist": {
+    "1": 648,
+    "2": 210,
+    "4": 12,
+    "5": 12,
+    "3": 42
+  },
+  "n_input_vars_hist": {
+    "5": 127,
+    "4": 162,
+    "1": 126,
+    "3": 137,
+    "6": 62,
+    "7": 34,
+    "19": 7,
+    "2": 147,
+    "22": 4,
+    "8": 30,
+    "23": 4,
+    "17": 13,
+    "10": 8,
+    "9": 21,
+    "15": 5,
+    "12": 7,
+    "13": 5,
+    "14": 6,
+    "11": 11,
+    "16": 2,
+    "18": 6
+  },
+  "n_output_vars_hist": {
+    "1": 422,
+    "2": 348,
+    "5": 29,
+    "3": 41,
+    "7": 6,
+    "4": 46,
+    "17": 2,
+    "6": 11,
+    "9": 2,
+    "8": 6,
+    "11": 4,
+    "16": 1,
+    "12": 2,
+    "18": 1,
+    "15": 1,
+    "14": 1,
+    "13": 1
+  }
+}

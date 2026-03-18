@@ -292,6 +292,20 @@ def augment_core_case(
         )
     )
 
+    # V1 の言い換え: 入出力・正解モデルは同じで、context のみ言い換えたケース（context_paraphrased）
+    for para_idx, ctx in enumerate(context_variants[1:4], start=1):  # テンプレート 2, 3, 4 を使用
+        variants.append(
+            TrainingCase(
+                case_id=f"{base_id}_v1_para{para_idx}",
+                original_core_id=core.case_id,
+                variant_type="context_paraphrased",
+                context=ctx,
+                input_variables=list(core.input_variables),
+                output_variables=list(core.output_variables),
+                correct_model_ids=list(core.correct_model_ids),
+            )
+        )
+
     # V2: 入出力の完全スワップ（両方非空なら）
     if core.input_variables and core.output_variables:
         variants.append(

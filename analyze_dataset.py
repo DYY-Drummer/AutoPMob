@@ -65,6 +65,7 @@ def analyze_equations(equations: list[dict]) -> dict[str, Any]:
         return {"n_equations": 0}
     domains = Counter(e.get("domain") or "unknown" for e in equations)
     var_freq: Counter[str] = Counter()
+    var_to_definition: dict[str, str] = {}  # 変数シンボル -> 代表的な物理意味（最初に出現した定義）
     n_vars_per_eq = []
     source_ids = Counter(e.get("source_id") or "unknown" for e in equations)
     for e in equations:
@@ -74,10 +75,13 @@ def analyze_equations(equations: list[dict]) -> dict[str, Any]:
             n_vars_per_eq.append(len(keys))
             for v in keys:
                 var_freq[v] += 1
+                if v not in var_to_definition and isinstance(vars_dict.get(v), str):
+                    var_to_definition[v] = (vars_dict[v] or "").strip()
     return {
         "n_equations": len(equations),
         "domain_counts": dict(domains.most_common()),
         "variable_frequency": dict(var_freq.most_common(30)),
+        "variable_definitions": var_to_definition,
         "n_variables_per_equation": n_vars_per_eq,
         "source_id_counts": dict(source_ids.most_common(20)),
         "unique_variables": len(var_freq),
@@ -136,6 +140,46 @@ def analyze_training_cases(cases: list[dict]) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# ドメイン合併（論文用に表示ドメイン数を削減）
+# ---------------------------------------------------------------------------
+
+# キーワードにマッチしたらその表示ドメインに合併。上から順にマッチさせる。
+DOMAIN_MERGE_RULES: list[tuple[list[str], str]] = [
+    (["CSTR", "Stirred Tank", "Reactor", "Tubular Reactor", "Plug Flow", "Fed-Batch", "Isothermal CSTR", "Nonisothermal CSTR", "Two CSTRs"], "Reactor / CSTR"),
+    (["Kinetics", "Transesterification", "Biodiesel"], "Reaction Kinetics"),
+    (["Heat Transfer", "Heat Exchanger", "Heating", "Thermodynamics", "Thermochemistry", "Jacket", "Steam-Heated", "Cooling Coil"], "Heat Transfer / Thermodynamics"),
+    (["Control", "PID", "Laplace", "Transfer Function", "State-Space", "Linear Systems", "Signal", "Frequency Response", "Block Diagram", "Stability"], "Control / Dynamics"),
+    (["Material Balance", "Mole Balance", "Component continuity", "Overall Material Balance"], "Material Balance"),
+    (["Energy Balance"], "Energy Balance"),
+    (["Fluid", "Flow", "Tank Draining", "Surge Tank", "Weir", "CFD"], "Fluid / Flow"),
+    (["Numerical", "Euler", "Runge-Kutta", "ODE"], "Numerical Methods"),
+    (["Electrical", "Circuit"], "Electrical Circuits"),
+    (["Mechanical", "Torque", "Electromechanical"], "Mechanical / Electromechanical"),
+    (["Membrane", "Blending", "Staged", "Absorber"], "Separation / Mixing"),
+    (["Linearization", "Taylor", "Degrees of Freedom", "Dimensionless"], "Modeling / Linearization"),
+    (["Fuzzy", "Statistical"], "Other"),  # 論文では Other に統合
+    (["General", "Modeling Principles", "Mathematical Modeling", "Conservation Balance"], "General Modeling"),
+]
+
+def merge_domain(raw_domain: str) -> str:
+    """細かいドメイン名を論文用の表示ドメインに合併する。"""
+    if not raw_domain or raw_domain == "unknown":
+        return "Unknown"
+    d = raw_domain.strip()
+    for keywords, display_name in DOMAIN_MERGE_RULES:
+        if any(kw.lower() in d.lower() for kw in keywords):
+            return display_name
+    return "Other"
+
+
+def get_merged_domain_counts(equations: list[dict]) -> tuple[Counter[str], list[str]]:
+    """合併ドメインのカウントと、表示順（カウント降順）のラベルリストを返す。"""
+    merged = Counter(merge_domain(e.get("domain")) for e in equations)
+    order = [k for k, _ in merged.most_common()]
+    return merged, order
+
+
+# ---------------------------------------------------------------------------
 # 可視化
 # ---------------------------------------------------------------------------
 
@@ -147,24 +191,25 @@ def ensure_figures_dir():
 def plot_domain_distribution(equations: list[dict], figure_refs: list[str]) -> None:
     if not equations:
         return
-    domains = Counter(e.get("domain") or "unknown" for e in equations)
-    labels = list(domains.keys())
-    counts = [domains[l] for l in labels]
-    # 長いラベルを短縮
-    short = [l[:20] + "…" if len(l) > 20 else l for l in labels]
+    merged_counts, order = get_merged_domain_counts(equations)
+    labels = order
+    counts = [merged_counts[l] for l in labels]
+    n_bars = len(labels)
     try:
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(10, 5))
-        ax.barh(short, counts, color="steelblue", edgecolor="navy", alpha=0.8)
+        fig_h = max(5, min(12, n_bars * 0.45))
+        fig, ax = plt.subplots(figsize=(8, fig_h))
+        ax.barh(labels, counts, color="steelblue", edgecolor="navy", alpha=0.8)
         ax.set_xlabel("Count")
-        ax.set_ylabel("Domain")
-        ax.set_title("Equation domain distribution")
+        ax.set_ylabel("Domain (merged)")
+        ax.set_title("Equation domain distribution (merged domains)")
+        ax.invert_yaxis()
         plt.tight_layout()
         plt.savefig(FIGURES_DIR / "domain_distribution.png", dpi=150, bbox_inches="tight")
         plt.close()
-        figure_refs.append("domain_distribution.png  — Equation domain distribution (bar chart).")
+        figure_refs.append("domain_distribution.png  — Equation domain distribution (merged, bar chart).")
     except Exception as e:
         figure_refs.append(f"[domain_distribution.png failed: {e}]")
 
@@ -212,27 +257,27 @@ def plot_equation_embeddings_2d(
             return
         pca = PCA(n_components=2, random_state=42)
         X2 = pca.fit_transform(X)
-        domains = [e.get("domain") or "unknown" for e in equations]
-        uniq_dom = list(dict.fromkeys(domains))
+        merged_domains = [merge_domain(e.get("domain")) for e in equations]
+        uniq_dom = [k for k, _ in Counter(merged_domains).most_common()]
         cmap = plt.cm.tab20
         fig, ax = plt.subplots(figsize=(10, 8))
         for i, d in enumerate(uniq_dom):
-            mask = [j for j in range(len(domains)) if domains[j] == d]
+            mask = [j for j in range(len(merged_domains)) if merged_domains[j] == d]
             ax.scatter(
                 X2[mask, 0], X2[mask, 1],
-                label=d[:25] + ("…" if len(d) > 25 else ""),
+                label=d,
                 alpha=0.7,
-                s=20,
+                s=22,
                 color=cmap(i % 20),
             )
         ax.set_xlabel("PC1")
         ax.set_ylabel("PC2")
-        ax.set_title("Equation embeddings (PCA, colored by domain)")
-        ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=7)
+        ax.set_title("Equation embeddings (PCA, colored by merged domain)")
+        ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=9, ncols=1)
         plt.tight_layout()
         plt.savefig(FIGURES_DIR / "equation_embeddings_2d.png", dpi=150, bbox_inches="tight")
         plt.close()
-        figure_refs.append("equation_embeddings_2d.png  — PCA of equation embeddings; points colored by domain (cluster view).")
+        figure_refs.append("equation_embeddings_2d.png  — PCA of equation embeddings; points colored by merged domain.")
     except Exception as e:
         figure_refs.append(f"[equation_embeddings_2d.png failed: {e}]")
 
@@ -317,7 +362,7 @@ def plot_training_variant_distribution(tc_stats: dict | None, figure_refs: list[
         plt.tight_layout()
         plt.savefig(FIGURES_DIR / "training_variant_distribution.png", dpi=150, bbox_inches="tight")
         plt.close()
-        figure_refs.append("training_variant_distribution.png  — Training case variant type (original / swap_io / random_io_from_models).")
+        figure_refs.append("training_variant_distribution.png  — Training case variant type (original / context_paraphrased / swap_io / random_io_from_models).")
     except Exception as e:
         figure_refs.append(f"[training_variant_distribution.png failed: {e}]")
 
@@ -381,10 +426,14 @@ def write_report(
     for i, (dom, cnt) in enumerate(list(eq_stats.get("domain_counts", {}).items())[:20], 1):
         lines.append(f"   {i:2d}. {dom[:45]:<45}  {cnt:>6}")
     lines.append("")
-    lines.append("   Table 2. Top 15 variable symbols by frequency (appearance in equations).")
+    lines.append("   Table 2. Top 15 variable symbols by frequency, with physical meaning.")
     lines.append("   " + "-" * 40)
+    var_defs = eq_stats.get("variable_definitions") or {}
     for i, (var, cnt) in enumerate(list(eq_stats.get("variable_frequency", {}).items())[:15], 1):
-        lines.append(f"   {i:2d}. {str(var)[:40]:<40}  {cnt:>6}")
+        meaning = (var_defs.get(var) or "(no definition)")[:60]
+        if len(var_defs.get(var) or "") > 60:
+            meaning += "..."
+        lines.append(f"   {i:2d}. {str(var)[:25]:<25}  {cnt:>5}  |  {meaning}")
     for ref in figure_refs:
         if "domain_distribution" in ref or "variable_network" in ref:
             lines.append(f"   {ref}")
