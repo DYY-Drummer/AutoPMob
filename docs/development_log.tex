@@ -135,6 +135,62 @@
 \end{itemize}
 
 %----------------------------------------------------------------------
+\section{データセット定義と評価（次の開発者向けガイド）}
+%----------------------------------------------------------------------
+
+\subsection{データ構造（Equation と Training Case）}
+\textbf{Equation（\texttt{unified\_equations.json}）}
+\begin{itemize}[nosep]
+  \item 1要素が1つの数式（ノード）で、主なキーは \texttt{source\_id}, \texttt{eq\_id}, \texttt{equation}, \texttt{variables}, \texttt{context\_text}, \texttt{domain}。
+  \item \texttt{variables} は辞書で、キーが変数シンボル（例: \texttt{C\_A}）、値が物理意味の説明文（例: Concentration of component A）。
+  \item \textbf{グローバルIDの注意}: \texttt{eq\_id} は文書内ローカルのことがあるため、訓練や評価では \textbf{必ず} \texttt{<source\_id>\_\_<eq\_id>} 形式（例: \texttt{handbook\_chemeng\_\_eq\_1}）を「式ID」として扱う。
+\end{itemize}
+
+\textbf{Training Case（\texttt{training\_cases.json}）}
+\begin{itemize}[nosep]
+  \item 1要素が1つの推論タスクで、主なキーは \texttt{case\_id}, \texttt{variant\_type}, \texttt{context}, \texttt{input\_variables}, \texttt{output\_variables}, \texttt{correct\_model\_ids}。
+  \item \texttt{correct\_model\_ids} は「このケースの正解となる数式集合（1本以上）」であり、各要素は \textbf{必ず} \texttt{<source\_id>\_\_<eq\_id>} 形式。
+  \item \textbf{variant\_type}: \texttt{original}, \texttt{swap\_io}, \texttt{random\_io\_from\_models}, \texttt{context\_paraphrased}（I/Oと正解モデルを保持し文脈だけ言い換え）。
+\end{itemize}
+
+\subsection{タスク定義（Equation Retrieval / Model Selection）}
+本研究の基本タスクは、与えられたケース $(\texttt{context}, \texttt{input\_variables}, \texttt{output\_variables})$ から、式集合ライブラリ（全式）内の \texttt{correct\_model\_ids} を上位にランキングする \textbf{retrieval} として定義する。
+各ケースは正解が1本のことも複数本のこともある（multi-positive）。
+
+\subsection{なぜ MRR を使うか（採用理由）}
+本タスクでは「正解が上位に出てくること」が重要であり、特に \textbf{1本目の正解}が何位に現れるかがユーザ体験（候補式提示）に直結する。
+また、ケースによって正解式が複数あるため、分類精度（accuracy）のような単一ラベル前提の指標は不適切である。
+そのため、ランキングの早期精度を評価できる \textbf{MRR（Mean Reciprocal Rank）} と \textbf{Recall@K} を主要指標として採用した。
+
+\subsection{MRR と Recall@K の計算方法}
+各ケース $i$ について、モデルが全式をスコアリングし降順に並べた順位列を考える。
+正解集合を $G_i$（\texttt{correct\_model\_ids} に対応するノード集合）とする。
+\begin{itemize}[nosep]
+  \item \textbf{BestRank}：$r_i=\min\{ \text{rank}(e)\mid e\in G_i\}$（正解集合のうち最も上位に来た式の順位）
+  \item \textbf{Reciprocal Rank}：$RR_i=\frac{1}{r_i}$
+  \item \textbf{MRR}：$\mathrm{MRR}=\frac{1}{N}\sum_{i=1}^{N} RR_i$
+  \item \textbf{Recall@K}：$\mathrm{Recall@K}=\frac{1}{N}\sum_{i=1}^{N}\mathbb{I}[r_i\le K]$
+\end{itemize}
+ここで $N$ は評価対象ケース数。正解が複数ある場合でも、最初に当たる正解の順位（BestRank）で評価する。
+
+\subsection{データ分割（リーク防止のための paper/source\_id split）}
+同一文書から抽出された式や文脈が train と test に混ざると、文字列一致により過大評価（リーク）になる。
+そのため、分割は \textbf{source\_id（論文/教科書）単位}で行い、case の \texttt{correct\_model\_ids} から source\_id を推定して train/val/test に割り当てる。
+実装例は \texttt{run\_retrieval\_experiments.py}（\texttt{experiments/retrieval\_experiments.json} に split を保存）。
+
+\subsection{再現可能な実験手順（何をどう動かすか）}
+\begin{itemize}[nosep]
+  \item \textbf{健全性チェック}：\texttt{python validate\_dataset.py}（式ID参照、I/O変数整合、重複など。レポートは \texttt{validate\_dataset\_report.json}）。
+  \item \textbf{訓練ケース増強（contextのみ言い換え）}：\texttt{python add\_context\_paraphrases.py}（\texttt{training\_cases.json} を更新）。
+  \item \textbf{統計と図の更新}：\texttt{python analyze\_dataset.py}（\texttt{dataset\_report.txt} と \texttt{figures/}）。
+  \item \textbf{方式比較とハイパラ探索}：\texttt{python run\_retrieval\_experiments.py}（結果は \texttt{experiments/retrieval\_experiments.md}）。
+\end{itemize}
+
+\subsection{現時点の結論（次に何をすべきか）}
+現状では、学習を伴うGNN/MLP系よりも、\textbf{TF-IDF（文脈）+ 変数集合Jaccard（I/O一致）}を混合した \texttt{baseline\_mix} が最良である。
+次の開発では、(1) negative sampling を hard negative 化、(2) 変数をノードとして明示した二部グラフ化、(3) 「正解式集合の整合性（最小十分性）」を利用した学習目的の改善、などによりベースライン超えを狙う。
+
+%----------------------------------------------------------------------
 \section{今後の予定・TODO}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
