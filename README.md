@@ -32,6 +32,7 @@ python fetch_papers.py
 
 ## 開発記録（ゼミ・論文用）
 
+- **CLAUDE.md** … Claude Code 等で続きから開発するときの引き継ぎ（目的・データ・実験結論・スクリプト一覧）。
 - **docs/development_log.tex** … 遭遇した問題・解決策・技術メモを LaTeX で記録。
 - PDF 生成: `cd docs && pdflatex development_log.tex`
 

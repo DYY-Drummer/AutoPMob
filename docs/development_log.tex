@@ -191,6 +191,90 @@
 次の開発では、(1) negative sampling を hard negative 化、(2) 変数をノードとして明示した二部グラフ化、(3) 「正解式集合の整合性（最小十分性）」を利用した学習目的の改善、などによりベースライン超えを狙う。
 
 %----------------------------------------------------------------------
+\section{GNNの仕組みと埋め込み（次の開発者向け）}
+%----------------------------------------------------------------------
+
+\subsection{なぜ現状のグラフ構築ではGNNの強みを活かせないか（分析）}
+GNNの強みは、\textbf{タスクに効く構造をグラフに載せ、その上で局所的な集約をしてノード表現を磨く}ことにある。当初の「式をノード、共通変数があればエッジ」という設計には、次のような限界がある。
+
+\textbf{（1）エッジが極端に密になり、構造の弁別力が弱い}
+\begin{itemize}[nosep]
+  \item ノード数 $N$ に対し、変数を1つでも共有する式ペアに無向エッジを張ると、$t$, $T$, $V$, $C_A$ など頻出変数を含む式が多数つながる。実際のデータでは 975 ノードで約 16 万本のエッジとなり、1式あたり平均で非常に多くの式と隣接する。
+  \item その結果、「同じ物理モデルに属する式」と「たまたま $t$ や $T$ を共有するだけの式」が区別されず、メッセージパッシングで無関係な情報が混ざり、ノード表現がシャープに磨かれない。
+\end{itemize}
+
+\textbf{（2）変数共有と retrieval の正解が対応していない}
+\begin{itemize}[nosep]
+  \item タスクは「与えられたケース（context + I/O変数）に合う式をランキングする」retrieval である。正解は「そのケースの入出力を満たす式集合」であり、変数名の共有は「候補になりうる」必要条件にすぎない。
+  \item 多くの不正解の式も $t$ や $T$ を共有するため、グラフのつながりだけでは「このクエリに正解」というシグナルが弱く、GNN の集約が retrieval に直結しにくい。
+\end{itemize}
+
+\textbf{（3）変数がグラフ上に明示されていない}
+\begin{itemize}[nosep]
+  \item 変数はエッジの「条件」としてしか現れず、ノードとしては存在しない。そのため「この式はクエリの出力変数 $C_A$ を含む」といった情報を、メッセージパッシングで明示的に扱えない。のちにクエリ条件（I/O変数）に依存した重み付けやサブグラフを入れることも難しい。
+\end{itemize}
+
+\textbf{（4）ホモフィリー仮定が成り立ちにくい}
+\begin{itemize}[nosep]
+  \item 多くの GCN 系モデルは「つながっているノードは似ている」という仮定で学習する。ここでは「つながり＝1つでも変数名が被った」なので、ドメインが違っても $t$ だけ共有でつながる、といったノイズが多く、ホモフィリーが弱い。そのため、隣接ノードからの集約が「関連の強い式」に絞られず、GNN の利点が生かしづらい。
+\end{itemize}
+
+以上から、\textbf{「式＝ノード・共通変数＝エッジ」だけの同質グラフは、retrieval というタスクに対して GNN の強みを十分に引き出せる設計にはなっていない}、という結論になる。改善の方向性として、(i) 変数を明示した\textbf{式--変数二部グラフ}で「どの変数を介してつながるか」を構造に載せる、(ii) クエリの I/O 変数に応じたエッジ重みやサブグラフにする、(iii) 訓練ラベルを利用して「同じ正解に共起する式」同士をエッジで結ぶ、などが考えられる。
+
+\subsection{グラフの構築（\texttt{build\_graph\_data.py} → \texttt{equation\_graph.pt}）【二部グラフ版】}
+タスクに効く構造と局所集約を両立させるため、\textbf{式ノードと変数ノードの二部グラフ}を採用する。
+
+\begin{itemize}[nosep]
+  \item \textbf{ノード}：\textbf{式ノード}（0 から $N_{\mathrm{eq}}-1$）と \textbf{変数ノード}（$N_{\mathrm{eq}}$ から $N_{\mathrm{eq}}+N_{\mathrm{var}}-1$）。式ノードは \texttt{unified\_equations.json} の並びと一致。変数ノードは全式から出現する変数名のユニーク集合に 1 対 1 で対応する。
+  \item \textbf{エッジ}：式 $i$ が変数 $v$ を含むときのみ、無向エッジ $(i,\; N_{\mathrm{eq}}+j)$ と $(N_{\mathrm{eq}}+j,\; i)$ を張る（$j$ は変数 $v$ の ID）。式同士は直接つながらず、\textbf{変数ノードを介した 2 ホップ}で「同じ変数を含む式」に情報が伝わる。これにより集約が「どの変数を共有しているか」に沿った形になり、局所性も保たれやすい。
+  \item \textbf{ノード特徴 \texttt{x}}：式ノードには従来どおり \textbf{CodeBERT} の [CLS] ベクトル（768 次元）。変数ノードには、その変数を含む式の CodeBERT ベクトルの平均を 768 次元特徴として与える（学習可能な変数埋め込みにすることも可能）。\texttt{x} の形状は $(N_{\mathrm{eq}}+N_{\mathrm{var}},\; 768)$。
+  \item \textbf{保存内容}：\texttt{Data(x=x, edge\_index=edge\_index, num\_equations=N_{\mathrm{eq}})} に加え、後方互換のため式どうしの隣接 \texttt{edge\_index\_eq\_eq}（0..$N_{\mathrm{eq}}-1$ のみのインデックス）も保存する。学習・評価では式埋め込みは GCN 出力の \textbf{先頭 $N_{\mathrm{eq}}$ 行}のみを用いる。
+\end{itemize}
+
+\subsection{式の埋め込みの2系統}
+Retrieval 実験では、式の表現に次の2系統がある（スクリプトによってどちらを使うかが異なる）。
+
+\textbf{系統A：CodeBERT ノード特徴（\texttt{equation\_graph.pt} の \texttt{x}）}
+\begin{itemize}[nosep]
+  \item 上記のとおり、事前学習済み CodeBERT で式+文脈をエンコードした 768 次元ベクトル。学習時には L2 正規化してコサイン類似度＝内積として使う。
+  \item \texttt{train\_gnn\_retriever.py} の「式側は \texttt{x} をそのまま（または GCN で更新）」や、\texttt{run\_retrieval\_experiments.py} の \texttt{q\_mlp\_to\_x} で使用。クエリ側は SVD 空間のベクトルを MLP で 768 次元に写す方式。
+\end{itemize}
+
+\textbf{系統B：TF-IDF + TruncatedSVD（同一空間でクエリと式を比較）}
+\begin{itemize}[nosep]
+  \item 式テキスト：\texttt{context\_text}, \texttt{equation}, \texttt{domain} を連結した文字列を TF-IDF（\texttt{TfidfVectorizer}、lowercase, max\_features=50000, ngram\_range=(1,2)）でベクトル化し、TruncatedSVD で 256 次元に圧縮。L2 正規化したものを式埋め込み $E_0$ とする。
+  \item クエリ（ケース）テキスト：\texttt{context} と \texttt{INPUT <input\_variables>}, \texttt{OUTPUT <output\_variables>} を連結し、同じ TF-IDF と SVD で 256 次元に写し L2 正規化したものをクエリ埋め込み $Q$ とする。
+  \item スコアは $E_0^\top Q$（内積＝コサイン類似度）。\texttt{svd\_cos} ベースラインや \texttt{train\_gnn\_refine\_svd.py} の入力はこの空間。
+\end{itemize}
+
+\subsection{GNN の役割（2種類の使い方）}
+\textbf{パターン1：式特徴を CodeBERT \texttt{x} のまま、GCN で更新（\texttt{train\_gnn\_retriever.py}）}
+\begin{itemize}[nosep]
+  \item 式埋め込みは $z = \mathrm{GCN}(x, \mathrm{edge\_index})$。2層 GCN（\texttt{GCNConv(in\_dim, 768)}, ReLU, Dropout, \texttt{GCNConv(768, 768)}）の出力を L2 正規化。クエリは SVD ベクトルを \texttt{QueryEncoder}（MLP）で 768 次元に写し、$z^\top q$ でスコア。InfoNCE 風の負例サンプリングで学習。
+  \item 現状の実験では、クエリと式が別空間（SVD vs CodeBERT）から来るため学習が難しく、このパターン単体ではベースラインを下回っている。
+\end{itemize}
+
+\textbf{パターン2：SVD 空間で式埋め込みを GCN で残差更新（\texttt{train\_gnn\_refine\_svd.py}, \texttt{gnn\_refine\_svd\_residual}）}
+\begin{itemize}[nosep]
+  \item 式の初期埋め込みは系統Bの $E_0$（256次元、L2正規化済み）。これを 2 層 GCN の入力とし、$h = \mathrm{GCN}(E_0)$ を計算したあと、\textbf{残差混合} $E = E_0 + \alpha \cdot h$ で更新（$\alpha$ は学習可能スカラー、初期値 0 でクリップ）。最終的に $E$ を L2 正規化して式埋め込みとする。クエリは同じ SVD 空間の $Q$ のまま、スコアは $E^\top Q$。
+  \item $\alpha=0$ のときは GCN を通さないので SVD コサインと同一。グラフ構造（変数共有）の情報を少しずつ取り込む設計。学習はサンプルされた負例に対する InfoNCE 的損失。
+\end{itemize}
+
+\subsection{スコアリングと学習}
+\begin{itemize}[nosep]
+  \item いずれの方式でも、式埋め込みとクエリ埋め込みは L2 正規化してから内積をとるため、スコアは \textbf{コサイン類似度} に等しい。
+  \item 学習時：各訓練ケースについて正解式を1本選び、ランダムに多数の負例式をサンプル。正解を1位にしたいので、正解・負例のスコアに温度 $\tau$（例 0.07）をかけた logits に対して cross-entropy（正解インデックス 0）を最小化（InfoNCE 型）。
+\end{itemize}
+
+\subsection{ファイルと役割の対応}
+\begin{itemize}[nosep]
+  \item \texttt{build\_graph\_data.py}：\textbf{式--変数二部グラフ}を構築。\texttt{x} は式ノード＋変数ノードの特徴、\texttt{edge\_index} は二部エッジ、\texttt{num\_equations} と \texttt{edge\_index\_eq\_eq}（式同士の隣接）も保存。
+  \item \texttt{train\_gnn\_retriever.py}：式埋め込みは GCN/GAT 出力の先頭 \texttt{num\_equations} 行を使用（二部グラフ対応）。クエリ＝SVD→MLP。\texttt{--use-gnn} / \texttt{--no-gnn} で GNN の有無、\texttt{--gnn-type gcn|gat} で GNN 種類を切替。
+  \item \texttt{train\_gnn\_refine\_svd.py}：式＝SVD($E_0$) を残差 GCN で更新、クエリ＝SVD($Q$)。\texttt{edge\_index\_eq\_eq}（式同士のみ）を使用。
+  \item \texttt{run\_retrieval\_experiments.py}：上記に加え \texttt{baseline\_mix}、\texttt{svd\_cos}、\texttt{q\_mlp\_to\_x}、\texttt{gnn\_refine\_svd\_residual} を同一分割で比較。二部グラフ時は式ノードのみ \texttt{x[:num\_equations]} と \texttt{edge\_index\_eq\_eq} を利用。
+\end{itemize}
+
+%----------------------------------------------------------------------
 \section{今後の予定・TODO}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
@@ -200,10 +284,25 @@
   \item GitHub との同期と CI（テスト・リント）の検討。
 \end{itemize}
 
+\subsection{試したいこと・実験アイデア（大胆に）}
+\label{sec:ideas}
+\begin{itemize}[nosep]
+  \item \textbf{GNN の種類}：GCN に加え GAT（Graph Attention）を試す。二部グラフでは「どの変数ノードを重視するか」を attention で学習できると有利な可能性。
+  \item \textbf{エッジ重み}：変数ごとの IDF や、クエリ I/O 変数との一致度でエッジに重みを付け、メッセージの強さを変える。
+  \item \textbf{クエリ条件付きグラフ}：推論時に「このクエリの入力・出力変数を含む式／変数」にだけメッセージを流す、あるいはエッジをマスクする。タスクに効く構造に絞る。
+  \item \textbf{Hard negative}：ランダム負例に加え、変数は被るが正解でない式を意図的に負例にし、境界を学習しやすくする。
+  \item \textbf{式の言い換え・拡張}：同一式の context 言い換えや変数名の正規化違いをデータ拡張し、埋め込みのロバスト性を高める。
+  \item \textbf{評価の安定化}：同じ分割で複数 seed を回し、平均・標準偏差で報告。小規模データなのでばらつきを明示する。
+\end{itemize}
+
 %----------------------------------------------------------------------
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-03-30：Claude Code 等への開発移行用にリポジトリ直下に \texttt{CLAUDE.md} を追加（研究目的・データ構造・実験結論・スクリプト対応・運用ルールを集約）。\texttt{research\_context.md} は \texttt{CLAUDE.md} へのポインタを記載。
+  \item 2026-03-18（試したいこと・GAT 追加）：開発記録に「試したいこと・実験アイデア」を追加（GAT、エッジ重み、クエリ条件付きグラフ、hard negative、データ拡張、複数 seed 評価）。\texttt{train\_gnn\_retriever.py} に GAT エンコーダと \texttt{--gnn-type gcn|gat} を追加。
+  \item 2026-03-18（グラフ構築の改善）：現状の「式＝ノード・共通変数＝エッジ」では GNN の強みを活かせないという分析を開発記録に全文追記。\textbf{式--変数二部グラフ}に変更（\texttt{build\_graph\_data.py}）。式ノードと変数ノードを明示し、エッジは「式が変数を含む」のみ。式埋め込みは GCN 出力の先頭 \texttt{num\_equations} 行を使用。\texttt{edge\_index\_eq\_eq} で後方互換を確保。\texttt{train\_gnn\_retriever.py}、\texttt{run\_retrieval\_experiments.py}、\texttt{train\_gnn\_refine\_svd.py}、\texttt{analyze\_dataset.py} を二部グラフ対応に修正。
+  \item 2026-03-18（GNN・埋め込みの説明）：開発記録に「GNNの仕組みと埋め込み」セクションを追加。グラフ構築（ノード＝式・エッジ＝変数共有・特徴＝CodeBERT）、式埋め込みの2系統（CodeBERT \texttt{x} と TF-IDF+SVD）、GNN の2パターン（\texttt{x} を GCN で更新する方式と SVD 空間での残差 GCN）、スコアリング・学習の流れ、各スクリプトの役割を記載。
   \item 2026-03-18（方式比較とハイパラ探索）：retrieval方式（\texttt{baseline\_mix}, \texttt{svd\_cos}, \texttt{q\_mlp\_to\_x}, \texttt{gnn\_refine\_svd\_residual}）を同一の train/val/test（source\_id 単位）で比較し、学習率・重み減衰のグリッド探索を自動実行するランナー \texttt{run\_retrieval\_experiments.py} を追加。結果は \texttt{experiments/retrieval\_experiments.md} に表で出力し、現状では \texttt{baseline\_mix}（TF-IDF+変数Jaccard）が最良であることを確認。
   \item 2026-03-18（GNN次ステップ）：SVD+I/O 文字列ベースラインを維持したままグラフ構造の寄与を検証するため、SVD空間上で式埋め込みをGCNで\textbf{残差的に}更新する実験スクリプト \texttt{train\_gnn\_refine\_svd.py} を追加。素朴なGCNは埋め込みを崩して性能低下したため、学習開始時はベースライン同等（$\alpha=0$）になる残差混合に変更して安定化。
   \item 2026-03-18：データセット解析と訓練準備を拡張。`dataset_report.txt` の変数TOP15に物理意味を併記し、ドメインを論文用に合併して図（ドメイン分布・埋め込み）を可読化。訓練ケースに `context_paraphrased` を追加し、健全性チェック（ID整合・変数整合・重複）とベースライン評価を実装。さらに PyG の `equation_graph.pt` を用いた retriever の1epoch動作確認スクリプトを追加（context+I/O 変数をクエリ特徴に含めて改善）。
