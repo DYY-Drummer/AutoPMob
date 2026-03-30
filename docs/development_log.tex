@@ -129,9 +129,68 @@
   \item \textbf{API モデル}：当初 \texttt{gemini-1.5-pro}、のち \texttt{gemini-2.5-flash}（5 RPM）、RPD 制限対策で \texttt{gemini-2.0-flash} に変更後、高性能化のため \texttt{gemini-2.5-pro} に統一。
   \item \textbf{デフォルト API キー}：環境変数未設定時に限り、開発用デフォルトキーを使用するように変更（\texttt{extract\_equations.py}、\texttt{build\_equation\_graph.py}、\texttt{test\_api.py}）。
   \item \textbf{論文メタデータ取得 \texttt{fetch\_papers.py}}：Semantic Scholar API でクエリ A/B 各 50 件のメタデータを取得し、\texttt{paper\_dataset\_links.json} に保存。オープンアクセス PDF URL を \texttt{has\_open\_access\_pdf}、\texttt{open\_access\_pdf\_url} で明示。429 時はリトライと \texttt{SEMANTIC\_SCHOLAR\_API\_KEY} 対応。
-  \item \textbf{グラフ前処理 \texttt{build\_graph\_data.py}}：\texttt{unified\_equations.json} を PyTorch Geometric の \texttt{Data(x, edge\_index)} に変換。ノードは数式、エッジは変数共有、特徴量は CodeBERT の [CLS] ベクトル（768次元）。\texttt{equation\_graph.pt} として保存。
+  \item \textbf{グラフ前処理 \texttt{build\_graph\_data.py}}：\texttt{unified\_equations.json} から\textbf{式--変数二部グラフ}の \texttt{Data} を構築し \texttt{equation\_graph.pt} に保存（詳細は\nameref{sec:file-roles}）。
   \item \textbf{訓練ケース生成 \texttt{generate\_training\_cases.py}}：LLM で約150件のコアケースを生成（\texttt{context}、\texttt{input\_variables}、\texttt{output\_variables}、\texttt{correct\_model\_ids}）。正解モデルは「入力が与えられれば出力を解ける」「十分かつ最小限の数式群」となるようプロンプトで制約。Python で入出力スワップ・ランダム入出力・context 言い換えにより 1 コアから 5--6 バリアントを生成し、900件以上を \texttt{training\_cases.json} に保存。
   \item \textbf{可視化・分析 \texttt{analyze\_dataset.py}}：数式グラフ・訓練ケースの統計と可視化。ドメイン分布、次数分布、埋め込みの PCA（ドメイン色分け）、変数共起ネットワーク、訓練ケースの variant 分布・正解モデル数分布。論文付録向け \texttt{dataset\_report.txt} と \texttt{figures/*.png} を出力。
+\end{itemize}
+
+%----------------------------------------------------------------------
+\section{各ファイル・ディレクトリの役割}
+\label{sec:file-roles}
+%----------------------------------------------------------------------
+リポジトリ内の主要なパスと、その責務の一覧である（\texttt{.gitignore} 対象や個人環境依存は除く）。
+
+\subsection{プロジェクトルート（実行スクリプト・メタファイル）}
+\begin{itemize}[nosep]
+  \item \texttt{README.md}：環境構築、代表的なコマンド、リポジトリ構成の入口。
+  \item \texttt{CLAUDE.md}：別ツール・別環境で開発を続けるときの引き継ぎ要約（目的・データ・実験結論・スクリプト対応）。
+  \item \texttt{research\_context.md}：研究メモ用（\texttt{CLAUDE.md} へのポインタを含む）。
+  \item \texttt{requirements.txt}：Python 依存パッケージの一覧。
+  \item \texttt{extract\_equations.py}：単一 PDF を Gemini API に渡し、数式・変数定義・周辺文脈を JSON で抽出する。
+  \item \texttt{normalize\_notation.py}：抽出済み JSON の式文字列・変数キー等を \texttt{config/notation\_map.json} に従い訓練向けに正規化する。
+  \item \texttt{build\_equation\_graph.py}：\texttt{input\_pdfs/} の未処理 PDF を一括抽出し、必要に応じ Handbook 式を LLM 生成し、\texttt{unified\_equations.json} に統合する（スキップ管理は \texttt{processed\_pdfs.json}）。
+  \item \texttt{fetch\_papers.py}：Semantic Scholar API で論文メタデータを取得し \texttt{paper\_dataset\_links.json} に保存する。
+  \item \texttt{build\_graph\_data.py}：\texttt{unified\_equations.json} から式ノード・変数ノードの二部グラフを構築し、各ノードに CodeBERT [CLS]（768次元、変数側は含有式の平均）を付与して \texttt{equation\_graph.pt}（PyTorch Geometric）を出力する。
+  \item \texttt{generate\_training\_cases.py}：LLM でコアケースを生成し、入出力スワップ等でバリアントを増やして \texttt{training\_cases.json} を構築する。
+  \item \texttt{validate\_dataset.py}：式のグローバル ID 参照、ケースと式の変数整合、重複などを検査し \texttt{validate\_dataset\_report.json} を出力する。
+  \item \texttt{add\_context\_paraphrases.py}：訓練ケースの文脈のみ言い換えたバリアントを \texttt{training\_cases.json} に追加する。
+  \item \texttt{analyze\_dataset.py}：グラフ・訓練ケースの統計と図表を生成し、\texttt{dataset\_report.txt} と \texttt{figures/} に書き出す。
+  \item \texttt{baseline\_retrieval\_eval.py}：TF-IDF、変数 Jaccard、混合ベースライン等の retrieval 評価ロジック（単体実行および実験ランナーから利用）。
+  \item \texttt{run\_retrieval\_experiments.py}：複数の scoring 方式を同一の source\_id 分割で学習・評価し、結果を \texttt{experiments/} に JSON と Markdown で保存する。
+  \item \texttt{train\_gnn\_retriever.py}：\texttt{equation\_graph.pt} 上で式側を GCN または GAT で更新し、クエリを SVD$\to$MLP で揃えて InfoNCE 型で学習する簡易スクリプト（レポートは \texttt{gnn\_train\_eval\_report.json}）。
+  \item \texttt{train\_gnn\_refine\_svd.py}：式・クエリを同一 TF-IDF+SVD 空間に置き、式埋め込みを残差 GCN で更新する実験用スクリプト（\texttt{gnn\_refine\_svd\_report.json}）。
+  \item \texttt{test\_api.py}：Gemini API の疎通確認用。
+\end{itemize}
+
+\subsection{設定・運用補助}
+\begin{itemize}[nosep]
+  \item \texttt{config/notation\_map.json}：同一物理量の記号揺れを正規表記に寄せるための対応表。
+  \item \texttt{scripts/install-git-hooks.sh}：コミット後に \texttt{git push} する \texttt{post-commit} フックを入れるためのインストール用シェル。
+  \item \texttt{.cursor/rules/development-log.mdc}：コード変更時に本 \texttt{development\_log.tex} を更新し GitHub に同期するよう指示するエディタ用ルール。
+\end{itemize}
+
+\subsection{データ・実験成果物（リポジトリに含まれる例）}
+\begin{itemize}[nosep]
+  \item \texttt{unified\_equations.json}：全ソースを統合した数式ライブラリ（グラフ構築・訓練ケースの参照元）。
+  \item \texttt{training\_cases.json}：retrieval タスクの入力（文脈・I/O 変数）と正解式 ID 集合。
+  \item \texttt{equation\_graph.pt}：PyG \texttt{Data}（\texttt{x}, 二部 \texttt{edge\_index}, \texttt{num\_equations}, \texttt{edge\_index\_eq\_eq} 等）。
+  \item \texttt{processed\_pdfs.json}：\texttt{build\_equation\_graph.py} が既に処理した PDF ファイル名のリスト。
+  \item \texttt{paper\_dataset\_links.json}：\texttt{fetch\_papers.py} の取得結果（PDF URL 等）。
+  \item \texttt{extracted\_equations.json}：単一 PDF 抽出の典型出力（中間・サンプル用）。
+  \item \texttt{experiments/retrieval\_experiments.json}：方式比較実験の分割・ハイパラ・指標の機械可読ログ。
+  \item \texttt{experiments/retrieval\_experiments.md}：上記実験の表形式サマリ。
+  \item \texttt{validate\_dataset\_report.json}：データセット検証の詳細結果。
+  \item \texttt{dataset\_report.txt}：\texttt{analyze\_dataset.py} のテキスト要約。
+  \item \texttt{gnn\_train\_eval\_report.json} / \texttt{gnn\_refine\_svd\_report.json} / \texttt{baseline\_eval\_report.json}：各スクリプトの評価サマリ（実行時に更新）。
+  \item \texttt{input\_pdfs/}：一括抽出の入力 PDF を置くディレクトリ。
+  \item \texttt{figures/}：分析スクリプトが出力する図（PNG 等）。
+\end{itemize}
+
+\subsection{ドキュメント}
+\begin{itemize}[nosep]
+  \item \texttt{docs/development\_log.tex}：本ドキュメント（開発記録の原本）。
+  \item \texttt{docs/README.md}：\texttt{development\_log.tex} を PDF にビルドする手順。
+  \item \texttt{docs/GITHUB\_SYNC.md}：リモート同期に関する補足メモ。
 \end{itemize}
 
 %----------------------------------------------------------------------
@@ -299,7 +358,7 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
-  \item 2026-03-30：Claude Code 等への開発移行用にリポジトリ直下に \texttt{CLAUDE.md} を追加（研究目的・データ構造・実験結論・スクリプト対応・運用ルールを集約）。\texttt{research\_context.md} は \texttt{CLAUDE.md} へのポインタを記載。
+  \item 2026-03-30：Claude Code 向け \texttt{CLAUDE.md} と \texttt{research\_context.md} のポインタを追加。\nameref{sec:file-roles}を新設し各ファイルの役割を記載。技術メモの \texttt{build\_graph\_data.py} を二部グラフ版の説明に修正し当該節へ参照。
   \item 2026-03-18（試したいこと・GAT 追加）：開発記録に「試したいこと・実験アイデア」を追加（GAT、エッジ重み、クエリ条件付きグラフ、hard negative、データ拡張、複数 seed 評価）。\texttt{train\_gnn\_retriever.py} に GAT エンコーダと \texttt{--gnn-type gcn|gat} を追加。
   \item 2026-03-18（グラフ構築の改善）：現状の「式＝ノード・共通変数＝エッジ」では GNN の強みを活かせないという分析を開発記録に全文追記。\textbf{式--変数二部グラフ}に変更（\texttt{build\_graph\_data.py}）。式ノードと変数ノードを明示し、エッジは「式が変数を含む」のみ。式埋め込みは GCN 出力の先頭 \texttt{num\_equations} 行を使用。\texttt{edge\_index\_eq\_eq} で後方互換を確保。\texttt{train\_gnn\_retriever.py}、\texttt{run\_retrieval\_experiments.py}、\texttt{train\_gnn\_refine\_svd.py}、\texttt{analyze\_dataset.py} を二部グラフ対応に修正。
   \item 2026-03-18（GNN・埋め込みの説明）：開発記録に「GNNの仕組みと埋め込み」セクションを追加。グラフ構築（ノード＝式・エッジ＝変数共有・特徴＝CodeBERT）、式埋め込みの2系統（CodeBERT \texttt{x} と TF-IDF+SVD）、GNN の2パターン（\texttt{x} を GCN で更新する方式と SVD 空間での残差 GCN）、スコアリング・学習の流れ、各スクリプトの役割を記載。
