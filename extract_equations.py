@@ -24,6 +24,13 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
+# .env からの環境変数読み込み（GEMINI_API_KEY 等）
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).parent / ".env")
+except ImportError:
+    pass  # python-dotenv 未インストールでも環境変数があれば動く
+
 # ---------------------------------------------------------------------------
 # 出力スキーマ（Pydantic）
 # ---------------------------------------------------------------------------
@@ -143,8 +150,9 @@ def extract_equations(pdf_path: str | Path) -> list[Equation]:
     api_key = (
         os.environ.get("GEMINI_API_KEY")
         or os.environ.get("GOOGLE_API_KEY")
-        or "AIzaSyD5GuIuXVUSeLavZc7_Q0J_muL8Mycwp70"
     )
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY or GOOGLE_API_KEY environment variable is required")
     client = genai.Client(api_key=api_key)
     source_id = pdf_path.name
 

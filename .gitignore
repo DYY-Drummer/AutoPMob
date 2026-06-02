@@ -1,8 +1,13 @@
 # API キー・秘密情報（絶対にコミットしない）
 .env
+.env.*
 .env.local
 *.pem
 *_secret*
+
+# Phase 5 sweep 個別ログ・中間 JSON（_summary.json はコミット可）
+experiments/phase5_sweep/**/*.log
+experiments/phase5_sweep/**/epochs=*
 
 # Python
 __pycache__/
@@ -44,6 +49,22 @@ extracted_equations_normalized.json
 unified_equations.json
 *.pdf
 !docs/*.pdf
+
+# 再生成可能な大容量グラフ（build_graph_data.py で再構築、GitHub 100MB 超）
+*.pt
+equation_graph.pt
+
+# 生 PDF（研究データ、容量大・著作権物のためコミットしない）
+input_pdfs/*
+!input_pdfs/.gitkeep
+pdfs/
+
+# エディタ・スクリプトのバックアップ（データ *.bak.json は対象外）
+*.py.bak
+*.sh.bak
+
+# Claude Code 内部状態（worktree 等）
+.claude/
 
 # LaTeX 中間ファイル（docs/）
 docs/*.aux

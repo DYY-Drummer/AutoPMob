@@ -109,103 +109,109 @@ def build_model_catalog(equations: List[Equation]) -> Tuple[List[Dict], Dict[str
 # ---------------------------------------------------------------------------
 
 
-def generate_core_cases(equations: List[Equation]) -> List[CoreCase]:
-    """
-    Gemini (gemini-2.5-pro) に unified_equations のカタログを渡し、
-    物理的に意味のあるコアケースを約150件生成してもらう。
-    """
-    from google import genai
+def _group_by_domain(catalog: List[Dict], max_per_batch: int = 300) -> List[List[Dict]]:
+    """カタログをドメインでグループ化し、各バッチが max_per_batch 以下になるよう分割。"""
+    from collections import defaultdict
+    by_domain: Dict[str, List[Dict]] = defaultdict(list)
+    for entry in catalog:
+        by_domain[entry["domain"]].append(entry)
 
-    api_key = (
-        os.environ.get("GEMINI_API_KEY")
-        or os.environ.get("GOOGLE_API_KEY")
-        or "AIzaSyD5GuIuXVUSeLavZc7_Q0J_muL8Mycwp70"
-    )
-    client = genai.Client(api_key=api_key)
+    batches: List[List[Dict]] = []
+    current_batch: List[Dict] = []
+    for domain in sorted(by_domain.keys()):
+        entries = by_domain[domain]
+        if len(current_batch) + len(entries) > max_per_batch and current_batch:
+            batches.append(current_batch)
+            current_batch = []
+        current_batch.extend(entries)
+    if current_batch:
+        batches.append(current_batch)
+    return batches
 
-    catalog, _ = build_model_catalog(equations)
 
-    # カタログはそのまま JSON 文字列として渡す（必要なら先頭数百件に制限）
-    # サイズが気になる場合は domain ごとにサンプリングするなど拡張余地あり。
-    import textwrap
+def _generate_core_cases_batch(
+    client, batch_catalog: List[Dict], n_cases: int, batch_idx: int
+) -> List[CoreCase]:
+    """1バッチ分のカタログからコアケースを生成。"""
+    import textwrap, time
 
-    catalog_text = json.dumps(catalog, ensure_ascii=False)
+    catalog_text = json.dumps(batch_catalog, ensure_ascii=False)
+    domains = sorted(set(e["domain"] for e in batch_catalog))
+    domain_list = ", ".join(domains[:20])
+    if len(domains) > 20:
+        domain_list += f", ... ({len(domains)} domains total)"
 
     prompt = textwrap.dedent(
         f"""
         You are helping to create training data for a graph neural network that selects
         relevant equations for physical process modeling.
 
-        You are given a catalog of equations extracted from chemical engineering and process
-        modeling textbooks and papers. Each equation has:
+        You are given a catalog of equations. Each equation has:
         - model_id: a unique ID in the form "<source_id>__<eq_id>"
-        - source_id: the document identifier
-        - eq_id: equation identifier within the document
-        - domain: a short domain label (e.g., "CSTR", "Heat Transfer", "Reaction Kinetics")
-        - variable_symbols: list of variable symbols that appear in the equation
+        - domain: a short domain label
+        - variable_symbols: list of variable symbols in the equation
 
-        CATALOG:
+        CATALOG ({len(batch_catalog)} equations, domains: {domain_list}):
         {catalog_text}
 
         TASK:
-        Using ONLY the models listed in the catalog above, create approximately {CORE_CASES_TARGET}
-        realistic and physically meaningful core training cases for process modeling.
+        Using ONLY the models listed above, create approximately {n_cases}
+        realistic and physically meaningful core training cases.
 
         For each core case:
-        - Pick one or more model_ids from the catalog that together represent a coherent physical model.
-          (For example: mass balance + energy balance for a CSTR, or a rate law + Arrhenius equation.)
-        - Define a context string that describes the physical scenario in natural language
-          (e.g., CSTR temperature control, biodiesel transesterification, etc.).
-        - Choose input_variables: variable symbols that would be considered known inputs/conditions.
-        - Choose output_variables: variable symbols that the model should predict.
-        - correct_model_ids: list of model_ids (exact strings from the catalog) that form a correct
-          mathematical model for this case.
+        - Pick one or more model_ids that together represent a coherent physical model.
+        - Define a context string describing the physical scenario in natural language.
+        - Choose input_variables and output_variables from variable_symbols of selected models.
+        - correct_model_ids: list of model_ids forming a correct mathematical model.
 
-        VERY IMPORTANT CONDITIONS FOR correct_model_ids:
-        (1) Given numerical values for all input_variables and the equations in correct_model_ids,
-            it MUST be possible (in principle) to solve for all output_variables.
-        (2) The set of equations in correct_model_ids MUST be sufficient and minimal:
-            - If you remove any single equation from correct_model_ids, then it should NO LONGER
-              be possible to uniquely solve for all output_variables from the remaining equations
-              and input_variables (i.e., no redundant equations).
+        CONDITIONS FOR correct_model_ids:
+        (1) Given input_variables values and the equations, it MUST be possible to solve for all output_variables.
+        (2) The equation set MUST be sufficient and minimal (no redundant equations).
 
         REQUIREMENTS:
-        - All correct_model_ids MUST exactly match model_id entries from the catalog above.
-        - input_variables and output_variables MUST be subsets of the variable_symbols from the
-          selected correct_model_ids.
-        - Each core case MUST satisfy conditions (1) and (2) above.
-        - Make the cases diverse across domains (CSTR, biodiesel, heat transfer, reaction kinetics,
-          dimensionless numbers, etc.).
-        - Use English for context and variable names exactly as given in the catalog.
-        - Generate at least {CORE_CASES_TARGET} cases; you may generate a few more if helpful.
+        - All correct_model_ids MUST exactly match entries from the catalog.
+        - input/output variables MUST be subsets of variable_symbols from selected models.
+        - Make cases diverse across the available domains.
+        - Generate at least {n_cases} cases.
 
-        OUTPUT:
-        Return a JSON object that matches the following schema:
-        - cases: array of objects with fields:
-          - case_id: string (e.g., "core_001")
-          - context: string
-          - input_variables: array of strings
-          - output_variables: array of strings
-          - correct_model_ids: array of strings (each "<source_id>__<eq_id>")
+        OUTPUT: JSON object with "cases" array, each having:
+        case_id, context, input_variables, output_variables, correct_model_ids
         """
     ).strip()
 
-    response = client.models.generate_content(
-        model="gemini-2.5-pro",
-        contents=prompt,
-        config={
-            "response_mime_type": "application/json",
-            "response_json_schema": _get_core_schema(),
-        },
-    )
+    # リトライ付きAPI呼び出し（503対策）
+    import time as _time
+    for attempt in range(4):
+        _time.sleep(13)  # 5 RPM 対策
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-pro",
+                contents=prompt,
+                config={
+                    "response_mime_type": "application/json",
+                    "response_json_schema": _get_core_schema(),
+                },
+            )
+            break
+        except Exception as e:
+            err_str = str(e)
+            if "503" in err_str or "UNAVAILABLE" in err_str:
+                wait = 30 * (attempt + 1)
+                print(f"    503 retry {attempt+1}/3, waiting {wait}s...")
+                _time.sleep(wait)
+                continue
+            raise
+    else:
+        print(f"    WARNING: All retries failed for batch {batch_idx}")
+        return []
 
     if hasattr(response, "text") and response.text:
         text = response.text.strip()
-    else:
-        # フォールバック（candidates 経由）
-        if not response.candidates or not response.candidates[0].content.parts:
-            raise ValueError("Empty response from Gemini when generating core cases.")
+    elif response.candidates and response.candidates[0].content.parts:
         text = response.candidates[0].content.parts[0].text.strip()
+    else:
+        print(f"    WARNING: Empty response for batch {batch_idx}")
+        return []
 
     if text.startswith("```"):
         lines = text.split("\n")
@@ -217,9 +223,58 @@ def generate_core_cases(equations: List[Equation]) -> List[CoreCase]:
 
     raw = json.loads(text)
     core_list = CoreCaseList.model_validate(raw)
-    cases = core_list.cases
-    print(f"Generated {len(cases)} core cases from LLM.")
-    return cases
+    return core_list.cases
+
+
+def generate_core_cases(equations: List[Equation]) -> List[CoreCase]:
+    """
+    Gemini にカタログをバッチ分割で渡し、コアケースを生成する。
+    大規模データセット対応: 300式ずつのバッチに分割し、各バッチから
+    均等にケースを生成。
+    """
+    from google import genai
+
+    api_key = (
+        os.environ.get("GEMINI_API_KEY")
+        or os.environ.get("GOOGLE_API_KEY")
+    )
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY or GOOGLE_API_KEY environment variable is required")
+    client = genai.Client(api_key=api_key)
+
+    catalog, _ = build_model_catalog(equations)
+
+    # カタログサイズに応じて分割
+    catalog_json_size = len(json.dumps(catalog, ensure_ascii=False))
+    print(f"Catalog: {len(catalog)} equations, {catalog_json_size/1000:.0f}K chars")
+
+    if catalog_json_size < 200_000:
+        # 小規模: 1回で全部
+        batches = [catalog]
+    else:
+        # 大規模: ドメイン別に分割
+        batches = _group_by_domain(catalog, max_per_batch=300)
+
+    cases_per_batch = max(10, CORE_CASES_TARGET // len(batches))
+    print(f"Split into {len(batches)} batches, ~{cases_per_batch} cases each")
+
+    all_cases: List[CoreCase] = []
+    for i, batch in enumerate(batches):
+        domains = sorted(set(e["domain"] for e in batch))
+        print(f"  Batch {i+1}/{len(batches)}: {len(batch)} equations, "
+              f"{len(domains)} domains, target {cases_per_batch} cases...")
+        try:
+            cases = _generate_core_cases_batch(client, batch, cases_per_batch, i + 1)
+            # case_id にバッチ番号を付与して衝突回避
+            for c in cases:
+                c.case_id = f"b{i+1}_{c.case_id}"
+            all_cases.extend(cases)
+            print(f"    → {len(cases)} cases generated")
+        except Exception as e:
+            print(f"    ERROR: {e}")
+
+    print(f"Generated {len(all_cases)} core cases from LLM ({len(batches)} batches).")
+    return all_cases
 
 
 # ---------------------------------------------------------------------------

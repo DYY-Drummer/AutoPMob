@@ -1,5 +1,1267 @@
 {
-  "total_count": 0,
-  "papers_with_open_access_pdf": 0,
-  "papers": []
+  "total_papers_found": 180,
+  "papers_with_pdf": 49,
+  "papers_downloaded": 17,
+  "papers": [
+    {
+      "paperId": "c9bdeda38d7e94920e6f8c5865a6bb3527582c09",
+      "title": "IDENTIFICATION OF PARAMETERS IN A DYNAMIC MODEL OF A HEAT EXCHANGER",
+      "year": 2020,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://doi.org/10.15593/2224-9397/2020.1.06"
+    },
+    {
+      "paperId": "b4d3557ca838c1a1ce26ce4988c739c97c48f180",
+      "title": "Heat exchanger dynamic analysis",
+      "year": 2018,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://doi.org/10.1016/j.apm.2018.04.024"
+    },
+    {
+      "paperId": "d7b4afac57a51e46e239fae42589e55a08993412",
+      "title": "State space model and robust control of plate heat exchanger for dynamic performance improvement",
+      "year": 2018,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "3d6ce397e376058ccb2e329cba5daff0be41e515",
+      "title": "Optimal Observer-based LQ-Feedback Regulation for Hyperbolic Model of a Countercurrent Heat Exchanger",
+      "year": 2022,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "355377a0bfe6048fdd57bab554e5babc561dfc06",
+      "title": "An Approximate Transfer Function Model for a Double-Pipe Counter-Flow Heat Exchanger",
+      "year": 2021,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://www.mdpi.com/1996-1073/14/14/4174/pdf?version=1626085909"
+    },
+    {
+      "paperId": "fa541abbb8153f5763179feadaa43db6dd9bfacd",
+      "title": "Control-Relevant Dynamic Model Development and Validation for an Industrial Fluid Catalytic Cracking Unit",
+      "year": 2023,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "8f8c8870355e511ee1d04b58bf7d986dc1f93750",
+      "title": "Numerical Analysis of Two Phase Cross-Flow Heat Exchanger for High Power Density Equipment in Data Centers under Dynamic Conditions",
+      "year": 2020,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "884a080c75741b1ce0220eee789425c12522b9d4",
+      "title": "Modelling, simulation and dynamic analysis of the time delay model of the recuperative heat exchanger",
+      "year": 2016,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://doi.org/10.5937/tehnika1603407d"
+    },
+    {
+      "paperId": "09174489d6ad3f570bb4ac3a7d792e97c630164b",
+      "title": "Numerical Solution of Homogeneous Double Pipe Heat Exchanger: Dynamic Modeling",
+      "year": 2014,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "a7bf1d9517e3fb7853efe9fbedb930a9a268ea72",
+      "title": "Accurate low-order dynamic model of a compact plate heat exchanger",
+      "year": 2013,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b8298ea1598bb1fcf990ca2887e4d5ba4b6a4f1a",
+      "title": "Quasi-steady modeling of data center heat exchanger under dynamic conditions",
+      "year": 2017,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "d1874648fb76a1e06878ddb74ad23c3d9efbf7c3",
+      "title": "Dynamic Simulation of Heat Exchanger with Multicomponent Phase Change",
+      "year": 2017,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b6f3d916d3bddb5e8cedf208e5e1a7e5d308d631",
+      "title": "Earth Air Tunnel Heat Exchanger for Building Cooling and Heating",
+      "year": 2021,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://doi.org/10.5772/intechopen.99348"
+    },
+    {
+      "paperId": "66d1707f55eb2933ac06e769c26cfa0280efd457",
+      "title": "Dynamic model for a heat exchanger tube rupture discharging a high-pressure flashing liquid into a low-pressure liquid-filled shell",
+      "year": 2011,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "ddea7abfa4dd791860935c57b47bbd8a6705e266",
+      "title": "Modeling and identification of a time-delay heat exchanger plant",
+      "year": 2020,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "5465067ff04681d976bf5ede874cc03bd1ff2e76",
+      "title": "Advanced Control System Design for a Plate Heat Exchanger",
+      "year": 2020,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "c55e8457a4a9026dc8befdea696b137412ae4f92",
+      "title": "Towards the modelling of a heat‐exchanger reactor by a dynamic approach",
+      "year": 2015,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://hal.archives-ouvertes.fr/hal-01345756/file/Gallego_15981.pdf"
+    },
+    {
+      "paperId": "eb28f4cd31258bafa6ea4d574e5fc4ca72156aa7",
+      "title": "An effective method for calculating the elements of thermal power plants, which are reduced to solving systems of partial differential equations",
+      "year": 2020,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://www.e3s-conferences.org/articles/e3sconf/pdf/2020/69/e3sconf_energy-212020_03029.pdf"
+    },
+    {
+      "paperId": "ae1a8779a3232ddc3d4d0a3918941822ccd181d6",
+      "title": "Simulation of the Intermediate Heat Exchanger (IHX) as a part of FBR Nuclear Power Plant",
+      "year": 2019,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b24dcdff3a894bccbc283ad1b3c8e0f8d6641bae",
+      "title": "Dynamic Data Reconciliation in a Hot-oil Heat Exchanger for Validating Energy Consumption",
+      "year": 2013,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "f5c5751d6cfb7df3238e961c89dcb080e27091f6",
+      "title": "Darcy-Forchheimer radiative flow of micropolar nanofluid with Cattaneo-Christov heat flux featuring gyrotactic microorganisms",
+      "year": 2025,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "e2a7d40579e78133f9788ad0f8388d8d0dedb4ac",
+      "title": "Temperature Dynamic Model of Once-through Boiler Based on Flue Gases Heat Transports",
+      "year": 2011,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "997a69e1b574c26cfa2bdfb427057a2f1e9a1a7b",
+      "title": "Dynamic model of a film absorber with coupled heat and mass transfer",
+      "year": 1992,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b35a2f5ce478410cca805bdc170dd026cfa5eb97",
+      "title": "A new simple dynamic model of parallel and counter flow heat exchangers based on their static and structural characteristics.",
+      "year": 1989,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://www.jstage.jst.go.jp/article/kikaic1979/55/509/55_509_119/_pdf"
+    },
+    {
+      "paperId": "ae0acc81b627ec7e71a256fd26e02b43f9631714",
+      "title": "A dynamic model for helium core heat exchangers",
+      "year": 1990,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": "https://digital.library.unt.edu/ark:/67531/metadc741181/m2/1/high_res_d/79707.pdf"
+    },
+    {
+      "paperId": "684522975054d8cba12e562f90e780698f1e8a99",
+      "title": "Dynamic Modeling and Simulation of Distributed Parameter Heat Exchanger",
+      "year": 2005,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "77efe9c11efe3c17e1cde0078471fcb96dceaf14",
+      "title": "Numerical dynamic simulation of optimized cross-flow heat exchanger with various refrigerants",
+      "year": 2010,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "393ac1c2f3a60375192194ecbe4807e3c2b8a30b",
+      "title": "Adaptive Predictive Control of Laboratory Heat Exchanger",
+      "year": 2014,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "fb02fddcb476a1fc8ae71a4513aa299c0b09edff",
+      "title": "Dynamic Analysis of Fouling Buildup in Heat Exchangers Designed According to TEMA Standards",
+      "year": 2018,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "c143e31fe2396e146e16a9f7539c432dcd737877",
+      "title": "Boundary control of a parallel-flow heat exchanger by input-output linearization",
+      "year": 2010,
+      "query": "heat exchanger dynamic model differentia",
+      "pdf_url": null
+    },
+    {
+      "paperId": "e6e40d99563834d91e12adfd0db3e6bb399ceaad",
+      "title": "An autocatalytic kinetic model for describing microbial growth during fermentation",
+      "year": 2014,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6af75e0e4d374b7e314925802b37fbe526a83505",
+      "title": "An unstructured kinetic model to study NaCl effect on volatile ester fermentation by Candida etchellsii for soy sauce production",
+      "year": 2012,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "79f701a3263e37e21c85d248bfbb0a56ac415b53",
+      "title": "Determination of Variable Humidity Profile for Lactic Acid Maximization in Fungal Solid-State Fermentation",
+      "year": 2024,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": "https://www.mdpi.com/2311-5637/10/8/406/pdf?version=1723003006"
+    },
+    {
+      "paperId": "137e18638a75cf7c750409e927d9c3cec9177da5",
+      "title": "Mathematical modeling of the ethanol fermentation of cashew apple juice by a flocculent yeast: the effect of initial substrate concentration and temperature",
+      "year": 2017,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "834cd8dcf9113220ee9f5743315f3b8504206569",
+      "title": "Mathematical Modelling and Chemical Analysis to Characterise Anthocyanin Self-association Interactions Influencing Colour Expression and Stability in Young Red Wines",
+      "year": 2024,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "c4208f91dc65f417ca1e1950ef33aa06ebef4e99",
+      "title": "An unstructured kinetic model for the improvement of triterpenes production by Ganoderma lucidum G0119 based on nitrogen source effect",
+      "year": 2014,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "222c6d2fc74530361933b33a7d86c3f050ffc383",
+      "title": "Mathematical modeling of a continuous alcoholic fermentation process in a two-stage tower reactor cascade with flocculating yeast recycle",
+      "year": 2015,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "5025709c30a0f0f4f3323070d160cee1aaabf2a2",
+      "title": "Determination of kinetic parameters of 1,3-propanediol fermentation by Clostridium diolis using statistically optimized medium",
+      "year": 2012,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "7764f4459a79248ca8d61b5c14da065f6e90a58b",
+      "title": "Kinetic modelling of the sequential production of lactic acid and xylitol from vine trimming wastes",
+      "year": 2011,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "9820180f5bb3b44399b577818afc00f69b7c9d8c",
+      "title": "A systematic approach for finding the objective function and active constraints for dynamic flux balance analysis",
+      "year": 2018,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6d1ad42f02ed634b52fc564ee80efd5fb8aa3051",
+      "title": "A Comprehensive study on PHB biosynthesis and biodegradation through kinetic modelling",
+      "year": 2025,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "bb5fdfc9799868f9b8baa1a47d0eb1b6968c5109",
+      "title": "Optimisation and kinetic modelling for the production of 5- aminolevulinic acid by Rhodopseudomonas palustris in the solid state fermentation",
+      "year": 2017,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "7bd56665b8531c25fdac337f1b7b8f8f8d9fb6a0",
+      "title": "Kinetic Modeling and Optimization of a Batch Ethanol Fermentation Process",
+      "year": 2016,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": "https://doi.org/10.4172/2155-9821.1000266"
+    },
+    {
+      "paperId": "44cb258bb51f716823a30ed1daeac2340434f8c1",
+      "title": "Bioprocess System Identification of Continuous Fermentation",
+      "year": 2013,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "e51fc81ef5f82cab2aaccd59d7740ebe35a40047",
+      "title": "Bioprocess scale-up using a structured mixing model",
+      "year": 1994,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "ca365ada8ef981e08ec66eb3f5c5c80a461fbf78",
+      "title": "Modeling of an industrial process of pleuromutilin fermentation using feed-forward neural networks",
+      "year": 2013,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": "https://www.scielo.br/j/bjce/a/3BPKG3xQBnLB8LBM4NZTsnc/?lang=en&format=pdf"
+    },
+    {
+      "paperId": "d84e1dff78d8c0b42012ef48a81f060016a6a008",
+      "title": "Biotechnology and Bioengineering",
+      "year": 2020,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b7f0c7652c3a090fb0adc5e6d7b4aa4125e4d867",
+      "title": "Mathematical modeling of kinetics and research on multiplicity of glycerol bioconversion to 1,3-propanediol",
+      "year": 2000,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0401810eb78c745ff17a508db505c7b2da9f1a82",
+      "title": "Current State and Perspective in the Models Applicable to Oenology",
+      "year": 2018,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": "https://www.intechopen.com/citation-pdf-url/58286"
+    },
+    {
+      "paperId": "cd19f9161f23d59c9fee9a396e396cd39434eead",
+      "title": "THE DETERMINATION OF KINETIC CONSTANTS AND PREDICTION OF THE MATHEMATICAL MODEL FOR PERIODIC FERMENTATION IN INDUSTRIAL CONDITIONS",
+      "year": 2025,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "85eb0ad540bbae56d92537da6f30a50e58776f99",
+      "title": "A Modular Mathematical Model of Fermentation in an Industrial-Scale Bioreactor",
+      "year": 2025,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "191db6ec7c5d66265647ab4562d96cba565b3321",
+      "title": "Poly-3-hydroxybutyrate production from used cooking olive oil by Cupriavidus necator DSM 545: Bioprocess development and OTR-kLa kinetic modelling in continuous fed-batch fermentation.",
+      "year": 2026,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "71fb5853a202f8f05cab7d1c1256e55e9b32ce58",
+      "title": "Ab Initio Whole Cell Kinetic Model of Lactobacillus acidophilus NCFM (lacAS24)",
+      "year": 2025,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "d3022495c3460001861449840ff836e455ef68de",
+      "title": "Temperature-Dependent Kinetic Modeling of Nitrogen-Limited Batch Fermentation by Yeast Species",
+      "year": 2025,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": "https://doi.org/10.3390/math13091373"
+    },
+    {
+      "paperId": "9e123e07bac85bd86a487f3b945fa074e24a09f3",
+      "title": "Kinetic Model for Simultaneous Saccharification and Fermentation of Brewers’ Spent Grain Liquor Using Lactobacillus delbrueckii Subsp. lactis",
+      "year": 2021,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "4327448f20d1c2978b1d13b323cb64edbd58fc93",
+      "title": "Mathematical Modeling of a Continuous Multistage Ethanol Production Bioprocess on an Industrial Scale",
+      "year": 2025,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "9f787472986465e6ccda2a431f97be623b4e5903",
+      "title": "Mathematical Modeling and Dynamic Simulation of a Tower Reactor for Intensified Ethanol Fermentation with Immobilized Yeasts and Simultaneous Gas Removal",
+      "year": 2025,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "97ba776b11aae89f97c6d000fe1a6bc6c44c7eac",
+      "title": "Optimization of rice wine fermentation process based on the simultaneous saccharification and fermentation kinetic model",
+      "year": 2016,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": null
+    },
+    {
+      "paperId": "4cbb772967bdcb0f94b9c1c457016d689a356ec2",
+      "title": "Wine fermentation kinetic model verification and simulation of refrigeration malfunction during wine fermentation",
+      "year": 2016,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": "https://doi.org/10.1515/acs-2016-0010"
+    },
+    {
+      "paperId": "89f18cd25d89504afbf35811cea188d3943ddc4f",
+      "title": "Modeling the microbial pretreatment of camelina straw and switchgrass by Trametes versicolor and Phanerochaete chrysosporium via solid-state fermentation process: A growth kinetic sub-model in the context of biomass-based biorefineries",
+      "year": 2023,
+      "query": "bioprocess fermentation kinetic model ma",
+      "pdf_url": "https://www.frontiersin.org/articles/10.3389/fmicb.2023.1130196/pdf"
+    },
+    {
+      "paperId": "db304e999b2eb28541248ff4ef73aa2fa63178c8",
+      "title": "Predicting Molecular Weight Distribution, Melt Flow Index, and Bulk Density in a Polypropylene Reactor via a Validated Mathematical Model",
+      "year": 2021,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "33c7d0763cfbb883d036062dd80198d2bb48b4b5",
+      "title": "Mathematical modeling of pyrolysis of rubber waste in horizontal cylindrical reactor",
+      "year": 2024,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": "https://doi.org/10.17588/2072-2672.2024.2.092-099"
+    },
+    {
+      "paperId": "c54dc5d0d824626c3e789310e8073a9b097cdc6c",
+      "title": "Preparation of low-hydrogen-containing polydimethylsiloxane in fixed-bed reactor and establishment of mathematical model",
+      "year": 2018,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0ea18ac56b1e90120c64be932f01d7fde55d0333",
+      "title": "Determination of Catalyst Residence Time, Heat Generation, and Monomer Conversion via Process Variables during Propylene Polymerization by a Mathematical Model",
+      "year": 2021,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "1ccbe75e25e6ecf2947ffc5730ef4b66b625eae4",
+      "title": "Determination of Catalyst Residence Time, Heat Generation, and Monomer Conversion via Process Variables during Propylene Polymerization by a Mathematical Model",
+      "year": 2021,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "227f14dba737fd22b6997153f786330c021838f2",
+      "title": "Mathematical model for molecular weight of continuous emulsion polymer",
+      "year": null,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "79f6a40406f5dbbd48a37dc7fc345725cc112c4b",
+      "title": "A Mathematical Model for a Parallel Plate Plasma Etching Reactor",
+      "year": 1988,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "3d77e68d2aecfdacc954747109ab7082e0b06ff7",
+      "title": "Chemical reactor stability research of ethylene polymerization",
+      "year": 2023,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": "https://vestnik.astu.org/en/storage/download/132489"
+    },
+    {
+      "paperId": "e760472dbd77ffede1c3a83ff1da4d489104c754",
+      "title": "Kinetics and Mechanism of Bulk Polymerization of Vinyl Chloride in a Polymerization Reactor",
+      "year": 2015,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": "https://journals.squ.edu.om/index.php/tjer/article/download/162/174"
+    },
+    {
+      "paperId": "76645481dde567389ac7c0d17fcb9902db90f5f1",
+      "title": "Application of Microbial Kinetics in UpflowAnaerobic Sludge Blanket Reactor",
+      "year": 2015,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "29a42958739d569ac4f824dfb406c7dd9a041d9d",
+      "title": "General route to design polymer molecular weight distributions through flow chemistry",
+      "year": 2020,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": "https://www.nature.com/articles/s41467-020-16874-6.pdf"
+    },
+    {
+      "paperId": "865ff23c56521817b795cd0b8c9a7309275ca1ce",
+      "title": "Study of polystyrene degradation using continuous distribution kinetics in a bubbling reactor",
+      "year": 2002,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "4ee50c0f5bc1f1bd6210a86cfa14d9eac8d0cde9",
+      "title": "Emulsion polymerization kinetics and reactor design. IV. Continuous‐flow operation with recycling",
+      "year": 1980,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "983b191a76b2291eafa8ef74823cd0fcf64c3824",
+      "title": "Continuous kinetics for thermal degradation of polymer in solution",
+      "year": 1995,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "39710bcfc5f7d43ba2df999c3c45bf38518c8d0f",
+      "title": "The kinetics of growth of plasma polymer films",
+      "year": 1999,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "f2033e088064be96129dbdc5d89c61c8a790e5f2",
+      "title": "A computational model for predicting particle size distribution and performance of fluidized bed polypropylene reactor",
+      "year": 2004,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "74cb7ddb953620661218815364839cb1f1cfe31f",
+      "title": "Modeling and simulation for acrylamide polymerization of super absorbent polymer",
+      "year": 2018,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "fa37c13170200aee5b827c2a4c0f2e98bf7b135e",
+      "title": "Quasi steady state approximation in enzymatic biopolymerization reactor",
+      "year": 2019,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "3776a1a2ba3b0d6deb5bf93f026a460bfd29cae6",
+      "title": "General route to design polymer molecular weight distributions through flow chemistry",
+      "year": 2020,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": "https://www.nature.com/articles/s41467-020-16874-6.pdf"
+    },
+    {
+      "paperId": "3ae5a691d33c753e1fa6bd521e5e4096ddc26e7d",
+      "title": "Polyethylene Pyrolysis: Theory and Experiments for Molecular-Weight-Distribution Kinetics",
+      "year": 1998,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6db42a4cab6222a5787d29a9e3288d4466f6f2ec",
+      "title": "Recent advances in polymer reaction engineering: Modeling and control of polymer properties",
+      "year": 2004,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6cf2d745aa658c2b575ee48ef2c7202773a69c6c",
+      "title": "Polymer Reaction Engineering",
+      "year": 2013,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b378a06270179e269710141313f38ee1c0be5650",
+      "title": "Behavior of Active Sites in a Changing, Supported Metallocene Catalyst Particle: Modeling Monomer Transport and Kinetics",
+      "year": 2004,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "f4813268b383c540147c9b44786b1119c6318d55",
+      "title": "Modeling of a fluidized bed propylene polymerization reactor operated in condensed mode",
+      "year": 2008,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "ee7ce73352ab61ef625a2fb5ce2c5216a67dad84",
+      "title": "A kinetic model for olefin polymerization in high‐pressure autoclave reactors",
+      "year": 1993,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "5ead335995bcce877b6570d3ee6aa9d13079b9c4",
+      "title": "Mathematical Modeling of High Pressure Tubular LDPE Copolymerization Reactors",
+      "year": 1993,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "275500db3a482672a6ee119732b96d771dd4f499",
+      "title": "Modelling, optimization and control of batch polymerization reactor of styrene",
+      "year": 1997,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "a722425d9db1047b18756dc72f34962fc321519b",
+      "title": "Increased Reactor Performance versus Reactor Safety Aspects in Acrylate Copolymerization",
+      "year": 2001,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "e7d3823e8c2044c7edcef1bc8934d37cd5d1d1af",
+      "title": "Chapter 10 – Polymer Reaction Engineering",
+      "year": 1982,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "2af7a2cc6bd899917a1aa889df1afe5478f4e21b",
+      "title": "Product quality improvement in a high-temperature free-radical polymerization reactor",
+      "year": 2003,
+      "query": "polymer reactor kinetics mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "154b2fed0a00a0656cb6add9ee4ce78a6b779af3",
+      "title": "Analytical investigation of temperature distribution and flame speed across the combustion zones propagating through an iron dust cloud utilizing a three-dimensional mathematical modeling",
+      "year": 2012,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "d5f5dfb110ea26754fda96e315d9c8cff65fd717",
+      "title": "Numerical method for strongly variable-density flows at low Mach number: flame-sheet regularisation and a mass-flux immersed boundary method",
+      "year": 2026,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "e56949f830f06af86e46598f2b128b20f59216a4",
+      "title": "TURBULENT FLAME SPEED PREDICTION FOR S . I . ENGINE USING METHANE AS FUEL",
+      "year": 2013,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0228a91d362d06042675f7714437b44ca201eb67",
+      "title": "Turbulent flow with combustion in a moving bed",
+      "year": 2012,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "7baf4afd9c72b02ea7a8e22d3afbecdd24888c65",
+      "title": "Existence and uniqueness of the traveling front in premixed combustion of porous media",
+      "year": 2012,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "3dd796b9fbbccfa21d5fc4db5fa399a5cf45c72d",
+      "title": "Existence and uniqueness of the traveling front in premixed combustion of porous media",
+      "year": 2011,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "8f9eebaeb2d2595e40ad93b113e6e3c286802af5",
+      "title": "Estudio de la combustión en un motor de gasolina Combustion study on a gasoline engine",
+      "year": 2006,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "cca9684992cbae196a3ffc81b56f1ca96f397286",
+      "title": "Влияние формы впускных каналов на эффективные и экологические показатели среднеоборотного дизеля",
+      "year": 2015,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6086e140dd44912d9be513c6feb0f9f2aa2988d1",
+      "title": "Heat Transfer Characteristics of Porous Radiant Burners With Structure of Capillary Tubes",
+      "year": 1994,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "87c03cf6cdba7b3ad6c7286a16bc553dedf436b1",
+      "title": "Investigation of Di-tert-butyl peroxide combustion: time-resolved speciation, laminar flame speed, and model evaluation",
+      "year": 2025,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "edaee80905aa9ef1801db61b067e0308ebacffb9",
+      "title": "Effects of torch flame strength on the combustion process in medium-speed gas engines through pre-chamber orifice specifications",
+      "year": 2025,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b2d9493f1b0edfd8c24a29b6439988005cc720c4",
+      "title": "Combustion Modelling of the T100 Micro-Gas Turbine Burner Including the Influence of the Stretch and Heat Loss/Gain Effects on the Flame",
+      "year": 2024,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "a1a6990c38502b5c6a60a7421b65bf53687380b8",
+      "title": "Experimental and Numerical Comparison of Currently Available Reaction Mechanisms for Laminar Flame Speed in 70/30 (%vol.) NH3/H2 Flames",
+      "year": 2023,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://doi.org/10.1016/j.jaecs.2023.100139"
+    },
+    {
+      "paperId": "c0eefcd52007f88c978b5b543dbe7f7971fbff7b",
+      "title": "Evolutionary equations for the disturbed flame stabilised at the flat burner",
+      "year": 2024,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "ae621e64b7001178af8f384df7cf942ed635f98f",
+      "title": "ON MATHEMATICAL MODELING OF COMBUSTION PROCESS",
+      "year": 2025,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "5548fdef24cc556c56224696496b7119ffd0edd7",
+      "title": "On flame speed enhancement in turbulent premixed hydrogen-air flames during local flame-flame interaction",
+      "year": 2023,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://arxiv.org/pdf/2303.00911"
+    },
+    {
+      "paperId": "efd0b84551bded40794f34c87545a6d308d5edd1",
+      "title": "Mathematical Modeling of Unsteady Combustion of Coke Sedimentations in a Catalyst Layer with Spherical Grains",
+      "year": 2025,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0e155acbc8dd85bc1db61305a42479fd63349a7d",
+      "title": "LES/Thickened Flame Model of Reheat Hydrogen Combustion With Water/Steam Injection",
+      "year": 2023,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6bdccd837a98ea96c5199f84675a313e11e5057c",
+      "title": "Comment on paper “Flame-turbulence interactions in lean hydrogen flames: Implications for turbulent flame speed and fractal modelling” by F.A. Meziat Ramirez, Q. Douasbin, O. Dounia, O. Vermorel, T. Jaravel, Combustion and Flame 273 (2025) 113926",
+      "year": 2026,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "8a02b1fac05891a5483a5d3a23c8bb38b553ce90",
+      "title": "Validation of a Turbulent Flame Speed Model across Combustion Regimes",
+      "year": 2010,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "1920da350b7a7ac2f61ff79891ef3ce1c267fa6b",
+      "title": "An experimental and modeling study of ammonia with enriched oxygen content and ammonia/hydrogen laminar flame speed at elevated pressure and temperature",
+      "year": 2021,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://hal.archives-ouvertes.fr/hal-02934520/file/Manuscript_Shrestha_et_al_38th_PROCI_2020-5-04.pdf"
+    },
+    {
+      "paperId": "17df7b9518c693ec5dc6fd82fd4fafcc85b687c4",
+      "title": "Effect of radiation on laminar flame speed determination in spherically propagating NH3-air, NH3/CH4-air and NH3/H2-air flames at normal temperature and pressure",
+      "year": 2023,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://doi.org/10.1016/j.combustflame.2023.113030"
+    },
+    {
+      "paperId": "99c00fb59d46752a4bcdb43cc4372e52a1eee76b",
+      "title": "A mathematical modeling of the turbulence combustion biodiesel in a compression ignition engine",
+      "year": 2024,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://doi.org/10.19206/ce-195445"
+    },
+    {
+      "paperId": "76f90fc976cfd7c0058f4551d7d176b8da59e3b4",
+      "title": "Mathematical Models of Combustion Processes",
+      "year": 2024,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b598c005cf999bec409af7762672938847c901ba",
+      "title": "Evolution of Flame Displacement Speed Within Flame Front in Different Regimes of Premixed Turbulent Combustion",
+      "year": 2023,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10494-023-00494-3.pdf"
+    },
+    {
+      "paperId": "8d846d1a98ba347fe2d94fa1ff25274d25d86515",
+      "title": "Flame speed in diffusion dominated premixed flames",
+      "year": 2022,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://doi.org/10.1080/13647830.2022.2143428"
+    },
+    {
+      "paperId": "fadd8e1ee91d7aacffa997d1da740cac614e87c2",
+      "title": "A Computational Fluid Dynamics Model of Combustion of Nitromethane Propellant in a Strand Burner",
+      "year": 2025,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0bdae9803f97f7d49b679dd9e423e6fc09f7e3ba",
+      "title": "Experimentally Closing the Balance of Progress of Reaction in Premixed Turbulent Combustion in the Thin Flame Regime",
+      "year": 2024,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10494-024-00538-2.pdf"
+    },
+    {
+      "paperId": "deaf7978af3cd68fef03406165f60eb4f2714e8d",
+      "title": "REFINING THE EMPIRICAL MODEL OF THE HEAT TRANSFER BOUNDARY CONDITIONS OF THE PISTON OF A HIGH-SPEED DIESEL ENGINE",
+      "year": 2024,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": "https://doi.org/10.20998/0419-8719.2024.2.01"
+    },
+    {
+      "paperId": "9773f1679ddba448f2fe5a87b71d10c2054998b6",
+      "title": "A Calculation Method of Heat Release Rate Based on Flame Spread Rate: Applied in a High-Speed Train Carriage Fire",
+      "year": 2023,
+      "query": "combustion flame speed model mathematica",
+      "pdf_url": null
+    },
+    {
+      "paperId": "e1c928da31151918dd09fcc7e82e5155c5167509",
+      "title": "PID Controller Tuning for Crude Oil Dilution in Palm Oil Mill Using Particle Swarm Optimization",
+      "year": 2025,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "3ea90f87f4591a149c36935583c6d0fff0234f22",
+      "title": "Real-Time Identification and Self-Tuning PID Controller for 1-DOF Helicopter System",
+      "year": 2025,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "605dce4550bae53b590971bfb1f1cf3a918aeb05",
+      "title": "PID Controller Design for an E. coli Fed-Batch Fermentation Process System Using Chaotic Electromagnetic Field Optimization",
+      "year": 2024,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://www.mdpi.com/2227-9717/12/9/1795/pdf?version=1724422156"
+    },
+    {
+      "paperId": "b8340bf551ac2a00d009d62593d91271f14ba46c",
+      "title": "Optimal tuning of multi-PID controller using improved CMOCSO algorithm",
+      "year": 2024,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "2ec0d05aceb355a627438d48d40364fa43df03ad",
+      "title": "Parameter Tuning of PID Heading Controller for Self Navigation Model Based on Improved Particle Swarm Optimization",
+      "year": 2023,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6fa9021185b0f0f30bad7c9225bd9e9063eaa533",
+      "title": "IMC Based PID Controller for Spherical Tank Liquid Level Control",
+      "year": 2025,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "8d4d29f921e4b3fe21c17bf67f1e10d9e3a70fe7",
+      "title": "Artificial bee colony with predator effect algorithm for proportional integral derivative controller tuning",
+      "year": 2024,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "ac4fd090995110203516530770e0de66d17ddb41",
+      "title": "Performances Comparison between Real-Time Auto-Tuning PID and Conventional PID Controller for a Dairy Industrial Evaporation Process Control",
+      "year": 2019,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://doi.org/10.12783/dtcse/aicae2019/31462"
+    },
+    {
+      "paperId": "a2673fb9b7d36320913cecd59875e4a4db6c9cb6",
+      "title": "Design and Optimization of a Flight Controller for a Quadcopter System Using Extremum Seeking PID Control to Minimize Performance Cost Functions",
+      "year": 2025,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "9b7b0a339224f2ed323edd86ed1ec740a95f1118",
+      "title": "Tuning of PID controller using optimization techniques for a MIMO process",
+      "year": 2017,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://doi.org/10.1088/1757-899x/263/5/052019"
+    },
+    {
+      "paperId": "9b489c2aea904de25de6d8e91895d27942337bec",
+      "title": "Tuning PID Control Parameters: A Combined Experimental and Simulation Study",
+      "year": 2024,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0363aa1afcc9e51b9d93e55d503adbdb8f5f4b18",
+      "title": "Adaptive multi-loop fractional order PID controller tuning using Bat colony optimization for Quadruple Tank process",
+      "year": 2015,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "68842d5ec14a0823de203ecbb1f23806890912fc",
+      "title": "Ant Colony Optimization based Optimal Tuning of Fractional Order (FO) PID Controller for controlling the Speed of a DC Motor",
+      "year": 2022,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "760ba47de7e73983def100b81e83278f37c6e22b",
+      "title": "Real-Time Implementation for Tuning PID Controller Based on Advanced Optimization Techniques for Micro-Robotics System",
+      "year": 2021,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0d966aade31fac18de1f0d106a33e645b95c7b0d",
+      "title": "Design and Implementation of Tuning PID Controller using Modern Optimization Techniques for Micro Robotics System",
+      "year": 2021,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "30922f9d2877b035805c9741d950287eb2d4ebaa",
+      "title": "PID Controller Tuning based on Metaheuristic Algorithms for Bioprocess Control",
+      "year": 2012,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://www.tandfonline.com/doi/pdf/10.5504/BBEQ.2012.0065?needAccess=true"
+    },
+    {
+      "paperId": "5bb98588e0827468408bddb1a8dc4bf88bdb080e",
+      "title": "The controller synthesis automation using a dynamic mathematical model and genetic algorithms",
+      "year": 2024,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b5f6d05695622f3d7294b35e972edcc683325ecf",
+      "title": "A FUZZY PID CONTROLLER MODEL USED IN ACTIVE SUSPENSION OF THE QUARTER VEHICLE UNDER MATLAB SIMULATION",
+      "year": 2020,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://doi.org/10.26782/jmcms.2020.02.00020"
+    },
+    {
+      "paperId": "7bc50289c8604f276e83b7e4db3036beb7ce3fdf",
+      "title": "Performance Analysis of Electro-Hydraulic Thrust System of TBM Based on Fuzzy PID Controller",
+      "year": 2022,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://www.mdpi.com/1996-1073/15/3/959/pdf?version=1643803356"
+    },
+    {
+      "paperId": "1ab88b0ef39f394378d6dac5396ba95383423217",
+      "title": "A Fractional and Integer Order PID Controller for Nonlinear System: Two Non-interacting Conical Tank Process Case Study",
+      "year": 2019,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "6b1687bb4d87513a4301685d5332423ed962ed3b",
+      "title": "Self-tuning PID controller design using fuzzy logic for half car active suspension system",
+      "year": 2016,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "0e1e665dabbdc321c92596713008f28c510f78fe",
+      "title": "Self-Tuning Controller Using Shifting Method",
+      "year": 2023,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://www.mdpi.com/2227-7390/11/21/4548/pdf?version=1699089434"
+    },
+    {
+      "paperId": "bd2de390c1afa50c24674148b2631339046cc590",
+      "title": "Fuzzy self-tuning PID controller for hypersonic wind tunnel pressure regulation",
+      "year": 2019,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "c52c04bdd6b25f620e61c0ebcf785de9d99b6f67",
+      "title": "The design and implementation of a fuzzy gain-scheduled PID controller for the Festo MPS PA compact workstation liquid level control",
+      "year": 2020,
+      "query": "PID controller tuning process model math",
+      "pdf_url": "https://doi.org/10.1016/j.jestch.2019.05.014"
+    },
+    {
+      "paperId": "18e8c8976e3745f94467eb785c1d9b64dff013c7",
+      "title": "A Novel Approach for Designing PID Controller for Set-Point Tracking for a HVAC Process",
+      "year": 2017,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "c668715730d1763066f19e828ee041459d64b84f",
+      "title": "Adaptive PID controller with auto-tuning applied to the agricultural food industry",
+      "year": 2017,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "8f0a6208dd4a4df7b0e43954691d43393a945b7d",
+      "title": "PID controller design for SSV BRP TARLAC (LD-601) ship heading using Ziegler Nichols tuning method",
+      "year": 2017,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "7a33eab1ed964aa4c24ef5936d1b7240220bf872",
+      "title": "Self-tuning PID controller of an activated sludge process using evaluationary algorithm",
+      "year": 2014,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "165674003557598e7604c17fa4ea2046dd6ffe82",
+      "title": "APPLICATION OF ZIEGLER-NICHOLS METHOD FOR TUNING OF PID CONTROLLER",
+      "year": 2016,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "c10fdc4203098814db3e44ed8a6c38523b5918ba",
+      "title": "Design of gain-type Smith predictor-fuzzy PID controller for heat exchanger test system",
+      "year": 2021,
+      "query": "PID controller tuning process model math",
+      "pdf_url": null
+    },
+    {
+      "paperId": "2af7321e27026312c9395f24eb6696481e759a6b",
+      "title": "Transient MHD Free Convection Flow, Heat and Mass Transfer in Darcy–Forchheimer Porous Medium in the Presence of Chemical Reaction and Heat Absorption with Soret and Dufour Effects: Element-Free Galerkin Modelling",
+      "year": 2023,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "ead4d232c904fbca7a7d4532745f1f85867d4d61",
+      "title": "Analyzing the influences of induced magnetic fields on heat and mass transfer during peristaltic motion of Johnson–Segalman fluid",
+      "year": 2024,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "fcd8f32198b9476ce928b05a7439ad045d7860f6",
+      "title": "Mathematical modeling of CO2 absorption into novel reactive DEAB solution in hollow fiber membrane contactors; kinetic and mass transfer investigation",
+      "year": 2017,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "9a818cbafde571a9f794634502329c2dc844baa9",
+      "title": "Two-Dimensional Conjugated Mass Transfer of Carbon Dioxide Absorption in a Hollow-Fiber Gas-Liquid Membrane Contactor",
+      "year": 2022,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://www.mdpi.com/2077-0375/12/10/1021/pdf?version=1666271290"
+    },
+    {
+      "paperId": "4f4fe87485c0aa45bd9f4a6ddf07843d874b94e1",
+      "title": "Heat and Mass Transfer Analysis on Magneto Micropolar Fluid Flow with Heat Absorption in Induced Magnetic Field",
+      "year": 2021,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://www.mdpi.com/2311-5521/6/3/126/pdf?version=1616656556"
+    },
+    {
+      "paperId": "1c2c74dd34c34fe165b007161eb71b98f89bc2b6",
+      "title": "Theoretical modeling of the mass transfer performance of CO2 absorption into DEAB solution in hollow fiber membrane contactor",
+      "year": 2020,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "fe1ccaaa9b37d2a04a72188587093bfe4f6e1c10",
+      "title": "Mathematical model for heat and mass transfer of the human dressing—Equations of The Mathematical Model",
+      "year": 2004,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "4b60a25d17c04fff371795bd77931f381f7820b9",
+      "title": "Heat and mass transfer in MHD-UCM nanofluid flow past a porous nonlinear stretching sheet with chemical reaction and bioconvection: a dual-method approach",
+      "year": 2026,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "2b7899b406a36c197b00a7e881354d2d4eeff8dc",
+      "title": "Numerical study of heat and mass transfer enhancement for bubble absorption process of ammonia-water mixture without and with nanofluids",
+      "year": 2017,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://doi.org/10.2298/tsci170313170b"
+    },
+    {
+      "paperId": "6259c7563dc5da066cebcd8ceb2d298a046ffaec",
+      "title": "Coupled heat and mass transfer in a cross-flow hollow fiber membrane absorption heat pump (HFMAHP)",
+      "year": 2017,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "724f1ed349c7249b7cbb388eb907585b4317ee7a",
+      "title": "Modeling of hydrodynamic and heat and mass transfer processes in absorption of the drying air emissions",
+      "year": 2019,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://doi.org/10.5937/jaes17-22884"
+    },
+    {
+      "paperId": "ab45458f14ca360342aceeaf1ca7292431f8eb52",
+      "title": "Heat and Mass Transfer of NH 3 -H 2 O Falling-Film Absorption on Horizontal Round Tube Banks",
+      "year": 2018,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://article.sciencepublishinggroup.com/pdf/10.11648.j.mcs.20180304.13.pdf"
+    },
+    {
+      "paperId": "a41a48f149d7782c6bec3b02801608c2cf695ca8",
+      "title": "An anisotropic turbulent mass transfer model for simulation of pilot-scale and industrial-scale packed columns for chemical absorption",
+      "year": 2015,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "68eb54a746dae1b740caf0e52fc3d26873d51a57",
+      "title": "Numerical Solutions of Free Convective Flow from a Vertical Cone with Mass Transfer under the Influence of Chemical Reaction and Heat Generation/Absorption in the Presence of UWT/UWC",
+      "year": 2016,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://www.jafmonline.net/article_1608_bbd5083562659e6bd02cb8de0464167f.pdf"
+    },
+    {
+      "paperId": "dadaf62758be50d4e0a856f5aa21043a3d4ce2c3",
+      "title": "Heat and mass transfer phenomenon for the dynamics of Casson fluid through porous medium over shrinking wall subject to Lorentz force and heat source/sink",
+      "year": 2020,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://doi.org/10.1016/j.aej.2020.10.056"
+    },
+    {
+      "paperId": "91c6a46b1e885596e04b5eae1868de298fd34a1a",
+      "title": "Numerical simulation of spherical bubble collapse by a uniform bubble pressure approximation and detailed description of heat and mass transfer with phase transition",
+      "year": 2021,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "eaa473493f2063eef41ee7487d77168d6807beee",
+      "title": "Effectiveness of heat and mass transfer on mixed convective peristaltic motion of nanofluid with irreversibility rate",
+      "year": 2021,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "c80dde0e3342762382a1ca217ace8ba361cab1e9",
+      "title": "Heat and mass transfer in a quasi-counter flow parallel-plate membrane-based absorption heat pump (QPMAHP)",
+      "year": 2015,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "fdd106917abb78759f45990148aab4fdc6e77539",
+      "title": "Mass transfer from a fluid flowing through a porous media",
+      "year": 2020,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://recercat.cat//bitstream/2072/445742/1/1-s2.0-S001793102033310X-mainMaRcAt.pdf"
+    },
+    {
+      "paperId": "d44f0b37769ba2be4055de89621d09247d3ebf3e",
+      "title": "A study of triple-mass diffusion species and energy transfer in Carreau–Yasuda material influenced by activation energy and heat source",
+      "year": 2022,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://www.nature.com/articles/s41598-022-13890-y.pdf"
+    },
+    {
+      "paperId": "687d495e17a73fd7ab5048c002dbbef56ca5406f",
+      "title": "Study on Mathematical Model of Desiccant Wheel",
+      "year": 2020,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://doi.org/10.1088/1755-1315/512/1/012144"
+    },
+    {
+      "paperId": "7f0882480f51b59670a66da448896dbdd30a1cff",
+      "title": "Effects of Chemical Reactions on Unsteady Free Convective and Mass Transfer Flow from a Vertical Cone with Heat Generation/Absorption in the Presence of VWT/VWC",
+      "year": 2014,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": "https://downloads.hindawi.com/journals/mpe/2014/849570.pdf"
+    },
+    {
+      "paperId": "030bda7345cb541a152f45d07306a5012a443f6b",
+      "title": "Fundamental heat and mass transfer analysis in a quasi-counter flow parallel-plate three-fluid membrane contactor",
+      "year": 2019,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "41220ce5d6ac66d80127d233709ed83df52af728",
+      "title": "Comprehensive dynamic modelling and CFD simulation of heat and mass transfer in wetted wall absorption reactors",
+      "year": 2014,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "e5a9c7e8a26899055fabb7cffb8ecf24ad0d2555",
+      "title": "Heat and mass transfer in a metal hydrogen reactor equipped with a phase-change heat-exchanger",
+      "year": 2016,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "bf56a91f1996a758a01b2d418759038c84d1eb9c",
+      "title": "Mathematical Modeling of Heat and Mass Transfer in Gas Absorption on a Drop of a Volatile Absorbent",
+      "year": 2005,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "963b3d990fc08f4acab8fbd2cad99116857315f0",
+      "title": "Modeling of heat and mass transfer during ultrasound-assisted drying of a packed bed consisting of highly shrinkable material",
+      "year": 2018,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "b9cdd29fc74d38063f786b0ec9e64afa44ce1518",
+      "title": "Assessment of mass transfer and hydraulic aspects of CO2 absorption in packed columns",
+      "year": 2012,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "8aac85c1172ef35fe10864d6fb8da04e10eadaa6",
+      "title": "• FINITE ELEMENT ANALYSIS OF CONVECTIVE HEAT AND MASS TRANSFER FLOW OVER A STRETCHING SHEET EMBEDDED IN A POROUS MEDIUM WITH CHEMICAL REACTION, SORET AND RADIATION ABSORPTION",
+      "year": 2013,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    },
+    {
+      "paperId": "9ad9d682054d373ef02e0542843c642f619b3275",
+      "title": "Rheology of polymeric liquid with heat and mass transfer: Dual numerical solutions",
+      "year": 2017,
+      "query": "mass transfer absorption mathematical mo",
+      "pdf_url": null
+    }
+  ]
 }

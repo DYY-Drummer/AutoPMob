@@ -1,0 +1,779 @@
+[
+  {
+    "case_id": "ms_cstr_heat_001",
+    "original_core_id": "ms_cstr_heat_001",
+    "variant_type": "multisource_original",
+    "context": "Steady-state design of a CSTR that requires the residence time from the mass balance and the rate of heat removal from the cooling jacket, given the reaction kinetics and heat transfer characteristics.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "U",
+      "A",
+      "\\Delta T_{overall}"
+    ],
+    "output_variables": [
+      "\\tau",
+      "q"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_heat_transfer__eq_5"
+    ]
+  },
+  {
+    "case_id": "ms_cstr_heat_002",
+    "original_core_id": "ms_cstr_heat_002",
+    "variant_type": "multisource_original",
+    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "h",
+      "A_s",
+      "T_s",
+      "T_\\infty"
+    ],
+    "output_variables": [
+      "\\tau",
+      "q_{conv}"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_heat_transfer__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_cstr_heat_radiation_001",
+    "original_core_id": "ms_cstr_heat_radiation_001",
+    "variant_type": "multisource_original",
+    "context": "For a high-temperature reactor where radiation heat loss is significant, calculate the residence time and the radiative heat flux from the reactor wall, given the surface emissivity and surface temperatures.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "\\epsilon",
+      "\\sigma",
+      "A_s",
+      "T_s",
+      "T_{surr}"
+    ],
+    "output_variables": [
+      "\\tau",
+      "q_{rad}"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_heat_transfer__eq_4"
+    ]
+  },
+  {
+    "case_id": "ms_pfr_kin_001",
+    "original_core_id": "ms_pfr_kin_001",
+    "variant_type": "multisource_original",
+    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "input_variables": [
+      "F_{A0}",
+      "X_{A,out}",
+      "-r_A",
+      "C_{A0}",
+      "C_A",
+      "r_A"
+    ],
+    "output_variables": [
+      "V",
+      "\\tau"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_5",
+      "handbook_chemeng__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_reactor_pid_001",
+    "original_core_id": "ms_reactor_pid_001",
+    "variant_type": "multisource_original",
+    "context": "Compute both the steady-state residence time of a CSTR and the PID controller output for maintaining the desired conversion, given the kinetics and controller parameters.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "K_p",
+      "K_i",
+      "K_d",
+      "e(t)",
+      "r(t)",
+      "y(t)",
+      "t"
+    ],
+    "output_variables": [
+      "\\tau",
+      "u(t)"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_process_control__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_reactor_sensor_001",
+    "original_core_id": "ms_reactor_sensor_001",
+    "variant_type": "multisource_original",
+    "context": "For a continuous reactor with a measurement sensor, determine the steady-state residence time from the reactor kinetics and the first-order plus dead time (FOPDT) transfer function of the sensor.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "K_p",
+      "\\theta",
+      "\\tau_p",
+      "s"
+    ],
+    "output_variables": [
+      "\\tau",
+      "G_p(s)"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_process_control__eq_5"
+    ]
+  },
+  {
+    "case_id": "ms_bioreactor_001",
+    "original_core_id": "ms_bioreactor_001",
+    "variant_type": "multisource_original",
+    "context": "For a chemostat (continuous bioreactor) at steady state, determine the specific growth rate from Monod kinetics and the substrate consumption residence time analog, given the limiting substrate concentration.",
+    "input_variables": [
+      "\\mu_{max}",
+      "S",
+      "K_S",
+      "C_{A0}",
+      "C_A",
+      "r_A"
+    ],
+    "output_variables": [
+      "\\mu",
+      "\\tau"
+    ],
+    "correct_model_ids": [
+      "handbook_bioprocess__eq_1",
+      "handbook_chemeng__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_diffusion_reaction_001",
+    "original_core_id": "ms_diffusion_reaction_001",
+    "variant_type": "multisource_original",
+    "context": "In a diffusion-controlled reactor, calculate the molecular diffusion flux at the catalyst surface and the reactor residence time, given the diffusion coefficient, concentration gradient, and reactor kinetics.",
+    "input_variables": [
+      "D_{AB}",
+      "C_A",
+      "z",
+      "C_{A0}",
+      "r_A"
+    ],
+    "output_variables": [
+      "J_{Az}",
+      "\\tau"
+    ],
+    "correct_model_ids": [
+      "handbook_mass_transfer__eq_1",
+      "handbook_chemeng__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_arrhenius_001",
+    "original_core_id": "ms_arrhenius_001",
+    "variant_type": "multisource_original",
+    "context": "Compute the temperature-dependent reaction rate constant from the Arrhenius expression and the corresponding reaction rate for a first-order reaction, combining definitions from two process control references.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "C_A"
+    ],
+    "output_variables": [
+      "k",
+      "r_a"
+    ],
+    "correct_model_ids": [
+      "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+      "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_14.13_reaction_rate"
+    ]
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_001",
+    "original_core_id": "ms_pfr_arrhenius_001",
+    "variant_type": "multisource_original",
+    "context": "Size a PFR for a first-order Arrhenius reaction: combine the temperature-dependent rate constant from one source with the PFR design equation from another.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "X_A",
+      "V",
+      "F_{A0}"
+    ],
+    "output_variables": [
+      "k",
+      "-r_A"
+    ],
+    "correct_model_ids": [
+      "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+      "handbook_reaction_engineering__eq_4"
+    ]
+  },
+  {
+    "case_id": "ms_dual_reaction_001",
+    "original_core_id": "ms_dual_reaction_001",
+    "variant_type": "multisource_original",
+    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "V",
+      "v_0",
+      "-r_A"
+    ],
+    "output_variables": [
+      "\\tau",
+      "X_A"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_reaction_engineering__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_batch_cstr_001",
+    "original_core_id": "ms_batch_cstr_001",
+    "variant_type": "multisource_original",
+    "context": "Determine the batch reactor's conversion dynamics and the equivalent CSTR's residence time for the same first-order reaction.",
+    "input_variables": [
+      "N_{A0}",
+      "X_A",
+      "-r_A",
+      "V",
+      "C_{A0}",
+      "C_A",
+      "r_A"
+    ],
+    "output_variables": [
+      "t",
+      "\\tau"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_1",
+      "handbook_chemeng__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_pbr_chemeng_001",
+    "original_core_id": "ms_pbr_chemeng_001",
+    "variant_type": "multisource_original",
+    "context": "For a packed bed reactor, calculate the catalyst weight required (from the catalyst-based design equation) and the steady-state outlet concentration (from CSTR analogy).",
+    "input_variables": [
+      "X_A",
+      "V",
+      "F_{A0}",
+      "C_{A0}",
+      "C_A",
+      "r_A"
+    ],
+    "output_variables": [
+      "-r_A",
+      "\\tau"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_4",
+      "handbook_chemeng__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_reaction_convection_001",
+    "original_core_id": "ms_reaction_convection_001",
+    "variant_type": "multisource_original",
+    "context": "For a wall-cooled reactor, compute the convective heat removal from the reactor wall and the reactor residence time, given surface temperatures and concentration profile.",
+    "input_variables": [
+      "h",
+      "A_s",
+      "T_s",
+      "T_\\infty",
+      "V",
+      "v_0",
+      "C_{A0}",
+      "X_A",
+      "-r_A"
+    ],
+    "output_variables": [
+      "q_{conv}",
+      "\\tau"
+    ],
+    "correct_model_ids": [
+      "handbook_heat_transfer__eq_3",
+      "handbook_reaction_engineering__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_pfr_convection_001",
+    "original_core_id": "ms_pfr_convection_001",
+    "variant_type": "multisource_original",
+    "context": "For a tubular reactor with wall cooling, compute the PFR volume and the convective heat removal, given the conversion profile, kinetics, and heat transfer characteristics.",
+    "input_variables": [
+      "F_{A0}",
+      "X_{A,out}",
+      "-r_A",
+      "h",
+      "A_s",
+      "T_s",
+      "T_\\infty"
+    ],
+    "output_variables": [
+      "V",
+      "q_{conv}"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_5",
+      "handbook_heat_transfer__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_bio_diffusion_001",
+    "original_core_id": "ms_bio_diffusion_001",
+    "variant_type": "multisource_original",
+    "context": "In a bioreactor, calculate the Monod growth rate and the diffusion flux of nutrients, given the substrate concentration profile and bioreactor parameters.",
+    "input_variables": [
+      "\\mu_{max}",
+      "S",
+      "K_S",
+      "D_{AB}",
+      "C_A",
+      "z"
+    ],
+    "output_variables": [
+      "\\mu",
+      "J_{Az}"
+    ],
+    "correct_model_ids": [
+      "handbook_bioprocess__eq_1",
+      "handbook_mass_transfer__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_pid_arrhenius_001",
+    "original_core_id": "ms_pid_arrhenius_001",
+    "variant_type": "multisource_original",
+    "context": "For a temperature-controlled reactor, compute the Arrhenius rate constant at the current temperature and the PID controller output for maintaining the setpoint.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "K_p",
+      "K_i",
+      "K_d",
+      "e(t)",
+      "r(t)",
+      "y(t)",
+      "t",
+      "\\tau"
+    ],
+    "output_variables": [
+      "k",
+      "u(t)"
+    ],
+    "correct_model_ids": [
+      "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+      "handbook_process_control__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_rate_001",
+    "original_core_id": "ms_pfr_arrhenius_rate_001",
+    "variant_type": "multisource_original",
+    "context": "Size a PFR for a first-order Arrhenius reaction by combining: (1) Arrhenius rate constant, (2) first-order rate equation, (3) PFR integral design equation. This requires equations from three different sources.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "C_A",
+      "F_{A0}",
+      "X_{A,out}",
+      "-r_A"
+    ],
+    "output_variables": [
+      "k",
+      "r_a",
+      "V"
+    ],
+    "correct_model_ids": [
+      "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+      "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_14.13_reaction_rate",
+      "handbook_reaction_engineering__eq_5"
+    ]
+  },
+  {
+    "case_id": "ms_batch_arrhenius_001",
+    "original_core_id": "ms_batch_arrhenius_001",
+    "variant_type": "multisource_original",
+    "context": "For a temperature-dependent batch reaction, compute the Arrhenius rate constant and the batch reactor conversion dynamics.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "N_{A0}",
+      "X_A",
+      "-r_A",
+      "V"
+    ],
+    "output_variables": [
+      "k",
+      "t"
+    ],
+    "correct_model_ids": [
+      "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+      "handbook_reaction_engineering__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_batch_integral_001",
+    "original_core_id": "ms_batch_integral_001",
+    "variant_type": "multisource_original",
+    "context": "Calculate the time required for a batch reactor (from the integral design equation) and the equivalent CSTR residence time, given identical kinetics and target conversion.",
+    "input_variables": [
+      "N_{A0}",
+      "X_A",
+      "-r_A",
+      "V",
+      "C_{A0}",
+      "C_A",
+      "r_A"
+    ],
+    "output_variables": [
+      "t",
+      "\\tau"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_2",
+      "handbook_chemeng__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_chemeng_convection_001",
+    "original_core_id": "ms_chemeng_convection_001",
+    "variant_type": "multisource_original",
+    "context": "For a CSTR with a cooling coil, compute the residence time from the reactor mass balance and the convective heat transfer rate at the coil surface.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "h",
+      "A_s",
+      "T_s",
+      "T_\\infty"
+    ],
+    "output_variables": [
+      "\\tau",
+      "q_{conv}"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_heat_transfer__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_batch_sensor_001",
+    "original_core_id": "ms_batch_sensor_001",
+    "variant_type": "multisource_original",
+    "context": "For a batch reactor with a temperature sensor, compute the batch reaction time and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
+    "input_variables": [
+      "N_{A0}",
+      "X_A",
+      "-r_A",
+      "V",
+      "K_p",
+      "\\theta",
+      "\\tau_p",
+      "s"
+    ],
+    "output_variables": [
+      "t",
+      "G_p(s)"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_1",
+      "handbook_process_control__eq_5"
+    ]
+  },
+  {
+    "case_id": "ms_bio_pid_001",
+    "original_core_id": "ms_bio_pid_001",
+    "variant_type": "multisource_original",
+    "context": "For a bioreactor with PID-controlled feed rate, compute the Monod-based specific growth rate and the controller output simultaneously.",
+    "input_variables": [
+      "\\mu_{max}",
+      "S",
+      "K_S",
+      "K_p",
+      "K_i",
+      "K_d",
+      "e(t)",
+      "r(t)",
+      "y(t)",
+      "t",
+      "\\tau"
+    ],
+    "output_variables": [
+      "\\mu",
+      "u(t)"
+    ],
+    "correct_model_ids": [
+      "handbook_bioprocess__eq_1",
+      "handbook_process_control__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_pfr_masstransfer_001",
+    "original_core_id": "ms_pfr_masstransfer_001",
+    "variant_type": "multisource_original",
+    "context": "For a packed bed reactor with external diffusion limitation, compute the PFR volume from the integral design equation and the mass transfer flux to the catalyst surface.",
+    "input_variables": [
+      "F_{A0}",
+      "X_{A,out}",
+      "-r_A",
+      "D_{AB}",
+      "C_A",
+      "z"
+    ],
+    "output_variables": [
+      "V",
+      "J_{Az}"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_5",
+      "handbook_mass_transfer__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_cstr_masstransfer_001",
+    "original_core_id": "ms_cstr_masstransfer_001",
+    "variant_type": "multisource_original",
+    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the residence time and the diffusion flux at the gas-liquid interface, given the outlet concentration.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "D_{AB}",
+      "z"
+    ],
+    "output_variables": [
+      "\\tau",
+      "J_{Az}"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_mass_transfer__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_reactor_heat_arrhenius_001",
+    "original_core_id": "ms_reactor_heat_arrhenius_001",
+    "variant_type": "multisource_original",
+    "context": "Three-source non-isothermal reactor design: combine the Arrhenius temperature dependence, the first-order rate expression, and the overall heat transfer law to determine the rate constant, reaction rate, and heat removal in a temperature-controlled CSTR.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "C_A",
+      "U",
+      "A",
+      "\\Delta T_{overall}"
+    ],
+    "output_variables": [
+      "k",
+      "r_a",
+      "q"
+    ],
+    "correct_model_ids": [
+      "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+      "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_14.13_reaction_rate",
+      "handbook_heat_transfer__eq_5"
+    ]
+  },
+  {
+    "case_id": "ms_pfr_batch_arrhenius_001",
+    "original_core_id": "ms_pfr_batch_arrhenius_001",
+    "variant_type": "multisource_original",
+    "context": "Design a temperature-controlled reactor by combining: (1) Arrhenius rate constant, (2) batch reactor design equation, (3) PFR integral design equation.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "N_{A0}",
+      "X_A",
+      "-r_A",
+      "F_{A0}",
+      "X_{A,out}"
+    ],
+    "output_variables": [
+      "k",
+      "t",
+      "V"
+    ],
+    "correct_model_ids": [
+      "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+      "handbook_reaction_engineering__eq_1",
+      "handbook_reaction_engineering__eq_5"
+    ]
+  },
+  {
+    "case_id": "ms_batch_diffusion_001",
+    "original_core_id": "ms_batch_diffusion_001",
+    "variant_type": "multisource_original",
+    "context": "For a batch reactor with controlled mass transfer from a feeding solid surface, compute the batch reaction time and the diffusion flux at the surface.",
+    "input_variables": [
+      "N_{A0}",
+      "X_A",
+      "-r_A",
+      "V",
+      "D_{AB}",
+      "C_A",
+      "z"
+    ],
+    "output_variables": [
+      "t",
+      "J_{Az}"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_1",
+      "handbook_mass_transfer__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_bio_diffusion_002",
+    "original_core_id": "ms_bio_diffusion_002",
+    "variant_type": "multisource_original",
+    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, compute the Monod growth rate and the substrate diffusion flux into the cell, given the substrate concentration profile.",
+    "input_variables": [
+      "\\mu_{max}",
+      "K_S",
+      "D_{AB}",
+      "z",
+      "S",
+      "C_A"
+    ],
+    "output_variables": [
+      "\\mu",
+      "J_{Az}"
+    ],
+    "correct_model_ids": [
+      "handbook_bioprocess__eq_1",
+      "handbook_mass_transfer__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_chemeng_re_001",
+    "original_core_id": "ms_chemeng_re_001",
+    "variant_type": "multisource_original",
+    "context": "Cross-validate the CSTR residence time using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations.",
+    "input_variables": [
+      "C_{A0}",
+      "r_A",
+      "V",
+      "v_0",
+      "X_A",
+      "-r_A"
+    ],
+    "output_variables": [
+      "\\tau",
+      "C_A"
+    ],
+    "correct_model_ids": [
+      "handbook_chemeng__eq_3",
+      "handbook_reaction_engineering__eq_3"
+    ]
+  },
+  {
+    "case_id": "ms_steady_cstr_heat_001",
+    "original_core_id": "ms_steady_cstr_heat_001",
+    "variant_type": "multisource_original",
+    "context": "For a steady-state isothermal CSTR with cooling: compute residence time and the corresponding heat removal needed, given concentration and temperature differentials.",
+    "input_variables": [
+      "V",
+      "v_0",
+      "C_{A0}",
+      "X_A",
+      "-r_A",
+      "U",
+      "A",
+      "\\Delta T_{overall}"
+    ],
+    "output_variables": [
+      "\\tau",
+      "q"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_3",
+      "handbook_heat_transfer__eq_5"
+    ]
+  },
+  {
+    "case_id": "ms_pfr_pid_001",
+    "original_core_id": "ms_pfr_pid_001",
+    "variant_type": "multisource_original",
+    "context": "For a PFR with PID-controlled inlet flow rate, compute the required reactor volume and the PID controller output for setpoint tracking.",
+    "input_variables": [
+      "F_{A0}",
+      "X_{A,out}",
+      "-r_A",
+      "K_p",
+      "K_i",
+      "K_d",
+      "e(t)",
+      "r(t)",
+      "y(t)",
+      "t",
+      "\\tau"
+    ],
+    "output_variables": [
+      "V",
+      "u(t)"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_5",
+      "handbook_process_control__eq_1"
+    ]
+  },
+  {
+    "case_id": "ms_batch_convection_001",
+    "original_core_id": "ms_batch_convection_001",
+    "variant_type": "multisource_original",
+    "context": "For a jacketed batch reactor, compute the batch time required for a given conversion and the convective heat removal rate at the jacket.",
+    "input_variables": [
+      "N_{A0}",
+      "X_A",
+      "-r_A",
+      "V",
+      "h",
+      "A_s",
+      "T_s",
+      "T_\\infty"
+    ],
+    "output_variables": [
+      "t",
+      "q_{conv}"
+    ],
+    "correct_model_ids": [
+      "handbook_reaction_engineering__eq_1",
+      "handbook_heat_transfer__eq_3"
+    ]
+  }
+]

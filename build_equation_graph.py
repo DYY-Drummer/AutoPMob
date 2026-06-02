@@ -90,8 +90,9 @@ def _call_gemini_text_only(prompt: str) -> str:
     api_key = (
         os.environ.get("GEMINI_API_KEY")
         or os.environ.get("GOOGLE_API_KEY")
-        or "AIzaSyD5GuIuXVUSeLavZc7_Q0J_muL8Mycwp70"
     )
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY or GOOGLE_API_KEY environment variable is required")
     client = genai.Client(api_key=api_key)
     min_interval = 12.0  # 5 RPM
     last_time = getattr(ex_mod, "_last_generate_content_time", 0.0)
