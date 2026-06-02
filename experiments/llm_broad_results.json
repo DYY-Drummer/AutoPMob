@@ -1,0 +1,37 @@
+{
+  "method": "claude_direct_generation_dae",
+  "n_cases": 24,
+  "Recall@K_correct": 0.5416666666666666,
+  "summary": {
+    "n_cases": 24,
+    "MRR_first": 0.6633977667577191,
+    "MRR_worst": 0.40269226917517315,
+    "MRR_avg": 0.5330450179664461,
+    "Precision@C": 0.5416666666666666,
+    "Recall@K_correct": 0.5416666666666666,
+    "MAP": 0.5949235599614401,
+    "FullRecall@3": 0.4583333333333333,
+    "Recall@3": 0.5833333333333334,
+    "FullRecall@5": 0.625,
+    "Recall@5": 0.6875,
+    "FullRecall@10": 0.7083333333333334,
+    "Recall@10": 0.7708333333333334,
+    "FullRecall@20": 0.75,
+    "Recall@20": 0.8125,
+    "single_only__MRR_first": 0.7438271604938271,
+    "multi_only__MRR_first": 0.6151401305160544,
+    "multi_only__MRR_worst": 0.19801133438398066,
+    "multi_only__MAP": 0.5055813996420079,
+    "multi_only__FullRecall@3": 0.26666666666666666,
+    "multi_only__FullRecall@10": 0.5333333333333333,
+    "multi_only__Recall@3": 0.4666666666666667,
+    "multi_only__Recall@10": 0.6333333333333333,
+    "multi_only__Recall@K_correct": 0.4666666666666667,
+    "n_single": 9,
+    "n_multi": 15
+  },
+  "by_n_correct": {
+    "1": 0.6666666666666666,
+    "2": 0.4666666666666667
+  }
+}

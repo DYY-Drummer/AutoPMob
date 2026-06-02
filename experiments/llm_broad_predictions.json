@@ -1,0 +1,809 @@
+[
+  {
+    "case_id": "core_053_v3",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "m = \\frac{Q \\cdot M}{n \\cdot F}"
+      },
+      {
+        "equation": "n = \\frac{Q \\cdot M}{m \\cdot F}"
+      },
+      {
+        "equation": "Q = I \\cdot t"
+      },
+      {
+        "equation": "m = \\frac{I \\cdot t \\cdot M}{n \\cdot F}"
+      },
+      {
+        "equation": "n_{mol} = \\frac{m}{M}"
+      },
+      {
+        "equation": "n_{mol} = \\frac{Q}{n \\cdot F}"
+      },
+      {
+        "equation": "Q = n_{mol} \\cdot n \\cdot F"
+      }
+    ]
+  },
+  {
+    "case_id": "core_041_v1_para1",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "\\frac{dM}{dt} = \\frac{DA}{h}(C_s - C_b)"
+      }
+    ]
+  },
+  {
+    "case_id": "core_090_v1_para2",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "y_A = \\frac{\\alpha_{AB} x_A}{1 + (\\alpha_{AB} - 1)x_A}"
+      },
+      {
+        "equation": "\\alpha_{AB} = \\frac{y_A/x_A}{y_B/x_B}"
+      },
+      {
+        "equation": "x_A + x_B = 1"
+      },
+      {
+        "equation": "y_A + y_B = 1"
+      },
+      {
+        "equation": "\\alpha_{AB} = \\frac{P_A^{sat}}{P_B^{sat}}"
+      },
+      {
+        "equation": "\\alpha_{AB} = \\frac{K_A}{K_B}"
+      },
+      {
+        "equation": "K_A = \\frac{y_A}{x_A}"
+      },
+      {
+        "equation": "K_B = \\frac{y_B}{x_B}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_114_v9",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "\\sum_{i} \\Theta_i C_{pi} (T - T_0) = (-\\Delta H_{Rx}(T_R)) X_A"
+      },
+      {
+        "equation": "C_{pi} = a_i + b_i T + c_i T^2 + d_i T^3"
+      },
+      {
+        "equation": "C_{pi} = A_i + B_i T + C_i T^2"
+      },
+      {
+        "equation": "\\frac{dT}{dX_A} = \\frac{-\\Delta H_{Rx}(T_R)}{\\sum_{i} \\Theta_i C_{pi}}"
+      },
+      {
+        "equation": "Q = \\sum_{i} F_{i0} \\Theta_i \\int_{T_0}^{T} C_{pi} dT + F_{A0} X_A \\Delta H_{Rx}(T_R) = 0"
+      },
+      {
+        "equation": "C_{pi} = \\frac{1}{M_i} \\left( A_i + B_i T + C_i T^2 + D_i T^3 \\right)"
+      },
+      {
+        "equation": "\\Delta H_{Rx}(T) = \\Delta H_{Rx}(T_R) + \\int_{T_R}^{T} \\Delta C_p dT"
+      },
+      {
+        "equation": "\\Delta C_p = \\sum_{i} \\nu_i C_{pi}"
+      },
+      {
+        "equation": "C_{pi}(T) = C_{pi}(T_0) + \\int_{T_0}^{T} \\frac{dC_{pi}}{dT} dT"
+      },
+      {
+        "equation": "T = T_0 + \\frac{(-\\Delta H_{Rx}(T_R)) X_A}{\\sum_{i} \\Theta_i \\bar{C}_{pi}}"
+      },
+      {
+        "equation": "\\bar{C}_{pi} = \\frac{1}{T - T_0} \\int_{T_0}^{T} C_{pi} dT"
+      },
+      {
+        "equation": "C_{pm} = \\frac{\\sum_{i} F_i C_{pi}}{\\sum_{i} F_i}"
+      }
+    ]
+  },
+  {
+    "case_id": "ms_cstr_heat_001_rv1",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{C_{A0} - C_A}{\\tau} = -r_A"
+      },
+      {
+        "equation": "Q_{removed} = q \\rho C_p (T_{out} - T_{in})"
+      },
+      {
+        "equation": "Q_{generated} = (-\\Delta H_r)(-r_A)V"
+      },
+      {
+        "equation": "Q_{removed} = Q_{generated}"
+      },
+      {
+        "equation": "Q_{removed} = UA\\Delta T_{overall}"
+      },
+      {
+        "equation": "V = q\\tau"
+      },
+      {
+        "equation": "\\Delta T_{overall} = \\frac{T - T_j}{\\ln\\left(\\frac{T_{in} - T_j}{T_{out} - T_j}\\right)}"
+      },
+      {
+        "equation": "-r_A = kC_A^n"
+      },
+      {
+        "equation": "k = k_0 e^{-E_a/(RT)}"
+      },
+      {
+        "equation": "Q_{jacket} = m_j C_{p,j}(T_{j,out} - T_{j,in})"
+      },
+      {
+        "equation": "\\rho q C_p (T - T_0) = (-\\Delta H_r)(-r_A)V - UA(T - T_j)"
+      },
+      {
+        "equation": "h_{overall} = \\frac{1}{\\frac{1}{h_i} + \\frac{x_{wall}}{k_{wall}} + \\frac{1}{h_o}}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_041_v4",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "\\frac{dM}{dt} = \\frac{DA}{h}(C_s - C_b)"
+      },
+      {
+        "equation": "C_s = C_b + \\frac{h \\cdot \\frac{dM}{dt}}{DA}"
+      },
+      {
+        "equation": "J = \\frac{1}{A}\\frac{dM}{dt}"
+      },
+      {
+        "equation": "J = \\frac{D}{h}(C_s - C_b)"
+      },
+      {
+        "equation": "Sh = \\frac{hL}{D}"
+      },
+      {
+        "equation": "\\frac{dC_b}{dt} = \\frac{1}{V}\\frac{dM}{dt}"
+      },
+      {
+        "equation": "C_s = \\frac{\\text{Solubility}}{\\text{at given conditions}}"
+      },
+      {
+        "equation": "Re = \\frac{\\rho vL}{\\mu}"
+      },
+      {
+        "equation": "Sc = \\frac{\\mu}{\\rho D}"
+      },
+      {
+        "equation": "Sh = 2 + 0.6Re^{1/2}Sc^{1/3}"
+      },
+      {
+        "equation": "k = \\frac{D}{h}"
+      },
+      {
+        "equation": "\\frac{dM}{dt} = kA(C_s - C_b)"
+      }
+    ]
+  },
+  {
+    "case_id": "ms_batch_integral_001_rv3",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\tau = \\frac{V}{v_0}"
+      },
+      {
+        "equation": "t = N_{A0} \\int_0^{X_A} \\frac{dX_A}{-r_A V}"
+      },
+      {
+        "equation": "C_A = C_{A0}(1 - X_A)"
+      },
+      {
+        "equation": "\\tau = \\frac{C_{A0} X_A}{-r_A}"
+      },
+      {
+        "equation": "t = C_{A0} \\int_0^{X_A} \\frac{dX_A}{-r_A}"
+      },
+      {
+        "equation": "N_A = N_{A0}(1 - X_A)"
+      },
+      {
+        "equation": "v_0 = \\frac{N_{A0}}{C_{A0}}"
+      },
+      {
+        "equation": "-r_A = f(C_A)"
+      },
+      {
+        "equation": "V = v_0 \\tau"
+      },
+      {
+        "equation": "N_{A0} = C_{A0} V_0"
+      }
+    ]
+  },
+  {
+    "case_id": "ms3_0180",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{\\partial T}{\\partial t} = \\alpha_1 \\nabla^2 T + \\frac{k_1}{\\rho_f C}(u - T)"
+      },
+      {
+        "equation": "h = \\frac{k_1}{x}"
+      },
+      {
+        "equation": "\\gamma^{**} = \\frac{h \\cdot x}{k_1}"
+      },
+      {
+        "equation": "\\frac{dT}{dt} = -\\frac{1}{\\tau}(T - T_\\infty) + \\frac{K_p}{\\tau}u"
+      },
+      {
+        "equation": "h = \\frac{q}{(T - T_\\infty)}"
+      },
+      {
+        "equation": "Nu = \\frac{h \\cdot x}{k_1} = C \\cdot Re^n \\cdot Pr^{n_u}"
+      },
+      {
+        "equation": "\\gamma^{**} = \\frac{\\alpha_1 t}{x^2}"
+      },
+      {
+        "equation": "h^2 = \\frac{2k_1 \\rho_f C}{\\beta^* x}(T - T_\\infty)"
+      },
+      {
+        "equation": "\\frac{\\partial^2 T}{\\partial x^2} = \\frac{1}{\\alpha_1}\\frac{\\partial T}{\\partial t}"
+      },
+      {
+        "equation": "q = h(T - T_\\infty) = -k_1\\frac{\\partial T}{\\partial y}\\bigg|_{y=0}"
+      },
+      {
+        "equation": "h = \\frac{\\rho_f v C}{x}\\cdot f(N, N_\\infty, n_y)"
+      },
+      {
+        "equation": "\\gamma^{**} = \\frac{\\rho_p}{\\rho_m}\\cdot\\frac{g x}{\\sigma_e}"
+      }
+    ]
+  },
+  {
+    "case_id": "ms3_0416",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{dT}{dx} = \\frac{Q}{F C_p}"
+      },
+      {
+        "equation": "F = \\rho V A"
+      },
+      {
+        "equation": "Q = UA(T - T_\\infty)"
+      },
+      {
+        "equation": "\\frac{dV}{dx} = -\\frac{f}{2D}\\frac{V^2}{\\rho} - g\\sin\\theta"
+      },
+      {
+        "equation": "T(x) = T_0 + (T_1 - T_0)\\frac{x}{L}"
+      },
+      {
+        "equation": "\\frac{dP}{dx} = -\\rho V\\frac{dV}{dx} - f\\frac{\\rho V^2}{2D}"
+      },
+      {
+        "equation": "Q = \\dot{m} C_p (T_1 - T_0)"
+      },
+      {
+        "equation": "V = \\frac{F}{\\rho A}"
+      },
+      {
+        "equation": "Re = \\frac{\\rho V D}{\\mu}"
+      },
+      {
+        "equation": "Nu = f(Re, Pr)"
+      },
+      {
+        "equation": "h = \\frac{k \\cdot Nu}{D}"
+      },
+      {
+        "equation": "Q = h A_s (T - T_\\infty)"
+      }
+    ]
+  },
+  {
+    "case_id": "core_089_v10",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "H_{OG} = \\frac{G}{K_y a}"
+      },
+      {
+        "equation": "N_{OG} = \\frac{Z_T}{H_{OG}}"
+      },
+      {
+        "equation": "Z_T = H_{OG} \\times N_{OG}"
+      },
+      {
+        "equation": "G = K_y a H_{OG}"
+      },
+      {
+        "equation": "N_{OG} = \\int_{y_1}^{y_2} \\frac{dy}{y - y^*}"
+      },
+      {
+        "equation": "K_y a = \\frac{G}{H_{OG}}"
+      },
+      {
+        "equation": "H_{OG} = \\frac{L}{K_x a \\lambda}"
+      },
+      {
+        "equation": "N_{OG} = \\frac{1}{1-A} \\ln\\left[\\left(1-A\\right)\\frac{y_1 - y_2^*}{y_2 - y_2^*} + A\\right]"
+      },
+      {
+        "equation": "G = \\frac{\\rho_g u_g A_c}{\\text{MW}}"
+      },
+      {
+        "equation": "k_y a = \\frac{1}{\\frac{1}{K_y a} - \\frac{m}{k_x a}}"
+      },
+      {
+        "equation": "A = \\frac{L m}{G}"
+      },
+      {
+        "equation": "\\frac{1}{K_y a} = \\frac{1}{k_y a} + \\frac{m}{k_x a}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_077_v6",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "\\frac{dy}{dt} = K_p \\cdot u(t)"
+      },
+      {
+        "equation": "y(t) = y(0) + K_p \\int_0^t u(\\tau) d\\tau"
+      },
+      {
+        "equation": "u(t) = A \\cdot \\mathbb{1}(t)"
+      },
+      {
+        "equation": "y(t) = y(0) + K_p \\cdot A \\cdot t"
+      },
+      {
+        "equation": "Y(s) = \\frac{K_p}{s} U(s)"
+      },
+      {
+        "equation": "U(s) = \\frac{A}{s}"
+      },
+      {
+        "equation": "Y(s) = \\frac{K_p \\cdot A}{s^2}"
+      },
+      {
+        "equation": "\\mathcal{L}\\{y(t)\\} = Y(s)"
+      },
+      {
+        "equation": "y(0) = 0"
+      }
+    ]
+  },
+  {
+    "case_id": "core_096_v4",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{dV}{dt} = F_{As} + F_{Bs} - F_{out}"
+      },
+      {
+        "equation": "V = \\tau \\cdot F_{out}"
+      },
+      {
+        "equation": "K_p = \\frac{\\Delta y_{ss}}{\\Delta u_{ss}}"
+      },
+      {
+        "equation": "F_{As} = K_v \\cdot (x_{A,A})_s"
+      },
+      {
+        "equation": "V \\cdot \\frac{dx_A}{dt} = F_{As} \\cdot (x_{A,A})_s + F_{Bs} \\cdot (x_{A,B})_s - F_{out} \\cdot x_A"
+      },
+      {
+        "equation": "\\tau = \\frac{V}{F_{As} + F_{Bs}}"
+      },
+      {
+        "equation": "F_{As} + F_{Bs} = F_{out}"
+      },
+      {
+        "equation": "K_p = \\frac{(x_{A,A})_s - (x_{A,B})_s}{F_{As} + F_{Bs}}"
+      },
+      {
+        "equation": "V = \\frac{\\tau \\cdot (F_{As} + F_{Bs})}{1}"
+      },
+      {
+        "equation": "F_{As} = \\frac{K_v \\cdot V}{\\tau}"
+      },
+      {
+        "equation": "K_p \\cdot (F_{As} + F_{Bs}) = (x_{A,A})_s - (x_{A,B})_s"
+      },
+      {
+        "equation": "\\tau = \\frac{V}{K_v}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_043_v7",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "i = i_0 \\left[\\exp\\left(\\frac{\\alpha_a n F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c n F \\eta}{RT}\\right)\\right]"
+      },
+      {
+        "equation": "j = j_0 \\left[\\exp\\left(\\frac{\\alpha_a n F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c n F \\eta}{RT}\\right)\\right]"
+      },
+      {
+        "equation": "\\eta = E - E_{eq}"
+      },
+      {
+        "equation": "j_0 = \\frac{j}{\\exp\\left(\\frac{\\alpha_a n F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c n F \\eta}{RT}\\right)}"
+      },
+      {
+        "equation": "\\alpha_a + \\alpha_c = n"
+      },
+      {
+        "equation": "i_0 = nFk_0 C_O^{1-\\alpha_a} C_R^{\\alpha_a}"
+      },
+      {
+        "equation": "j_0 = nFk_0 C_O^{1-\\alpha} C_R^{\\alpha}"
+      },
+      {
+        "equation": "\\theta = \\frac{j}{j_L}"
+      },
+      {
+        "equation": "j_L = nFD\\frac{C_b}{\\delta}"
+      },
+      {
+        "equation": "k_0 = A\\exp\\left(-\\frac{E_a}{RT}\\right)"
+      }
+    ]
+  },
+  {
+    "case_id": "core_015_v18",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "w = w_1 + w_2"
+      },
+      {
+        "equation": "w \\cdot x = w_1 \\cdot x_1 + w_2 \\cdot x_2"
+      }
+    ]
+  },
+  {
+    "case_id": "ms_batch_cstr_001_rv4",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "X_A = \\frac{N_{A0} - N_A}{N_{A0}} = \\frac{C_{A0} - C_A}{C_{A0}}"
+      },
+      {
+        "equation": "-r_A = kC_A"
+      },
+      {
+        "equation": "C_A = C_{A0}(1 - X_A)"
+      },
+      {
+        "equation": "-r_A = kC_{A0}(1 - X_A)"
+      },
+      {
+        "equation": "\\frac{dX_A}{dt} = \\frac{-r_A}{C_{A0}}"
+      },
+      {
+        "equation": "t = C_{A0}\\int_0^{X_A} \\frac{dX_A}{-r_A}"
+      },
+      {
+        "equation": "t = \\frac{1}{k}\\ln\\frac{1}{1-X_A}"
+      },
+      {
+        "equation": "\\tau = \\frac{V}{v_0}"
+      },
+      {
+        "equation": "\\tau = \\frac{C_{A0}X_A}{-r_A}"
+      },
+      {
+        "equation": "\\tau = \\frac{X_A}{k(1-X_A)}"
+      },
+      {
+        "equation": "N_A = N_{A0}(1 - X_A)"
+      },
+      {
+        "equation": "C_A = \\frac{N_A}{V}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_037_v4",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{dT_{L1}}{dt} = \\frac{v}{\\Delta z}(T_F - T_{L1}) + \\frac{1}{\\tau_{wL}}(T_{w1} - T_{L1})"
+      },
+      {
+        "equation": "\\frac{dT_{w1}}{dt} = \\frac{1}{\\tau_{sw}}(T_s - T_{w1}) - \\frac{1}{\\tau_{wL}}(T_{w1} - T_{L1})"
+      },
+      {
+        "equation": "\\tau_{wL} = \\frac{\\rho_L c_{pL} V_L}{h_L A_L}"
+      },
+      {
+        "equation": "\\tau_{sw} = \\frac{\\rho_w c_{pw} V_w}{h_s A_s}"
+      },
+      {
+        "equation": "\\tau_{HL} = \\frac{\\Delta z}{v}"
+      },
+      {
+        "equation": "Q_{wL} = \\frac{T_{w1} - T_{L1}}{\\tau_{wL}}"
+      },
+      {
+        "equation": "Q_{sw} = \\frac{T_s - T_{w1}}{\\tau_{sw}}"
+      },
+      {
+        "equation": "Q_{conv} = h_L A_L (T_{w1} - T_{L1})"
+      },
+      {
+        "equation": "Q_{steam} = h_s A_s (T_s - T_{w1})"
+      },
+      {
+        "equation": "\\frac{\\partial T_L}{\\partial t} + v\\frac{\\partial T_L}{\\partial z} = \\frac{h_L A_L}{\\rho_L c_{pL} V_L}(T_w - T_L)"
+      },
+      {
+        "equation": "\\rho_w c_{pw} V_w \\frac{dT_w}{dt} = h_s A_s (T_s - T_w) - h_L A_L (T_w - T_L)"
+      },
+      {
+        "equation": "\\rho_L c_{pL} V_L \\frac{dT_L}{dt} = \\rho_L c_{pL} v A_c (T_F - T_L) + h_L A_L (T_w - T_L)"
+      }
+    ]
+  },
+  {
+    "case_id": "core_019_v15",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "k = k_0 \\exp\\left(-\\frac{E}{RT}\\right)"
+      },
+      {
+        "equation": "r_a = k C_A"
+      },
+      {
+        "equation": "r_a = k_0 \\exp\\left(-\\frac{E}{RT}\\right) C_A"
+      }
+    ]
+  },
+  {
+    "case_id": "ms3_0201",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{dC_A}{dt} = \\frac{F}{V}(C_{A,in} - C_A) - r_A"
+      },
+      {
+        "equation": "\\frac{dT}{dt} = \\frac{F}{V}(T_{in} - T) + \\frac{(-\\Delta H_r)r_A}{\\rho C_p} - \\frac{UA}{V\\rho C_p}(T - T_j)"
+      },
+      {
+        "equation": "E_r = V\\rho C_p(T - T_{in})"
+      },
+      {
+        "equation": "T' = \\frac{dT}{dt}"
+      },
+      {
+        "equation": "Q_{removal} = UA(T - T_j)"
+      },
+      {
+        "equation": "Q_{generation} = (-\\Delta H_r)r_A V"
+      },
+      {
+        "equation": "r_A = kC_A^n"
+      },
+      {
+        "equation": "k = k_0 e^{-E_a/(RT)}"
+      },
+      {
+        "equation": "Q_{coolant} = F_c \\rho_c C_{p,c}(T_{j,out} - T_{j,in})"
+      },
+      {
+        "equation": "\\tau = \\frac{V}{F}"
+      },
+      {
+        "equation": "\\frac{dT_j}{dt} = \\frac{F_c}{V_j}(T_{j,in} - T_j) + \\frac{UA}{V_j\\rho_c C_{p,c}}(T - T_j)"
+      },
+      {
+        "equation": "X = \\frac{C_{A,in} - C_A}{C_{A,in}}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_038_v3",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "P = V_{rms} I_{rms} \\cos(\\phi)"
+      },
+      {
+        "equation": "Q = V_{rms} I_{rms} \\sin(\\phi)"
+      },
+      {
+        "equation": "S = \\sqrt{P^2 + Q^2}"
+      },
+      {
+        "equation": "S = V_{rms} I_{rms}"
+      },
+      {
+        "equation": "I_{rms} = \\frac{S}{V_{rms}}"
+      },
+      {
+        "equation": "I_{rms} = \\frac{\\sqrt{P^2 + Q^2}}{V_{rms}}"
+      },
+      {
+        "equation": "\\cos(\\phi) = \\frac{P}{S}"
+      },
+      {
+        "equation": "\\cos(\\phi) = \\frac{P}{\\sqrt{P^2 + Q^2}}"
+      },
+      {
+        "equation": "\\tan(\\phi) = \\frac{Q}{P}"
+      },
+      {
+        "equation": "\\sin(\\phi) = \\frac{Q}{S}"
+      },
+      {
+        "equation": "\\sin(\\phi) = \\frac{Q}{\\sqrt{P^2 + Q^2}}"
+      },
+      {
+        "equation": "\\cos^2(\\phi) + \\sin^2(\\phi) = 1"
+      }
+    ]
+  },
+  {
+    "case_id": "ms3_0450",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{dX}{dt} = \\mu X - \\frac{F}{V}X"
+      },
+      {
+        "equation": "\\frac{dC_A}{dt} = \\frac{F}{V}(C_{A0} - C_A) - \\frac{1}{Y_{X/S}}\\mu X"
+      },
+      {
+        "equation": "\\mu = \\mu_{max}\\frac{C_A}{K_S + C_A}"
+      },
+      {
+        "equation": "\\frac{dX}{dt} = 0"
+      },
+      {
+        "equation": "\\frac{dC_A}{dt} = 0"
+      },
+      {
+        "equation": "X = X_0 + \\frac{dX}{dt}\\Delta t"
+      },
+      {
+        "equation": "C_A = C_{A0} - C_{A0}\\frac{F}{V}t"
+      },
+      {
+        "equation": "r_g = \\mu X"
+      },
+      {
+        "equation": "q_S = \\frac{\\mu}{Y_{X/S}}"
+      },
+      {
+        "equation": "\\tau = \\frac{V}{F}"
+      },
+      {
+        "equation": "D = \\frac{F}{V}"
+      },
+      {
+        "equation": "X_{out} = X(1 - e^{-kt})"
+      }
+    ]
+  },
+  {
+    "case_id": "ms3_0196",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\frac{\\partial c_i}{\\partial t} = \\nabla \\cdot (D_i \\nabla c_i) + \\nabla \\cdot (z_i \\frac{D_i e}{k_B T} c_i \\nabla \\phi)"
+      },
+      {
+        "equation": "j_i = -D_i \\nabla c_i - z_i \\frac{D_i e}{k_B T} c_i \\nabla \\phi"
+      },
+      {
+        "equation": "i = \\sum_i z_i e j_i"
+      },
+      {
+        "equation": "D_i^* = \\frac{k_B T}{6 \\pi \\eta r_i}"
+      },
+      {
+        "equation": "D_i = \\frac{k_B T}{m \\gamma}"
+      },
+      {
+        "equation": "\\nabla^2 \\phi = -\\frac{e}{\\epsilon} \\sum_i z_i c_i"
+      },
+      {
+        "equation": "j_i|_{\\text{electrode}} = \\frac{i_0}{z_i e} \\left( e^{\\frac{\\alpha z_i e \\eta}{k_B T}} - e^{-\\frac{(1-\\alpha) z_i e \\eta}{k_B T}} \\right)"
+      },
+      {
+        "equation": "i_{\\text{lim}} = z_i e D_i \\frac{c_i}{\\delta}"
+      },
+      {
+        "equation": "\\eta = \\phi_{\\text{electrode}} - \\phi_{\\text{solution}} - \\phi_{\\text{eq}}"
+      },
+      {
+        "equation": "e = 1.602 \\times 10^{-19}"
+      },
+      {
+        "equation": "D_i^* = D_i \\left(1 + \\frac{\\partial \\ln \\gamma_i}{\\partial \\ln c_i}\\right)"
+      },
+      {
+        "equation": "\\tau = \\frac{\\delta^2}{D_i}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_012_v1_para1",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "Re = \\frac{\\rho V L}{\\mu}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_011_v1",
+    "n_correct": 2,
+    "predictions": [
+      {
+        "equation": "\\text{OTR} = k_L a (C^* - C_L)"
+      },
+      {
+        "equation": "\\text{OUR} = q_{O_2} X"
+      },
+      {
+        "equation": "\\frac{dC_L}{dt} = k_L a (C^* - C_L) - q_{O_2} X"
+      },
+      {
+        "equation": "C^* = H \\cdot P_{O_2}"
+      },
+      {
+        "equation": "k_L a = k_L \\cdot \\frac{A}{V}"
+      },
+      {
+        "equation": "q_{O_2} = \\mu \\cdot Y_{X/O_2}^{-1}"
+      },
+      {
+        "equation": "\\text{OTR} = \\text{OUR} \\quad \\text{(at steady state)}"
+      },
+      {
+        "equation": "\\frac{dX}{dt} = \\mu X - D X"
+      },
+      {
+        "equation": "P_{O_2} = y_{O_2} \\cdot P_{total}"
+      },
+      {
+        "equation": "k_L = f(\\text{Re}, \\text{Sc})"
+      },
+      {
+        "equation": "\\mu = \\mu_{max} \\frac{C_L}{K_m + C_L}"
+      },
+      {
+        "equation": "Y_{X/O_2} = \\frac{\\Delta X}{\\Delta O_2}"
+      }
+    ]
+  },
+  {
+    "case_id": "core_119_v6",
+    "n_correct": 1,
+    "predictions": [
+      {
+        "equation": "R = \\frac{u}{d}"
+      },
+      {
+        "equation": "d = \\frac{u}{R}"
+      }
+    ]
+  }
+]

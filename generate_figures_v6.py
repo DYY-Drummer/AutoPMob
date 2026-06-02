@@ -109,7 +109,7 @@ def fig_dataset():
                         Patch(facecolor=C_OURS, edgecolor="black", label="複数式")],
                fontsize=10, loc="upper right")
 
-    fig.suptitle("図A：データセットの規模・内訳と難易度分布", fontsize=14, fontweight="bold")
+    fig.suptitle("データセットの規模・内訳と難易度分布", fontsize=14, fontweight="bold")
     fig.tight_layout(rect=[0, 0, 1, 0.96])
     fig.savefig(FIG / "fig_v6_dataset.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
@@ -132,44 +132,51 @@ def fig_gradient():
     a = _load("phase3_A_original_multi_dae.json")["results"]
     b = _load("phase3_B_dae_only.json")["results"]
 
+    llm = {}
+    for key, lbl in [("broad", "broad"), ("a", "daemix"), ("b", "dae")]:
+        llm[key] = json.load(open(EXP / f"llm_{lbl}_results.json"))["Recall@K_correct"]
+
     regimes = ["(i) 広域混在\n(DAE 追加前)", "(ii) original+\nmulti_v3+DAE", "(iii) DAE のみ\n(最難)"]
     base = [_rkc(broad["baseline"]), _rkc(a["baseline"]), _rkc(b["baseline"])]
     ours = [_rkc(broad["reranker-10S"]), _rkc(a["reranker-10S"]), _rkc(b["reranker-10S"])]
-    base_m = [x[0] for x in base]; base_s = [x[1] for x in base]
-    ours_m = [x[0] for x in ours]; ours_s = [x[1] for x in ours]
+    base_m = [v[0] for v in base]; base_s = [v[1] for v in base]
+    ours_m = [v[0] for v in ours]; ours_s = [v[1] for v in ours]
+    llm_m = [llm["broad"], llm["a"], llm["b"]]
 
-    x = np.arange(len(regimes)); w = 0.36
-    fig, ax = plt.subplots(figsize=(9.5, 5.6))
-    b1 = ax.bar(x - w/2, base_m, w, yerr=base_s, capsize=4, color=C_BASE,
+    x = np.arange(len(regimes)); w = 0.27
+    fig, ax = plt.subplots(figsize=(10.5, 5.8))
+    b1 = ax.bar(x - w, base_m, w, yerr=base_s, capsize=3, color=C_BASE,
                 edgecolor="black", linewidth=0.8, label="baseline (古典 IR, Stage1)",
-                error_kw=dict(ecolor="#555", lw=1.2))
-    b2 = ax.bar(x + w/2, ours_m, w, yerr=ours_s, capsize=4, color=C_OURS,
+                error_kw=dict(ecolor="#555", lw=1.1))
+    b3 = ax.bar(x, llm_m, w, color=C_LLM, edgecolor="black", linewidth=0.8,
+                label="LLM 直接生成（Claude，サンプル）")
+    b2 = ax.bar(x + w, ours_m, w, yerr=ours_s, capsize=3, color=C_OURS,
                 edgecolor="black", linewidth=0.8, label="reranker-10S (本手法, Stage2)",
-                error_kw=dict(ecolor="#1a3a5c", lw=1.2))
-    _bar_labels(ax, b1, dy=0.012, fs=9)
-    _bar_labels(ax, b2, dy=0.012, fs=9)
+                error_kw=dict(ecolor="#1a3a5c", lw=1.1))
+    for bars in (b1, b3, b2):
+        _bar_labels(ax, bars, dy=0.012, fs=8.5)
 
-    # ギャップ注記
+    # reranker が LLM を上回る幅を注記
     for i in range(len(regimes)):
-        gap = ours_m[i] - base_m[i]
-        ytop = max(base_m[i] + base_s[i], ours_m[i] + ours_s[i]) + 0.06
-        ax.annotate("", xy=(x[i] + w/2, ytop), xytext=(x[i] - w/2, ytop),
-                    arrowprops=dict(arrowstyle="<->", color=C_GAP, lw=1.5))
-        ax.text(x[i], ytop + 0.012, f"+{gap:.3f}", ha="center", color=C_GAP,
-                fontsize=12, fontweight="bold")
+        gap = ours_m[i] - llm_m[i]
+        ytop = max(ours_m[i] + ours_s[i], llm_m[i]) + 0.05
+        ax.annotate("", xy=(x[i] + w, ytop), xytext=(x[i], ytop),
+                    arrowprops=dict(arrowstyle="<->", color=C_GAP, lw=1.4))
+        ax.text(x[i] + w/2, ytop + 0.012, f"本手法$-$LLM\n+{gap:.2f}", ha="center",
+                color=C_GAP, fontsize=9, fontweight="bold")
 
     ax.set_xticks(x); ax.set_xticklabels(regimes, fontsize=11)
     ax.set_ylabel("Recall@K$_{correct}$（正解集合の再現率）", fontsize=12)
-    ax.set_ylim(0, 1.08)
-    ax.set_title("図B：難易度勾配 — 難ケースが増えるほど本手法の優位が拡大\n"
-                 "（10 シード平均，エラーバー=標準偏差）", fontsize=13, fontweight="bold")
-    ax.legend(fontsize=11, loc="lower left")
+    ax.set_ylim(0, 1.12)
+    ax.set_title("難易度勾配の3者比較 — 難ケースほど LLM は大きく劣化，本手法が最も頑健\n"
+                 "全設定で reranker-10S $>$ baseline $>$ LLM（baseline/本手法=10シード，LLM=サンプル評価）",
+                 fontsize=12, fontweight="bold")
+    ax.legend(fontsize=10, loc="upper right")
     ax.grid(axis="y", alpha=0.3)
     fig.tight_layout()
     fig.savefig(FIG / "fig_v6_gradient.png", dpi=160, bbox_inches="tight")
     plt.close(fig)
-    print("saved fig_v6_gradient.png  gaps=",
-          [round(o - b, 3) for o, b in zip(ours_m, base_m)])
+    print("saved fig_v6_gradient.png (3-way)  LLM=", [round(v, 3) for v in llm_m])
 
 
 # ============================================================
@@ -233,7 +240,7 @@ def fig_impact():
                   "飽和した MRR_first は差を隠す", fontsize=12)
     ax2.legend(fontsize=10, loc="lower center"); ax2.grid(axis="y", alpha=0.3)
 
-    fig.suptitle("図C：本手法はどこで効くか／なぜ Recall@K$_{correct}$ を主指標にしたか",
+    fig.suptitle("本手法はどこで効くか／なぜ Recall@K$_{correct}$ を主指標にしたか",
                  fontsize=14, fontweight="bold")
     fig.tight_layout(rect=[0, 0, 1, 0.95])
     fig.savefig(FIG / "fig_v6_impact.png", dpi=160, bbox_inches="tight")
@@ -262,7 +269,7 @@ def fig_llm():
     ax.set_xticks(x); ax.set_xticklabels([lab for _, lab in subsets], fontsize=11)
     ax.set_ylabel("Recall@K$_{correct}$", fontsize=12)
     ax.set_ylim(0, 1.12)
-    ax.set_title("図D：外部ベースライン（LLM 直接生成）との同一条件比較\n"
+    ax.set_title("外部ベースライン（LLM 直接生成）との同一条件比較\n"
                  "現行 11,146 式 DB・held-out（複数ソースで baseline < LLM < 本手法）",
                  fontsize=13, fontweight="bold")
     ax.legend(fontsize=11, loc="upper center", ncol=3, bbox_to_anchor=(0.5, -0.08))
@@ -278,9 +285,157 @@ def fig_llm():
     print("saved fig_v6_llm.png")
 
 
+def _per_seed_rkc(results, mode):
+    """per_seed の Recall@K_correct(=Precision@C) 配列を返す."""
+    ps = results[mode]["per_seed"]
+    out = []
+    for s in ps:
+        v = s.get("Recall@K_correct", s.get("Precision@C"))
+        if v is not None:
+            out.append(v)
+    return out
+
+
+# ============================================================
+# 図E：seed 別 box plot（分散の可視化）
+# ============================================================
+def fig_boxplot():
+    broad = _load("set_aware_results.json")["results"]
+    a = _load("phase3_A_original_multi_dae.json")["results"]
+    b = _load("phase3_B_dae_only.json")["results"]
+    regimes = [("(i) 広域混在\n(DAE 追加前)", broad),
+               ("(ii) original+\nmulti_v3+DAE", a),
+               ("(iii) DAE のみ\n(最難)", b)]
+
+    fig, ax = plt.subplots(figsize=(9.5, 5.6))
+    rng = np.random.default_rng(0)
+    for i, (lab, res) in enumerate(regimes):
+        bvals = _per_seed_rkc(res, "baseline")
+        ovals = _per_seed_rkc(res, "reranker-10S")
+        for vals, off, col in [(bvals, -0.19, C_BASE), (ovals, 0.19, C_OURS)]:
+            bp = ax.boxplot([vals], positions=[i + off], widths=0.30,
+                            patch_artist=True, showfliers=False,
+                            medianprops=dict(color="black", lw=1.4))
+            for box in bp["boxes"]:
+                box.set(facecolor=col, alpha=0.55, edgecolor="black", linewidth=0.9)
+            # 生のシード点を重ねる
+            jit = (rng.random(len(vals)) - 0.5) * 0.12
+            ax.scatter(np.full(len(vals), i + off) + jit, vals, s=22,
+                       color=col, edgecolor="black", linewidth=0.5, zorder=3)
+
+    ax.set_xticks(range(len(regimes)))
+    ax.set_xticklabels([r[0] for r in regimes], fontsize=11)
+    ax.set_ylabel("Recall@K$_{correct}$（シード別）", fontsize=12)
+    ax.set_ylim(0, 1.05)
+    ax.set_title("シード別の $\\mathrm{Recall@K_{correct}}$ 分布（10 シード）\n"
+                 "全シードで本手法が baseline を上回り，優位は分散に埋もれない", fontsize=13, fontweight="bold")
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(facecolor=C_BASE, alpha=0.55, edgecolor="black", label="baseline"),
+                       Patch(facecolor=C_OURS, alpha=0.55, edgecolor="black", label="reranker-10S")],
+              fontsize=11, loc="lower left")
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(FIG / "fig_v6_boxplot.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+    print("saved fig_v6_boxplot.png")
+
+
+# ============================================================
+# 図F：Set-aware 特徴量のアブレーション
+# ============================================================
+def fig_ablation(path="experiments/ablation_setaware.json"):
+    res = json.load(open(ROOT / path))["results"]
+    order = ["reranker-7", "reranker-7+Comp", "reranker-7+Coh", "reranker-7+Dom", "reranker-10S"]
+    labels = ["基本7\n(set-aware無)", "+gComp\n(補完性)", "+gCoh\n(一貫性)",
+              "+gDom\n(ドメイン一致)", "全部(10S)\nComp+Coh+Dom"]
+    present = [m for m in order if m in res]
+    means = [_rkc(res[m])[0] for m in present]
+    stds = [_rkc(res[m])[1] for m in present]
+    labs = [labels[order.index(m)] for m in present]
+    base = means[0]
+    cols = [C_BASE] + [C_DAE]*(len(present)-2) + [C_OURS]
+    cols = cols[:len(present)]
+
+    fig, ax = plt.subplots(figsize=(10, 5.6))
+    x = np.arange(len(present))
+    bars = ax.bar(x, means, 0.62, yerr=stds, capsize=4, color=cols,
+                  edgecolor="black", linewidth=0.8, error_kw=dict(ecolor="#555", lw=1.2))
+    _bar_labels(ax, bars, dy=0.012, fs=10)
+    ax.axhline(base, color=C_BASE, ls="--", lw=1.2, alpha=0.8)
+    for i in range(1, len(present)):
+        d = means[i] - base
+        ax.text(x[i], means[i] + stds[i] + 0.03, ("+%.3f" % d) if d >= 0 else ("%.3f" % d),
+                ha="center", color=(C_GAP if d > 0 else "#555"), fontsize=10, fontweight="bold")
+    ax.set_xticks(x); ax.set_xticklabels(labs, fontsize=10.5)
+    ax.set_ylabel("Recall@K$_{correct}$", fontsize=12)
+    ax.set_ylim(0, max(means)+max(stds)+0.12)
+    ax.set_title("Set-aware 3 特徴量のアブレーション（+DAE 設定，3 シード）\n"
+                 "gComp(補完性)・gCoh(一貫性)が主力，gDom 単独は寄与薄 → 全部入り(10S)が最大", fontsize=12.5, fontweight="bold")
+    ax.grid(axis="y", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(FIG / "fig_v6_ablation.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+    print("saved fig_v6_ablation.png  means=", dict(zip(present, [round(m,4) for m in means])))
+
+
+# ============================================================
+# 図G：精度向上（Stage1 の天井 ＋ top-k 拡大の効果）
+# ============================================================
+def fig_topk():
+    # Stage1 の retrieval 天井（DAE，診断で算出した固定のデータ特性）
+    ceilK = [20, 50, 100, 200]
+    ceilR = [0.745, 0.862, 0.921, 0.959]
+    # reranker-10S を top_k 別に再評価
+    ks = [50, 100, 200]
+    rkc, r10, r20 = [], [], []
+    for k in ks:
+        j = json.load(open(EXP / f"topk_dae_{k}.json"))["results"]["reranker-10S"]
+        rkc.append((j.get("Recall@K_correct") or j.get("Precision@C"))["mean"])
+        r10.append(j["Recall@10"]["mean"]); r20.append(j["Recall@20"]["mean"])
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.2))
+
+    # (a) Stage1 天井
+    ax1.plot(ceilK, ceilR, "o-", color=C_DAE, lw=2.4, ms=9)
+    for k, r in zip(ceilK, ceilR):
+        ax1.annotate(f"{r:.2f}", (k, r), textcoords="offset points", xytext=(0, 10),
+                     ha="center", fontsize=10, fontweight="bold")
+    ax1.axvline(50, color=C_GAP, ls="--", lw=1.2, alpha=0.7)
+    ax1.text(54, 0.50, "既定 top-50\n→ 14% 取りこぼし", color=C_GAP, fontsize=10, fontweight="bold")
+    ax1.set_xlabel("Stage1 候補数 $K$", fontsize=12)
+    ax1.set_ylabel("Stage1 Recall@$K$（DAE）", fontsize=12)
+    ax1.set_xticks(ceilK); ax1.set_ylim(0.6, 1.0)
+    ax1.set_title("(a) 診断：Stage1 の retrieval 天井\n候補を増やすほど正解が拾える（特に高 X）", fontsize=12)
+    ax1.grid(alpha=0.3)
+
+    # (b) top-k 拡大の効果
+    xi = np.arange(len(ks))
+    ax2.plot(xi, r20, "s-", color=C_OURS, lw=2.4, ms=9, label="Recall@20（実用）")
+    ax2.plot(xi, r10, "^-", color=C_DAE, lw=2.2, ms=8, label="Recall@10")
+    ax2.plot(xi, rkc, "o-", color=C_GAP, lw=2.2, ms=8, label="Recall@K$_{correct}$（厳格）")
+    for arr in (r20, r10, rkc):
+        for i, v in enumerate(arr):
+            ax2.annotate(f"{v:.3f}", (xi[i], v), textcoords="offset points",
+                         xytext=(0, 8), ha="center", fontsize=8.5)
+    ax2.set_xticks(xi); ax2.set_xticklabels([f"top_k={k}" for k in ks], fontsize=11)
+    ax2.set_ylabel("評点（reranker-10S @ DAE，3 シード）", fontsize=12)
+    ax2.set_ylim(0.7, 1.0)
+    ax2.set_title("(b) 改善：候補数 top-k 拡大の効果\nRecall@20 が 0.91→0.97，R@K$_c$ も +0.02", fontsize=12)
+    ax2.legend(fontsize=10, loc="center right"); ax2.grid(alpha=0.3)
+
+    fig.suptitle("精度向上 — Stage1 の天井診断と top-k 拡大", fontsize=14, fontweight="bold")
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    fig.savefig(FIG / "fig_v6_topk.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+    print("saved fig_v6_topk.png  rkc=", [round(v, 3) for v in rkc], "r20=", [round(v, 3) for v in r20])
+
+
 if __name__ == "__main__":
     fig_dataset()
     fig_gradient()
     fig_impact()
     fig_llm()
+    fig_boxplot()
+    fig_ablation()
+    fig_topk()
     print("done -> docs/figures/fig_v6_*.png")

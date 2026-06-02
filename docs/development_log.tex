@@ -378,6 +378,15 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
     機械学習研究者視点の図 4 点を新規作成（\texttt{generate\_figures\_v6.py} $\to$ \texttt{docs/figures/fig\_v6\_\{dataset,gradient,impact,llm\}.png}）：
     (A) データセット内訳・難易度分布，(B) 難易度勾配〔中核〕，(C) 正解式数別の改善＋指標飽和（仮説B）の対比，(D) LLM 三者比較．
     各図はシード分散のエラーバー・差分注記・統一配色（baseline 灰／本手法 青／LLM 橙）で「1 図 1 主張」とした．
+    \textbf{（同日追記2：LLM 難ケース比較・精度向上・アブレーション）}
+    加藤先生の「LLM で解けるなら不要では」「図B に LLM も並べよ」とのご指摘を受け，\texttt{evaluate\_llm\_dae.py} を新規作成し
+    DAE 難ケースで LLM 直接生成（Claude）を評価．\texttt{generate\_figures\_v6.py} の図B を\textbf{3 者比較}（baseline／LLM／reranker-10S）に更新し，
+    \textbf{全難易度で reranker $>$ baseline $>$ LLM}（最難 DAE で LLM $0.264$ に対し本手法 $0.699$，約 2.6 倍）を示した．
+    精度向上として Stage1 の retrieval 天井を診断（DAE Recall@50 $=0.86$，高 X で取りこぼし $X{=}10$ で $0.68$）し，
+    候補数 top-$k$ を $50\to200$ に拡大して reranker-10S を再評価，\textbf{実用 Recall@20 を $0.912\to0.968$ に改善}した
+    （\texttt{topk\_dae\_\{50,100,200\}.json}；厳格 Recall@K\_correct は $+0.02$ で，Stage2 の順位付けが律速と判明）．
+    Set-aware 3 特徴量のアブレーション（\texttt{ablation\_setaware.json}）で \textbf{gComp・gCoh が主力，gDom は寄与薄}と判明．
+    図 E（シード分散）・F（アブレーション）・G（精度向上）を追加し v6 は 7 ページに．画像内タイトルの図番号は LaTeX キャプション採番へ一本化した．
 
   \item 2026-06-01（Phase 5 完了：reranker ハイパーパラメータ sweep と頑健性の確認）：
     \texttt{set\_aware\_reranker.py} に \texttt{-{}-hidden-dim}, \texttt{-{}-margin}, \texttt{-{}-batch-size}, \texttt{-{}-n-neg-samples}, \texttt{-{}-weight-decay} を追加し，

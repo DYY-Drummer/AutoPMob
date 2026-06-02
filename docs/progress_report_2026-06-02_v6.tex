@@ -35,7 +35,8 @@
   \item \textbf{データを 3.4 倍に拡大}：収録数式 3{,}244 $\to$ \textbf{11{,}146式}，訓練ケース 1{,}107 $\to$ \textbf{2{,}838件}．うち微分代数方程式系（DAE）を模した\textbf{難ケースを 1{,}000 件}新規追加（図~\ref{fig:data}）．
   \item \textbf{主指標を $\rkc$ に変更}：天井で飽和する MRR\_first が隠していた差を可視化する指標（情報検索の R-precision と同義）を採用．
   \item \textbf{難ケースほど本手法の優位が拡大}：baseline との $\rkc$ 差は標準 $+0.127$ $\to$ DAE のみ $+0.217$（図~\ref{fig:gradient}）．改善は\textbf{複数式・多変数}のケースに集中する（図~\ref{fig:impact}a）．
-  \item \textbf{仮説B（分野横断収集の要否）を再検定し結論を訂正}：v5 は MRR\_first で「差なし」としたが，$\rkc$ では\textbf{フル DB が有意に優れる}（$+0.048$，$p=0.044$；図~\ref{fig:impact}b）．加えて 13 通りのハイパーパラメータで頑健，外部の LLM 直接生成も上回る（図~\ref{fig:llm}）．
+  \item \textbf{仮説B（分野横断収集の要否）を再検定し結論を訂正}：v5 は MRR\_first で「差なし」としたが，$\rkc$ では\textbf{フル DB が有意に優れる}（$+0.048$，$p=0.044$；図~\ref{fig:impact}b）．加えて 13 通りのハイパーパラメータで頑健（\S\ref{sec:robust}）．
+  \item \textbf{難易度別の LLM 比較と精度向上}：難ケースを LLM 直接生成と同条件比較した結果，\textbf{全設定で本手法 $>$ baseline $>$ LLM}（図~\ref{fig:gradient}）で，最難 DAE でも本手法は LLM の約 2.6 倍．さらに Stage1 の天井診断に基づき候補数 top-$k$ を拡大し，実用 Recall@20 を $0.91\to0.97$ に改善した（\S\ref{sec:acc}）．
 \end{itemize}
 
 %======================================================================
@@ -65,12 +66,14 @@
 
 \subsection{難易度勾配：難ケースほど優位が拡大}\label{sec:gradient}
 
-評価集合に占める難ケースの比率を 3 段階に変えて baseline（古典 IR，Stage~1）と reranker-10S（Set-aware 特徴量を含む Stage~2）を比較した（図~\ref{fig:gradient}）．\textbf{古典 IR は難ケースが増えると $\rkc$ が $0.79\to0.48$ へ急落するのに対し，本手法は $0.91\to0.70$ と緩やかにしか落ちず}，両者の差は $+0.127\to+0.210\to+0.217$ と単調に拡大する．数式グラフ上で式を組合せとして評価する本手法の発想が，難しい組合せ問題でこそ効くことを示す．
+評価集合に占める難ケースの比率を 3 段階に変えて，baseline（古典 IR，Stage~1）・\textbf{LLM 直接生成}・reranker-10S（本手法，Stage~2）の三者を比較した（図~\ref{fig:gradient}）．\textbf{全 3 設定で reranker-10S $>$ baseline $>$ LLM の順}であり，難ケースが増えると baseline は $\rkc$ が $0.79\to0.48$ へ，\textbf{LLM はさらに急に $0.54\to0.26$ へ}落ちる一方，本手法は $0.91\to0.70$ と緩やかにしか落ちない．本手法は LLM を全設定で $+0.37\sim0.45$ 上回り，\textbf{最難の DAE でも $0.70$（LLM の約 2.6 倍）}を保つ．数式グラフ上で式を組合せとして評価する発想が，難しい組合せ問題でこそ効くことを示す．
+
+\noindent なお $\rkc$ は\textbf{上位ちょうど $K$ 件に正解を全て揃える最も厳しい指標}である．実用上の「上位 20 件に必要な式が含まれるか」を測る Recall@20 は本手法で \textbf{広域 $0.99$／+DAE $0.91$／DAE のみ $0.86$} に達し，最難の DAE でも人手レビュー前提なら実用域にある．
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\linewidth]{figures/fig_v6_gradient.png}
-\caption{難ケース比率の異なる 3 設定における $\rkc$（10 シード平均，エラーバー＝標準偏差）．難ケースが増えるほど baseline は低下し，本手法との差（赤）が拡大する．}
+\includegraphics[width=\linewidth]{figures/fig_v6_gradient.png}
+\caption{難ケース比率の異なる 3 設定での三者比較（$\rkc$）．全設定で reranker-10S $>$ baseline $>$ LLM．baseline・本手法は 10 シード平均（エラーバー＝標準偏差），LLM は X 層化サンプル（24--39 件）での評価．赤は本手法と LLM の差．}
 \label{fig:gradient}
 \end{figure}
 
@@ -105,18 +108,60 @@
 \end{figure}
 
 %======================================================================
+\section{精度向上：Stage1 の天井診断と top-k 拡大}\label{sec:acc}
+%======================================================================
+
+最難の DAE で $\rkc$ が $0.70$ 前後に留まる点について，原因を診断し改善を試みた．まず\textbf{$\rkc$ は上位ちょうど $K$ 件に正解を全て揃える最も厳しい指標}であり，実用的な Recall@20（上位 20 件に必要な式が含まれるか）は本手法で DAE でも $0.86$ ある点を再確認しておく．
+
+\textbf{診断}：reranker は Stage1 が返す上位 $K$ 候補のみを再順位付けするため，到達上限は「正解式が上位 $K$ に retrieve される割合」である．図~\ref{fig:topk}(a) のとおり DAE では \textbf{Stage1 Recall@50 $=0.86$}（高 X ケースで取りこぼし，$X{=}10$ で $0.68$）で，top-200 では $0.96$ まで上がる．
+
+\textbf{改善}：候補数 top-$k$ を $50\to200$ に拡大して reranker-10S を再評価した（図~\ref{fig:topk}(b)）．\textbf{実用指標 Recall@20 は $0.912\to0.968$ と明確に向上}し，厳しい $\rkc$ も $+0.02$ 改善した．$\rkc$ の伸びが小さいのは，候補が揃っても\textbf{上位ちょうど $K$ 件に並べる順位付け（Stage2）が律速}であるため．アブレーション（図~\ref{fig:ablation}）が示すとおり，補完性・一貫性を軸とした Stage2 強化（hard negative サンプリング・listwise 学習）が次の有力な打ち手である．
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_v6_topk.png}
+\caption{精度向上．(a) Stage1 の retrieval 天井（DAE）：既定 top-50 では正解の 14\% を取りこぼす．(b) top-$k$ を $50\to200$ に拡大すると Recall@20 が $0.912\to0.968$，$\rkc$ も $+0.02$ 改善（reranker-10S，DAE，3 シード）．}
+\label{fig:topk}
+\end{figure}
+
+%======================================================================
+\section{補遺：特徴量アブレーションとシード分散}
+%======================================================================
+
+\textbf{どの特徴量が効くか}（図~\ref{fig:ablation}）：基本 7 特徴量に gComp（補完性）・gCoh（一貫性）・gDom（ドメイン一致）を単独／全部追加して比較した（+DAE，3 シード）．\textbf{gComp・gCoh が各 $+0.05$ の主力}で，gDom 単独はほぼ寄与しない（むしろ微減）．3 つ全て（reranker-10S）が最良であり，補完性・一貫性が本手法の中核であることを示す．これは gDom の再設計が改善余地であることも示唆する．
+
+\textbf{シード分散}（図~\ref{fig:box}）：3 設定とも\textbf{全 10 シードで reranker-10S が baseline を上回り}，箱の重なりも小さい．優位は特定シードの偶然でなく分散に埋もれない安定したものである．
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\linewidth]{figures/fig_v6_ablation.png}
+\caption{Set-aware 3 特徴量のアブレーション（+DAE，3 シード）．gComp・gCoh が主力，gDom 単独は寄与薄，3 つ全て（10S）が最良．}
+\label{fig:ablation}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.78\linewidth]{figures/fig_v6_boxplot.png}
+\caption{3 設定での $\rkc$ のシード別分布（10 シード，点は各シード）．全シードで reranker-10S が baseline を上回る．}
+\label{fig:box}
+\end{figure}
+
+\noindent（注：図F・図G は 3 シードのため絶対値は本文の 10 シード値とやや異なるが，モード間・top-$k$ 間の相対比較は妥当である．）
+
+%======================================================================
 \section{考察と今後の方針}
 %======================================================================
 \begin{itemize}[leftmargin=1.4em, nosep]
   \item \textbf{なぜ効くか}：DAE・複数式・多変数のケースは単独式の文章類似度では絞れず，式どうしの\textbf{変数共有（補完性・一貫性）}という構造情報が効く．易しい問題は baseline が天井のため上乗せは小さい（図~\ref{fig:impact}a）．
   \item \textbf{指標の重要性}：MRR\_first の飽和は DB 規模の効果（仮説B）も改善幅も隠していた．$\rkc$ への切替で初めて両者が可視化された．
-  \item \textbf{頑健性と外部比較}：13 設定で差が出ないことは優位が\textbf{構造的特徴量そのもの}に由来することを，LLM との同一条件比較は\textbf{古典 IR では足りず本手法が必要}であることを示す．
-  \item \textbf{今後}：(1) 修論・論文「Set-aware graph features for multi-equation physical model retrieval」の執筆，(2) LLM 外部比較の標本拡充（難ケースでの LLM 評価），(3) Set-aware 特徴量の拡張（listwise 学習・hard negative），(4) 変数記述の意味類似度による表記揺れの学習的吸収．
+  \item \textbf{頑健性と外部比較}：13 設定で差が出ないことは優位が\textbf{構造的特徴量そのもの}に由来することを示す．LLM 直接生成との比較では\textbf{全難易度で reranker $>$ baseline $>$ LLM}であり，難ケースほど LLM が大きく劣化する（古典 IR でも LLM でも足りず，本手法が必要）．
+  \item \textbf{精度の上限と改善}：DAE の厳格 $\rkc$ は Stage1 の retrieval 天井（top-50 で $0.86$）と Stage2 の順位付けに律速される．top-$k$ 拡大で実用 Recall@20 を $0.97$ に高めた一方，厳格 $\rkc$ の更なる向上には補完性・一貫性を軸とした Stage2 強化（アブレーションが示す gDom の再設計を含む）が有効と見込まれる．
+  \item \textbf{今後}：(1) 修論・論文「Set-aware graph features for multi-equation physical model retrieval」の執筆，(2) Stage2 強化（hard negative・listwise 学習）と gDom 特徴量の再設計，(3) 変数記述の意味類似度による表記揺れの学習的吸収．
 \end{itemize}
 
 %======================================================================
 \section{まとめ}
 %======================================================================
-データベースを 11{,}146 式・2{,}838 ケースに拡大し DAE 難ケースで難易度勾配を作ったところ，\textbf{難しい問題ほど Set-aware リランカーの優位（$\rkc$）が $+0.13\to+0.22$ と拡大}した．飽和しない $\rkc$ により分野横断収集の効果（仮説B，$+0.048$，$p=0.044$）が新たに有意と判明し v5 の暫定結論を訂正，ハイパーパラメータにも頑健で，外部の LLM 直接生成を複数ソースで上回ることを同一条件で確認した．
+データベースを 11{,}146 式・2{,}838 ケースに拡大し DAE 難ケースで難易度勾配を作ったところ，\textbf{難しい問題ほど Set-aware リランカーの優位（$\rkc$）が $+0.13\to+0.22$ と拡大}した．飽和しない $\rkc$ により分野横断収集の効果（仮説B，$+0.048$，$p=0.044$）が新たに有意と判明し v5 の暫定結論を訂正，ハイパーパラメータにも頑健であった．外部の LLM 直接生成とは\textbf{全難易度で本手法 $>$ baseline $>$ LLM}（最難 DAE で本手法は LLM の約 2.6 倍）で，「LLM で直接解けるなら不要」との懸念を明確に否定した．DAE で $\rkc$ が $0.70$ なのは指標が厳格なためで，実用 Recall@20 は top-$k$ 拡大により $0.97$ に達する．
 
 \end{document}
