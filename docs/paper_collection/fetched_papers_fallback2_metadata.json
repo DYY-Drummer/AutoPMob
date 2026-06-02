@@ -1,0 +1,372 @@
+{
+  "summary": [
+    {
+      "domain": "伝熱（応用）",
+      "before": 4,
+      "new": 4,
+      "total": 8
+    },
+    {
+      "domain": "化学工学基礎",
+      "before": 4,
+      "new": 6,
+      "total": 10
+    },
+    {
+      "domain": "地盤工学",
+      "before": 4,
+      "new": 6,
+      "total": 10
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "before": 4,
+      "new": 3,
+      "total": 7
+    },
+    {
+      "domain": "燃焼工学",
+      "before": 4,
+      "new": 6,
+      "total": 10
+    },
+    {
+      "domain": "物質移動",
+      "before": 4,
+      "new": 5,
+      "total": 9
+    },
+    {
+      "domain": "環境工学",
+      "before": 4,
+      "new": 6,
+      "total": 10
+    }
+  ],
+  "papers": [
+    {
+      "domain": "伝熱（応用）",
+      "title": "Lattice Boltzmann methods for multiphase flow and phase-change heat transfer",
+      "year": 2015,
+      "cited_by_count": 903,
+      "doi": "https://doi.org/10.1016/j.pecs.2015.10.001",
+      "pdf_url": "https://arxiv.org/pdf/1508.00940",
+      "filename": "pdfs/伝熱_応用/FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf"
+    },
+    {
+      "domain": "伝熱（応用）",
+      "title": "Computational intelligence techniques for HVAC systems: A review",
+      "year": 2016,
+      "cited_by_count": 229,
+      "doi": "https://doi.org/10.1007/s12273-016-0285-4",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007%2Fs12273-016-0285-4.pdf",
+      "filename": "pdfs/伝熱_応用/FB2_09_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf"
+    },
+    {
+      "domain": "伝熱（応用）",
+      "title": "Review on the History, Research, and Applications of Electrohydrodynamics",
+      "year": 2014,
+      "cited_by_count": 175,
+      "doi": "https://doi.org/10.1109/tps.2013.2297173",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/27/6733365/06714477.pdf",
+      "filename": "pdfs/伝熱_応用/FB2_10_Review_on_the_History_Research_and_Applications_of_Electrohy_2014.pdf"
+    },
+    {
+      "domain": "伝熱（応用）",
+      "title": "Water Desalination Using a Humidification-Dehumidification Technique—A Detailed Review",
+      "year": 2013,
+      "cited_by_count": 127,
+      "doi": "https://doi.org/10.4236/nr.2013.43036",
+      "pdf_url": "http://www.scirp.org/journal/PaperDownload.aspx?paperID=33877",
+      "filename": "pdfs/伝熱_応用/FB2_14_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf"
+    },
+    {
+      "domain": "化学工学基礎",
+      "title": "Theory of Star Formation",
+      "year": 2007,
+      "cited_by_count": 2431,
+      "doi": "https://doi.org/10.1146/annurev.astro.45.051806.110602",
+      "pdf_url": "https://arxiv.org/pdf/0707.3514",
+      "filename": "pdfs/化学工学基礎/FB2_03_Theory_of_Star_Formation_2007.pdf"
+    },
+    {
+      "domain": "化学工学基礎",
+      "title": "Redox flow batteries: a review",
+      "year": 2011,
+      "cited_by_count": 1998,
+      "doi": "https://doi.org/10.1007/s10800-011-0348-2",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10800-011-0348-2.pdf",
+      "filename": "pdfs/化学工学基礎/FB2_05_Redox_flow_batteries_a_review_2011.pdf"
+    },
+    {
+      "domain": "化学工学基礎",
+      "title": "Sparse and Compositionally Robust Inference of Microbial Ecological Networks",
+      "year": 2015,
+      "cited_by_count": 1854,
+      "doi": "https://doi.org/10.1371/journal.pcbi.1004226",
+      "pdf_url": "https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1004226&type=printable",
+      "filename": "pdfs/化学工学基礎/FB2_07_Sparse_and_Compositionally_Robust_Inference_of_Microbial_Eco_2015.pdf"
+    },
+    {
+      "domain": "化学工学基礎",
+      "title": "Review: liquid phase sintering",
+      "year": 2008,
+      "cited_by_count": 1377,
+      "doi": "https://doi.org/10.1007/s10853-008-3008-0",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10853-008-3008-0.pdf",
+      "filename": "pdfs/化学工学基礎/FB2_10_Review_liquid_phase_sintering_2008.pdf"
+    },
+    {
+      "domain": "化学工学基礎",
+      "title": "Wood modification by heat treatment: A review",
+      "year": 2008,
+      "cited_by_count": 820,
+      "doi": "https://doi.org/10.15376/biores.4.1.esteves",
+      "pdf_url": "https://doi.org/10.15376/biores.4.1.esteves",
+      "filename": "pdfs/化学工学基礎/FB2_13_Wood_modification_by_heat_treatment_A_review_2008.pdf"
+    },
+    {
+      "domain": "化学工学基礎",
+      "title": "The Mechanochemistry of Endocytosis",
+      "year": 2009,
+      "cited_by_count": 232,
+      "doi": "https://doi.org/10.1371/journal.pbio.1000204",
+      "pdf_url": "https://journals.plos.org/plosbiology/article/file?id=10.1371/journal.pbio.1000204&type=printable",
+      "filename": "pdfs/化学工学基礎/FB2_16_The_Mechanochemistry_of_Endocytosis_2009.pdf"
+    },
+    {
+      "domain": "地盤工学",
+      "title": "Inferring the Joint Demographic History of Multiple Populations from Multidimensional SNP Frequency Data",
+      "year": 2009,
+      "cited_by_count": 2136,
+      "doi": "https://doi.org/10.1371/journal.pgen.1000695",
+      "pdf_url": "https://journals.plos.org/plosgenetics/article/file?id=10.1371/journal.pgen.1000695&type=printable",
+      "filename": "pdfs/地盤工学/FB2_01_Inferring_the_Joint_Demographic_History_of_Multiple_Populati_2009.pdf"
+    },
+    {
+      "domain": "地盤工学",
+      "title": "TRIGRS - A Fortran Program for Transient Rainfall Infiltration and Grid-Based Regional Slope-Stability Analysis, Version 2.0",
+      "year": 2008,
+      "cited_by_count": 586,
+      "doi": "https://doi.org/10.3133/ofr20081159",
+      "pdf_url": "https://pubs.usgs.gov/of/2008/1159/downloads/pdf/OF08-1159.pdf",
+      "filename": "pdfs/地盤工学/FB2_04_TRIGRS_-_A_Fortran_Program_for_Transient_Rainfall_Infiltrati_2008.pdf"
+    },
+    {
+      "domain": "地盤工学",
+      "title": "Mechanics of the brain: perspectives, challenges, and opportunities",
+      "year": 2015,
+      "cited_by_count": 370,
+      "doi": "https://doi.org/10.1007/s10237-015-0662-4",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10237-015-0662-4.pdf",
+      "filename": "pdfs/地盤工学/FB2_06_Mechanics_of_the_brain_perspectives_challenges_and_opportuni_2015.pdf"
+    },
+    {
+      "domain": "地盤工学",
+      "title": "Mechanical weathering and rock erosion by climate‐dependent subcritical cracking",
+      "year": 2017,
+      "cited_by_count": 287,
+      "doi": "https://doi.org/10.1002/2017rg000557",
+      "pdf_url": "https://agupubs.onlinelibrary.wiley.com/doi/pdfdirect/10.1002/2017RG000557",
+      "filename": "pdfs/地盤工学/FB2_11_Mechanical_weathering_and_rock_erosion_by_climate_dependent__2017.pdf"
+    },
+    {
+      "domain": "地盤工学",
+      "title": "Data-driven modeling and learning in science and engineering",
+      "year": 2019,
+      "cited_by_count": 286,
+      "doi": "https://doi.org/10.1016/j.crme.2019.11.009",
+      "pdf_url": "https://comptes-rendus.academie-sciences.fr/mecanique/item/10.1016/j.crme.2019.11.009.pdf",
+      "filename": "pdfs/地盤工学/FB2_12_Data-driven_modeling_and_learning_in_science_and_engineering_2019.pdf"
+    },
+    {
+      "domain": "地盤工学",
+      "title": "A study on iterative methods for solving Richards’ equation",
+      "year": 2016,
+      "cited_by_count": 250,
+      "doi": "https://doi.org/10.1007/s10596-016-9566-3",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10596-016-9566-3.pdf",
+      "filename": "pdfs/地盤工学/FB2_14_A_study_on_iterative_methods_for_solving_Richards_equation_2016.pdf"
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "title": "<i>Planck</i>2015 results",
+      "year": 2016,
+      "cited_by_count": 10593,
+      "doi": "https://doi.org/10.1051/0004-6361/201525830",
+      "pdf_url": "https://www.aanda.org/articles/aa/pdf/2016/10/aa25830-15.pdf",
+      "filename": "pdfs/熱力学_基礎/FB2_01_i_Planck_i_2015_results_2016.pdf"
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "title": "Ion-induced nucleation of pure biogenic particles",
+      "year": 2016,
+      "cited_by_count": 872,
+      "doi": "https://doi.org/10.1038/nature17953",
+      "pdf_url": "https://www.nature.com/articles/nature17953.pdf",
+      "filename": "pdfs/熱力学_基礎/FB2_05_Ion-induced_nucleation_of_pure_biogenic_particles_2016.pdf"
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "title": "Macroscopic fluctuation theory",
+      "year": 2015,
+      "cited_by_count": 659,
+      "doi": "https://doi.org/10.1103/revmodphys.87.593",
+      "pdf_url": "https://arxiv.org/pdf/1404.6466",
+      "filename": "pdfs/熱力学_基礎/FB2_06_Macroscopic_fluctuation_theory_2015.pdf"
+    },
+    {
+      "domain": "燃焼工学",
+      "title": "Description and evaluation of GLOMAP-mode: a modal global aerosol microphysics model for the UKCA composition-climate model",
+      "year": 2010,
+      "cited_by_count": 635,
+      "doi": "https://doi.org/10.5194/gmd-3-519-2010",
+      "pdf_url": "https://gmd.copernicus.org/articles/3/519/2010/gmd-3-519-2010.pdf",
+      "filename": "pdfs/燃焼工学/FB2_02_Description_and_evaluation_of_GLOMAP-mode_a_modal_global_aer_2010.pdf"
+    },
+    {
+      "domain": "燃焼工学",
+      "title": "Kinetic model framework for aerosol and cloud surface chemistry and gas-particle interactions – Part 1: General equations, parameters, and terminology",
+      "year": 2007,
+      "cited_by_count": 342,
+      "doi": "https://doi.org/10.5194/acp-7-5989-2007",
+      "pdf_url": "https://acp.copernicus.org/articles/7/5989/2007/acp-7-5989-2007.pdf",
+      "filename": "pdfs/燃焼工学/FB2_07_Kinetic_model_framework_for_aerosol_and_cloud_surface_chemis_2007.pdf"
+    },
+    {
+      "domain": "燃焼工学",
+      "title": "Direct numerical simulation of premixed flame boundary layer flashback in turbulent channel flow",
+      "year": 2012,
+      "cited_by_count": 171,
+      "doi": "https://doi.org/10.1017/jfm.2012.345",
+      "pdf_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/7F3C8414351FF97713974A9BC57E4286/S002211201200345Xa.pdf/div-class-title-direct-numerical-simulation-of-premixed-flame-boundary-layer-flashback-in-turbulent-channel-flow-div.pdf",
+      "filename": "pdfs/燃焼工学/FB2_10_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf"
+    },
+    {
+      "domain": "燃焼工学",
+      "title": "Global Impact of Gas Flaring",
+      "year": 2012,
+      "cited_by_count": 169,
+      "doi": "https://doi.org/10.4236/epe.2012.44039",
+      "pdf_url": "http://www.scirp.org/journal/PaperDownload.aspx?paperID=20231",
+      "filename": "pdfs/燃焼工学/FB2_11_Global_Impact_of_Gas_Flaring_2012.pdf"
+    },
+    {
+      "domain": "燃焼工学",
+      "title": "Turbulent Combustion Modelling and Experiments: Recent Trends and Developments",
+      "year": 2019,
+      "cited_by_count": 78,
+      "doi": "https://doi.org/10.1007/s10494-019-00072-6",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10494-019-00072-6.pdf",
+      "filename": "pdfs/燃焼工学/FB2_17_Turbulent_Combustion_Modelling_and_Experiments_Recent_Trends_2019.pdf"
+    },
+    {
+      "domain": "燃焼工学",
+      "title": "A 5-D Implementation of FGM for the Large Eddy Simulation of a Stratified Swirled Flame with Heat Loss in a Gas Turbine Combustor",
+      "year": 2016,
+      "cited_by_count": 76,
+      "doi": "https://doi.org/10.1007/s10494-016-9777-7",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007%2Fs10494-016-9777-7.pdf",
+      "filename": "pdfs/燃焼工学/FB2_18_A_5-D_Implementation_of_FGM_for_the_Large_Eddy_Simulation_of_2016.pdf"
+    },
+    {
+      "domain": "物質移動",
+      "title": "Analysis and quantification of the diversities of aerosol life cycles within AeroCom",
+      "year": 2006,
+      "cited_by_count": 1479,
+      "doi": "https://doi.org/10.5194/acp-6-1777-2006",
+      "pdf_url": "https://acp.copernicus.org/articles/6/1777/2006/acp-6-1777-2006.pdf",
+      "filename": "pdfs/物質移動/FB2_01_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf"
+    },
+    {
+      "domain": "物質移動",
+      "title": "Controllable ion transport by surface-charged graphene oxide membrane",
+      "year": 2019,
+      "cited_by_count": 612,
+      "doi": "https://doi.org/10.1038/s41467-019-09286-8",
+      "pdf_url": "https://www.nature.com/articles/s41467-019-09286-8.pdf",
+      "filename": "pdfs/物質移動/FB2_04_Controllable_ion_transport_by_surface-charged_graphene_oxide_2019.pdf"
+    },
+    {
+      "domain": "物質移動",
+      "title": "The Effect of Fluoroethylene Carbonate as an Additive on the Solid Electrolyte Interphase on Silicon Lithium-Ion Electrodes",
+      "year": 2015,
+      "cited_by_count": 437,
+      "doi": "https://doi.org/10.1021/acs.chemmater.5b01627",
+      "pdf_url": "https://www.osti.gov/servlets/purl/1261351",
+      "filename": "pdfs/物質移動/FB2_07_The_Effect_of_Fluoroethylene_Carbonate_as_an_Additive_on_the_2015.pdf"
+    },
+    {
+      "domain": "物質移動",
+      "title": "SIMULATION OF HEAT AND MASS EXCHANGE PROCESS HEAT EXCHANGER OF SIDE-EVAPORATIVE TYPE",
+      "year": 2022,
+      "cited_by_count": 11,
+      "doi": "https://doi.org/10.37128/2520-6168-2022-1-1",
+      "pdf_url": "http://tetapk.vsau.org/storage/articles/May2022/xDmtuyu4YSi9UWxEQOlk.pdf",
+      "filename": "pdfs/物質移動/FB2_13_SIMULATION_OF_HEAT_AND_MASS_EXCHANGE_PROCESS_HEAT_EXCHANGER__2022.pdf"
+    },
+    {
+      "domain": "物質移動",
+      "title": "Distribution of temperature and moisture content fields in a rectangular beet pulp particle during convection drying",
+      "year": 2018,
+      "cited_by_count": 8,
+      "doi": "https://doi.org/10.20914/2310-1202-2018-1-11-19",
+      "pdf_url": "https://www.vestnik-vsuet.ru/vguit/article/download/1655/2139",
+      "filename": "pdfs/物質移動/FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf"
+    },
+    {
+      "domain": "環境工学",
+      "title": "Summer heatwaves promote blooms of harmful cyanobacteria",
+      "year": 2007,
+      "cited_by_count": 1081,
+      "doi": "https://doi.org/10.1111/j.1365-2486.2007.01510.x",
+      "pdf_url": "https://ir.cwi.nl/pub/12731/12731D.pdf",
+      "filename": "pdfs/環境工学/FB2_03_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf"
+    },
+    {
+      "domain": "環境工学",
+      "title": "Binding and neutralization of vascular endothelial growth factor (VEGF) and related ligands by VEGF Trap, ranibizumab and bevacizumab",
+      "year": 2012,
+      "cited_by_count": 1032,
+      "doi": "https://doi.org/10.1007/s10456-011-9249-6",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10456-011-9249-6.pdf",
+      "filename": "pdfs/環境工学/FB2_04_Binding_and_neutralization_of_vascular_endothelial_growth_fa_2012.pdf"
+    },
+    {
+      "domain": "環境工学",
+      "title": "State of the Art for the Biosorption Process—a Review",
+      "year": 2013,
+      "cited_by_count": 523,
+      "doi": "https://doi.org/10.1007/s12010-013-0269-0",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s12010-013-0269-0.pdf",
+      "filename": "pdfs/環境工学/FB2_07_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf"
+    },
+    {
+      "domain": "環境工学",
+      "title": "dfnWorks: A discrete fracture network framework for modeling subsurface flow and transport",
+      "year": 2015,
+      "cited_by_count": 421,
+      "doi": "https://doi.org/10.1016/j.cageo.2015.08.001",
+      "pdf_url": "https://www.osti.gov/servlets/purl/1227449",
+      "filename": "pdfs/環境工学/FB2_09_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf"
+    },
+    {
+      "domain": "環境工学",
+      "title": "Struvite: a slow-release fertiliser for sustainable phosphorus management?",
+      "year": 2015,
+      "cited_by_count": 382,
+      "doi": "https://doi.org/10.1007/s11104-015-2747-3",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11104-015-2747-3.pdf",
+      "filename": "pdfs/環境工学/FB2_11_Struvite_a_slow-release_fertiliser_for_sustainable_phosphoru_2015.pdf"
+    },
+    {
+      "domain": "環境工学",
+      "title": "A review of operational, regional-scale, chemical weather forecasting models in Europe",
+      "year": 2012,
+      "cited_by_count": 349,
+      "doi": "https://doi.org/10.5194/acp-12-1-2012",
+      "pdf_url": "https://acp.copernicus.org/articles/12/1/2012/acp-12-1-2012.pdf",
+      "filename": "pdfs/環境工学/FB2_13_A_review_of_operational_regional-scale_chemical_weather_fore_2012.pdf"
+    }
+  ]
+}

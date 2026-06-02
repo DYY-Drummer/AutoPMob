@@ -1,0 +1,155 @@
+\documentclass[a5paper,11pt]{ltjsarticle}
+\usepackage[a5paper,margin=10mm,top=12mm,bottom=12mm]{geometry}
+\usepackage{luatexja-fontspec}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,skins}
+
+% Hiragino フォント
+\setmainjfont[BoldFont=Hiragino Sans W6]{Hiragino Sans W3}
+\setmainfont{Helvetica}
+
+% 行間
+\renewcommand{\baselinestretch}{1.25}
+\parindent=0pt
+\setlength{\parskip}{0.5em}
+
+% 色
+\definecolor{accent}{HTML}{2C5282}
+\definecolor{bgmemo}{HTML}{F5F7FA}
+\definecolor{bgtime}{HTML}{FFF5E6}
+
+% タイトル
+\titleformat{\section}{\normalfont\large\bfseries\color{accent}}{}{0em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{}{0em}{}
+\titlespacing*{\section}{0pt}{0.5em}{0.2em}
+\titlespacing*{\subsection}{0pt}{0.3em}{0.1em}
+
+% 話し方メモ
+\newtcolorbox{memo}{
+  colback=bgmemo,colframe=bgmemo,
+  boxrule=0pt,arc=2pt,
+  left=4pt,right=4pt,top=2pt,bottom=2pt,
+}
+
+% 時間表示
+\newtcolorbox{timebox}[1]{
+  colback=bgtime,colframe=bgtime,
+  boxrule=0pt,arc=2pt,
+  left=4pt,right=4pt,top=1pt,bottom=1pt,
+  fontupper=\small,
+  width=auto,enlarge left by=0pt,
+}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries\color{accent} PSE Japan 2026 発表原稿}\\[0.3em]
+\small 丁 一洋（京都大学加納研究室）／約 3 分（920 字）
+\end{center}
+
+\hrule\vspace{0.5em}
+
+% ========== タイトル ==========
+\section*{タイトル・自己紹介 \normalfont\small（約 17 秒）}
+
+本日は「\textbf{変数共有関係を表す数式グラフを用いた GNN に基づく文献からの物理モデル構築}」と題し、京都大学加納研究室の丁が発表いたします。
+
+\textbf{GNN――グラフニューラルネットワーク――}を使って、文献中の数式から物理モデルを自動構築する研究です。
+
+\begin{memo}\small ［一呼吸］\end{memo}
+
+% ========== 背景 ==========
+\section*{背景 \normalfont\small（約 21 秒）}
+
+プロセス産業のデジタルツイン実現には、\textbf{複数の数式の組合せからなる物理モデル}が必要ですが、その構築は専門家頼みで高コストです。
+
+先行研究の自動化手法は数式を単なる文字列として扱うため、\textbf{文献間の記号揺れ}や\textbf{数式の物理的文脈}を捉えきれません。
+
+\begin{memo}\small ［「ここを解決します」と示すつもりで間を取る］\end{memo}
+
+% ========== 提案手法 ==========
+\section*{提案手法 \normalfont\small（約 70 秒）}
+
+本研究では、\textbf{化学工学を中心とした 32 分野の文献}から抽出した\textbf{3,244 個の数式と 3,704 個の変数}をデータベース化し、\textbf{「式と変数を 2 種類のノード、含有関係で辺結びする二部グラフ」}として表現します。
+
+\begin{memo}\small ［ポスター中央の二部グラフ図を指す］\end{memo}
+
+予測は\textbf{2 段階}。
+
+Stage 1 は文章類似度と変数集合の重なりで\textbf{上位 50 式に絞り込み}ます。
+
+Stage 2 では本研究の鍵となる\textbf{「集合認識特徴」}を導入します。\textbf{式を 1 つずつ評価するのではなく、組合せとして評価する}仕組みです。
+
+具体的には、すでに上位 5 式が選ばれているとき、新しい候補式が
+
+\begin{itemize}[leftmargin=1.5em,itemsep=0pt,topsep=0.2em]
+\item ① 不足変数を補えるか
+\item ② 変数の使い方が他の上位と揃っているか
+\item ③ 同じ分野に属するか
+\end{itemize}
+
+――の 3 観点でスコア化します。これと基本特徴 7 個を合わせた\textbf{10 次元}を 2 層のニューラルネットで再ランキングします。
+
+\begin{memo}\small ［CSTR の図を指す］\end{memo}
+
+例えば、上位にすでに\textbf{物質収支の式}が並んでいれば、本手法は\textbf{それを補う反応速度式や滞留時間定義}を優先して上位に押し上げます。これにより、CSTR の動特性に必要な 3 式組合せを正しく取得できます。
+
+\begin{memo}\small ［結果に進む前にひと呼吸］\end{memo}
+
+% ========== 結果 ==========
+\section*{結果 \normalfont\small（約 50 秒）}
+
+評価では、\textbf{1 位の式が正解である割合を示す MRR が 0.98}、上位 3 位以内の正解再現率である Recall@3 が 0.94、ランキング全体の品質を示す MAP が 0.97――\textbf{100 ケース中およそ 96 ケースで 1 位がそのまま正解}という、ほぼ理論限界の精度に達しました。
+
+さらに\textbf{「LLM ―― 大規模言語モデル ―― に直接式を生成させる」}という直感的な比較対象を設けたところ、最新の Claude モデルでも\textbf{MRR は 0.84}止まり。
+
+LLM は標準公式を\textbf{「見つける」}ことはできても、専門分野の数式を\textbf{「上位に正確に並べる」}ことができない。
+
+本手法はこの限界を超え、LLM より\textbf{MRR で +0.14、MAP で +0.15}上回り、\textbf{専門家のモデル構築を支援できる実用水準}に到達しました。
+
+% ========== まとめ ==========
+\section*{まとめ \normalfont\small（約 9 秒）}
+
+以上、二部グラフ表現と集合認識型リランカーで、文献からの物理モデル自動構築を実用に近づけました。
+
+ご清聴ありがとうございました。
+
+\newpage
+
+% ========== Q&A ==========
+\section*{Q\&A 想定}
+
+\subsection*{Q. なぜ「集合として評価」する必要があるんですか？}
+\small
+物理モデルは、物質収支・速度式・状態方程式など\textbf{複数の式が連動して 1 つのシステムを構成}します。1 本ずつ独立に類似度を測ると、同じ式の似た変形を 5 本そろえてしまう失敗が起きます。\textbf{互いを補い合う異なる役割の式群}を取るには、すでに選ばれた式との関係を見る必要があるんです。
+\normalsize
+
+\subsection*{Q. LLM 比較は Claude 1 種だけですか？}
+\small
+はい。Gemini や GPT-4 でも同様の傾向が予想されますが、今後検証予定です。
+\normalsize
+
+\subsection*{Q. Recall@3 が 3 手法とも 0.95 で同じなのはなぜですか？}
+\small
+サンプル 30 件中、正解 4 個のホイスト系 3 件が\textbf{天井問題}（Recall@3 $\leq 0.75$）で上限に達し、全方式が同じ"壁"にぶつかります。MRR と MAP では明確な差が出ています。
+\normalsize
+
+\subsection*{Q. どんな分野の文献ですか？}
+\small
+化学工学を核として、反応工学・プロセス制御・伝熱・流体・物質移動・電気化学・バイオプロセスなど 30 を超える分野を含みます。論文は\textbf{動的プロセス制御や反応器モデリングを中心}に 39 本を採用しました。
+\normalsize
+
+\subsection*{Q. 数式の表記揺れにはどう対応していますか？}
+\small
+文脈テキストを CodeBERT で埋め込み、変数集合を Jaccard 係数で比較。完全一致でなく類似度ベースで吸収しています。
+\normalsize
+
+\subsection*{Q. 10 シードや対応あり t 検定とは何ですか？}
+\small
+同じテストケースに対し異なる手法を評価した結果のペアの差が、偶然ではなく\textbf{統計的に有意かを判定する検定}です。10 回の独立評価（シード）で本手法と古典手法の差が\textbf{p < 0.01}で有意であることを確認しています。
+\normalsize
+
+\end{document}

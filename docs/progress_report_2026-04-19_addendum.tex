@@ -1,0 +1,359 @@
+\documentclass[11pt,a4paper]{ltjsarticle}
+\usepackage{luatexja-fontspec}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{fancyvrb}
+\usepackage{tcolorbox}
+
+\geometry{margin=25mm}
+
+\setmainjfont{Hiragino Mincho ProN}
+\setsansjfont{Hiragino Kaku Gothic ProN}
+\setmonofont{Menlo}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!60!black,
+}
+
+\title{{\sffamily 追補報告：自由度解析による訓練データ品質改善と\\Set-aware グラフ特徴量の提案}}
+\author{かずひろ}
+\date{2026年4月19日}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{本資料の位置づけ}：本資料は2026年4月13日提出の進捗報告（4月17日改訂版、以下「前回報告」）の\textbf{追補}である．前回報告後に実施した(1) 訓練データ品質改善，(2) グラフ特徴量の診断と再設計，(3) 複数式組合せ評価に関する新しい成果を報告する．前回報告で記載した手法・結果と重複する部分は省略している．
+
+%======================================================================
+\section{前回報告からの主な変更点}
+%======================================================================
+
+前回報告の主要結果は，1{,}107訓練ケース・3{,}244式でreranker-10（グラフ特徴量あり）がMRR $\mathbf{0.949 \pm 0.031}$を達成するというものであった．その後の精査により，以下の重要な問題と改善機会が判明した．
+
+\begin{enumerate}[leftmargin=2em, nosep]
+  \item \textbf{訓練データに物理的に解けないケースが含まれていた}：前回報告で指摘した「random\_ioの自由度未検証」の問題を定量的に確認し，1{,}107ケース中約400ケースが自由度不整合（解くべき変数の数が方程式の数より多い）であった．
+  \item \textbf{既存のグラフ特徴量（f7--f9）がクリーンなデータでは有効に機能しない}：自由度検証後に再評価したところ，reranker-10が最良ではなくなり，reranker-7（基本7特徴量のみ）を下回ることが明らかになった．この結果は，従来の結論がデータ品質の問題と絡んでいた可能性を示唆する．
+  \item \textbf{評価指標が複数式の組合せ能力を測っていなかった}：訓練ケースの44\%は2式以上が正解にも関わらず，MRRは「最初に見つかった正解の順位」しか見ておらず，複数式を揃える能力は評価されていなかった．
+  \item \textbf{Set-aware 特徴量の導入で明確な改善}：候補式同士の組合せを捉える3つの新特徴量（gComp, gCoh, gDom）を設計し，複数式タスクで統計的に有意な改善（p $<$ 0.05）を確認した．
+\end{enumerate}
+
+%======================================================================
+\section{訓練データの品質改善：自由度解析の適用}
+%======================================================================
+
+\subsection{自由度解析の定義}
+
+各訓練ケースについて，正解式集合の変数を $V_{\mathrm{model}}$，入力変数（既知）を $V_{\mathrm{in}}$，出力変数（解を求める対象）を $V_{\mathrm{out}}$ とする．以下の全条件を満たすケースのみを採用する．
+
+\begin{enumerate}[leftmargin=2em, nosep]
+  \item $V_{\mathrm{in}} \subseteq V_{\mathrm{model}}$（入力変数は全て式中に現れる）
+  \item $V_{\mathrm{out}} \subseteq V_{\mathrm{model}} \setminus V_{\mathrm{in}}$（出力変数は全て未知側）
+  \item $|V_{\mathrm{model}} \setminus V_{\mathrm{in}}| \le$ 正解式の本数（式の数が未知数以上で物理的に解ける）
+\end{enumerate}
+
+\subsection{フィルタ適用結果}
+
+1{,}107初回ケースのうち，上記3条件を全て満たしたのは707ケース（63.9\%）であった．除外の主な原因は次の通り：
+
+\begin{itemize}[leftmargin=2em, nosep]
+  \item \textbf{swap\_io}: 123件中121件（98\%）が除外．LLM生成元ケースの入出力変数数が元々非対称な例が多く，スワップで自由度不整合が頻発した．
+  \item \textbf{random\_io}: 492件中159件（32\%）が除外．ランダムI/O割当で未知数が方程式数を上回るケースが多かった．
+  \item \textbf{original / context\_paraphrased}: それぞれ約25\%が除外．LLMが生成した元ケース自体に入出力変数の誤りがあった例．
+\end{itemize}
+
+\subsection{可解ケースの追加生成で 1{,}107件に復元}
+
+除外によるデータ不足を補うため，各コアケースについて「正解式集合の変数 $V$ から方程式数 $n_{\mathrm{eq}}$ 個を出力として選び残りを入力とする」アルゴリズム（自由度 $=0$ を構成上保証）で400件のrandom\_ioを追加生成した．
+
+\begin{table}[h]
+\centering
+\caption{自由度検証後の訓練データ内訳（最終1{,}107ケース）}
+\begin{tabular}{llrr}
+\toprule
+バリアント & 初回生成 & 最終採用 & 備考 \\
+\midrule
+original & 123 & 93 & LLM生成の一部を除外 \\
+context\_paraphrased & 369 & 279 & 同上 \\
+swap\_io & 123 & 2 & 98\%除外（手法自体が限定的） \\
+random\_io\_from\_models & 492 & 733 & フィルタ後+追加生成 \\
+\midrule
+\textbf{合計} & \textbf{1{,}107} & \textbf{1{,}107} & \textbf{全件自由度$=0$保証} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{自由度検証後の主要手法MRR再評価}
+
+同一の評価プロトコル（5 seed, source\_id分割）でbaseline / reranker-7 / reranker-10を再評価した結果は次の通り：
+
+\begin{table}[h]
+\centering
+\caption{自由度検証後1{,}107ケースでの主要手法MRR}
+\begin{tabular}{lccc}
+\toprule
+手法 & 初回データMRR & 検証済データMRR & 変化 \\
+\midrule
+baseline & $0.924 \pm 0.040$ & $0.937 \pm 0.045$ & $+0.013$ \\
+reranker-7 & $0.937 \pm 0.018$ & $\mathbf{0.959 \pm 0.036}$ & $+0.022$ \\
+reranker-10 & $\mathbf{0.949 \pm 0.031}$ & $0.939 \pm 0.049$ & $-0.010$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{重要な観察}：
+\begin{itemize}[leftmargin=2em, nosep]
+  \item 全手法でMRRが向上しており，自由度検証が学習と評価の品質を上げている．
+  \item 一方で，\textbf{reranker-10の優位性は消失し，reranker-7が最良となった}．
+  \item これは従来「グラフ特徴量が有効」とされてきた主張が，物理的に解けない不正ケースに依存していた可能性を示す．グラフ特徴量の現行設計（f7: 2ホップ到達率，f8: 近傍Jaccard，f9: 間接ブリッジ比率）を見直す必要がある．
+\end{itemize}
+
+%======================================================================
+\section{既存グラフ特徴量の診断}
+%======================================================================
+
+既存3特徴量の識別力を診断するため，Stage 1 Top-50候補ペアを収集し，各特徴量の正例/負例分布および単独AUCを分析した．
+
+\begin{table}[h]
+\centering
+\caption{特徴量別の単独AUC（test setのStage 1 Top-50候補ペア）}
+\begin{tabular}{lccc}
+\toprule
+特徴量 & 正例平均 & 負例平均 & AUC \\
+\midrule
+f1\_io\_jaccard（基本） & 0.710 & 0.147 & $\mathbf{0.977}$ \\
+f5\_reverse\_cov（基本） & 0.979 & 0.300 & $\mathbf{0.977}$ \\
+f3\_input\_cov（基本） & 0.720 & 0.214 & 0.907 \\
+f2\_svd\_cos（基本） & 0.426 & 0.160 & 0.820 \\
+f0\_tfidf\_cos（基本） & 0.162 & 0.072 & 0.794 \\
+f6\_domain\_match（基本） & 0.164 & 0.066 & 0.549 \\
+\midrule
+f7\_2hop\_reach（グラフ） & 0.995 & 0.798 & 0.644 \\
+f8\_neighbor\_jaccard（グラフ） & 0.733 & 0.364 & 0.810 \\
+f9\_bridge\_ratio（グラフ） & 0.021 & 0.525 & $\mathbf{0.087}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{発見}：
+\begin{enumerate}[leftmargin=2em, nosep]
+  \item \textbf{f9\_bridge\_ratioはAUC 0.087で逆信号}：正例では値が低く（平均0.021）負例で高い（平均0.525）．学習時にモデルを混乱させる要因となる．
+  \item \textbf{f7\_2hop\_reachは値が飽和}：正例99.5\%，負例79.8\%と両方とも高く，ユニーク値は21個のみで識別力が低い．
+  \item \textbf{f8\_neighbor\_jaccardはf1/f5と高相関}（それぞれ0.63, 0.70）で冗長．
+\end{enumerate}
+
+これらの知見から，現行グラフ特徴量は「候補単体」を評価する設計であり，かつ基本特徴量と冗長または逆信号であるため，本タスクに効果的でないことが判明した．
+
+%======================================================================
+\section{Set-aware グラフ特徴量の設計}
+%======================================================================
+
+既存グラフ特徴量の限界を踏まえ，\textbf{候補同士の組合せを捉える}新しい特徴量を設計した．前提として，複数式の正解集合では「式同士が同じ物理モデルを記述」する関係があり，この情報を特徴量として取り込むのが狙いである．
+
+\subsection{3つのSet-aware特徴量の定義}
+
+Stage 1でランク付けされた上位 $K_{\mathrm{ref}}=5$ 件を参照集合 $\mathcal{S}$ とする．候補 $c$ について，以下の3特徴量を計算する（候補自身が $\mathcal{S}$ に含まれる場合は除外）．
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[gComp（補完性）：$\displaystyle \frac{|(V_c \cap V_q) \setminus \bigcup_{s \in \mathcal{S}} V_s|}{|V_q|}$]
+  候補が参照集合に\textbf{欠けている}クエリ変数をどれだけ補うかを測る．複数式の正解集合は互いに異なる変数を扱うため，補完性の高い候補が正解である可能性が高い．
+
+  \item[gCoh（一貫性）：$\displaystyle \frac{|V_c \cap \bigcup_{s \in \mathcal{S}} V_s|}{|V_c|}$]
+  候補の変数のうち，参照集合と共有される割合．同じ物理モデルを記述する式群は変数を共有しやすいため，一貫性の高い候補は「同じモデル群」の一員である可能性が高い．
+
+  \item[gDom（ドメイン一致）：$\displaystyle \frac{|\{s \in \mathcal{S} : \mathrm{dom}(s) = \mathrm{dom}(c)\}|}{|\mathcal{S}|}$]
+  候補と同じドメイン（分野）ラベルを持つ参照候補の割合．同ドメインに複数候補が集中していれば，そこに正解集合が密集している可能性が高い．
+\end{description}
+
+ここで $V_c$, $V_s$ は式の変数集合，$V_q$ はクエリの入出力変数集合，$\mathrm{dom}(\cdot)$ は式のドメインラベルである．
+
+\subsection{reranker-10Sの構成}
+
+既存グラフ特徴量の有害性を考慮し，新手法\textbf{reranker-10S}は基本7特徴量 + Set-aware 3特徴量の\textbf{10次元}構成とする（reranker-10の既存グラフ3特徴量は含まない）．
+
+\begin{equation*}
+  \text{reranker-10S} = \underbrace{\text{基本7}}_{\text{TF-IDF, Jaccard, SVD, 被覆率等}} + \underbrace{\text{Set-aware 3}}_{gComp,\, gCoh,\, gDom}
+\end{equation*}
+
+%======================================================================
+\section{評価結果}
+%======================================================================
+
+\subsection{複数式評価指標の導入}
+
+従来のMRR（最初に見つかった正解の順位の逆数）は単発 retrieval の能力を測るが，\textbf{複数式の組合せを揃える能力は測らない}．本研究の訓練データの44\%は2式以上の正解を持つため，以下の指標を追加で導入した．
+
+\begin{description}[style=nextline, leftmargin=2em, nosep]
+  \item[MRR\_worst] 各ケース内の\textbf{最下位の正解}の逆順位．全ての正解を上位に揃える能力を測る．
+  \item[Recall@$K$] 上位 $K$ 件に含まれる正解の割合（情報検索の標準指標）．$|R_q \cap \mathrm{Top}_K(q)| / |R_q|$ をクエリで平均．
+  \item[MAP (Mean Average Precision)] 情報検索の標準指標．複数正解の順位を総合的に評価する．
+  \item[複数式のみMRR\_worst / Recall@3] 2式以上正解のケース（483件）に限定した評価．
+\end{description}
+
+\subsection{5 seed評価：set-aware特徴量の効果}
+
+\begin{table}[h]
+\centering
+\caption{5 seed評価結果（自由度検証済1{,}107ケース）}
+\small
+\begin{tabular}{lccccc}
+\toprule
+手法 & MRR\_first & FullR@3 & MAP & 複数式FullR@3 & 複数式MRR\_worst \\
+\midrule
+baseline & 0.937 & 0.849 & 0.932 & 0.571 & 0.364 \\
+reranker-7 & 0.959 & 0.881 & 0.953 & 0.649 & 0.391 \\
+reranker-10（既存グラフ） & 0.939 & 0.885 & 0.947 & 0.656 & 0.393 \\
+\textbf{reranker-10S（set-aware）} & $\mathbf{0.981}$ & $\mathbf{0.904}$ & $\mathbf{0.974}$ & $\mathbf{0.713}$ & $\mathbf{0.409}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+reranker-10Sが\textbf{全指標で最良}．特に複数式タスクのFullR@3で$+6.4$\%，複数式MRR\_worstで$+1.8$\%の改善を示した．
+
+\subsection{アブレーション：各Set-aware特徴量の寄与}
+
+\begin{table}[h]
+\centering
+\caption{Set-aware特徴量の個別寄与（5 seed, 単独追加）}
+\small
+\begin{tabular}{lcccc}
+\toprule
+手法 & MRR\_first & FullR@3 & 複数式FullR@3 & 複数式MRR\_worst \\
+\midrule
+reranker-7 & 0.959 & 0.881 & 0.649 & 0.391 \\
+reranker-7+gComp & 0.974 & 0.873 & 0.633 & 0.387 \\
+reranker-7+gCoh & 0.959 & 0.866 & 0.618 & 0.388 \\
+reranker-7+gDom & 0.961 & 0.900 & $\mathbf{0.705}$ & $\mathbf{0.402}$ \\
+\textbf{reranker-10S（全3）} & $\mathbf{0.981}$ & $\mathbf{0.904}$ & $\mathbf{0.713}$ & $\mathbf{0.409}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{各特徴量の役割}：
+\begin{itemize}[leftmargin=2em, nosep]
+  \item \textbf{gDom（ドメイン一致）}が複数式タスクの主力．単独で複数式FullR@3を$+5.6$\%押し上げる．
+  \item \textbf{gComp（補完性）}は単発MRRを$+1.5$\%向上させるが，複数式では単独では逆効果（$-1.6$\%）．
+  \item \textbf{gCoh（一貫性）}は単独では効果が弱いが，組合せ時には寄与する．
+  \item 3特徴量の\textbf{組合せが最良}：単独のどれよりも良い（明確な相乗効果）．
+\end{itemize}
+
+\subsection{10 seed評価と統計的有意性}
+
+5 seedでの成果が偶然でないことを確認するため，10 seedで再評価し，対応t検定（paired t-test）で有意性を計算した．
+
+\begin{table}[h]
+\centering
+\caption{10 seed評価：reranker-10S vs reranker-7の差分と有意性（paired $t$-test）}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+指標 & r7平均 & r10S平均 & 差分 & $t$値 & $p$値（片側） & 判定 \\
+\midrule
+全体 MRR\_first & 0.955 & 0.965 & $+0.010$ & 1.28 & 0.116 & 有意差なし \\
+全体 FullR@3 & 0.826 & 0.854 & $+0.028$ & 2.25 & $0.025$ & $\star$ 有意 ($p<0.05$) \\
+\textbf{MAP} & 0.936 & 0.955 & $+0.019$ & 3.46 & $\mathbf{0.004}$ & $\star\star$ 高い有意性 \\
+\textbf{複数式 FullR@3} & 0.628 & 0.693 & $\mathbf{+0.065}$ & 2.12 & $0.032$ & $\star$ 有意 \\
+\textbf{複数式 MRR\_worst} & 0.376 & 0.397 & $+0.021$ & 2.28 & $0.024$ & $\star$ 有意 \\
+複数式 MRR\_first & 0.936 & 0.953 & $+0.018$ & 1.04 & 0.162 & 有意差なし \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{10 seed間の勝敗}
+\small
+\begin{tabular}{lccc}
+\toprule
+指標 & r10S勝 & 同点 & r10S負 \\
+\midrule
+MAP & \textbf{9} & 1 & \textbf{0} \\
+複数式 FullR@3 & 7 & 1 & 2 \\
+全体 MRR\_first & 7 & 1 & 2 \\
+全体 FullR@3 & 6 & 2 & 2 \\
+複数式 MRR\_worst & 6 & 1 & 3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{結論}：
+\begin{itemize}[leftmargin=2em, nosep]
+  \item \textbf{MAPの改善は高い有意性}（$p=0.004$, 9勝1分0敗）で，最も頑健な成果．
+  \item \textbf{複数式FullR@3 と 複数式MRR\_worst は統計的に有意}（$p < 0.05$, 片側）．
+  \item 「複数式タスクでset-awareグラフ特徴量が有効」という主張は統計的に支持される．
+  \item MRR\_firstは差分は正だが有意差なし（単発タスクではbase 7で既に頭打ちに近い）．
+\end{itemize}
+
+%======================================================================
+\section{考察}
+%======================================================================
+
+\subsection{なぜ既存グラフ特徴量は効かず，Set-awareは効くのか}
+
+既存のf7--f9は「候補式と\textbf{クエリ変数}との関係」を測る．しかし，クエリ変数との関係はf1（Jaccard）やf5（逆被覆率）など基本特徴量で既に強く捉えられており，グラフ経由の間接情報は冗長となる（f7/f8）．f9に至っては正例で低く負例で高いという逆信号を示した．
+
+一方Set-aware特徴量は「候補式と\textbf{他の候補式}との関係」を測る．これは基本特徴量が全く捉えていない情報源であり，特に複数式の組合せ能力評価において有効である．
+
+\subsection{複数式タスクにおけるGNN/グラフ情報の価値}
+
+本研究の訓練ケースの44\%は2式以上の正解を持つ．このような\textbf{複数式組合せ retrieval} では，単一の式の「クエリとの類似度」だけでは不十分で，\textbf{候補同士の相補性や一貫性}が重要となる．Set-aware特徴量はこの直観を直接定式化したものであり，複数式FullR@3で$+6.5$\%という大きな改善を示した．
+
+これは，当初の研究動機である「数式間の変数共有関係から物理モデル群を同定する」というGNN/グラフベース手法の価値を\textbf{複数式タスクで}明確に示す結果である．
+
+\subsection{従来結論の修正}
+
+前回報告での「reranker-10（既存グラフ特徴量あり）が最良」という結論は，自由度検証済みデータでは成立しない．一方で本追補で示した\textbf{「set-aware特徴量を用いたreranker-10Sが最良」}という結論は，統計的有意性を伴って支持される．すなわち，\textbf{グラフ情報の活用方針を見直すことで，GNNベース手法の価値は依然として示せる}というのが現段階の結論である．
+
+%======================================================================
+\section{論文化の方向性}
+%======================================================================
+
+\begin{enumerate}[leftmargin=2em, nosep]
+  \item \textbf{主題}：「Set-aware graph features for multi-equation physical model retrieval」
+  \item \textbf{主要な貢献}：
+    \begin{itemize}[nosep]
+      \item 訓練データの自由度解析による品質改善手法の提案
+      \item 候補間関係を捉えるset-awareグラフ特徴量の設計
+      \item 複数式 retrieval 評価指標の導入と統計的有意性の確認
+    \end{itemize}
+  \item \textbf{結果のハイライト}：
+    \begin{itemize}[nosep]
+      \item MAP: $0.936 \to 0.955$（$p = 0.004$）
+      \item 複数式FullR@3: $0.628 \to 0.693$（$p = 0.032$）
+      \item 既存グラフ特徴量（f7--f9）の限界と新設計の必要性を診断で示す
+    \end{itemize}
+  \item \textbf{ネガティブ結果も含む誠実な記述}：
+    \begin{itemize}[nosep]
+      \item 既存グラフ特徴量は自由度検証済みデータでは逆効果となった事実を報告．
+      \item データ品質改善（自由度解析）による改善も主効果として明示．
+    \end{itemize}
+\end{enumerate}
+
+%======================================================================
+\section{今後の計画（更新版）}
+%======================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+優先度 & 項目 & 目的 \\
+\midrule
+高 & 論文執筆（本追補の成果を中心に） & Set-aware 特徴量の意義を主題に \\
+高 & Set-aware特徴量の拡張 & 参照集合サイズ $K_{\mathrm{ref}}$ の最適化，listwise 学習の検証 \\
+中 & 訓練ケース増強（$123 \to 200+$コア） & API失敗分2バッチの再実行 \\
+中 & swap\_io の再設計 & 入出力対称性を持つ元ケースのみで再生成 \\
+低 & 5{,}000式超への拡大 & スケーリング曲線の飽和点同定 \\
+低 & 変数記述の意味類似度（CodeBERT） & 表記揺れ対応の学習的アプローチ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

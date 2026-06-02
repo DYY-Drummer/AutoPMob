@@ -1,0 +1,947 @@
+{
+  "filters": "open_access.is_oa:true,publication_year:>2005,cited_by_count:>5,type:article|review|book-chapter|preprint|reference-entry|report",
+  "summary": [
+    {
+      "domain": "HVAC",
+      "existing_before": 0,
+      "candidates": 25,
+      "with_pdf": 25,
+      "newly_downloaded": 10,
+      "total_after": 10
+    },
+    {
+      "domain": "食品工学",
+      "existing_before": 1,
+      "candidates": 20,
+      "with_pdf": 20,
+      "newly_downloaded": 8,
+      "total_after": 9
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "existing_before": 1,
+      "candidates": 18,
+      "with_pdf": 18,
+      "newly_downloaded": 7,
+      "total_after": 8
+    },
+    {
+      "domain": "輸送現象",
+      "existing_before": 1,
+      "candidates": 45,
+      "with_pdf": 45,
+      "newly_downloaded": 9,
+      "total_after": 10
+    },
+    {
+      "domain": "熱力学（応用）",
+      "existing_before": 1,
+      "candidates": 8,
+      "with_pdf": 8,
+      "newly_downloaded": 4,
+      "total_after": 5
+    },
+    {
+      "domain": "薬学",
+      "existing_before": 2,
+      "candidates": 41,
+      "with_pdf": 41,
+      "newly_downloaded": 8,
+      "total_after": 10
+    },
+    {
+      "domain": "振動学",
+      "existing_before": 2,
+      "candidates": 18,
+      "with_pdf": 18,
+      "newly_downloaded": 8,
+      "total_after": 10
+    },
+    {
+      "domain": "空力",
+      "existing_before": 3,
+      "candidates": 8,
+      "with_pdf": 8,
+      "newly_downloaded": 3,
+      "total_after": 6
+    },
+    {
+      "domain": "構造力学",
+      "existing_before": 3,
+      "candidates": 18,
+      "with_pdf": 18,
+      "newly_downloaded": 5,
+      "total_after": 8
+    },
+    {
+      "domain": "反応工学（基礎）",
+      "existing_before": 3,
+      "candidates": 18,
+      "with_pdf": 18,
+      "newly_downloaded": 6,
+      "total_after": 9
+    },
+    {
+      "domain": "原子力工学",
+      "existing_before": 3,
+      "candidates": 12,
+      "with_pdf": 12,
+      "newly_downloaded": 6,
+      "total_after": 9
+    },
+    {
+      "domain": "半導体物理",
+      "existing_before": 3,
+      "candidates": 9,
+      "with_pdf": 9,
+      "newly_downloaded": 7,
+      "total_after": 10
+    },
+    {
+      "domain": "分離プロセス",
+      "existing_before": 3,
+      "candidates": 15,
+      "with_pdf": 15,
+      "newly_downloaded": 6,
+      "total_after": 9
+    },
+    {
+      "domain": "伝熱（基礎）",
+      "existing_before": 3,
+      "candidates": 25,
+      "with_pdf": 25,
+      "newly_downloaded": 5,
+      "total_after": 8
+    }
+  ],
+  "papers": [
+    {
+      "domain": "HVAC",
+      "title": "Machine learning in materials informatics: recent applications and prospects",
+      "year": 2017,
+      "cited_by_count": 1735,
+      "doi": "https://doi.org/10.1038/s41524-017-0056-5",
+      "pdf_url": "https://www.nature.com/articles/s41524-017-0056-5.pdf",
+      "filename": "pdfs/HVAC/FB05_Machine_learning_in_materials_informatics_recent_application_2017.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "LES over RANS in building simulation for outdoor and indoor applications: A foregone conclusion?",
+      "year": 2018,
+      "cited_by_count": 524,
+      "doi": "https://doi.org/10.1007/s12273-018-0459-3",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007%2Fs12273-018-0459-3.pdf",
+      "filename": "pdfs/HVAC/FB07_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Review of current status, requirements and opportunities for building performance simulation of adaptive facades",
+      "year": 2016,
+      "cited_by_count": 252,
+      "doi": "https://doi.org/10.1080/19401493.2016.1152303",
+      "pdf_url": "https://www.tandfonline.com/doi/pdf/10.1080/19401493.2016.1152303?needAccess=true",
+      "filename": "pdfs/HVAC/FB10_Review_of_current_status_requirements_and_opportunities_for__2016.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Operating characteristics of transcritical CO2 heat pump for simultaneous water cooling and heating",
+      "year": 2011,
+      "cited_by_count": 232,
+      "doi": "https://doi.org/10.2478/v10173-012-0026-8",
+      "pdf_url": "http://journals.pan.pl/Content/94368/PDF/02_paper.pdf",
+      "filename": "pdfs/HVAC/FB11_Operating_characteristics_of_transcritical_CO2_heat_pump_for_2011.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Computational intelligence techniques for HVAC systems: A review",
+      "year": 2016,
+      "cited_by_count": 229,
+      "doi": "https://doi.org/10.1007/s12273-016-0285-4",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007%2Fs12273-016-0285-4.pdf",
+      "filename": "pdfs/HVAC/FB12_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Reduced cognitive function during a heat wave among residents of non-air-conditioned buildings: An observational study of young adults in the summer of 2016",
+      "year": 2018,
+      "cited_by_count": 192,
+      "doi": "https://doi.org/10.1371/journal.pmed.1002605",
+      "pdf_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.1002605&type=printable",
+      "filename": "pdfs/HVAC/FB13_Reduced_cognitive_function_during_a_heat_wave_among_resident_2018.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Learning-based CO2 concentration prediction: Application to indoor air quality control using demand-controlled ventilation",
+      "year": 2021,
+      "cited_by_count": 170,
+      "doi": "https://doi.org/10.1016/j.buildenv.2021.108164",
+      "pdf_url": "https://scholarworks.indianapolis.iu.edu/bitstreams/08e33af4-7caf-4657-a8c0-f017c90ec995/download",
+      "filename": "pdfs/HVAC/FB15_Learning-based_CO2_concentration_prediction_Application_to_i_2021.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Decentralized Participation of Flexible Demand in Electricity Markets—Part II: Application With Electric Vehicles and Heat Pump Systems",
+      "year": 2013,
+      "cited_by_count": 162,
+      "doi": "https://doi.org/10.1109/tpwrs.2013.2245687",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/59/6627990/06515366.pdf",
+      "filename": "pdfs/HVAC/FB17_Decentralized_Participation_of_Flexible_Demand_in_Electricit_2013.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Electrochemical Compression Technologies for High-Pressure Hydrogen: Current Status, Challenges and Perspective",
+      "year": 2020,
+      "cited_by_count": 158,
+      "doi": "https://doi.org/10.1007/s41918-020-00077-0",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s41918-020-00077-0.pdf",
+      "filename": "pdfs/HVAC/FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf"
+    },
+    {
+      "domain": "HVAC",
+      "title": "Principles of Direct Thermoelectric Conversion",
+      "year": 2011,
+      "cited_by_count": 9,
+      "doi": "https://doi.org/10.5772/20619",
+      "pdf_url": "https://www.intechopen.com/citation-pdf-url/20001",
+      "filename": "pdfs/HVAC/FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "Improving Photosynthetic Efficiency for Greater Yield",
+      "year": 2010,
+      "cited_by_count": 1894,
+      "doi": "https://doi.org/10.1146/annurev-arplant-042809-112206",
+      "pdf_url": "https://www.annualreviews.org/doi/pdf/10.1146/annurev-arplant-042809-112206",
+      "filename": "pdfs/食品工学/FB01_Improving_Photosynthetic_Efficiency_for_Greater_Yield_2010.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "Analysis and quantification of the diversities of aerosol life cycles within AeroCom",
+      "year": 2006,
+      "cited_by_count": 1479,
+      "doi": "https://doi.org/10.5194/acp-6-1777-2006",
+      "pdf_url": "https://acp.copernicus.org/articles/6/1777/2006/acp-6-1777-2006.pdf",
+      "filename": "pdfs/食品工学/FB02_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "Wood modification by heat treatment: A review",
+      "year": 2008,
+      "cited_by_count": 820,
+      "doi": "https://doi.org/10.15376/biores.4.1.esteves",
+      "pdf_url": "https://doi.org/10.15376/biores.4.1.esteves",
+      "filename": "pdfs/食品工学/FB03_Wood_modification_by_heat_treatment_A_review_2008.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "The Future of Pharmaceutical Manufacturing Sciences",
+      "year": 2015,
+      "cited_by_count": 430,
+      "doi": "https://doi.org/10.1002/jps.24594",
+      "pdf_url": "http://jpharmsci.org/article/S0022354916301514/pdf",
+      "filename": "pdfs/食品工学/FB05_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "Fused Deposition Modeling (FDM) 3D Printed Tablets for Intragastric Floating Delivery of Domperidone",
+      "year": 2017,
+      "cited_by_count": 282,
+      "doi": "https://doi.org/10.1038/s41598-017-03097-x",
+      "pdf_url": "https://www.nature.com/articles/s41598-017-03097-x.pdf",
+      "filename": "pdfs/食品工学/FB08_Fused_Deposition_Modeling_FDM_3D_Printed_Tablets_for_Intraga_2017.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "A review of multilayer and composite films and coatings for active biodegradable packaging",
+      "year": 2022,
+      "cited_by_count": 228,
+      "doi": "https://doi.org/10.1038/s41538-022-00132-8",
+      "pdf_url": "https://www.nature.com/articles/s41538-022-00132-8.pdf",
+      "filename": "pdfs/食品工学/FB11_A_review_of_multilayer_and_composite_films_and_coatings_for__2022.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "Latent thermal energy storage for solar process heat applications at medium-high temperatures – A review",
+      "year": 2018,
+      "cited_by_count": 184,
+      "doi": "https://doi.org/10.1016/j.solener.2018.06.101",
+      "pdf_url": "https://e-spacio.uned.es/bitstreams/45dae9eb-b0a2-480b-b550-04e6460258a4/download",
+      "filename": "pdfs/食品工学/FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf"
+    },
+    {
+      "domain": "食品工学",
+      "title": "Radio-Frequency Applications for Food Processing and Safety",
+      "year": 2018,
+      "cited_by_count": 173,
+      "doi": "https://doi.org/10.1146/annurev-food-041715-033038",
+      "pdf_url": "https://www.annualreviews.org/doi/pdf/10.1146/annurev-food-041715-033038",
+      "filename": "pdfs/食品工学/FB16_Radio-Frequency_Applications_for_Food_Processing_and_Safety_2018.pdf"
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "title": "Simulation of the Undiseased Human Cardiac Ventricular Action Potential: Model Formulation and Experimental Validation",
+      "year": 2011,
+      "cited_by_count": 1236,
+      "doi": "https://doi.org/10.1371/journal.pcbi.1002061",
+      "pdf_url": "https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1002061&type=printable",
+      "filename": "pdfs/電気化学_基礎/FB01_Simulation_of_the_Undiseased_Human_Cardiac_Ventricular_Actio_2011.pdf"
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "title": "Effect of Temperature on the Aging rate of Li Ion Battery Operating above Room Temperature",
+      "year": 2015,
+      "cited_by_count": 567,
+      "doi": "https://doi.org/10.1038/srep12967",
+      "pdf_url": "https://www.nature.com/articles/srep12967.pdf",
+      "filename": "pdfs/電気化学_基礎/FB03_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf"
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "title": "Inhibited proton transfer enhances Au-catalyzed CO <sub>2</sub> -to-fuels selectivity",
+      "year": 2016,
+      "cited_by_count": 402,
+      "doi": "https://doi.org/10.1073/pnas.1602984113",
+      "pdf_url": "https://www.pnas.org/content/pnas/113/32/E4585.full.pdf",
+      "filename": "pdfs/電気化学_基礎/FB05_Inhibited_proton_transfer_enhances_Au-catalyzed_CO_sub_2_sub_2016.pdf"
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "title": "Reevaluation of Performance of Electric Double-layer Capacitors from Constant-current Charge/Discharge and Cyclic Voltammetry",
+      "year": 2016,
+      "cited_by_count": 218,
+      "doi": "https://doi.org/10.1038/srep38568",
+      "pdf_url": "https://www.nature.com/articles/srep38568.pdf",
+      "filename": "pdfs/電気化学_基礎/FB09_Reevaluation_of_Performance_of_Electric_Double-layer_Capacit_2016.pdf"
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "title": "Multiple positive solutions to a coupled systems of nonlinear fractional differential equations",
+      "year": 2016,
+      "cited_by_count": 18,
+      "doi": "https://doi.org/10.1186/s40064-016-2656-9",
+      "pdf_url": "https://springerplus.springeropen.com/track/pdf/10.1186/s40064-016-2656-9",
+      "filename": "pdfs/電気化学_基礎/FB13_Multiple_positive_solutions_to_a_coupled_systems_of_nonlinea_2016.pdf"
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "title": "A computational neuron model based on Poisson-Nernst-Planck theory",
+      "year": 2008,
+      "cited_by_count": 14,
+      "doi": "https://doi.org/10.21914/anziamj.v50i0.1390",
+      "pdf_url": "https://journal.austms.org.au/ojs/index.php/ANZIAMJ/article/download/1390/1123",
+      "filename": "pdfs/電気化学_基礎/FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf"
+    },
+    {
+      "domain": "電気化学（基礎）",
+      "title": "Ionic interactions in biological and physical systems: a variational treatment",
+      "year": 2012,
+      "cited_by_count": 14,
+      "doi": "https://doi.org/10.1039/c2fd20066j",
+      "pdf_url": "https://arxiv.org/pdf/1206.1517",
+      "filename": "pdfs/電気化学_基礎/FB15_Ionic_interactions_in_biological_and_physical_systems_a_vari_2012.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "Theory of Star Formation",
+      "year": 2007,
+      "cited_by_count": 2431,
+      "doi": "https://doi.org/10.1146/annurev.astro.45.051806.110602",
+      "pdf_url": "https://arxiv.org/pdf/0707.3514",
+      "filename": "pdfs/輸送現象/FB02_Theory_of_Star_Formation_2007.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "Redox flow batteries: a review",
+      "year": 2011,
+      "cited_by_count": 1998,
+      "doi": "https://doi.org/10.1007/s10800-011-0348-2",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10800-011-0348-2.pdf",
+      "filename": "pdfs/輸送現象/FB03_Redox_flow_batteries_a_review_2011.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "On the convective heat and zero nanoparticle mass flux conditions in the flow of 3D MHD Couple Stress nanofluid over an exponentially stretched surface",
+      "year": 2019,
+      "cited_by_count": 63,
+      "doi": "https://doi.org/10.1038/s41598-018-37267-2",
+      "pdf_url": "https://www.nature.com/articles/s41598-018-37267-2.pdf",
+      "filename": "pdfs/輸送現象/FB11_On_the_convective_heat_and_zero_nanoparticle_mass_flux_condi_2019.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "Heat and mass transfer of generalized fourier and Fick's law for second-grade fluid flow at slendering vertical Riga sheet",
+      "year": 2023,
+      "cited_by_count": 56,
+      "doi": "https://doi.org/10.1016/j.heliyon.2023.e14250",
+      "pdf_url": "http://www.cell.com/article/S2405844023014573/pdf",
+      "filename": "pdfs/輸送現象/FB15_Heat_and_mass_transfer_of_generalized_fourier_and_Fick_s_law_2023.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "Features of Cu and TiO2 in the flow of engine oil subject to thermal jump conditions",
+      "year": 2021,
+      "cited_by_count": 52,
+      "doi": "https://doi.org/10.1038/s41598-021-99045-x",
+      "pdf_url": "https://www.nature.com/articles/s41598-021-99045-x.pdf",
+      "filename": "pdfs/輸送現象/FB18_Features_of_Cu_and_TiO2_in_the_flow_of_engine_oil_subject_to_2021.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "A study of triple-mass diffusion species and energy transfer in Carreau–Yasuda material influenced by activation energy and heat source",
+      "year": 2022,
+      "cited_by_count": 42,
+      "doi": "https://doi.org/10.1038/s41598-022-13890-y",
+      "pdf_url": "https://www.nature.com/articles/s41598-022-13890-y.pdf",
+      "filename": "pdfs/輸送現象/FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "The modified finite element method for heat and mass transfer of unsteady reacting flow with mixed convection",
+      "year": 2022,
+      "cited_by_count": 36,
+      "doi": "https://doi.org/10.3389/fphy.2022.952787",
+      "pdf_url": "https://www.frontiersin.org/articles/10.3389/fphy.2022.952787/pdf",
+      "filename": "pdfs/輸送現象/FB27_The_modified_finite_element_method_for_heat_and_mass_transfe_2022.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "Double diffusive MHD stagnation point flow of second grade fluid in non-Darcy porous media under radiation effects",
+      "year": 2025,
+      "cited_by_count": 19,
+      "doi": "https://doi.org/10.1038/s41598-024-84562-2",
+      "pdf_url": "https://www.nature.com/articles/s41598-024-84562-2.pdf",
+      "filename": "pdfs/輸送現象/FB36_Double_diffusive_MHD_stagnation_point_flow_of_second_grade_f_2025.pdf"
+    },
+    {
+      "domain": "輸送現象",
+      "title": "Numerical simulation of two-phase multicomponent flow with reactive transport in porous media: application to geological sequestration of CO<sub>2</sub>",
+      "year": 2015,
+      "cited_by_count": 17,
+      "doi": "https://doi.org/10.1051/proc/201550002",
+      "pdf_url": "https://www.esaim-proc.org/articles/proc/pdf/2015/03/proc155002.pdf",
+      "filename": "pdfs/輸送現象/FB38_Numerical_simulation_of_two-phase_multicomponent_flow_with_r_2015.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "Review: liquid phase sintering",
+      "year": 2008,
+      "cited_by_count": 1377,
+      "doi": "https://doi.org/10.1007/s10853-008-3008-0",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10853-008-3008-0.pdf",
+      "filename": "pdfs/熱力学_応用/FB03_Review_liquid_phase_sintering_2008.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "A Quantitative Exploration of Two Teachers with Contrasting Emotions: Intra-Individual Process Analyses of Physiology and Interpersonal Behavior",
+      "year": 2018,
+      "cited_by_count": 103,
+      "doi": "https://doi.org/10.14786/flr.v6i3.372",
+      "pdf_url": "https://journals.sfu.ca/flr/index.php/journal/article/download/372/483",
+      "filename": "pdfs/熱力学_応用/FB04_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting__2018.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "Thermodynamics and kinetics of crystallization of flexible molecules",
+      "year": 2008,
+      "cited_by_count": 20,
+      "doi": "https://doi.org/10.1002/polb.21597",
+      "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/polb.21597",
+      "filename": "pdfs/熱力学_応用/FB06_Thermodynamics_and_kinetics_of_crystallization_of_flexible_m_2008.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "Physicochemical Properties and Solubility of Hydrochloride Mucolytic Agents",
+      "year": 2021,
+      "cited_by_count": 6,
+      "doi": "https://doi.org/10.1007/s10953-021-01068-5",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10953-021-01068-5.pdf",
+      "filename": "pdfs/熱力学_応用/FB07_Physicochemical_Properties_and_Solubility_of_Hydrochloride_M_2021.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "Basic Concepts in Population Modeling, Simulation, and Model‐Based Drug Development—Part 2: Introduction to Pharmacokinetic Modeling Methods",
+      "year": 2013,
+      "cited_by_count": 874,
+      "doi": "https://doi.org/10.1038/psp.2013.14",
+      "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1038/psp.2013.14",
+      "filename": "pdfs/薬学/FB02_Basic_Concepts_in_Population_Modeling_Simulation_and_Model_B_2013.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "Clinical Pharmacokinetics and Pharmacodynamics of Propofol",
+      "year": 2018,
+      "cited_by_count": 780,
+      "doi": "https://doi.org/10.1007/s40262-018-0672-3",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s40262-018-0672-3.pdf",
+      "filename": "pdfs/薬学/FB03_Clinical_Pharmacokinetics_and_Pharmacodynamics_of_Propofol_2018.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "Decomposition of skin conductance data by means of nonnegative deconvolution",
+      "year": 2010,
+      "cited_by_count": 589,
+      "doi": "https://doi.org/10.1111/j.1469-8986.2009.00972.x",
+      "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/j.1469-8986.2009.00972.x",
+      "filename": "pdfs/薬学/FB05_Decomposition_of_skin_conductance_data_by_means_of_nonnegati_2010.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "Basic Concepts in Physiologically Based Pharmacokinetic Modeling in Drug Discovery and Development",
+      "year": 2013,
+      "cited_by_count": 578,
+      "doi": "https://doi.org/10.1038/psp.2013.41",
+      "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1038/psp.2013.41",
+      "filename": "pdfs/薬学/FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "A review of methods for the calculation of solution free energies and the modelling of systems in solution",
+      "year": 2015,
+      "cited_by_count": 520,
+      "doi": "https://doi.org/10.1039/c5cp00288e",
+      "pdf_url": "https://pubs.rsc.org/en/content/articlepdf/2015/cp/c5cp00288e",
+      "filename": "pdfs/薬学/FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "Sobol Sensitivity Analysis: A Tool to Guide the Development and Evaluation of Systems Pharmacology Models",
+      "year": 2015,
+      "cited_by_count": 462,
+      "doi": "https://doi.org/10.1002/psp4.6",
+      "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/psp4.6",
+      "filename": "pdfs/薬学/FB08_Sobol_Sensitivity_Analysis_A_Tool_to_Guide_the_Development_a_2015.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "Experimental and Computational Methods Pertaining to Drug Solubility",
+      "year": 2012,
+      "cited_by_count": 84,
+      "doi": "https://doi.org/10.5772/19206",
+      "pdf_url": "https://www.intechopen.com/citation-pdf-url/28120",
+      "filename": "pdfs/薬学/FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf"
+    },
+    {
+      "domain": "薬学",
+      "title": "Modeling of G-protein-coupled Receptor Signaling Pathways",
+      "year": 2008,
+      "cited_by_count": 55,
+      "doi": "https://doi.org/10.1074/jbc.r800028200",
+      "pdf_url": "http://www.jbc.org/article/S002192582070863X/pdf",
+      "filename": "pdfs/薬学/FB19_Modeling_of_G-protein-coupled_Receptor_Signaling_Pathways_2008.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "Dynamical Movement Primitives: Learning Attractor Models for Motor Behaviors",
+      "year": 2012,
+      "cited_by_count": 1568,
+      "doi": "https://doi.org/10.1162/neco_a_00393",
+      "pdf_url": "https://www.pure.ed.ac.uk/ws/files/7874487/NECO_a_00393.pdf",
+      "filename": "pdfs/振動学/FB02_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "Extended <scp>tight‐binding</scp> quantum chemistry methods",
+      "year": 2020,
+      "cited_by_count": 1517,
+      "doi": "https://doi.org/10.1002/wcms.1493",
+      "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1002/wcms.1493",
+      "filename": "pdfs/振動学/FB03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "The Dynamic Brain: From Spiking Neurons to Neural Masses and Cortical Fields",
+      "year": 2008,
+      "cited_by_count": 1128,
+      "doi": "https://doi.org/10.1371/journal.pcbi.1000092",
+      "pdf_url": "https://journals.plos.org/ploscompbiol/article/file?id=10.1371/journal.pcbi.1000092&type=printable",
+      "filename": "pdfs/振動学/FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "Dynamic Mode Decomposition with Control",
+      "year": 2016,
+      "cited_by_count": 1062,
+      "doi": "https://doi.org/10.1137/15m1013857",
+      "pdf_url": "https://epubs.siam.org/doi/pdf/10.1137/15M1013857",
+      "filename": "pdfs/振動学/FB05_Dynamic_Mode_Decomposition_with_Control_2016.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "Dynamics Modeling and Loads Analysis of an Offshore Floating Wind Turbine",
+      "year": 2007,
+      "cited_by_count": 941,
+      "doi": "https://doi.org/10.2172/921803",
+      "pdf_url": "https://www.osti.gov/servlets/purl/921803",
+      "filename": "pdfs/振動学/FB06_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "Machine learning and structural health monitoring overview with emerging technology and high-dimensional data source highlights",
+      "year": 2021,
+      "cited_by_count": 528,
+      "doi": "https://doi.org/10.1177/14759217211036880",
+      "pdf_url": "https://journals.sagepub.com/doi/pdf/10.1177/14759217211036880",
+      "filename": "pdfs/振動学/FB08_Machine_learning_and_structural_health_monitoring_overview_w_2021.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "A Review of Quadrotor Unmanned Aerial Vehicles: Applications, Architectural Design and Control Algorithms",
+      "year": 2022,
+      "cited_by_count": 309,
+      "doi": "https://doi.org/10.1007/s10846-021-01527-7",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10846-021-01527-7.pdf",
+      "filename": "pdfs/振動学/FB11_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf"
+    },
+    {
+      "domain": "振動学",
+      "title": "Regular and chaotic oscillations of a Timoshenko beam subjected to mechanical and thermal loadings",
+      "year": 2014,
+      "cited_by_count": 21,
+      "doi": "https://doi.org/10.1007/s00161-014-0381-6",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s00161-014-0381-6.pdf",
+      "filename": "pdfs/振動学/FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf"
+    },
+    {
+      "domain": "空力",
+      "title": "Dedalus: A flexible framework for numerical simulations with spectral methods",
+      "year": 2020,
+      "cited_by_count": 452,
+      "doi": "https://doi.org/10.1103/physrevresearch.2.023068",
+      "pdf_url": "http://link.aps.org/pdf/10.1103/PhysRevResearch.2.023068",
+      "filename": "pdfs/空力/FB01_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf"
+    },
+    {
+      "domain": "空力",
+      "title": "Adjoint Equations in Stability Analysis",
+      "year": 2013,
+      "cited_by_count": 312,
+      "doi": "https://doi.org/10.1146/annurev-fluid-010313-141253",
+      "pdf_url": "https://arxiv.org/pdf/2404.17304",
+      "filename": "pdfs/空力/FB04_Adjoint_Equations_in_Stability_Analysis_2013.pdf"
+    },
+    {
+      "domain": "空力",
+      "title": "Physics guided machine learning using simplified theories",
+      "year": 2021,
+      "cited_by_count": 128,
+      "doi": "https://doi.org/10.1063/5.0038929",
+      "pdf_url": "https://arxiv.org/pdf/2012.13343",
+      "filename": "pdfs/空力/FB07_Physics_guided_machine_learning_using_simplified_theories_2021.pdf"
+    },
+    {
+      "domain": "構造力学",
+      "title": "Everything you always wanted to know about the cosmological constant problem (but were afraid to ask)",
+      "year": 2012,
+      "cited_by_count": 896,
+      "doi": "https://doi.org/10.1016/j.crhy.2012.04.008",
+      "pdf_url": "https://arxiv.org/pdf/1205.3365",
+      "filename": "pdfs/構造力学/FB01_Everything_you_always_wanted_to_know_about_the_cosmological__2012.pdf"
+    },
+    {
+      "domain": "構造力学",
+      "title": "Soft Biomimetic Fish Robot Made of Dielectric Elastomer Actuators",
+      "year": 2018,
+      "cited_by_count": 356,
+      "doi": "https://doi.org/10.1089/soro.2017.0062",
+      "pdf_url": "https://www.liebertpub.com/doi/pdf/10.1089/soro.2017.0062",
+      "filename": "pdfs/構造力学/FB04_Soft_Biomimetic_Fish_Robot_Made_of_Dielectric_Elastomer_Actu_2018.pdf"
+    },
+    {
+      "domain": "構造力学",
+      "title": "Peridynamics review",
+      "year": 2018,
+      "cited_by_count": 294,
+      "doi": "https://doi.org/10.1177/1081286518803411",
+      "pdf_url": "https://strathprints.strath.ac.uk/65484/1/Javili_etal_MMS_2018_Peridynamics_review.pdf",
+      "filename": "pdfs/構造力学/FB05_Peridynamics_review_2018.pdf"
+    },
+    {
+      "domain": "構造力学",
+      "title": "Review of the Methods of Transition from Partial to Ordinary Differential Equations: From Macro- to Nano-structural Dynamics",
+      "year": 2021,
+      "cited_by_count": 33,
+      "doi": "https://doi.org/10.1007/s11831-021-09550-5",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11831-021-09550-5.pdf",
+      "filename": "pdfs/構造力学/FB10_Review_of_the_Methods_of_Transition_from_Partial_to_Ordinary_2021.pdf"
+    },
+    {
+      "domain": "構造力学",
+      "title": "On Applications of Generalized Functions in the Discontinuous Beam Bending Differential Equations",
+      "year": 2016,
+      "cited_by_count": 7,
+      "doi": "https://doi.org/10.4236/am.2016.716160",
+      "pdf_url": "https://www.scirp.org/journal/PaperDownload.aspx?paperID=71469",
+      "filename": "pdfs/構造力学/FB18_On_Applications_of_Generalized_Functions_in_the_Discontinuou_2016.pdf"
+    },
+    {
+      "domain": "反応工学（基礎）",
+      "title": "Forty years of temporal analysis of products",
+      "year": 2017,
+      "cited_by_count": 162,
+      "doi": "https://doi.org/10.1039/c7cy00678k",
+      "pdf_url": "https://pubs.rsc.org/en/content/articlepdf/2017/cy/c7cy00678k",
+      "filename": "pdfs/反応工学_基礎/FB08_Forty_years_of_temporal_analysis_of_products_2017.pdf"
+    },
+    {
+      "domain": "反応工学（基礎）",
+      "title": "Forecasting and dynamical modeling of reversible enzymatic reactions with a hybrid proportional fractional derivative",
+      "year": 2024,
+      "cited_by_count": 33,
+      "doi": "https://doi.org/10.3389/fphy.2023.1307307",
+      "pdf_url": "https://www.frontiersin.org/articles/10.3389/fphy.2023.1307307/pdf?isPublishedV2=False",
+      "filename": "pdfs/反応工学_基礎/FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf"
+    },
+    {
+      "domain": "反応工学（基礎）",
+      "title": "Onset dynamics of type A botulinum neurotoxin-induced paralysis",
+      "year": 2008,
+      "cited_by_count": 22,
+      "doi": "https://doi.org/10.1007/s10928-008-9087-3",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10928-008-9087-3.pdf",
+      "filename": "pdfs/反応工学_基礎/FB12_Onset_dynamics_of_type_A_botulinum_neurotoxin-induced_paraly_2008.pdf"
+    },
+    {
+      "domain": "反応工学（基礎）",
+      "title": "A kinetic study of a ternary cycle between adenine nucleotides",
+      "year": 2006,
+      "cited_by_count": 11,
+      "doi": "https://doi.org/10.1111/j.1742-4658.2006.05366.x",
+      "pdf_url": "https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/j.1742-4658.2006.05366.x",
+      "filename": "pdfs/反応工学_基礎/FB16_A_kinetic_study_of_a_ternary_cycle_between_adenine_nucleotid_2006.pdf"
+    },
+    {
+      "domain": "反応工学（基礎）",
+      "title": "MATHEMATICAL MODELING OF LEACHING PROCESS OF RED MUD IN ORDER TO OBTAIN THE KINETICS PARAMETERS",
+      "year": 2015,
+      "cited_by_count": 8,
+      "doi": "https://doi.org/10.5380/reterm.v14i2.62140",
+      "pdf_url": "https://revistas.ufpr.br/reterm/article/download/62140/36481",
+      "filename": "pdfs/反応工学_基礎/FB17_MATHEMATICAL_MODELING_OF_LEACHING_PROCESS_OF_RED_MUD_IN_ORDE_2015.pdf"
+    },
+    {
+      "domain": "反応工学（基礎）",
+      "title": "An epidemic model for non-first-order transmission kinetics",
+      "year": 2021,
+      "cited_by_count": 7,
+      "doi": "https://doi.org/10.1371/journal.pone.0247512",
+      "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0247512&type=printable",
+      "filename": "pdfs/反応工学_基礎/FB18_An_epidemic_model_for_non-first-order_transmission_kinetics_2021.pdf"
+    },
+    {
+      "domain": "原子力工学",
+      "title": "Relativistic Fluid Dynamics: Physics for Many Different Scales",
+      "year": 2007,
+      "cited_by_count": 356,
+      "doi": "https://doi.org/10.12942/lrr-2007-1",
+      "pdf_url": "https://link.springer.com/content/pdf/10.12942/lrr-2007-1.pdf",
+      "filename": "pdfs/原子力工学/FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf"
+    },
+    {
+      "domain": "原子力工学",
+      "title": "The FLUKA Code: An Accurate Simulation Tool for Particle Therapy",
+      "year": 2016,
+      "cited_by_count": 256,
+      "doi": "https://doi.org/10.3389/fonc.2016.00116",
+      "pdf_url": "https://www.frontiersin.org/articles/10.3389/fonc.2016.00116/pdf",
+      "filename": "pdfs/原子力工学/FB03_The_FLUKA_Code_An_Accurate_Simulation_Tool_for_Particle_Ther_2016.pdf"
+    },
+    {
+      "domain": "原子力工学",
+      "title": "BISON: A Flexible Code for Advanced Simulation of the Performance of Multiple Nuclear Fuel Forms",
+      "year": 2021,
+      "cited_by_count": 241,
+      "doi": "https://doi.org/10.1080/00295450.2020.1836940",
+      "pdf_url": "https://www.tandfonline.com/doi/pdf/10.1080/00295450.2020.1836940?needAccess=true",
+      "filename": "pdfs/原子力工学/FB04_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf"
+    },
+    {
+      "domain": "原子力工学",
+      "title": "BISON Theory Manual The Equations behind Nuclear Fuel Analysis",
+      "year": 2016,
+      "cited_by_count": 190,
+      "doi": "https://doi.org/10.2172/1374503",
+      "pdf_url": "https://www.osti.gov/servlets/purl/1374503",
+      "filename": "pdfs/原子力工学/FB06_BISON_Theory_Manual_The_Equations_behind_Nuclear_Fuel_Analys_2016.pdf"
+    },
+    {
+      "domain": "原子力工学",
+      "title": "Multi-Physics Simulations for Molten Salt Reactor Evaluation: Chemistry Modeling and Database Development",
+      "year": 2018,
+      "cited_by_count": 39,
+      "doi": "https://doi.org/10.2172/1492183",
+      "pdf_url": "https://www.osti.gov/servlets/purl/1492183",
+      "filename": "pdfs/原子力工学/FB08_Multi-Physics_Simulations_for_Molten_Salt_Reactor_Evaluation_2018.pdf"
+    },
+    {
+      "domain": "原子力工学",
+      "title": "Conditions for translation and scaling invariance of the neutron diffusion equation",
+      "year": 2018,
+      "cited_by_count": 11,
+      "doi": "https://doi.org/10.1016/j.pnucene.2018.10.005",
+      "pdf_url": "https://arxiv.org/pdf/1810.04658",
+      "filename": "pdfs/原子力工学/FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf"
+    },
+    {
+      "domain": "半導体物理",
+      "title": "Digital Twin: Values, Challenges and Enablers From a Modeling Perspective",
+      "year": 2020,
+      "cited_by_count": 1662,
+      "doi": "https://doi.org/10.1109/access.2020.2970143",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/6287639/8948470/08972429.pdf",
+      "filename": "pdfs/半導体物理/FB01_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf"
+    },
+    {
+      "domain": "半導体物理",
+      "title": "The Solar Wind as a Turbulence Laboratory",
+      "year": 2013,
+      "cited_by_count": 1246,
+      "doi": "https://doi.org/10.12942/lrsp-2013-2",
+      "pdf_url": "https://link.springer.com/content/pdf/10.12942/lrsp-2013-2.pdf",
+      "filename": "pdfs/半導体物理/FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf"
+    },
+    {
+      "domain": "半導体物理",
+      "title": "Joint Optimization of Radio and Computational Resources for Multicell Mobile-Edge Computing",
+      "year": 2015,
+      "cited_by_count": 914,
+      "doi": "https://doi.org/10.1109/tsipn.2015.2448520",
+      "pdf_url": "https://arxiv.org/pdf/1412.8416",
+      "filename": "pdfs/半導体物理/FB03_Joint_Optimization_of_Radio_and_Computational_Resources_for__2015.pdf"
+    },
+    {
+      "domain": "半導体物理",
+      "title": "The meniscus-guided deposition of semiconducting polymers",
+      "year": 2018,
+      "cited_by_count": 452,
+      "doi": "https://doi.org/10.1038/s41467-018-02833-9",
+      "pdf_url": "https://www.nature.com/articles/s41467-018-02833-9.pdf",
+      "filename": "pdfs/半導体物理/FB04_The_meniscus-guided_deposition_of_semiconducting_polymers_2018.pdf"
+    },
+    {
+      "domain": "半導体物理",
+      "title": "Existence and uniqueness of weak solutions for a class of fractional superdiffusion equations",
+      "year": 2017,
+      "cited_by_count": 182,
+      "doi": "https://doi.org/10.1186/s13662-016-1057-2",
+      "pdf_url": "https://advancesindifferenceequations.springeropen.com/track/pdf/10.1186/s13662-016-1057-2",
+      "filename": "pdfs/半導体物理/FB07_Existence_and_uniqueness_of_weak_solutions_for_a_class_of_fr_2017.pdf"
+    },
+    {
+      "domain": "半導体物理",
+      "title": "A mathematical model for the hard sphere repulsion in ionic solutions",
+      "year": 2011,
+      "cited_by_count": 145,
+      "doi": "https://doi.org/10.4310/cms.2011.v9.n2.a5",
+      "pdf_url": "https://www.intlpress.com/site/pub/files/_fulltext/journals/cms/2011/0009/0002/CMS-2011-0009-0002-a005.pdf",
+      "filename": "pdfs/半導体物理/FB08_A_mathematical_model_for_the_hard_sphere_repulsion_in_ionic__2011.pdf"
+    },
+    {
+      "domain": "半導体物理",
+      "title": "Compact Modeling of Total Ionizing Dose and Aging Effects in MOS Technologies",
+      "year": 2015,
+      "cited_by_count": 131,
+      "doi": "https://doi.org/10.1109/tns.2015.2414426",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/23/7203194/07128413.pdf",
+      "filename": "pdfs/半導体物理/FB09_Compact_Modeling_of_Total_Ionizing_Dose_and_Aging_Effects_in_2015.pdf"
+    },
+    {
+      "domain": "分離プロセス",
+      "title": "Summer heatwaves promote blooms of harmful cyanobacteria",
+      "year": 2007,
+      "cited_by_count": 1081,
+      "doi": "https://doi.org/10.1111/j.1365-2486.2007.01510.x",
+      "pdf_url": "https://ir.cwi.nl/pub/12731/12731D.pdf",
+      "filename": "pdfs/分離プロセス/FB06_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf"
+    },
+    {
+      "domain": "分離プロセス",
+      "title": "Metal–organic framework based mixed matrix membranes: a solution for highly efficient CO <sub>2</sub> capture?",
+      "year": 2015,
+      "cited_by_count": 832,
+      "doi": "https://doi.org/10.1039/c4cs00437j",
+      "pdf_url": "https://pubs.rsc.org/en/content/articlepdf/2015/cs/c4cs00437j",
+      "filename": "pdfs/分離プロセス/FB07_Metal_organic_framework_based_mixed_matrix_membranes_a_solut_2015.pdf"
+    },
+    {
+      "domain": "分離プロセス",
+      "title": "Aqueous two-phase system (ATPS): an overview and advances in its applications",
+      "year": 2016,
+      "cited_by_count": 806,
+      "doi": "https://doi.org/10.1186/s12575-016-0048-8",
+      "pdf_url": "https://biologicalproceduresonline.biomedcentral.com/counter/pdf/10.1186/s12575-016-0048-8",
+      "filename": "pdfs/分離プロセス/FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf"
+    },
+    {
+      "domain": "分離プロセス",
+      "title": "Polysulfone/silica nanoparticle mixed-matrix membranes for gas separation",
+      "year": 2008,
+      "cited_by_count": 612,
+      "doi": "https://doi.org/10.1016/j.memsci.2008.01.031",
+      "pdf_url": "https://nrc-publications.canada.ca/eng/view/accepted/?id=dbec870a-0db0-4fd4-8628-cf65a4d8b0b9",
+      "filename": "pdfs/分離プロセス/FB09_Polysulfone_silica_nanoparticle_mixed-matrix_membranes_for_g_2008.pdf"
+    },
+    {
+      "domain": "分離プロセス",
+      "title": "Microfluidic droplet-based liquid–liquid extraction: online model validation",
+      "year": 2015,
+      "cited_by_count": 29,
+      "doi": "https://doi.org/10.1039/c4lc01460j",
+      "pdf_url": "https://pubs.rsc.org/en/content/articlepdf/2015/lc/c4lc01460j",
+      "filename": "pdfs/分離プロセス/FB11_Microfluidic_droplet-based_liquid_liquid_extraction_online_m_2015.pdf"
+    },
+    {
+      "domain": "分離プロセス",
+      "title": "Significance of melting heat in bioconvection flow of micropolar nanofluid over an oscillating surface",
+      "year": 2023,
+      "cited_by_count": 8,
+      "doi": "https://doi.org/10.1038/s41598-023-38361-w",
+      "pdf_url": "https://www.nature.com/articles/s41598-023-38361-w.pdf",
+      "filename": "pdfs/分離プロセス/FB14_Significance_of_melting_heat_in_bioconvection_flow_of_microp_2023.pdf"
+    },
+    {
+      "domain": "伝熱（基礎）",
+      "title": "DTM- Padé Modeling of Natural Convective Boundary Layer Flow of a Nanofluid Past a Vertical Surface",
+      "year": 2011,
+      "cited_by_count": 58,
+      "doi": "https://doi.org/10.5383/ijtee.04.01.003",
+      "pdf_url": "https://doi.org/10.5383/ijtee.04.01.003",
+      "filename": "pdfs/伝熱_基礎/FB12_DTM-_Padé_Modeling_of_Natural_Convective_Boundary_Layer_Flow_2011.pdf"
+    },
+    {
+      "domain": "伝熱（基礎）",
+      "title": "Mathematical modeling and thermodynamics of Prandtl–Eyring fluid with radiation effect: a numerical approach",
+      "year": 2021,
+      "cited_by_count": 54,
+      "doi": "https://doi.org/10.1038/s41598-021-01463-4",
+      "pdf_url": "https://www.nature.com/articles/s41598-021-01463-4.pdf",
+      "filename": "pdfs/伝熱_基礎/FB15_Mathematical_modeling_and_thermodynamics_of_Prandtl_Eyring_f_2021.pdf"
+    },
+    {
+      "domain": "伝熱（基礎）",
+      "title": "Flow and heat transfer analysis of Eyring-Powell fluid over stratified sheet with mixed convection",
+      "year": 2020,
+      "cited_by_count": 43,
+      "doi": "https://doi.org/10.1186/s42787-020-00103-6",
+      "pdf_url": "https://joems.springeropen.com/track/pdf/10.1186/s42787-020-00103-6",
+      "filename": "pdfs/伝熱_基礎/FB21_Flow_and_heat_transfer_analysis_of_Eyring-Powell_fluid_over__2020.pdf"
+    },
+    {
+      "domain": "伝熱（基礎）",
+      "title": "Series solution of unsteady MHD oblique stagnation point flow of copper-water nanofluid flow towards Riga plate",
+      "year": 2020,
+      "cited_by_count": 31,
+      "doi": "https://doi.org/10.1016/j.heliyon.2020.e04689",
+      "pdf_url": "http://www.cell.com/article/S2405844020315322/pdf",
+      "filename": "pdfs/伝熱_基礎/FB24_Series_solution_of_unsteady_MHD_oblique_stagnation_point_flo_2020.pdf"
+    },
+    {
+      "domain": "伝熱（基礎）",
+      "title": "Significance of heat transfer rate in water-based nanoparticles with magnetic and shape factors effects: Tiwari and Das model",
+      "year": 2023,
+      "cited_by_count": 23,
+      "doi": "https://doi.org/10.1038/s41598-023-42480-9",
+      "pdf_url": "https://www.nature.com/articles/s41598-023-42480-9.pdf",
+      "filename": "pdfs/伝熱_基礎/FB25_Significance_of_heat_transfer_rate_in_water-based_nanopartic_2023.pdf"
+    }
+  ]
+}

@@ -4,7 +4,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb}
-\usepackage{url,hyperref}
+\usepackage{url}
+\usepackage[dvipdfmx]{hyperref}
 \usepackage{enumitem}
 \usepackage{geometry}
 \geometry{margin=2.5cm}
@@ -357,6 +358,93 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-06-01（Phase 5 完了：reranker ハイパーパラメータ sweep と頑健性の確認）：
+    \texttt{set\_aware\_reranker.py} に \texttt{-{}-hidden-dim}, \texttt{-{}-margin}, \texttt{-{}-batch-size}, \texttt{-{}-n-neg-samples}, \texttt{-{}-weight-decay} を追加し，
+    sweep 実行用 \texttt{run\_phase5\_sweep.py}（config を子プロセスで並列実行・結果集約）と
+    分析用 \texttt{analyze\_phase5\_sweep.py}（ランキング・パラメータ感度・best 抽出，複数 sweep を \texttt{-{}-config-glob} で横断結合可）を新規作成．
+    GPU サーバ初期化補助 \texttt{setup\_gpu\_server.sh}（rsync + Docker コンテナ + 依存導入 + CUDA 確認 + sweep キックオフ）も作成．
+    \textbf{実行構成}：固定軸 \texttt{reranker-10S} + 10 seed + 訓練データ（original + multisource\_v3 + dae\_X*），
+    探索軸 lr $\in \{$1e-4, 3e-4, 1e-3, 3e-3, 1e-2$\}$，hidden\_dim $\in \{$64, 128, 256$\}$，epochs $\in \{$20, 40$\}$，margin $\in \{$0.1, 0.3$\}$．
+    計 13 config を評価（A100$\times$4 サーバ 8 config + ローカル lr sweep 5 config）．
+    \textbf{結果（主指標 Recall@K\_correct）}：全 13 config が $0.7321$--$0.7415$ に収まり，\textbf{config 間レンジ $0.0094$ は seed 間標準偏差 $0.1008$ の約 1/10}．
+    すなわち探索したいずれのハイパーパラメータ（lr を 100 倍振っても，hidden\_dim・epochs・margin を変えても）\textbf{統計的に有意な差を生まない}．
+    best config は lr$=$3e-4, hidden\_dim$=$64, epochs$=$40, margin$=$0.1（R@K\_c $=0.7415$）だが既定値（lr$=$1e-3, hidden$=$64, epochs$=$15）との差は誤差範囲．
+    \textbf{結論}：reranker-10S の強さはハイパーパラメータの微調整に依存せず\textbf{頑健}であり，「脆弱なチューニング由来の見かけ上の性能」ではないことを定量的に確認した（査読対策として重要）．
+    \textbf{運用上の知見}：本手法は MLP が小さく \textbf{GPU 加速の恩恵がほぼ無い CPU-bound} 処理であり，共有 GPU サーバ（過負荷時 load 53/16 コア）より\textbf{非競合のローカル実行の方が予測可能}．長時間 CPU ジョブは \texttt{caffeinate -i} でスリープ抑止が必須．
+    保存先：\texttt{experiments/phase5\_sweep/}（config 個別 JSON），\texttt{experiments/phase5\_best.json}．
+
+  \item 2026-05-29（Phase 4 完了：特性別性能分析 + 仮説 B 再検定）：
+    \textbf{(1) 仮説 B（Full DB vs Narrow DB の本手法 MRR 差）を 3 指標で再検定．}
+    旧結果は \texttt{MRR\_first} のみで $p=0.78$（n.s.）と「DB 規模の影響なし」と結論したが，
+    \texttt{MRR\_first} は天井 1.0 付近で飽和する指標であった．新指標 \texttt{Recall@K\_correct}（$K=$正解式数 $n_{\text{correct}}$，R-Precision と同義）で同検定を行うと，
+    \textbf{Full DB} $0.9229$ vs \textbf{Narrow DB} $0.8749$，差 $+0.0480$（paired t: $t=2.34$, $p=0.044$；Wilcoxon $p=0.037$；Cohen's $d=0.74$ medium）と
+    \textbf{中程度効果の有意差}を確認．\textbf{MAP} も $0.953 \to 0.931$（$p=0.096$，$d=0.59$ medium）と境界域で同方向の差．これにより
+    「サチった指標が差を隠していた」ことが明確になり，DB 拡張の効果は実際にはあるが評価指標の選択によって見え方が変わる，という重要な知見を得た．保存先：\texttt{experiments/phase4\_hypothesis\_b\_test.json}．
+    \textbf{(2) 特性別 (stratified) 性能分析．}
+    \texttt{set\_aware\_reranker.py} に \texttt{-{}-save-per-case} フラグを追加して各ケースの評価結果を JSON にダンプする機能を実装し，
+    10 seed・1,592 ケース・1,223 ユニーク（original + multisource\_v3 + dae\_X1..X10）について
+    \texttt{baseline} vs \texttt{reranker-10S} を 4 軸（正解式数 $n_{\text{correct}}$，横断ソース数 $n_{\text{sources}}$，
+    入力変数数 $n_{\text{input}}$，出力変数数 $n_{\text{output}}$）で層別化．
+    主要結果（差は \texttt{Recall@K\_correct}）：
+    $n_{\text{correct}}=1$ では $+0.02$ と差なしだが，$n_{\text{correct}}=2$ で $+0.21$，$=3$ で $+0.26$，$5\text{-}10$ で $+0.24$ と
+    \textbf{複数式ケースで大幅改善}．$n_{\text{input}}=1\text{-}3$ では $-0.02$（baseline がすでに $0.92$）で本手法不要，$11+$ で $+0.25$（baseline $0.45 \to$ reranker $0.70$）．
+    \textbf{Recall@K\_correct} は MRR\_first の天井問題を解消し，提案手法の真の改善幅（baseline $0.526 \to$ reranker $0.735$，$+0.21$）を露わにした．
+    \texttt{analyze\_phase4\_characteristic.py} と \texttt{analyze\_phase4.py} を新規作成・更新．保存先：\texttt{experiments/phase4\_characteristic\_analysis.json}，図 \texttt{docs/figures/fig\_phase4\_stratified.png}．
+
+  \item 2026-05-28（Phase 3 完了：制約付き実験 A/B + DAE データセット）：
+    \textbf{(1) DAE 訓練ケース 1,000 件追加}．\texttt{generate\_dae\_cases.py} を新規作成し，Anthropic API（Claude Sonnet 4.5）で
+    $X \in \{1, 2, \ldots, 10\}$ の各値について 100 件ずつ生成（合計 1,000 件，\texttt{variant\_type = dae\_X\{N\}}）．
+    アルゴリズム：(i) ランダムに ODE を 1 本選択し正解集合の初期種とする，(ii) その微分変数を出力初期値に追加，(iii) 同一ソース内の変数共有式を優先的に正解集合に追加，(iv) $|$正解集合$|=X$ になるまで反復，(v) $X>1$ の場合は追加された各式の代表変数を出力に加えて自由度 0 を保証，(vi) 残り変数を入力とし context を Claude API で生成．
+    最終訓練ケース数：$1{,}838 \to 2{,}838$．
+    \textbf{(2) Phase 3 制約付き実験}．\texttt{set\_aware\_reranker.py} に \texttt{-{}-variants} フィルタ（プレフィックスマッチ対応）と \texttt{-{}-output} オプションを追加．
+    実験 A（\texttt{original + multisource\_v3 + dae\_X*}）と B（\texttt{dae\_X*} のみ）を 10 seed で実行．
+    結果：A で baseline MRR\_first $0.8024 \to$ reranker $0.9232$（$+0.121$），B で baseline $0.7806 \to$ reranker $0.9057$（$+0.125$）．
+    \textbf{DAE のみ}に絞ると \textbf{ベースラインの MRR\_first が $0.78$ まで低下}（フルデータでは $0.917$）し，本手法の改善幅が拡大（MAP $+0.30$）．
+    DAE 系ケースが従来 random\_io 拡張より格段に \textbf{難しいデータ}であることが定量的に示された．
+    \textbf{(3) Phase 1 評価指標拡張}．\texttt{evaluate\_multi\_eq.py} に \texttt{Recall@K\_correct}（$K=n_{\text{correct}}$）を追加．従来の \texttt{MRR\_first} は飽和しやすく改善幅が見えにくい問題を解消．
+    Phase 3 結果での Recall@K\_correct：A で $0.525 \to 0.735$（$+0.210$，\textbf{+40\% 相対}），B で $0.481 \to 0.699$（$+0.218$，\textbf{+45\% 相対}）．
+    関連スクリプト・データ：\texttt{generate\_dae\_cases.py}, \texttt{run\_phase3\_experiments.sh}, \texttt{experiments/phase3\_A\_original\_multi\_dae.json}, \texttt{experiments/phase3\_B\_dae\_only.json}．
+
+  \item 2026-04-18（自由度検証済1,107ケースでの主要結果の再評価）：\texttt{two\_stage\_query\_conditioned.py}を5 seedで再実行．\textbf{reranker-10の優位性が消失}し，reranker-7が最良となる大きな結果の変化を観測（baseline $0.924\to0.937$，reranker-7 $0.937\to\mathbf{0.959}$，reranker-10 $0.949\to0.939$）．全体として各手法のMRRが向上したことから，自由度検証により学習・評価双方の品質が改善していることが示された．reranker-10のグラフ特徴量（\#7--9）は初回データの不正ケース（物理的に解けないケース）で正解順位を押し上げる役割を果たしていた可能性があり，現行の特徴量設計の見直しが必要．進捗レポートv2§5に新しい結果表・バリアント別・初回データとの差分を追加，§6考察に再解釈を追記，§7今後の課題に「グラフ特徴量の再設計」を高優先度で記載．実験結果は\texttt{experiments/query\_conditioned\_comparison.json}に保存．
+
+  \item 2026-04-19（追補レポート作成：自由度解析 + Set-aware 特徴量）：前回報告（v2）後の一連の研究成果を追補報告としてまとめ，\texttt{docs/progress\_report\_2026-04-19\_addendum.tex} を新規作成．主な内容：(1) 自由度解析による訓練データ品質改善（1{,}107件を全件可解に再構成），(2) 既存グラフ特徴量 f7--f9 の診断（f9 は AUC 0.087 で逆信号など）と限界の明確化，(3) Set-aware 3特徴量（gComp=補完性，gCoh=一貫性，gDom=ドメイン一致）の設計と評価，(4) 複数式評価指標（MRR\_worst, Recall@K, MAP）の導入．10 seed paired t-test の結果：MAP $0.936 \to 0.955$（$p=0.004$），複数式 Recall@3（旧 FullRecall@3）$0.628 \to 0.693$（$p=0.032$），複数式 MRR\_worst $0.376 \to 0.397$（$p=0.024$）．reranker-10S（基本7 + set-aware 3）が統計的に有意な改善を達成．論文化の方向性を「Set-aware graph features for multi-equation retrieval」に確定．関連スクリプト：\texttt{filter\_solvable\_cases.py}, \texttt{expand\_solvable\_random\_io.py}, \texttt{diagnose\_graph\_features.py}, \texttt{graph\_feature\_ablation.py}, \texttt{evaluate\_multi\_eq.py}, \texttt{set\_aware\_reranker.py}．実験結果：\texttt{experiments/graph\_feature\_diagnosis.json}, \texttt{experiments/graph\_ablation\_results.json}, \texttt{experiments/multi\_eq\_evaluation.json}, \texttt{experiments/set\_aware\_results.json}．\textbf{2026-05-08 追記}：FullRecall@K（全正解上位K内割合）から標準的な Recall@K（$|R_q \cap \mathrm{Top}_K|/|R_q|$ の平均）に指標を切替．\texttt{evaluate\_multi\_eq.py} に Recall@K 計算を追加し再実行．
+
+  \item 2026-04-18（自由度=0を保証するrandom\_ioの追加生成）：自由度フィルタで707件に減少した訓練データを，\textbf{自由度=0を構成上保証する新規random\_io}を追加生成することで1,107件に復元．\texttt{expand\_solvable\_random\_io.py} を新規作成し，各コアの正解式変数集合$V$と方程式数$n_{\text{eq}}$に対し，$V$から$n_{\text{eq}}$個を出力として選び残りを入力とする全組合せから，既存の入出力組と重複しないものを採用する方式で400件生成．新規400件全てが自由度解析をパス．最終内訳：original 93, paraphrased 279, swap\_io 2, random\_io 733（元333＋新規400）＝1,107件．進捗レポートv2§3.4.2を「自由度解析＋可解ケース追加生成」に再改訂，§2.1概要表・§4.5正例・§5結果注記・§7今後の課題の数値を1,107に更新．
+
+  \item 2026-04-18（自由度解析による訓練ケースのフィルタ実装）：加藤先生指摘「物理的に解けないケースは学習に使ってはいけない」への対応．\texttt{filter\_solvable\_cases.py} を新規作成し，各訓練ケースについて正解式集合の変数数と独立方程式数を照合する自由度解析を実装．判定条件：(i) 入出力変数が全て式集合内にあること，(ii) 出力変数が未知側にあること，(iii) $|\text{未知}|\le$方程式数（relaxed：過剰決定系も物理的に解けるため許容）．訓練データ1{,}107ケースに適用した結果，707ケース（63.9\%）のみが可解と判定されたため，\texttt{training\_cases.json} を差し替え（元データは \texttt{training\_cases.pre\_dof\_filter.bak.json} に退避）．内訳：original 123$\to$93, context\_paraphrased 369$\to$279, swap\_io 123$\to$2（98\%除外），random\_io 492$\to$333．swap\_ioは入出力非対称の元ケースが大多数であったため激減．進捗レポートv2§3.4.2を「自由度解析の実装済み」へ改訂，§2.1概要表・§4.5正例定義・§5結果の注記・§7今後の課題に反映．MRR再評価は今後の課題として明示．
+
+  \item 2026-04-17（進捗レポートv2の§2.1拡充：変数表記揺れの方針明記）：前回加藤先生に「変数表記の正規化に取り組む」と述べた件について，実データ（3{,}244式）を精査した結果を受け，\textbf{現段階では全面正規化を行わない判断}に改めた旨を\texttt{progress\_report\_2026-04-13\_v2.tex}の§2.1に明文化．表記揺れの実態（比熱が$c_p$/$C_p$/$c_w$/$Cp$の4種99回、前指数因子が3種31回、密度が3種251回）を表で示し，全面正規化を行わない3つの根拠（(1)記号の多義性による誤正規化リスク、(2)文献単位の分割評価下では同文献内の表記が一貫し効果限定的、(3)現MRR 0.949で誤差の主因でない可能性）を明記．実装済みの\texttt{normalize\_notation.py}（3物理量ルール）によるアブレーション実験を今後の内部検証として位置づけ．レポート本文では具体的なファイル名への言及は削除し，長期方針（各変数の物理的意味の自然言語記述を埋め込み空間で比較し，意味的に近いノード同士をグラフ上でソフトに接続する学習的アプローチ）のみを記載．
+
+  \item 2026-04-17（進捗レポートv2への注釈付与機構の刷新）：v2 PDFへのハイライト＋スティッキーノート付与を，従来の「固定文字列マッチ」方式から\textbf{提出版PDFとのテキスト単語レベル差分}方式に全面変更（\texttt{docs/annotate\_report\_v2.py}を新規作成，旧\texttt{add\_annotations.py}/\texttt{add\_annotations2.py}を置換）．\texttt{pymupdf}の\texttt{get\_text("words")}で両PDFの単語列を取り，\texttt{difflib.SequenceMatcher}で差分を取ることで，\textbf{実際に変更された箇所のみを正確にハイライト}（タイトルなど未変更箇所の誤ハイライトを解消）．正規化は Unicode NFC、ダッシュ類・引用符類・全角句読点・各種空白を統一し表記揺れを吸収．結果：321箇所のハイライト（equal=1{,}234単語・insert=217単語・replace=242単語）と25箇所のスティッキーノート（各修正に対応する加藤先生コメント内容を詳述）．
+
+  \item 2026-04-09（Phase 1 Round 2: 3{,}244式への拡大 + 再評価）：\texttt{expand\_dataset.py} にハンドブック第2弾（新10ドメイン＋既存6ドメインの応用式、計320式）と大型 PDF 分割抽出（\texttt{pypdf} で80ページずつ分割、3冊39チャンク）を追加。結果：\textbf{1{,}613式 $\to$ 3{,}244式}、ソース $52 \to 71$、変数 $2{,}098 \to 3{,}704$。\texttt{generate\_training\_cases.py} を大規模カタログ対応に改修（ドメイン別バッチ分割＋503リトライ）。123コア $\to$ 1{,}107訓練ケースで5\,seed 比較：
+  \begin{itemize}[nosep]
+    \item baseline: MRR $0.924 \pm 0.040$, original $0.921$
+    \item reranker-7: MRR $0.937 \pm 0.018$, original $0.942$
+    \item reranker-10 (graph): MRR $\mathbf{0.949 \pm 0.031}$, original $\mathbf{0.952}$
+  \end{itemize}
+  \textbf{核心的発見}：(a) グラフ特徴量（reranker-10）が全指標・全 variant で最良、(b) reranker-7 を明確に上回る（$+1.2\%$ overall, $+1.0\%$ original）、(c) 975式$\to$3{,}244式のスケーリングでグラフ特徴量の有効性が単調増加。「データ規模がグラフ構造の価値を解放する」仮説を強く支持。Gemini API キーをハードコードから環境変数専用に変更済み。
+
+  \item 2026-03-31（Phase 1: データ拡大 + 再評価）：\texttt{expand\_dataset.py} を新規作成し、3つの手法でデータセットを拡大。(1)\,ハンドブック式の大幅拡張：LLM 知識から15新ドメイン（流体力学・伝熱・物質移動・熱力学・反応工学・プロセス制御・電気化学・バイオプロセス・環境工学・振動・電気工学・高分子・燃焼・分離・輸送現象）で330式を生成。(2)\,Semantic Scholar API で新論文を探索、open-access PDF 17本をダウンロード。(3)\,新規+既存未処理 PDF 15本から308式を抽出。結果：\textbf{975式 $\to$ 1{,}613式}（$+65\%$）、ソース $22 \to 52$。訓練ケースも再生成（$154 \to 187$ コア、$1{,}343 \to 1{,}680$ 拡張）。
+
+  拡大データでの再評価結果（5\,seed）：
+  \begin{itemize}[nosep]
+    \item baseline: MRR $0.900 \pm 0.069$, original $0.885$（旧: $0.875, 0.839$）
+    \item reranker-7: MRR $0.942 \pm 0.052$, original $0.936$（旧: $0.885, 0.860$）
+    \item reranker-10 (graph): MRR $\mathbf{0.948 \pm 0.046}$, original $0.935$（旧: $0.879, 0.842$）
+  \end{itemize}
+  \textbf{核心的発見}：データ拡大により (a) リランカーがベースラインを明確に上回る（$+4\text{--}5\%$、旧 $+1\%$ 未満）、(b) グラフ特徴量が初めて悪化せず全体 MRR で最良、(c) 分散が半減（$0.119 \to 0.052$）。「モデル改善より先にデータの質と量が重要」という仮説を実証。また、ハードコードされた Gemini API キーが GitHub 公開でリーク報告されたため、全5ファイルから削除し環境変数のみに変更。
+
+  \item 2026-03-30（Phase 3b: クエリ条件付きグラフ特徴量）：\texttt{two\_stage\_query\_conditioned.py} を新規作成。二部グラフ（式--変数）の構造情報をクエリ条件付きで特徴化する3指標を設計：(1)\,2-hop reachability（クエリ変数から候補式への到達率）、(2)\,graph neighbor overlap（候補式のグラフ近傍とクエリ変数関連式の Jaccard）、(3)\,indirect bridge ratio（候補変数がクエリ変数関連式にブリッジする比率）。7次元リランカーに3特徴を追加した10次元リランカーで5\,seed 比較。結果：\textbf{クエリ条件付き特徴量も改善に寄与せず}。MRR $0.879 \pm 0.123$（7次元の $0.883 \pm 0.119$ から微低下）、original MRR $0.842$（7次元の $0.860$ から $-0.018$）。GCN ベース特徴量（Phase 3）と同様のパターン。\textbf{結論}：現データ規模（975式・154 original ケース）ではグラフ構造が有効な追加信号を提供しない。7次元学習リランカー（no-gnn）が最良手法として確定。論文では「なぜグラフが効かないか」の分析を contribution に含める。
+  \item 2026-03-30（Phase 3: GNN 特徴量統合）：\texttt{two\_stage\_retrieval\_gnn.py} を新規作成し、3方式を5\,seed で比較。(1)\,baseline\_mix（固定重み）、(2)\,no-gnn リランカー（7次元特徴、学習済み MLP）、(3)\,gnn リランカー（+GCN-refined SVD/CodeBERT 特徴の9次元）。結果：\textbf{no-gnn リランカーが最良}（MRR $0.885 \pm 0.113$、original $0.857$）。GNN 特徴を追加すると分散が増大し性能低下（MRR $0.873 \pm 0.148$）。原因分析：(a) CodeBERT GCN のセルフシフト特徴はケース依存情報を持たない、(b) SVD GCN の学習が不十分（5 epoch, 64 sample）、(c) グラフ構造がクエリ固有の情報を反映していない。\textbf{結論}：特徴の重み付けを固定→学習に変えるだけで改善が得られるが、現状のグラフ構造から有効な特徴を抽出するにはクエリ条件付き GNN が必要。
+  \item 2026-03-30（Phase 2: 2段階 retrieval）：\texttt{two\_stage\_retrieval.py} を新規作成。Stage\,1 で \texttt{baseline\_mix} が Top-$K$（$K\!=\!50$）候補を高速に取得し、Stage\,2 でニューラルリランカー（7次元特徴量、3層 MLP、ペアワイズ margin loss）が精密にリランキング。5\,seed 評価の結果、全体 MRR $0.875 \to 0.881$（$+0.006$）。\textbf{original ケースでは} MRR $0.839 \to 0.856$（$+0.017$）と改善を確認。ただし seed 456 で劣化するなど分散が大きく、統計的有意性は未達。
+  \item 2026-03-30（データ品質修正）：\texttt{fix\_dataset\_quality.py} を新規作成。暗黙変数（$s$, $t$）を277式に追加、重複ケース43件を除去（$1386 \to 1343$）。バックアップを \texttt{*.bak.json} に保存。
+  \item 2026-03-30（Phase 0: 評価基盤の確立）：論文化を見据え、研究の土台を再設計。
+    \begin{itemize}[nosep]
+      \item \textbf{ベースライン失敗分析}（\texttt{analyze\_baseline\_failures.py} 新規作成）：全1386ケースで \texttt{baseline\_mix} を評価し、失敗ケース（RR $<0.5$）の85件（6.1\%）を4パターンに分類。\textbf{cross\_domain}（100\%）と\textbf{context\_divergence}（78\%）が支配的 --- クエリと式の語彙が異なるケースでベースラインが失敗しており、意味理解（GNN/ニューラル）が有効な領域を特定。可視化を \texttt{figures/failure\_analysis\_summary.png} に出力。
+      \item \textbf{複数seed評価の導入}（\texttt{run\_retrieval\_experiments.py} 改修）：5 seed（42, 123, 456, 789, 1024）で source\_id 分割を変え、平均$\pm$標準偏差と95\% bootstrap CIを報告する \texttt{--seeds N} モードを追加。結果：\texttt{baseline\_mix} の Test MRR $= 0.890 \pm 0.095$（95\% CI $[0.804, 0.949]$）。単一 seed（0.899）では見えなかった高分散を確認。
+      \item \textbf{variant\_type 別評価の標準化}：original ケースの MRR $= 0.851 \pm 0.080$ に対し、random\_io\_from\_models の MRR $= 0.925 \pm 0.112$ と合成ケースが有意に簡単であることを定量的に確認。論文では original ケースの指標を主要報告とする方針。
+    \end{itemize}
   \item 2026-03-30（TeX）：\texttt{development\_log.tex} の \texttt{inputenc} を UTF-8 のみに整理し、更新履歴の Markdown 風バッククォートをやめてファイル名をタイプライタ体コマンドで囲む表記に修正、\texttt{uplatex} でコンパイル可能に。TeX は \texttt{brew install texlive} で \texttt{pdflatex}/\texttt{uplatex}/\texttt{dvipdfmx} を利用（手順は \texttt{docs/README.md}）。
   \item 2026-03-30：Claude Code 向け \texttt{CLAUDE.md} と \texttt{research\_context.md} のポインタを追加。\nameref{sec:file-roles}を新設し各ファイルの役割を記載。技術メモの \texttt{build\_graph\_data.py} を二部グラフ版の説明に修正し当該節へ参照。
   \item 2026-03-18（試したいこと・GAT 追加）：開発記録に「試したいこと・実験アイデア」を追加（GAT、エッジ重み、クエリ条件付きグラフ、hard negative、データ拡張、複数 seed 評価）。\texttt{train\_gnn\_retriever.py} に GAT エンコーダと \texttt{--gnn-type gcn|gat} を追加。

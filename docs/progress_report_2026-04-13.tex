@@ -1,0 +1,599 @@
+\documentclass[11pt,a4paper]{ltjsarticle}
+\usepackage{luatexja-fontspec}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{fancyvrb}
+\usepackage{tcolorbox}
+
+\geometry{margin=25mm}
+
+\setmainjfont{Hiragino Mincho ProN}
+\setsansjfont{Hiragino Kaku Gothic ProN}
+\setmonofont{Menlo}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!60!black,
+}
+
+% プロンプト引用用ボックス
+\newtcolorbox{promptbox}{
+  colback=gray!5,
+  colframe=blue!40!black,
+  boxrule=0.5pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  fontupper=\small\ttfamily,
+}
+
+\title{{\sffamily 進捗報告：変数共有関係を表す数式グラフを用いた\\GNNに基づく文献からの物理モデル構築}}
+\author{かずひろ}
+\date{2026年4月13日}
+
+\begin{document}
+\maketitle
+
+
+%======================================================================
+\section{研究目的}
+%======================================================================
+
+科学文献PDFから数式を自動抽出し，自然言語で記述されたプロセス条件（例：「CSTRの定常濃度を求めたい．入力は流量と反応速度定数」）に対して，最適な物理モデル（数式の集合）を自動選択するRetrievalシステムを開発する．数式間の変数共有関係をグラフ構造で表現し，グラフニューラルネットワーク（GNN）ベースの検索手法の有効性を検証する．
+
+%======================================================================
+\section{使用データ}
+%======================================================================
+
+\subsection{データ概要}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+項目 & 値 \\
+\midrule
+総数式数 & 3,244 \\
+ソース数 & 71（PDF 39 + ハンドブック 32） \\
+総変数ノード & 3,704 \\
+グラフエッジ（二部） & 33,638 \\
+訓練ケース & 1,107（123コア $\times$ 9バリアント） \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{参考文献リスト（PDF資料）}
+
+主要なPDFソースから抽出した数式（合計2,574式）．
+
+\begin{longtable}{clrc}
+\toprule
+\# & ソース & 式数 & 分野 \\
+\midrule
+\endhead
+1 & Seborg et al., \textit{Process Dynamics and Control}, 3rd Ed. & 308 & プロセス制御 \\
+2 & Seborg, \textit{Process Dynamic and Control}, Chap.~2 & 108 & プロセス制御 \\
+3 & Bequette, \textit{Process Control: Designing Processes} & 482 & プロセス制御 \\
+  & \textit{and Control Systems for Dynamic Performance} & & \\
+4 & Woolf et al., \textit{Chemical Process Dynamics and Controls} & 521 & 化学プロセス動特性 \\
+5 & Ingham et al., \textit{Chemical Engineering Dynamics} (Wiley) & 70 & 化学工学動特性 \\
+6 & Marlin, \textit{Process Control}, Chapter 3--4 & 161 & プロセス制御 \\
+7 & Svrcek et al., \textit{A Real Time Approach to Process Control} & 61 & プロセス制御 \\
+8 & Corriou, \textit{Process Control} (Springer, 2018) & 226 & プロセス制御 \\
+9 & Corriou, \textit{Process Control}, Chap.~1/1--6（分割抽出） & 104 & プロセス制御 \\
+10 & Aris (1974), 反応系の合理的解析 & 33 & 反応工学 \\
+11 & Moser et al.\ (2018), ワイン発酵モデル & 61 & バイオプロセス \\
+12 & Liu \& Guo (2013), プレウロムチリン発酵モデル & 15 & 発酵工学 \\
+13 & Phisalaphong et al.\ (2006), エタノール発酵最適化 & 15 & 発酵工学 \\
+14 & Bhandari et al.\ (2009), バイオプロセス速度論 & 9 & バイオプロセス \\
+15 & 燃焼関連論文 3本（2023--2024） & 79 & 燃焼工学 \\
+16 & 高分子反応器論文 & 9 & 高分子工学 \\
+17 & 熱交換器論文（動モデル） & 71 & 伝熱工学 \\
+18 & 物質移動・対流論文 & 42 & 輸送現象 \\
+19 & 熱分解・電気化学・大豆油速度論文 & 59 & 反応工学・電気化学 \\
+20 & その他（Applied Sciences, Energies 等） & 50 & 各種 \\
+\bottomrule
+\end{longtable}
+
+\subsection{ハンドブック式（LLM生成，合計670式）}
+
+電子バージョンハンドブックを利用できないので，Google Gemini 2.5 Proの知識ベースから32ドメインの基礎方程式を生成した．
+
+\textbf{Round 1（15ドメイン，基礎式）}：
+流体力学(25式)，伝熱(25)，物質移動(20)，熱力学(25)，反応工学(25)，プロセス制御(25)，電気化学(20)，バイオプロセス(20)，環境工学(20)，振動学(20)，電気工学(20)，高分子工学(20)，燃焼工学(20)，分離プロセス(20)，輸送現象(25)
+
+\textbf{Round 2（16ドメイン，新規＋応用式）}：
+原子力工学(20)，半導体物理(20)，音響学(20)，光学(20)，地盤工学(20)，航空力学(20)，HVAC(20)，食品工学(20)，製薬工学(20)，構造力学(20)，化学工学基礎(20)，流体力学応用(20)，伝熱応用(20)，反応工学応用(20)，熱力学応用(20)，電気化学応用(20)，プロセス制御応用(20)
+
+\subsection{Google Gemini API 利用に関する確認事項}
+
+本研究では数式抽出および訓練ケース生成にGoogle Gemini API（gemini-2.5-pro）を使用している．利用規約上の主要な確認事項：
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+項目 & 有料枠 (Paid) & 無料枠 (Unpaid) \\
+\midrule
+出力の所有権 & Googleは所有権を主張しない & 同左 \\
+モデル改善への使用 & 使用されない & 使用される可能性あり \\
+人間レビュー & なし & 確認される可能性あり \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{確認すべき事項}：
+\begin{itemize}[nosep]
+  \item 現在の利用が有料枠か無料枠かにより，データの取り扱いが異なる
+  \item 無料枠の場合，抽出プロンプトや生成結果がGoogleのモデル改善に使用される可能性がある
+  \item 学会発表・論文化にあたり，AI生成コンテンツの利用開示が各学会の規定に準拠しているか確認が必要
+\end{itemize}
+
+\textbf{参考URL}：
+\begin{itemize}[nosep]
+  \item Gemini API 利用規約: \url{https://ai.google.dev/gemini-api/terms}
+  \item Generative AI 追加規約: \url{https://policies.google.com/terms/generative-ai}
+  \item データログポリシー: \url{https://ai.google.dev/gemini-api/docs/logs-policy}
+\end{itemize}
+
+%======================================================================
+\section{情報抽出手法}
+%======================================================================
+
+\subsection{PDFから数式の構造化抽出}
+
+\textbf{使用モデル}: Google Gemini 2.5 Pro（Structured Output モード）
+
+PDFファイルをGemini APIにアップロードし，以下のプロンプトで数式を構造化JSONとして抽出する．出力スキーマはPydanticモデルで定義し，\texttt{response\_json\_schema}パラメータで型安全なJSON出力を強制している．
+
+\textbf{入力}: PDF文書ファイル \quad
+\textbf{出力}: 数式のJSON配列（各要素: source\_id, eq\_id, equation, variables, context\_text, domain）
+
+\begin{promptbox}
+Extract all numbered equations and equations found in the appendices
+from this textbook in LaTeX format. For each equation, identify the
+"variable definitions" and the "physical meaning (context)" from the
+surrounding text.
+
+Constraints:
+- Extract the content EXACTLY as it appears in the literature.
+  Do not make unauthorized corrections or modifications.
+- Preserve every variable symbol and subscript exactly as printed:
+  e.g.\ if the source writes c\_w (specific heat of water),
+  do NOT change it to c\_p.
+  Never "normalize" or "standardize" notation.
+
+Output a single JSON array. Each element must have these fields:
+- source\_id: string (e.g.\ PDF filename)
+- eq\_id: string (e.g.\ "eq\_1")
+- equation: string (LaTeX form)
+- variables: object \{symbol: definition\}
+- context\_text: string (physical meaning)
+- domain: string (e.g.\ "CSTR Kinetics")
+\end{promptbox}
+
+\textbf{Gemini無料枠制約}：
+\begin{itemize}[nosep]
+  \item レート制限: 5 RPM（12秒間隔で呼び出し）
+  \item ページ上限: 約1,000ページ．pypdfで80ページ単位に分割（3冊の大型テキストブック，39チャンク）
+\end{itemize}
+
+\subsection{ハンドブック式のLLM生成}
+
+\textbf{入力}: ドメイン名，トピックリスト，生成式数 \quad
+\textbf{出力}: 数式のJSON配列（抽出と同一スキーマ）
+
+\begin{promptbox}
+You are an expert in \{domain\_label\} and mathematical modeling.
+Generate exactly \{n\} fundamental equations used in \{domain\_label\},
+in LaTeX format.
+
+Cover these topics: \{topics\}
+
+For each equation provide:
+- source\_id: use exactly "\{source\_id\}"
+- eq\_id: "eq\_1" through "eq\_\{n\}" (sequential)
+- equation: LaTeX form (use standard notation)
+- variables: object \{symbol: definition with units\}
+- context\_text: brief physical meaning (1--3 sentences)
+- domain: "\{label\}" or a more specific sub-domain
+
+IMPORTANT:
+- Each equation MUST be distinct (no duplicates).
+- Include differential and algebraic forms where applicable.
+- Variables dict must include ALL symbols in the equation.
+\end{promptbox}
+
+\textbf{トピックリストの例（流体力学）}: Navier--Stokes equations, Bernoulli equation, Hagen--Poiseuille flow, Darcy--Weisbach friction, boundary layer equations (Blasius), drag and lift coefficients, continuity equation, Euler equation, potential flow, vorticity equation, turbulent flow, open channel flow (Manning, Chezy), orifice flow, Torricelli's theorem
+
+\subsection{論文の自動取得}
+
+\textbf{Semantic Scholar API}により15カテゴリのクエリで関連論文を自動検索し，Open-access PDFをダウンロード．
+
+\textbf{検索クエリの例}: ``fluid dynamics pipe flow mathematical model equations'', ``electrochemical cell battery model equations'', ``bioprocess fermentation kinetic model mathematical'' 等（15カテゴリ，各20--30件検索）
+
+\textbf{結果}: 180論文発見 $\to$ 49論文にPDFリンクあり $\to$ 17本ダウンロード成功 $\to$ 308式抽出
+
+\subsection{訓練ケースの生成}
+
+\subsubsection{コアケース生成}
+
+3,244式のカタログ（851Kキャラクター）をドメイン別に300式以下のバッチに分割し，各バッチからGemini 2.5 Proで物理的に意味のあるケースを生成．
+
+\textbf{入力}: 数式カタログ（model\_id, domain, variable\_symbolsのリスト）
+
+\textbf{出力}: コアケースのJSON配列（各要素: case\_id, context, input\_variables, output\_variables, correct\_model\_ids）
+
+\begin{promptbox}
+You are helping to create training data for a graph neural network
+that selects relevant equations for physical process modeling.
+
+CATALOG (\{N\} equations, domains: \{domain\_list\}):
+\{catalog\_json\}
+
+TASK: Using ONLY the models listed above, create approximately
+\{n\_cases\} realistic and physically meaningful core training cases.
+
+For each core case:
+- Pick one or more model\_ids that represent a coherent physical model.
+- Define a context string describing the physical scenario.
+- Choose input\_variables and output\_variables from variable\_symbols.
+- correct\_model\_ids: list forming a correct mathematical model.
+
+CONDITIONS FOR correct\_model\_ids:
+(1) Given input\_variables and the equations, it MUST be possible
+    to solve for all output\_variables.
+(2) The equation set MUST be sufficient and minimal.
+\end{promptbox}
+
+\textbf{結果}: 11バッチ中9バッチ成功（2バッチはGemini 503エラーで失敗）$\to$ 123コアケース
+
+\subsubsection{データ拡張}
+
+各コアケースから9バリアントをPythonテンプレートで自動生成．
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llrl}
+\toprule
+バリアント & 手法 & 件数 & 目的 \\
+\midrule
+original & そのまま使用 & 123 & ベースケース \\
+context\_paraphrased & テンプレートで文脈を言い換え（3パターン） & 369 & 語彙の多様性向上 \\
+swap\_io & 入力と出力を完全スワップ & 123 & 逆問題への対応力 \\
+random\_io\_from\_models & 全変数からランダムにI/O割当（4パターン） & 492 & 変数選択の多様性 \\
+\midrule
+\textbf{合計} & & \textbf{1,107} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{言い換えテンプレート}：
+\begin{enumerate}[nosep]
+  \item ``This case describes the following physical model: \{context\}''
+  \item ``In this scenario, the underlying process can be summarized as: \{context\}''
+  \item ``From the perspective of process modeling, this case focuses on: \{context\}''
+\end{enumerate}
+
+%======================================================================
+\section{グラフ構築とGNN学習}
+%======================================================================
+
+\subsection{二部グラフの構築}
+
+数式と変数の関係を二部グラフとして表現する．
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+項目 & 値 \\
+\midrule
+数式ノード & 3,244 \\
+変数ノード & 3,704 \\
+二部エッジ & 33,638（双方向） \\
+ノード特徴量 & 768次元（CodeBERT [CLS] 埋め込み） \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{ノード特徴量の計算}：
+\begin{itemize}[nosep]
+  \item \textbf{数式ノード}: ``Equation: \{LaTeX\} / Context: \{context\_text\}'' をCodeBERT（microsoft/codebert-base）に入力し，[CLS]トークンの768次元埋め込みを使用
+  \item \textbf{変数ノード}: その変数を含む全数式のCodeBERT埋め込みの平均
+\end{itemize}
+
+\textbf{エッジの定義}: 数式$i$が変数$j$を含む場合，$(i,j)$と$(j,i)$の双方向エッジを張る．数式間の間接的な関連は，変数ノードを介した2ホップのパスとして表現される．
+
+\subsection{GNNアーキテクチャ}
+
+2種類のGNNベースアプローチを実装した．
+
+\subsubsection{(A) GCN Retriever}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+コンポーネント & 構成 \\
+\midrule
+数式エンコーダ & 2層GCN（GCNConv $768 \to 768 \to 768$, Dropout 0.1） \\
+クエリエンコーダ & TF-IDF $\to$ SVD(256次元) $\to$ MLP($256 \to 512 \to 768$) \\
+損失関数 & Sampled InfoNCE（温度 $\tau = 0.07$） \\
+負例数 & 64/ケース \\
+最適化 & AdamW (lr $= 2\times10^{-3}$, weight\_decay $= 10^{-4}$) \\
+エポック数 & 3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{(B) 残差GCN SVD洗練}
+
+TF-IDF+SVDの強いベースライン埋め込みを出発点とし，GCNで残差的に洗練する．
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+コンポーネント & 構成 \\
+\midrule
+ベースライン埋め込み & TF-IDF $\to$ SVD(256次元) $\to$ L2正規化 \\
+GCN Refiner & 2層GCN($256 \to 256 \to 256$) + 学習可能パラメータ$\alpha$ \\
+出力 & $\mathbf{E}_{\mathrm{refined}} = \mathrm{L2norm}(\mathbf{x} + \alpha \cdot \mathbf{h})$（$\alpha=0$で初期化） \\
+損失関数 & Sampled InfoNCE（温度 $\tau = 0.07$） \\
+負例数 & 128/ケース \\
+エポック数 & 10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{(C) 2段階リランカー（主要手法）}
+
+Stage~1でTF-IDF+Jaccardにより候補50件を抽出し，Stage~2でMLPリランカーが特徴量ベクトルに基づきリランキングする．
+
+\textbf{Stage 1: 候補抽出（固定重み）}
+\begin{equation}
+  \mathrm{score} = 0.7 \times \cos_{\mathrm{TF\text{-}IDF}} + 0.3 \times \mathrm{Jaccard}(\mathit{IO}_{\mathrm{query}}, V_{\mathrm{eq}})
+\end{equation}
+上位50件を候補として抽出．
+
+\textbf{Stage 2: MLPリランカー}
+\[
+  \text{入力}(n\text{次元}) \xrightarrow{\text{Linear}(64)} \text{ReLU} \to \text{Dropout}(0.1) \xrightarrow{\text{Linear}(64)} \text{ReLU} \to \text{Dropout}(0.1) \xrightarrow{\text{Linear}(1)} \sigma
+\]
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+ハイパーパラメータ & 値 \\
+\midrule
+隠れ層 & 64次元 $\times$ 2層 \\
+損失関数 & マージンランキング損失（margin $= 0.1$） \\
+負例数 & $\min(8, \text{利用可能数})$/正例 \\
+バッチサイズ & 16 \\
+エポック数 & 15 \\
+最適化 & AdamW (lr $= 10^{-3}$, weight\_decay $= 10^{-4}$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{特徴量の設計}
+
+\subsubsection{ベース7特徴量（reranker-7）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{clp{8cm}}
+\toprule
+\# & 特徴量名 & 計算方法 \\
+\midrule
+0 & テキスト類似度 & TF-IDF cosine（クエリcontext, 式のcontext+equation+domain） \\
+1 & I/O変数Jaccard & $\mathrm{Jaccard}(\text{クエリ入出力変数}, \text{式の変数集合})$ \\
+2 & SVD埋め込み類似度 & TF-IDF $\to$ SVD(256次元)空間でのcosine類似度 \\
+3 & 入力変数カバー率 & $|\mathit{input\_vars} \cap \mathit{eq\_vars}| \;/\; |\mathit{input\_vars}|$ \\
+4 & 出力変数カバー率 & $|\mathit{output\_vars} \cap \mathit{eq\_vars}| \;/\; |\mathit{output\_vars}|$ \\
+5 & 式変数中のクエリ割合 & $|\mathit{IO\_set} \cap \mathit{eq\_vars}| \;/\; |\mathit{eq\_vars}|$ \\
+6 & ドメイン一致 & クエリcontextと式domainの部分文字列一致（0/1） \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{クエリ条件付きグラフ特徴量（reranker-10で追加される3次元）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{clp{5.5cm}l}
+\toprule
+\# & 特徴量名 & 計算方法 & 捉える情報 \\
+\midrule
+7 & 2ホップ到達率 & クエリI/O変数のうち，変数共有グラフ上で候補式に2ホップ以内で到達可能な割合 & 間接的変数関連 \\
+8 & グラフ近傍重複度 & Jaccard（候補式の近傍式集合, クエリ変数を含む式集合） & 構造的近接性 \\
+9 & 間接変数ブリッジ比率 & 候補式の変数のうち，クエリ変数には含まれないが，クエリ変数を持つ他式にも出現する変数の割合 & 隠れた接続 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{核心}: これら3特徴量はすべてクエリに条件付き（同じ候補式でもクエリごとに異なる値をとる）．クエリに依存しない固定GNN埋め込みとは本質的に異なるアプローチである．
+
+%======================================================================
+\section{評価方法と結果}
+%======================================================================
+
+\subsection{評価設定}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lp{10cm}}
+\toprule
+項目 & 設定 \\
+\midrule
+比較手法 & baseline（固定重み），reranker-7（7特徴量MLP），reranker-10（+グラフ3特徴量） \\
+評価指標 & MRR (Mean Reciprocal Rank), Recall@$K$ ($K=1,3,5,10$) \\
+乱数シード & 5種類（42, 123, 456, 789, 1024） \\
+データ分割 & source\_id（論文/ソース）単位で train 60\% / val 20\% / test 20\% \\
+統計量 & 5 seed 平均 $\pm$ 標準偏差，Bootstrap 95\%信頼区間（2,000反復） \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{評価指標の説明}：
+\begin{itemize}[nosep]
+  \item \textbf{MRR (Mean Reciprocal Rank)}: 各クエリについて，正解数式が検索結果の何位に現れるかの逆数の平均．MRR$=1.0$は全クエリで正解が1位，MRR$=0.5$は平均2位．
+  \item \textbf{Recall@$K$}: 上位$K$件に正解が含まれるクエリの割合．
+  \item \textbf{source\_id単位分割}: 同一論文の数式が訓練とテストに分かれることを防ぎ，データリークを防止．
+\end{itemize}
+
+\subsection{主要結果：データ規模によるスケーリング効果}
+
+\subsubsection{全体MRR（5 seed 平均 $\pm$ 標準偏差）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rccc}
+\toprule
+式数 & baseline & reranker-7 & reranker-10 (graph) \\
+\midrule
+975 & $0.875 \pm 0.088$ & $0.885 \pm 0.119$ & $0.879 \pm 0.123$ \\
+1,613 & $0.900 \pm 0.069$ & $0.942 \pm 0.052$ & $0.948 \pm 0.046$ \\
+\textbf{3,244} & $\mathbf{0.924 \pm 0.040}$ & $\mathbf{0.937 \pm 0.018}$ & $\mathbf{0.949 \pm 0.031}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{95\%信頼区間（3,244式）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+手法 & MRR & 95\% CI \\
+\midrule
+baseline & $0.924 \pm 0.040$ & $[0.894,\; 0.954]$ \\
+reranker-7 & $0.937 \pm 0.018$ & $[0.922,\; 0.951]$ \\
+\textbf{reranker-10} & $\mathbf{0.949 \pm 0.031}$ & $\mathbf{[0.924,\; 0.973]}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Originalケース（LLM合成でないケース）のみのMRR}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rccc}
+\toprule
+式数 & baseline & reranker-7 & reranker-10 (graph) \\
+\midrule
+975 & 0.839 & 0.860 & 0.842 \\
+1,613 & 0.885 & 0.936 & 0.935 \\
+\textbf{3,244} & \textbf{0.921} & \textbf{0.942} & \textbf{0.952} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{グラフ特徴量の効果（reranker-10 $-$ reranker-7）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rrl}
+\toprule
+式数 & $\Delta$MRR & 解釈 \\
+\midrule
+975 & $-0.006$ & グラフが害 \\
+1,613 & $+0.006$ & ほぼ同等 \\
+\textbf{3,244} & $\mathbf{+0.012}$ & \textbf{グラフが有効} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{バリアント別MRR（3,244式）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+バリアント & baseline & reranker-7 & reranker-10 \\
+\midrule
+original & 0.921 & 0.942 & \textbf{0.952} \\
+context\_paraphrased & 0.927 & 0.939 & \textbf{0.954} \\
+swap\_io & 0.928 & 0.943 & \textbf{0.954} \\
+random\_io\_from\_models & 0.923 & 0.933 & \textbf{0.944} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Seed別の詳細（3,244式，baseline）}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rrrrr}
+\toprule
+seed & テスト件数 & MRR & Recall@1 & Recall@3 \\
+\midrule
+42 & 180 & 0.879 & 0.778 & 1.000 \\
+123 & 171 & 0.884 & 0.789 & 1.000 \\
+456 & 252 & 0.946 & 0.893 & 1.000 \\
+789 & 261 & 0.958 & 0.927 & 1.000 \\
+1024 & 99 & 0.955 & 0.909 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{注}: 全手法・全seedで Recall@3 $= 1.000$（上位3件に正解が必ず含まれる）．
+
+%======================================================================
+\section{考察}
+%======================================================================
+
+\subsection{データ規模がグラフ構造の価値を決定する}
+
+本研究の最も重要な発見は，グラフ特徴量の有効性がデータ規模に明確に依存するスケーリング則である．
+
+\begin{itemize}
+  \item \textbf{975式（スパースグラフ）}: 変数ノードの次数が低く，2ホップ到達率がほぼ0/1に二値化．グラフ特徴量はリランカーにノイズを注入し，性能を悪化させた（$\Delta\mathrm{MRR} = -0.006$）．
+  \item \textbf{1,613式（遷移領域）}: グラフがやや密になり，グラフ特徴量が微小ながら正の寄与を示すようになった（$\Delta\mathrm{MRR} = +0.006$）．
+  \item \textbf{3,244式（密グラフ）}: 変数ノードの次数が十分に増加し，2ホップ到達率・近傍重複度が連続的な値をとるようになった．グラフ特徴量が候補間の有意な差別化を可能にし，全手法中最高性能を達成（$\Delta\mathrm{MRR} = +0.012$）．
+\end{itemize}
+
+この結果は，グラフ構造特徴量には一定のデータ密度の閾値が存在し，約1,600式/2,000変数付近に転換点があることを示唆する．
+
+\subsection{クエリ条件付きグラフ特徴量の有効性}
+
+初期に試行したクエリに依存しないGNN埋め込み（GCN Retriever，残差GCN SVD洗練）はいずれもベースラインを超えられなかった．一方，クエリの入出力変数に条件付けしたグラフ特徴量は，十分なデータ規模のもとで有効に機能した．
+
+これは，数式retrievalにおいて「どの変数を介してグラフ上で関連しているか」がクエリごとに異なるため，固定的な埋め込みでは捉えきれない情報があることを示唆する．
+
+\subsection{語彙的手法の頑健性とグラフの補完的役割}
+
+TF-IDF + Jaccardベースラインは3,244式でMRR 0.924を達成しており，極めて強い．学習型手法のマージンは$+1.3\%$（reranker-7）から$+2.5\%$（reranker-10）である．
+
+グラフ特徴量は語彙的手法を置き換えるのではなく補完するものとして機能しており，2段階アーキテクチャ（語彙的候補抽出 $\to$ グラフベースリランキング）の妥当性が示された．
+
+\subsection{分散の縮小}
+
+データ拡大により，全手法で5 seed間の分散が大幅に縮小した（baseline: $0.088 \to 0.040$，reranker-7: $0.119 \to 0.018$）．これは評価の統計的信頼性の向上を意味し，データの多様性がモデルの安定性にも寄与することを示す．
+
+%======================================================================
+\section{今後の計画}
+%======================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llp{8cm}}
+\toprule
+優先度 & 項目 & 目的 \\
+\midrule
+高 & 論文執筆 & GNNを用いた物理モデル自動構築を主テーマに \\
+中 & 訓練ケース増強（$123 \to 200+$コア） & API失敗分2バッチの再実行 \\
+低 & GNN学習特徴量の再テスト & GCN-refined SVDを3,244式で再評価 \\
+低 & 5,000式超への拡大 & スケーリング曲線の全体像解明，飽和点の同定 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

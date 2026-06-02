@@ -1,0 +1,543 @@
+{
+  "summary": [
+    {
+      "domain": "電気工学",
+      "before": 7,
+      "new": 3,
+      "total": 10
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "before": 7,
+      "new": 3,
+      "total": 10
+    },
+    {
+      "domain": "高分子工学",
+      "before": 6,
+      "new": 4,
+      "total": 10
+    },
+    {
+      "domain": "電気化学（応用）",
+      "before": 6,
+      "new": 4,
+      "total": 10
+    },
+    {
+      "domain": "空力",
+      "before": 6,
+      "new": 4,
+      "total": 10
+    },
+    {
+      "domain": "反応工学（応用）",
+      "before": 6,
+      "new": 4,
+      "total": 10
+    },
+    {
+      "domain": "プロセス制御（応用）",
+      "before": 6,
+      "new": 4,
+      "total": 10
+    },
+    {
+      "domain": "プロセス制御（基礎）",
+      "before": 6,
+      "new": 4,
+      "total": 10
+    },
+    {
+      "domain": "バイオプロセス",
+      "before": 6,
+      "new": 4,
+      "total": 10
+    },
+    {
+      "domain": "音響学",
+      "before": 5,
+      "new": 5,
+      "total": 10
+    },
+    {
+      "domain": "熱力学（応用）",
+      "before": 5,
+      "new": 5,
+      "total": 10
+    },
+    {
+      "domain": "流体力学（応用）",
+      "before": 5,
+      "new": 5,
+      "total": 10
+    },
+    {
+      "domain": "光学",
+      "before": 5,
+      "new": 2,
+      "total": 7
+    }
+  ],
+  "papers": [
+    {
+      "domain": "電気工学",
+      "title": "Dynamical Movement Primitives: Learning Attractor Models for Motor Behaviors",
+      "year": 2012,
+      "cited_by_count": 1568,
+      "source": "openalex",
+      "pdf_url": "https://www.pure.ed.ac.uk/ws/files/7874487/NECO_a_00393.pdf",
+      "filename": "pdfs/電気工学/FB3_03_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf"
+    },
+    {
+      "domain": "電気工学",
+      "title": "State of the Art in Research on Microgrids: A Review",
+      "year": 2015,
+      "cited_by_count": 1162,
+      "source": "openalex",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/6287639/7042252/07120901.pdf",
+      "filename": "pdfs/電気工学/FB3_05_State_of_the_Art_in_Research_on_Microgrids_A_Review_2015.pdf"
+    },
+    {
+      "domain": "電気工学",
+      "title": "Definition and Classification of Power System Stability – Revisited &amp; Extended",
+      "year": 2020,
+      "cited_by_count": 1049,
+      "source": "openalex",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/59/9460709/09286772.pdf",
+      "filename": "pdfs/電気工学/FB3_06_Definition_and_Classification_of_Power_System_Stability_Revi_2020.pdf"
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "title": "Attention, Uncertainty, and Free-Energy",
+      "year": 2010,
+      "cited_by_count": 1406,
+      "source": "openalex",
+      "pdf_url": "https://www.frontiersin.org/articles/10.3389/fnhum.2010.00215/pdf",
+      "filename": "pdfs/熱力学_基礎/FB3_03_Attention_Uncertainty_and_Free-Energy_2010.pdf"
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "title": "Action and behavior: a free-energy formulation",
+      "year": 2010,
+      "cited_by_count": 844,
+      "source": "openalex",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s00422-010-0364-z.pdf",
+      "filename": "pdfs/熱力学_基礎/FB3_04_Action_and_behavior_a_free-energy_formulation_2010.pdf"
+    },
+    {
+      "domain": "熱力学（基礎）",
+      "title": "Free-energy and the brain",
+      "year": 2007,
+      "cited_by_count": 665,
+      "source": "openalex",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11229-007-9237-y.pdf",
+      "filename": "pdfs/熱力学_基礎/FB3_07_Free-energy_and_the_brain_2007.pdf"
+    },
+    {
+      "domain": "高分子工学",
+      "title": "Machine learning in materials informatics: recent applications and prospects",
+      "year": 2017,
+      "cited_by_count": 1735,
+      "source": "openalex",
+      "pdf_url": "https://www.nature.com/articles/s41524-017-0056-5.pdf",
+      "filename": "pdfs/高分子工学/FB3_01_Machine_learning_in_materials_informatics_recent_application_2017.pdf"
+    },
+    {
+      "domain": "高分子工学",
+      "title": "Systematic analysis of nucleation-dependent polymerization reveals new insights into the mechanism of amyloid self-assembly",
+      "year": 2008,
+      "cited_by_count": 485,
+      "source": "openalex",
+      "pdf_url": "https://kar.kent.ac.uk/31446/1/Xue%20et%20al%20PNAS%20%282008%29%20105%208926.pdf",
+      "filename": "pdfs/高分子工学/FB3_03_Systematic_analysis_of_nucleation-dependent_polymerization_r_2008.pdf"
+    },
+    {
+      "domain": "高分子工学",
+      "title": "What makes a material printable? A viscoelastic model for extrusion-based 3D printing of polymers",
+      "year": 2018,
+      "cited_by_count": 344,
+      "source": "openalex",
+      "pdf_url": "https://www.osti.gov/servlets/purl/1488709",
+      "filename": "pdfs/高分子工学/FB3_04_What_makes_a_material_printable_A_viscoelastic_model_for_ext_2018.pdf"
+    },
+    {
+      "domain": "高分子工学",
+      "title": "Computation of stagnation coating flow of electro-conductive ternary Williamson hybrid $$\\mathrm{GO}-\\mathrm{AU}-{\\mathrm{Co}}_{3}{\\mathrm{O}}_{4}/\\mathrm{EO}$$ nanofluid with a Cattaneo–Christov heat flux model and magnetic induction",
+      "year": 2023,
+      "cited_by_count": 38,
+      "source": "openalex",
+      "pdf_url": "https://www.nature.com/articles/s41598-023-37197-8.pdf",
+      "filename": "pdfs/高分子工学/FB3_06_Computation_of_stagnation_coating_flow_of_electro-conductive_2023.pdf"
+    },
+    {
+      "domain": "電気化学（応用）",
+      "title": "Effect of Temperature on the Aging rate of Li Ion Battery Operating above Room Temperature",
+      "year": 2015,
+      "cited_by_count": 567,
+      "source": "openalex",
+      "pdf_url": "https://www.nature.com/articles/srep12967.pdf",
+      "filename": "pdfs/電気化学_応用/FB3_05_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf"
+    },
+    {
+      "domain": "電気化学（応用）",
+      "title": "3D microstructure design of lithium-ion battery electrodes assisted by X-ray nano-computed tomography and modelling",
+      "year": 2020,
+      "cited_by_count": 492,
+      "source": "openalex",
+      "pdf_url": "https://www.nature.com/articles/s41467-020-15811-x.pdf",
+      "filename": "pdfs/電気化学_応用/FB3_06_3D_microstructure_design_of_lithium-ion_battery_electrodes_a_2020.pdf"
+    },
+    {
+      "domain": "電気化学（応用）",
+      "title": "An improved feedforward-long short-term memory modeling method for the whole-life-cycle state of charge prediction of lithium-ion batteries considering current-voltage-temperature variation",
+      "year": 2022,
+      "cited_by_count": 346,
+      "source": "openalex",
+      "pdf_url": "https://vbn.aau.dk/ws/files/626536410/WANG_2022_An_improved_feedforward.pdf",
+      "filename": "pdfs/電気化学_応用/FB3_13_An_improved_feedforward-long_short-term_memory_modeling_meth_2022.pdf"
+    },
+    {
+      "domain": "電気化学（応用）",
+      "title": "Materials science aspects of zinc–air batteries: a review",
+      "year": 2014,
+      "cited_by_count": 268,
+      "source": "openalex",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s40243-014-0028-3.pdf",
+      "filename": "pdfs/電気化学_応用/FB3_14_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf"
+    },
+    {
+      "domain": "空力",
+      "title": "Dynamics Modeling and Loads Analysis of an Offshore Floating Wind Turbine",
+      "year": 2007,
+      "cited_by_count": 941,
+      "source": "openalex",
+      "pdf_url": "https://www.osti.gov/servlets/purl/921803",
+      "filename": "pdfs/空力/FB3_01_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf"
+    },
+    {
+      "domain": "空力",
+      "title": "State of the art in the aeroelasticity of wind turbine blades: Aeroelastic modelling",
+      "year": 2016,
+      "cited_by_count": 213,
+      "source": "openalex",
+      "pdf_url": "https://strathprints.strath.ac.uk/64995/1/Wang_etal_RSER_2016_State_of_the_art_in_the_aeroelasticity_of_wind_turbine_blades.pdf",
+      "filename": "pdfs/空力/FB3_06_State_of_the_art_in_the_aeroelasticity_of_wind_turbine_blade_2016.pdf"
+    },
+    {
+      "domain": "空力",
+      "title": "The New Modularization Framework for the FAST Wind Turbine CAE Tool",
+      "year": 2013,
+      "cited_by_count": 190,
+      "source": "openalex",
+      "pdf_url": "https://www.osti.gov/servlets/purl/1068607",
+      "filename": "pdfs/空力/FB3_07_The_New_Modularization_Framework_for_the_FAST_Wind_Turbine_C_2013.pdf"
+    },
+    {
+      "domain": "空力",
+      "title": "Grand challenges in the design, manufacture, and operation of future wind turbine systems",
+      "year": 2023,
+      "cited_by_count": 188,
+      "source": "openalex",
+      "pdf_url": "https://wes.copernicus.org/articles/8/1071/2023/wes-8-1071-2023.pdf",
+      "filename": "pdfs/空力/FB3_08_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf"
+    },
+    {
+      "domain": "反応工学（応用）",
+      "title": "Non-equilibrium steady states in supramolecular polymerization",
+      "year": 2017,
+      "cited_by_count": 330,
+      "source": "openalex",
+      "pdf_url": "https://www.nature.com/articles/ncomms15899.pdf",
+      "filename": "pdfs/反応工学_応用/FB3_01_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf"
+    },
+    {
+      "domain": "反応工学（応用）",
+      "title": "The Caltech Photooxidation Flow Tube reactor: design, fluid dynamics and characterization",
+      "year": 2017,
+      "cited_by_count": 74,
+      "source": "openalex",
+      "pdf_url": "https://www.atmos-meas-tech.net/10/839/2017/amt-10-839-2017.pdf",
+      "filename": "pdfs/反応工学_応用/FB3_03_The_Caltech_Photooxidation_Flow_Tube_reactor_design_fluid_dy_2017.pdf"
+    },
+    {
+      "domain": "反応工学（応用）",
+      "title": "Metabolic modeling of synthesis gas fermentation in bubble column reactors",
+      "year": 2015,
+      "cited_by_count": 58,
+      "source": "openalex",
+      "pdf_url": "https://biotechnologyforbiofuels.biomedcentral.com/counter/pdf/10.1186/s13068-015-0272-5",
+      "filename": "pdfs/反応工学_応用/FB3_05_Metabolic_modeling_of_synthesis_gas_fermentation_in_bubble_c_2015.pdf"
+    },
+    {
+      "domain": "反応工学（応用）",
+      "title": "Mathematical modeling of a three-phase trickle bed reactor",
+      "year": 2012,
+      "cited_by_count": 23,
+      "source": "openalex",
+      "pdf_url": "https://www.scielo.br/j/bjce/a/5sbQhRH3KLBwY3Fpp8wjTZK/?lang=en&format=pdf",
+      "filename": "pdfs/反応工学_応用/FB3_14_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf"
+    },
+    {
+      "domain": "プロセス制御（応用）",
+      "title": "PDDL2.1: An Extension to PDDL for Expressing Temporal Planning Domains",
+      "year": 2003,
+      "cited_by_count": 1726,
+      "source": "openalex",
+      "pdf_url": "https://jair.org/index.php/jair/article/download/10352/24759",
+      "filename": "pdfs/プロセス制御_応用/FB3_01_PDDL2.1_An_Extension_to_PDDL_for_Expressing_Temporal_Plannin_2003.pdf"
+    },
+    {
+      "domain": "プロセス制御（応用）",
+      "title": "Techniques of EMG signal analysis: detection, processing, classification and applications",
+      "year": 2006,
+      "cited_by_count": 1609,
+      "source": "openalex",
+      "pdf_url": "https://biologicalproceduresonline.biomedcentral.com/counter/pdf/10.1251/bpo115",
+      "filename": "pdfs/プロセス制御_応用/FB3_02_Techniques_of_EMG_signal_analysis_detection_processing_class_2006.pdf"
+    },
+    {
+      "domain": "プロセス制御（応用）",
+      "title": "Interactive evolutionary computation: fusion of the capabilities of EC optimization and human evaluation",
+      "year": 2001,
+      "cited_by_count": 1321,
+      "source": "openalex",
+      "pdf_url": "https://catalog.lib.kyushu-u.ac.jp/opac_download_md/1670053/ProcIEEE_3.pdf",
+      "filename": "pdfs/プロセス制御_応用/FB3_03_Interactive_evolutionary_computation_fusion_of_the_capabilit_2001.pdf"
+    },
+    {
+      "domain": "プロセス制御（応用）",
+      "title": "DENFIS: dynamic evolving neural-fuzzy inference system and its application for time-series prediction",
+      "year": 2002,
+      "cited_by_count": 1261,
+      "source": "openalex",
+      "pdf_url": "https://openrepository.aut.ac.nz/bitstreams/00baea86-e67c-4c9f-b186-d4e7da9b9c12/download",
+      "filename": "pdfs/プロセス制御_応用/FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf"
+    },
+    {
+      "domain": "プロセス制御（基礎）",
+      "title": "Analysis and quantification of the diversities of aerosol life cycles within AeroCom",
+      "year": 2006,
+      "cited_by_count": 1479,
+      "source": "openalex",
+      "pdf_url": "https://acp.copernicus.org/articles/6/1777/2006/acp-6-1777-2006.pdf",
+      "filename": "pdfs/プロセス制御_基礎/FB3_03_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf"
+    },
+    {
+      "domain": "プロセス制御（基礎）",
+      "title": "Transient Stability of Voltage-Source Converters With Grid-Forming Control: A Design-Oriented Study",
+      "year": 2019,
+      "cited_by_count": 628,
+      "source": "openalex",
+      "pdf_url": "https://vbn.aau.dk/ws/files/313036904/Transient_Stability_of_Voltage_Source_Converters_With_Grid_Forming_Control_A_Design_Oriented_Study.pdf",
+      "filename": "pdfs/プロセス制御_基礎/FB3_04_Transient_Stability_of_Voltage-Source_Converters_With_Grid-F_2019.pdf"
+    },
+    {
+      "domain": "プロセス制御（基礎）",
+      "title": "Standard SOGI-FLL and Its Close Variants: Precise Modeling in LTP Framework and Determining Stability Region/Robustness Metrics",
+      "year": 2020,
+      "cited_by_count": 94,
+      "source": "openalex",
+      "pdf_url": "https://vbn.aau.dk/ws/files/431656795/Standard_SOGI_FLL_and_Its_Close_Variants.pdf",
+      "filename": "pdfs/プロセス制御_基礎/FB3_06_Standard_SOGI-FLL_and_Its_Close_Variants_Precise_Modeling_in_2020.pdf"
+    },
+    {
+      "domain": "プロセス制御（基礎）",
+      "title": "Frequency-Domain Stability Criteria for Converter-Based Power Systems",
+      "year": 2022,
+      "cited_by_count": 70,
+      "source": "openalex",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/8782709/9669092/09723635.pdf",
+      "filename": "pdfs/プロセス制御_基礎/FB3_07_Frequency-Domain_Stability_Criteria_for_Converter-Based_Powe_2022.pdf"
+    },
+    {
+      "domain": "バイオプロセス",
+      "title": "Diffusion in Biofilms",
+      "year": 2003,
+      "cited_by_count": 1130,
+      "source": "openalex",
+      "pdf_url": "https://scholarworks.montana.edu/bitstreams/a1ffc62b-729c-4411-8ae8-ea6d1b5acbfe/download",
+      "filename": "pdfs/バイオプロセス/FB3_01_Diffusion_in_Biofilms_2003.pdf"
+    },
+    {
+      "domain": "バイオプロセス",
+      "title": "Challenges in microbial ecology: building predictive understanding of community function and dynamics",
+      "year": 2016,
+      "cited_by_count": 782,
+      "source": "openalex",
+      "pdf_url": "https://www.nature.com/articles/ismej201645.pdf",
+      "filename": "pdfs/バイオプロセス/FB3_02_Challenges_in_microbial_ecology_building_predictive_understa_2016.pdf"
+    },
+    {
+      "domain": "バイオプロセス",
+      "title": "The Roles of APC and Axin Derived from Experimental and Theoretical Analysis of the Wnt Pathway",
+      "year": 2003,
+      "cited_by_count": 717,
+      "source": "openalex",
+      "pdf_url": "https://journals.plos.org/plosbiology/article/file?id=10.1371/journal.pbio.0000010&type=printable",
+      "filename": "pdfs/バイオプロセス/FB3_03_The_Roles_of_APC_and_Axin_Derived_from_Experimental_and_Theo_2003.pdf"
+    },
+    {
+      "domain": "バイオプロセス",
+      "title": "Engineering microbial consortia by division of labor",
+      "year": 2019,
+      "cited_by_count": 301,
+      "source": "openalex",
+      "pdf_url": "https://microbialcellfactories.biomedcentral.com/track/pdf/10.1186/s12934-019-1083-3",
+      "filename": "pdfs/バイオプロセス/FB3_06_Engineering_microbial_consortia_by_division_of_labor_2019.pdf"
+    },
+    {
+      "domain": "音響学",
+      "title": "Mathematics of thermoacoustic tomography",
+      "year": 2008,
+      "cited_by_count": 354,
+      "source": "openalex",
+      "pdf_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/322F4C7F2A05EE3CD1BD2E6E45F80125/S0956792508007353a.pdf/div-class-title-mathematics-of-thermoacoustic-tomography-div.pdf",
+      "filename": "pdfs/音響学/FB3_06_Mathematics_of_thermoacoustic_tomography_2008.pdf"
+    },
+    {
+      "domain": "音響学",
+      "title": "Underwater Wireless Sensor Networks: A Survey on Enabling Technologies, Localization Protocols, and Internet of Underwater Things",
+      "year": 2019,
+      "cited_by_count": 317,
+      "source": "openalex",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/6287639/8600701/08763947.pdf",
+      "filename": "pdfs/音響学/FB3_09_Underwater_Wireless_Sensor_Networks_A_Survey_on_Enabling_Tec_2019.pdf"
+    },
+    {
+      "domain": "音響学",
+      "title": "Phase-error analysis of high-order finite difference time domain scheme and its influence on calculation results of impulse response in closed sound field",
+      "year": 2007,
+      "cited_by_count": 56,
+      "source": "openalex",
+      "pdf_url": "https://www.jstage.jst.go.jp/article/ast/28/5/28_5_295/_pdf",
+      "filename": "pdfs/音響学/FB3_16_Phase-error_analysis_of_high-order_finite_difference_time_do_2007.pdf"
+    },
+    {
+      "domain": "音響学",
+      "title": "Efficient Synthesis of Room Acoustics via Scattering Delay Networks",
+      "year": 2015,
+      "cited_by_count": 48,
+      "source": "openalex",
+      "pdf_url": "https://arxiv.org/pdf/1502.05751",
+      "filename": "pdfs/音響学/FB3_17_Efficient_Synthesis_of_Room_Acoustics_via_Scattering_Delay_N_2015.pdf"
+    },
+    {
+      "domain": "音響学",
+      "title": "A Platform for Benchmark Cases in Computational Acoustics",
+      "year": 2015,
+      "cited_by_count": 39,
+      "source": "openalex",
+      "pdf_url": "https://pure.tue.nl/ws/files/7993602/1234859309107504.pdf",
+      "filename": "pdfs/音響学/FB3_19_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "Control-Oriented Modeling of Transcritical Vapor Compression Systems",
+      "year": 2004,
+      "cited_by_count": 170,
+      "source": "openalex",
+      "pdf_url": "https://www.ideals.illinois.edu/items/12180/bitstreams/44121/data.pdf",
+      "filename": "pdfs/熱力学_応用/FB3_03_Control-Oriented_Modeling_of_Transcritical_Vapor_Compression_2004.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "Exergy analysis of a hydrogen and water production process by a solar-driven transcritical CO 2 power cycle with Stirling engine",
+      "year": 2017,
+      "cited_by_count": 120,
+      "source": "openalex",
+      "pdf_url": "https://eprints.lancs.ac.uk/id/eprint/86200/1/1_s2.0_S0959652617309228_main.pdf",
+      "filename": "pdfs/熱力学_応用/FB3_05_Exergy_analysis_of_a_hydrogen_and_water_production_process_b_2017.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "Exploring Instructive Physiological Signaling with the Bioelectric Tissue Simulation Engine",
+      "year": 2016,
+      "cited_by_count": 94,
+      "source": "openalex",
+      "pdf_url": "https://www.frontiersin.org/articles/10.3389/fbioe.2016.00055/pdf",
+      "filename": "pdfs/熱力学_応用/FB3_08_Exploring_Instructive_Physiological_Signaling_with_the_Bioel_2016.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "Basic Operation of Cryocoolers and Related Thermal Machines",
+      "year": 2011,
+      "cited_by_count": 92,
+      "source": "openalex",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s10909-011-0373-x.pdf",
+      "filename": "pdfs/熱力学_応用/FB3_09_Basic_Operation_of_Cryocoolers_and_Related_Thermal_Machines_2011.pdf"
+    },
+    {
+      "domain": "熱力学（応用）",
+      "title": "ThermoCycle: A Modelica library for the simulation of thermodynamic systems",
+      "year": 2014,
+      "cited_by_count": 84,
+      "source": "openalex",
+      "pdf_url": "http://www.ep.liu.se/ecp/096/072/ecp14096072.pdf",
+      "filename": "pdfs/熱力学_応用/FB3_10_ThermoCycle_A_Modelica_library_for_the_simulation_of_thermod_2014.pdf"
+    },
+    {
+      "domain": "流体力学（応用）",
+      "title": "Machine Learning for Fluid Mechanics",
+      "year": 2019,
+      "cited_by_count": 2538,
+      "source": "openalex",
+      "pdf_url": "https://arxiv.org/pdf/1905.11075",
+      "filename": "pdfs/流体力学_応用/FB3_01_Machine_Learning_for_Fluid_Mechanics_2019.pdf"
+    },
+    {
+      "domain": "流体力学（応用）",
+      "title": "Lattice Boltzmann methods for multiphase flow and phase-change heat transfer",
+      "year": 2015,
+      "cited_by_count": 903,
+      "source": "openalex",
+      "pdf_url": "https://arxiv.org/pdf/1508.00940",
+      "filename": "pdfs/流体力学_応用/FB3_03_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf"
+    },
+    {
+      "domain": "流体力学（応用）",
+      "title": "Dedalus: A flexible framework for numerical simulations with spectral methods",
+      "year": 2020,
+      "cited_by_count": 452,
+      "source": "openalex",
+      "pdf_url": "http://link.aps.org/pdf/10.1103/PhysRevResearch.2.023068",
+      "filename": "pdfs/流体力学_応用/FB3_05_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf"
+    },
+    {
+      "domain": "流体力学（応用）",
+      "title": "dfnWorks: A discrete fracture network framework for modeling subsurface flow and transport",
+      "year": 2015,
+      "cited_by_count": 421,
+      "source": "openalex",
+      "pdf_url": "https://www.osti.gov/servlets/purl/1227449",
+      "filename": "pdfs/流体力学_応用/FB3_06_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf"
+    },
+    {
+      "domain": "流体力学（応用）",
+      "title": "Flow of Jeffrey Fluid over a Horizontal Circular Cylinder with Suspended Nanoparticles and Viscous Dissipation Effect: Buongiorno Model",
+      "year": 2020,
+      "cited_by_count": 28,
+      "source": "openalex",
+      "pdf_url": "https://akademiabaru.com/submit/index.php/cfdl/article/download/2240/1224",
+      "filename": "pdfs/流体力学_応用/FB3_27_Flow_of_Jeffrey_Fluid_over_a_Horizontal_Circular_Cylinder_wi_2020.pdf"
+    },
+    {
+      "domain": "光学",
+      "title": "Full-waveform inversion imaging of the human brain",
+      "year": 2020,
+      "cited_by_count": 220,
+      "source": "openalex",
+      "pdf_url": "https://www.nature.com/articles/s41746-020-0240-8.pdf",
+      "filename": "pdfs/光学/FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf"
+    },
+    {
+      "domain": "光学",
+      "title": "Unitary Transforms Using Time-Frequency Warping for Digital Holograms of Deep Scenes",
+      "year": 2018,
+      "cited_by_count": 22,
+      "source": "openalex",
+      "pdf_url": "https://ieeexplore.ieee.org/ielx7/6745852/8356207/08307491.pdf",
+      "filename": "pdfs/光学/FB3_07_Unitary_Transforms_Using_Time-Frequency_Warping_for_Digital__2018.pdf"
+    }
+  ]
+}
