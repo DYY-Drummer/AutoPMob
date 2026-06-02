@@ -374,6 +374,10 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
     複数ソースは baseline $0.575 <$ LLM $0.842 <$ \textbf{reranker-10S $0.942$} となり，
     古典 IR 単独では複数文献の組合せに不足し Set-aware リランカーが本質的に必要であることを同一条件で実証．
     なお和文太字は明朝に太字ウェイトが無いため \texttt{BoldFont} を角ゴシックに設定した．
+    \textbf{（同日追記）}v5 の構成を参考に v6 を\textbf{図駆動で簡潔化}（8 $\to$ 5 ページ；目次・重複表を図に統合）し，
+    機械学習研究者視点の図 4 点を新規作成（\texttt{generate\_figures\_v6.py} $\to$ \texttt{docs/figures/fig\_v6\_\{dataset,gradient,impact,llm\}.png}）：
+    (A) データセット内訳・難易度分布，(B) 難易度勾配〔中核〕，(C) 正解式数別の改善＋指標飽和（仮説B）の対比，(D) LLM 三者比較．
+    各図はシード分散のエラーバー・差分注記・統一配色（baseline 灰／本手法 青／LLM 橙）で「1 図 1 主張」とした．
 
   \item 2026-06-01（Phase 5 完了：reranker ハイパーパラメータ sweep と頑健性の確認）：
     \texttt{set\_aware\_reranker.py} に \texttt{-{}-hidden-dim}, \texttt{-{}-margin}, \texttt{-{}-batch-size}, \texttt{-{}-n-neg-samples}, \texttt{-{}-weight-decay} を追加し，

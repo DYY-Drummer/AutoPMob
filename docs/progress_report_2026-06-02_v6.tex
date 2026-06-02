@@ -2,28 +2,20 @@
 \usepackage{luatexja-fontspec}
 \usepackage{geometry}
 \usepackage{booktabs}
-\usepackage{longtable}
 \usepackage{array}
-\usepackage{multirow}
 \usepackage{enumitem}
+\usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{amsmath}
-\usepackage{fancyvrb}
-\usepackage{tcolorbox}
 
-\geometry{margin=25mm}
+\geometry{margin=24mm}
 
 % 和文の太字（\textbf）は明朝に太字ウェイトが無いため，慣例どおり角ゴシックで表現する
 \setmainjfont[BoldFont=Hiragino Kaku Gothic ProN]{Hiragino Mincho ProN}
 \setsansjfont{Hiragino Kaku Gothic ProN}
-\setmonofont{Menlo}
 
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue!60!black,
-  urlcolor=blue!60!black,
-}
+\hypersetup{colorlinks=true, linkcolor=blue!60!black, urlcolor=blue!60!black}
 
 \newcommand{\rkc}{\textrm{Recall@}K_{\textrm{correct}}}
 
@@ -34,254 +26,97 @@
 \begin{document}
 \maketitle
 
-\noindent\textbf{本資料の位置づけ}：本資料は2026年5月18日提出の進捗報告 v5（以下「前回報告」）の\textbf{追補}である．前回報告後に実施した(1) データベースの大規模化（3{,}244式 $\to$ 11{,}146式），(2) 難ケース（DAE 系）の追加と難易度勾配の定量化，(3) 飽和しにくい評価指標 $\rkc$ の導入，(4) 「分野横断収集の要否」（仮説B）の再検定，(5) ハイパーパラメータ頑健性の検証，(6) 外部ベースライン（LLM 直接生成）との同一条件比較，を報告する．前回報告と重複する手法・背景の説明は省略し，変更点と新規結果に絞る．数値はすべて \texttt{experiments/} 配下の実験 JSON で確認した実測値である．
-
-\tableofcontents
+\noindent\textbf{本資料の位置づけ}：本資料は2026年5月18日提出の進捗報告 v5（以下「前回報告」）の\textbf{追補}である．前回報告と重複する手法・背景の説明は省き，新規結果に絞る．数値はすべて \texttt{experiments/} 配下の実験 JSON で確認した実測値であり，10 シード（\texttt{source\_id} 単位で訓練／評価を分割しリークを防止）で評価した．
 
 %======================================================================
-\section{前回報告（v5）からの主な変更点}
+\section{前回報告（v5）からの変更点}
 %======================================================================
-
-前回報告の主要結果は，3{,}244式・1{,}107ケースで Set-aware リランカー（reranker-10S）が baseline を全指標で上回るというものであった．その後，査読・修論を見据えて「\textbf{規模を拡大し，より難しい問題でも本手法の優位が保たれるか}」「\textbf{見かけの優位がチューニングや指標選択の副産物でないか}」を検証した．主な変更点は次の通り．
-
-\begin{enumerate}[leftmargin=2em, nosep]
-  \item \textbf{データベースを 3.4 倍に拡大}：収録数式を 3{,}244 $\to$ \textbf{11{,}146式}，訓練ケースを 1{,}107 $\to$ \textbf{2{,}838件} に拡大した（\S\ref{sec:data}）．
-  \item \textbf{DAE 系の難ケースを 1{,}000 件追加}：常微分方程式（ODE）と代数式が連立する微分代数方程式系（DAE; Differential-Algebraic Equations）を模した難ケースを生成し，難易度勾配を作った（\S\ref{sec:dae}）．
-  \item \textbf{評価指標 $\rkc$ を主指標に採用}：従来主指標の MRR\_first は天井（1.0）付近で飽和し改善幅を覆い隠すため，正解式数 $K=n_{\textrm{correct}}$ 件を取り出したときの再現率 $\rkc$（情報検索の R-precision と同義）を導入した（\S\ref{sec:metric}）．
-  \item \textbf{難しい問題ほど本手法の優位が拡大}：標準データで $+0.127$，DAE を加えると $+0.210$，DAE のみでは $+0.217$ と，問題が難しくなるほど baseline との差（$\rkc$）が広がることを示した（\S\ref{sec:gradient}）．
-  \item \textbf{「分野横断収集は不要」（仮説B）を再検定し結論を更新}：v5 では MRR\_first で差なし（$-0.004$）と結論したが，飽和しない $\rkc$ では \textbf{フル DB が有意に優れる}（$+0.048$，$p=0.044$）ことが判明した（\S\ref{sec:hypoB}）．
-  \item \textbf{ハイパーパラメータ頑健性を確認}：13 通りの設定で主指標のばらつきはシード間標準偏差の約 1/10 に収まり，本手法の強さはチューニング由来でないことを定量化した（\S\ref{sec:robust}）．
-  \item \textbf{外部ベースライン（LLM 直接生成）との同一条件比較を更新}：現行 11{,}146式 DB 上で baseline・reranker-10S を再評価し，LLM 直接生成と公平に比較した（\S\ref{sec:llm}）．
-\end{enumerate}
+\begin{itemize}[leftmargin=1.4em, nosep]
+  \item \textbf{データを 3.4 倍に拡大}：収録数式 3{,}244 $\to$ \textbf{11{,}146式}，訓練ケース 1{,}107 $\to$ \textbf{2{,}838件}．うち微分代数方程式系（DAE）を模した\textbf{難ケースを 1{,}000 件}新規追加（図~\ref{fig:data}）．
+  \item \textbf{主指標を $\rkc$ に変更}：天井で飽和する MRR\_first が隠していた差を可視化する指標（情報検索の R-precision と同義）を採用．
+  \item \textbf{難ケースほど本手法の優位が拡大}：baseline との $\rkc$ 差は標準 $+0.127$ $\to$ DAE のみ $+0.217$（図~\ref{fig:gradient}）．改善は\textbf{複数式・多変数}のケースに集中する（図~\ref{fig:impact}a）．
+  \item \textbf{仮説B（分野横断収集の要否）を再検定し結論を訂正}：v5 は MRR\_first で「差なし」としたが，$\rkc$ では\textbf{フル DB が有意に優れる}（$+0.048$，$p=0.044$；図~\ref{fig:impact}b）．加えて 13 通りのハイパーパラメータで頑健，外部の LLM 直接生成も上回る（図~\ref{fig:llm}）．
+\end{itemize}
 
 %======================================================================
-\section{データベースの拡大}\label{sec:data}
+\section{データセット：規模・内訳・難易度}\label{sec:data}
 %======================================================================
 
-\subsection{規模}
+データ規模と構成を図~\ref{fig:data}に示す．訓練ケースは 2{,}838 件，うち \textbf{74.6\%} が正解に 2 式以上を要する\textbf{複数式}ケースであり，「式を組合せとして選ぶ」本手法の主戦場となっている．
 
-前回報告から，PDF 抽出・ハンドブック式・文献横断ケースを拡充し，データ規模を表~\ref{tab:scale}の通り拡大した．
+新規追加した DAE 難ケース（1{,}000 件，Anthropic Claude Sonnet 4.5 で生成）は，物理モデルとして典型的な「常微分方程式（ODE）＋付随する代数式」の連立を模す．生成手順は，(i) ODE を 1 本選んで正解集合の種とし，(ii) 同一文献内で\textbf{変数を共有}する式（速度式・物性式など）を正解集合に追加し，(iii) 正解式数が $X\in\{1,\dots,10\}$ に達するまで反復，(iv) 各式の代表変数を出力に加えて\textbf{自由度ゼロ}（入力数 $+$ 方程式数 $=$ 出力数 $+$ 既知数）を構成上保証する，というものである．たとえば連続槽型反応器（CSTR）で槽内濃度 $C_A(t)$ と反応速度 $r_A$ を求める問題は，物質収支 ODE $V\,dC_A/dt = F(C_{A0}-C_A)-V r_A$ と Arrhenius 速度式 $r_A=k\,C_A,\ k=A\exp(-E/RT)$ を\textbf{組合せて}初めて解ける．
 
-\begin{table}[h]
+\begin{figure}[htbp]
 \centering
-\caption{データ規模の前回報告（v5）との比較}
-\label{tab:scale}
-\begin{tabular}{lrr}
-\toprule
-項目 & v5（前回） & \textbf{v6（本版）} \\
-\midrule
-収録数式数        & 3{,}244 & \textbf{11{,}146} \\
-訓練ケース総数    & 1{,}107 & \textbf{2{,}838} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-訓練ケースの内訳（variant\_type 別，計 2{,}838 件）は次の通り：\texttt{random\_io\_from\_models} 738，\texttt{multisource\_v3} 500，\texttt{context\_paraphrased} 276，\texttt{multisource\_random\_io} 198，\texttt{dae\_X1..X10} 各 100（計 1{,}000），\texttt{original} 92，\texttt{multisource\_original} 33，\texttt{swap\_io} 1．
-
-ここで variant\_type は1つのコア問題から派生させた問題の種別を指す（\texttt{original}=人手・LLM 生成の原型，\texttt{context\_paraphrased}=背景文の言い換え，\texttt{random\_io\_from\_models}=自由度ゼロを保つ入出力の入替，\texttt{multisource\_*}=複数文献の式を組合せる問題，\texttt{dae\_*}=後述の難ケース）．
-
-\subsection{DAE 系難ケースの追加（1{,}000 件）}\label{sec:dae}
-
-本手法の主戦場は「複数の式を\textbf{組合せ}として正しく選ぶ」ことにある．これを厳しく評価するため，物理モデルとして典型的な\textbf{微分代数方程式系（DAE）}——時間微分を含む常微分方程式（ODE）と，それに付随する代数式（速度式・物性式など）が連立した系——を模した難ケースを 1{,}000 件追加した（生成には Anthropic Claude Sonnet 4.5 を使用，variant\_type $=$ \texttt{dae\_X}$N$）．
-
-生成アルゴリズムの要点は次の通り．正解式数を $X \in \{1,2,\dots,10\}$ と段階的に変え，各 $X$ について 100 件ずつ生成した（計 1{,}000 件）：
-
-\begin{enumerate}[leftmargin=2em, nosep]
-  \item ランダムに ODE を 1 本選び，正解集合の初期種とする．
-  \item その微分変数（例：濃度 $C_A$ の時間変化 $dC_A/dt$）を出力の初期値に加える．
-  \item 同一ソース内で\textbf{変数を共有}する式（例：反応速度 $r_A$ を与える Arrhenius 式）を優先的に正解集合へ追加する．
-  \item $|$正解集合$| = X$ になるまで反復する．
-  \item $X>1$ では，追加した各式の代表変数を出力に加えて\textbf{自由度ゼロ}（DoF$=$0；入力数 $+$ 方程式数 $=$ 出力数 $+$ 既知数）を構成上保証する．
-  \item 残りの変数を入力とし，背景文（context）を生成する．
-\end{enumerate}
-
-たとえば「連続槽型反応器（CSTR）で，流量 $F$，入口濃度 $C_{A0}$，反応速度定数の係数が既知のとき，槽内濃度 $C_A(t)$ と反応速度 $r_A$ を求めよ」という問題は，物質収支の ODE（$V\,dC_A/dt = F(C_{A0}-C_A) - V r_A$）と Arrhenius 型速度式（$r_A = k\,C_A$，$k = A\exp(-E/RT)$）を\textbf{組合せて}初めて解ける．DAE 系ケースはこの「組合せが必須」という性質を強く持つ．
+\includegraphics[width=\linewidth]{figures/fig_v6_dataset.png}
+\caption{データセットの規模・内訳と難易度分布．(a) 訓練ケース 2{,}838 件の variant 別構成（DAE 1{,}000 件を新規追加，緑）．(b) 正解式数の分布：複数式（2 式以上，青）が全体の 74.6\%．}
+\label{fig:data}
+\end{figure}
 
 %======================================================================
 \section{評価指標 $\rkc$ の導入}\label{sec:metric}
 %======================================================================
 
-前回まで主指標としてきた MRR\_first（最初に当たった正解の順位の逆数；Mean Reciprocal Rank）は，\textbf{正解が1件でも上位に来れば 1.0 に近づく}ため，複数式を揃える能力を測れず，かつ天井付近で飽和して手法間の差を覆い隠す欠点があった．
-
-そこで本版では，正解式が $n_{\textrm{correct}}$ 件あるとき\textbf{上位 $K=n_{\textrm{correct}}$ 件}を取り出し，そのうち正解だった割合 $\rkc = |\,\textrm{Top-}K \cap \mathcal{R}_q\,| / |\mathcal{R}_q|$（$\mathcal{R}_q$ はクエリ $q$ の正解集合）を主指標とする．これは情報検索で標準的な \textbf{R-precision} と同義であり，「\textbf{必要な式をちょうどその本数だけ上位に並べられたか}」を直接測る．飽和しにくく，複数式の組合せ能力を端的に表すため，本手法の評価に適する．補助指標として MRR\_first，MAP（平均適合率；Mean Average Precision，ランキング全体の質），各種 Recall@$K$ も併記する．
+従来の主指標 MRR\_first（最初に当たった正解の順位の逆数）は，正解が 1 件でも上位に来れば 1.0 に近づくため，複数式を揃える能力を測れず，天井付近で飽和して手法間の差を覆い隠す．本版では，正解式が $n_{\textrm{correct}}$ 件あるとき\textbf{上位 $K=n_{\textrm{correct}}$ 件}の正解割合 $\rkc=|\textrm{Top-}K\cap\mathcal{R}_q|/|\mathcal{R}_q|$（$\mathcal{R}_q$ は正解集合，情報検索の R-precision と同義）を主指標とする．「\textbf{必要な式をちょうどその本数だけ上位に並べられたか}」を直接測り，飽和しにくい．補助指標として MAP（平均適合率），MRR\_first も併記する．
 
 %======================================================================
 \section{実験結果}
 %======================================================================
 
-実験条件は特記なき限り共通である：10 シード（source\_id 単位の train/test 分割を変えてリーク防止），Stage~1 候補数 top-$K=50$，リランカー学習 15 epoch，学習率 $1\times10^{-3}$，隠れ層 64 次元．reranker-10S は基本 7 特徴量に Set-aware 3 特徴量（gComp 補完性，gCoh 一貫性，gDom ドメイン整合）を加えた 10 次元である．
+\subsection{難易度勾配：難ケースほど優位が拡大}\label{sec:gradient}
 
-\subsection{難易度勾配：難しい問題ほど本手法の優位が拡大}\label{sec:gradient}
+評価集合に占める難ケースの比率を 3 段階に変えて baseline（古典 IR，Stage~1）と reranker-10S（Set-aware 特徴量を含む Stage~2）を比較した（図~\ref{fig:gradient}）．\textbf{古典 IR は難ケースが増えると $\rkc$ が $0.79\to0.48$ へ急落するのに対し，本手法は $0.91\to0.70$ と緩やかにしか落ちず}，両者の差は $+0.127\to+0.210\to+0.217$ と単調に拡大する．数式グラフ上で式を組合せとして評価する本手法の発想が，難しい組合せ問題でこそ効くことを示す．
 
-評価集合に占める難ケースの比率を変えた 3 設定で，baseline（Stage~1，古典的情報検索）と reranker-10S（Stage~2）を比較した（表~\ref{tab:gradient}）．3 設定は，(i) DAE 追加前の全 variant 混在（\texttt{multisource\_v3} を含む），(ii) \texttt{original $+$ multisource\_v3 $+$ dae} の混在，(iii) \texttt{dae} のみ，であり，下にいくほど難ケースの比率が高い．いずれも 10 シード平均，評価指標は $\rkc$ である．
-
-\begin{table}[h]
+\begin{figure}[htbp]
 \centering
-\caption{難ケース比率の異なる 3 設定における $\rkc$（10 シード平均）．難ケースが増えるほど baseline は低下し，本手法との差が拡大する．}
-\label{tab:gradient}
-\begin{tabular}{lccc}
-\toprule
-評価設定 & baseline & \textbf{reranker-10S} & 差（改善幅） \\
-\midrule
-(i) 広域混在（DAE 追加前）          & 0.786 & \textbf{0.913} & $+0.127$ \\
-(ii) original$+$multi\_v3$+$DAE     & 0.525 & \textbf{0.735} & $+0.210$（$+40\%$ 相対）\\
-(iii) DAE のみ（最難）              & 0.481 & \textbf{0.699} & $+0.217$（$+45\%$ 相対）\\
-\bottomrule
-\end{tabular}
-\end{table}
+\includegraphics[width=0.82\linewidth]{figures/fig_v6_gradient.png}
+\caption{難ケース比率の異なる 3 設定における $\rkc$（10 シード平均，エラーバー＝標準偏差）．難ケースが増えるほど baseline は低下し，本手法との差（赤）が拡大する．}
+\label{fig:gradient}
+\end{figure}
 
-補助指標でも同傾向である．DAE のみ設定では MRR\_first が baseline 0.781 $\to$ reranker 0.906（$+0.125$），MAP が 0.533 $\to$ 0.833（$+0.301$）と改善した．\textbf{古典的情報検索（baseline）は問題が難しくなると $\rkc$ が 0.79 $\to$ 0.48 へ大きく低下するのに対し，本手法は 0.91 $\to$ 0.70 と緩やかにしか落ちない}．これは「変数共有関係を表す数式グラフ上で式を組合せとして評価する」という本研究の発想が，難しい組合せ問題でこそ効くことを定量的に示している．
+\subsection{本手法はどこで効くか／なぜ指標を変えたか}\label{sec:impact}
 
-\subsection{特性別分析：複数式・多変数のケースで効果が大きい}\label{sec:strat}
+図~\ref{fig:impact}(a) は正解式数別の $\rkc$ である．\textbf{単一式では baseline が既に高く本手法の上乗せはほぼ無い}（$+0.02$）が，\textbf{複数式では $+0.21\sim0.26$ の大幅改善}を示す．入力変数が多い（11 以上）ケースでも同様に $+0.245$ 改善する．本手法は「易しい問題を壊さず，難しい組合せ問題で効く」という望ましい振舞いを持つ．
 
-$+$DAE 設定（1{,}592 ケース・1{,}223 ユニーク）で各ケースを評価し，baseline と reranker-10S の $\rkc$ の差（対応のある差分）を 3 つの軸で層別化した（表~\ref{tab:strat}）．
+図~\ref{fig:impact}(b) は，加納先生のご指摘「\textbf{分野横断的に収集する必要はない}」（仮説B）の再検定である．v5 は MRR\_first がフル DB と化学工学限定 DB でほぼ同じ（差 $+0.003$）であったため「DB 規模の影響なし」としていた．しかし飽和しない $\rkc$ では\textbf{フル DB（11{,}146式・全分野）が限定 DB を有意に上回る}（$0.923$ vs $0.875$，差 $+0.048$，対応のある $t$ 検定 $p=0.044$，Wilcoxon $p=0.037$，効果量 Cohen's $d=0.74$ 中程度）．すなわち v5 の暫定結論は\textbf{指標選択の副作用}であり，広く集める方針の妥当性が支持された（ただし差は中程度で，限定 DB でも $\rkc=0.87$ の実用水準には達する）．
 
-\begin{table}[h]
+\begin{figure}[htbp]
 \centering
-\caption{特性別の $\rkc$ 改善幅（reranker-10S $-$ baseline，対応あり）．}
-\label{tab:strat}
-\begin{tabular}{llc}
-\toprule
-軸 & 区分 & 改善幅 \\
-\midrule
-正解式数 $n_{\textrm{correct}}$
-  & 1（単一式）   & $+0.021$ \\
-  & 2            & $+0.211$ \\
-  & 3            & $+0.258$ \\
-  & 5--10        & $+0.244$ \\
-\midrule
-入力変数数 $n_{\textrm{input}}$
-  & 1--3         & $-0.016$ \\
-  & 4--6         & $+0.107$ \\
-  & 7--10        & $+0.186$ \\
-  & 11 以上       & $+0.245$ \\
-\midrule
-出力変数数 $n_{\textrm{output}}$
-  & 1            & $+0.015$ \\
-  & 2            & $+0.214$ \\
-  & 3 以上        & $+0.242$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{単一式・少変数のケースでは baseline が既に高く（$\rkc \approx 0.92$），本手法の上乗せはほぼ無い}（$n_{\textrm{input}}=1$--3 でわずかに $-0.016$）．一方，\textbf{正解が複数式（2 件以上）または変数が多い（11 以上）ケースでは $+0.21$--$0.26$ の大幅改善}を示す．これは「本手法は易しい問題を壊さず，難しい組合せ問題で効く」という望ましい振舞いであり，どこで使うべき手法かを明確にする．
-
-\subsection{仮説B の再検定：分野横断収集はやはり有効}\label{sec:hypoB}
-
-加納先生より「\textbf{分野横断的に数式を収集する必要はなく，テストケースで必要な式が含まれていれば十分}」とのご指摘をいただいた（v5 \S2.2）．v5 では本手法の MRR\_first がフル DB と化学工学（ChE）限定 DB でほぼ同じ（$-0.004$）であったため「\textbf{DB 規模の影響は小さい}」と結論していた．
-
-本版では，飽和しにくい $\rkc$ で同じ比較を再検定した（reranker-10S，10 シード，対応のある検定）．結果を表~\ref{tab:hypoB}に示す．
-
-\begin{table}[h]
-\centering
-\caption{フル DB（11{,}146式・全分野）vs 限定 DB（化学工学のみ）の本手法性能（reranker-10S，10 シード）．}
-\label{tab:hypoB}
-\begin{tabular}{lccccc}
-\toprule
-指標 & 限定 DB & フル DB & 差 & $p$ 値（対応 $t$） & 効果量 $d$ \\
-\midrule
-MRR\_first & 0.9593 & 0.9625 & $+0.0032$ & 0.78（n.s.） & 0.09（小）\\
-$\rkc$     & 0.8749 & \textbf{0.9229} & $\mathbf{+0.0480}$ & \textbf{0.044}$^\star$ & 0.74（中）\\
-MAP        & 0.9309 & 0.9531 & $+0.0222$ & 0.096 & 0.59（中）\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-ここで対応のある $t$ 検定（paired $t$-test）はシードごとに対をなす差の有意性を，効果量 Cohen's $d$ は差の大きさ（0.2 小・0.5 中・0.8 大）を表す．$\rkc$ では Wilcoxon 符号順位検定でも $p=0.037$ と有意であった．
-
-\textbf{飽和した MRR\_first では差が見えなかったが，$\rkc$ ではフル DB が有意に優れる（$+0.048$，$p=0.044$，中程度の効果量）}．すなわち分野横断的に広く集めることには実際に効果があり，v5 の暫定結論（影響なし）は\textbf{指標選択の副作用であった}．本版ではこれを訂正し，「広く集めた上でテストケースに必要な分野の網羅を検証する」という当初方針の妥当性を支持する．なお差は中程度であり，限定 DB でも実用水準（$\rkc=0.87$）には達する点は申し添える．
+\includegraphics[width=\linewidth]{figures/fig_v6_impact.png}
+\caption{(a) 正解式数別の $\rkc$：改善は複数式・複雑な問題ほど大きい．(b) 仮説B の再検定：飽和した MRR\_first では差が見えないが，$\rkc$ ではフル DB が有意に優位（$p=0.044$）．}
+\label{fig:impact}
+\end{figure}
 
 \subsection{ハイパーパラメータ頑健性}\label{sec:robust}
 
-「本手法の優位は脆弱なチューニングの産物では？」という査読上の懸念に答えるため，reranker-10S のハイパーパラメータを広く振って主指標 $\rkc$ の変動を測った（$+$DAE 設定，10 シード，13 通りの設定）．探索軸は学習率 $\in\{$1e-4, 3e-4, 1e-3, 3e-3, 1e-2$\}$，隠れ層次元 $\in\{$64, 128, 256$\}$，epoch $\in\{$20, 40$\}$，margin $\in\{$0.1, 0.3$\}$ である．
-
-\begin{table}[h]
-\centering
-\caption{ハイパーパラメータ sweep（reranker-10S，$\rkc$，13 設定）．}
-\label{tab:robust}
-\begin{tabular}{lc}
-\toprule
-項目 & 値 \\
-\midrule
-13 設定の $\rkc$ 範囲 & 0.7321 -- 0.7415 \\
-設定間レンジ        & \textbf{0.0094} \\
-シード間標準偏差（平均） & 約 0.097 \\
-最良設定 & lr$=$3e-4, hidden$=$64, epochs$=$40, margin$=$0.1 \\
-最良値 & 0.7415 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{学習率を 100 倍振っても，隠れ層・epoch・margin を変えても，13 設定すべてが $\rkc=0.732$--$0.742$ の狭い範囲に収まる}．設定間のレンジ（0.0094）は\textbf{シード間標準偏差（約 0.097）の約 1/10}にすぎない．最良設定（0.7415）と既定設定（lr$=$1e-3, hidden$=$64, epochs$=$15）の差も誤差範囲である．以上より，本手法の強さは特定のチューニングに依存せず\textbf{頑健}であることを定量的に確認した．
+「本手法の優位は脆弱なチューニングの産物では」という査読上の懸念に対し，学習率（$10^{-4}$--$10^{-2}$），隠れ層次元（64/128/256），epoch（20/40），margin（0.1/0.3）を振った 13 設定で $\rkc$ を測った．\textbf{全 13 設定が $0.732$--$0.742$ の狭い範囲に収まり，設定間レンジ $0.0094$ はシード間標準偏差（約 $0.097$）の約 $1/10$}にすぎない．本手法の強さは特定のチューニングに依存せず頑健である．
 
 \subsection{外部ベースライン：LLM 直接生成との同一条件比較}\label{sec:llm}
 
-加藤先生より「\textbf{訓練ケースを LLM で生成しているなら，本タスクも LLM に直接解かせれば本手法は不要では}」とのご指摘をいただいた（v5 \S1.3）．これに答えるため，最新の大規模言語モデル（LLM; Large Language Model）である Claude（Sonnet 系）を\textbf{「問題を解く側」}として用いる外部比較を行う．本研究で LLM を使うのはケース生成（既知の式から背景文・入出力を逆算する逆過程）のみであり，検索タスク自体には LLM を使わない点が要点である．
+「LLM で直接解けるなら本手法は不要では」という加藤先生のご指摘に答えるため，大規模言語モデル（Claude，Sonnet 系）を\textbf{問題を解く側}として用い，背景文と入出力変数のみから数式を生成させて現行 11{,}146式 DB と照合した（本研究で LLM を使うのはケース生成のみで，検索タスクには使わない）．比較対象の baseline・reranker-10S も同一サブセット・同一 DB で再評価した（リーク防止のため対象ケースをテスト分割でのみ評価）．
 
-\paragraph{実験設計} LLM に各ケースの背景文（context）と入力・出力変数のみを与え（データベースの存在は伝えない），必要と推測する数式を順位付きで生成させる．生成式を現行データベース（11{,}146式）と文字 $n$-gram の TF-IDF 類似度で照合してランキング化し，本手法と同一の指標で評価する．対象は LLM 評価済みの\textbf{単一ソース 29 件}・\textbf{複数ソース 20 件}のサブセットである．公平を期すため，比較対象の baseline（Stage~1）と reranker-10S（Stage~2）も\textbf{同一サブセット・同一の現行 11{,}146式 DB}で再評価した．reranker/baseline は source\_id 分割の\textbf{テスト側に入ったシードでのみ}各対象ケースを評価しており（当該ケースを学習せず），LLM 直接生成と公平に比較できる．
+結果を図~\ref{fig:llm}に示す．\textbf{易しい単一ソースでは検索系（両 Stage）が LLM を圧倒}する（$\rkc$ で baseline $0.982$／reranker $0.975$ vs LLM $0.707$）．一方\textbf{難しい複数ソースでは，古典 IR 単独は LLM を下回る}（$0.575<0.842$）が，\textbf{reranker-10S は baseline を $+0.367$ 改善して LLM をも上回る}（$0.942$）．文章類似度だけでは複数文献の式を組合せられず，Set-aware リランカーが本質的に必要であることを同一条件で実証した．なお本比較は単一 29 件・複数 20 件の小規模・held-out 評価（1 ケースあたり平均約 1--2 シード）であり，傾向の確認と位置づける．
 
-\paragraph{結果} 三者比較を表~\ref{tab:llm}に示す（指標は本版主指標に合わせ MRR\_first・$\rkc$・MAP）．
-
-\begin{table}[h]
+\begin{figure}[htbp]
 \centering
-\caption{LLM 直接生成 vs Stage~1（baseline）vs Stage~2（reranker-10S）の三者比較（現行 11{,}146式 DB，held-out 評価）．}
-\label{tab:llm}
-\begin{tabular}{llccc}
-\toprule
-サブセット & 手法 & MRR\_first & $\rkc$ & MAP \\
-\midrule
-\multirow{3}{*}{単一ソース 29 件}
- & LLM 直接生成        & 0.831 & 0.707 & 0.817 \\
- & baseline (Stage 1) & 1.000 & 0.982 & 0.986 \\
- & \textbf{reranker-10S (Stage 2)} & 1.000 & \textbf{0.975} & \textbf{0.987} \\
-\midrule
-\multirow{3}{*}{複数ソース 20 件}
- & LLM 直接生成        & 0.825 & 0.842 & 0.785 \\
- & baseline (Stage 1) & 0.842 & 0.575 & 0.661 \\
- & \textbf{reranker-10S (Stage 2)} & \textbf{1.000} & \textbf{0.942} & \textbf{0.972} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{解釈} 結果は2つの設定で対照的であり，本手法の役割を明確にする．
-
-\begin{enumerate}[leftmargin=2em, nosep]
-  \item \textbf{単一ソースの易しい問題では，検索系（両 Stage）が LLM を大きく上回る}：$\rkc$ で reranker-10S 0.975 / baseline 0.982 に対し LLM は 0.707（reranker $-$ LLM $=+0.268$）．この領域では baseline が既に高く，reranker の上乗せは小さい（\S\ref{sec:strat} の「易しい問題は本手法不要」と整合）．
-  \item \textbf{複数ソースの難しい問題では，古典 IR 単独（baseline）は LLM を下回る}：$\rkc$ で baseline 0.575 $<$ LLM 0.842．文章類似度と変数 Jaccard だけでは，複数文献の式を\textbf{組合せて}1 つの物理モデルを構成できない．
-  \item \textbf{その複数ソース問題で，reranker-10S は baseline を $+0.367$ 改善し（0.575 $\to$ 0.942），LLM をも $+0.100$ 上回る}．MAP でも reranker 0.972 が LLM 0.785・baseline 0.661 を上回る．
-\end{enumerate}
-
-すなわち「LLM で直接解けるなら本手法は不要」という懸念に対し，\textbf{易しい問題は検索系が LLM を凌駕し，難しい複数ソース問題では古典 IR では足りず Set-aware リランカーが本質的に必要}（baseline 単独では LLM を下回る）であることが，同一条件の比較で定量的に示された．
-
-なお本比較は単一 29 件・複数 20 件の小規模サブセットであり，リーク防止のため各対象ケースを「テスト分割に入ったシードのみ」で評価した結果，1 ケースあたりの評価回数は単一で平均約 2.2 回・複数で約 1.0 回と限られる（単一は 29 件中 27 件を被覆）．したがって本節の数値は\textbf{傾向の確認}と位置づけ，標本拡充は今後の課題とする（考察の留意点も参照）。
+\includegraphics[width=0.82\linewidth]{figures/fig_v6_llm.png}
+\caption{LLM 直接生成 vs baseline(Stage1) vs reranker-10S(Stage2) の同一条件比較（$\rkc$，現行 11{,}146式 DB）．複数ソースで baseline $<$ LLM $<$ 本手法．}
+\label{fig:llm}
+\end{figure}
 
 %======================================================================
-\section{考察}
+\section{考察と今後の方針}
 %======================================================================
-
-\begin{itemize}[leftmargin=1.5em, nosep]
-  \item \textbf{なぜ難ケースで効くか}：DAE 系・複数式・多変数のケースは「単独の式の文章類似度」では正解を絞れず，\textbf{式どうしの変数共有（補完性・一貫性）}という構造情報が効く．Set-aware 特徴量はこの構造を捉えるため，baseline が崩れる領域で優位を保つ．
-  \item \textbf{指標選択の重要性}：MRR\_first の飽和は，DB 規模の効果（仮説B）も手法の改善幅も覆い隠していた．$\rkc$ への切替により，DB 拡大の効果と本手法の真の改善幅（標準 $+0.13$，難ケース $+0.22$）が初めて可視化された．
-  \item \textbf{頑健性の意義}：13 設定で差が出ないことは，本手法の優位が\textbf{構造的特徴量そのもの}に由来し，学習設定の偶然でないことを示す．これは査読・再現性の観点で重要である．
-\end{itemize}
-
-\paragraph{留意点（caveat）} 外部比較（\S\ref{sec:llm}）の LLM 直接生成は単一ソース 29 件・複数ソース 20 件のサブセットで評価しており，標本数が限られる点に留意が必要である．また易しいケース（単一式・少変数）では baseline が天井に達しており，本手法の上乗せ余地が小さいことも併記しておく．
-
-%======================================================================
-\section{今後の方針}
-%======================================================================
-
-\begin{itemize}[leftmargin=1.5em, nosep]
-  \item \textbf{修論・論文執筆}：「Set-aware graph features for multi-equation physical model retrieval」を軸に，本版の難易度勾配・指標精緻化・頑健性・外部比較を中核に据える．
-  \item \textbf{LLM サブセットの拡充}：外部比較の標本数を増やし，難ケース（DAE 系）での LLM 直接生成も評価する．
-  \item \textbf{Set-aware 特徴量の拡張}：listwise 学習，参照集合サイズ $K_{\textrm{ref}}$ の最適化，hard negative の導入．
-  \item \textbf{変数記述の意味類似度}：表記揺れを学習的に吸収するため，各変数の物理的意味の自然言語記述を埋め込み比較してグラフをソフトに接続する．
+\begin{itemize}[leftmargin=1.4em, nosep]
+  \item \textbf{なぜ効くか}：DAE・複数式・多変数のケースは単独式の文章類似度では絞れず，式どうしの\textbf{変数共有（補完性・一貫性）}という構造情報が効く．易しい問題は baseline が天井のため上乗せは小さい（図~\ref{fig:impact}a）．
+  \item \textbf{指標の重要性}：MRR\_first の飽和は DB 規模の効果（仮説B）も改善幅も隠していた．$\rkc$ への切替で初めて両者が可視化された．
+  \item \textbf{頑健性と外部比較}：13 設定で差が出ないことは優位が\textbf{構造的特徴量そのもの}に由来することを，LLM との同一条件比較は\textbf{古典 IR では足りず本手法が必要}であることを示す．
+  \item \textbf{今後}：(1) 修論・論文「Set-aware graph features for multi-equation physical model retrieval」の執筆，(2) LLM 外部比較の標本拡充（難ケースでの LLM 評価），(3) Set-aware 特徴量の拡張（listwise 学習・hard negative），(4) 変数記述の意味類似度による表記揺れの学習的吸収．
 \end{itemize}
 
 %======================================================================
 \section{まとめ}
 %======================================================================
-
-データベースを 11{,}146 式・2{,}838 ケースに拡大し，DAE 系難ケースで難易度勾配を作ったところ，\textbf{問題が難しくなるほど Set-aware リランカーの優位（$\rkc$）が $+0.13 \to +0.22$ と拡大}した．飽和しない指標 $\rkc$ により，分野横断収集の効果（仮説B：$+0.048$，$p=0.044$）が新たに有意と判明し，v5 の暫定結論を訂正した．また 13 通りのハイパーパラメータで主指標が狭い範囲に収まり，本手法の優位がチューニング由来でないことを確認した．外部ベースライン（LLM 直接生成）との同一条件比較は \S\ref{sec:llm} に示す．
+データベースを 11{,}146 式・2{,}838 ケースに拡大し DAE 難ケースで難易度勾配を作ったところ，\textbf{難しい問題ほど Set-aware リランカーの優位（$\rkc$）が $+0.13\to+0.22$ と拡大}した．飽和しない $\rkc$ により分野横断収集の効果（仮説B，$+0.048$，$p=0.044$）が新たに有意と判明し v5 の暫定結論を訂正，ハイパーパラメータにも頑健で，外部の LLM 直接生成を複数ソースで上回ることを同一条件で確認した．
 
 \end{document}
