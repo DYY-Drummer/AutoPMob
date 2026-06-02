@@ -1,0 +1,70 @@
+{
+  "db_equations": null,
+  "note": "現行 DB(11,146 式)・10 seed・held-out 評価。 reranker/baseline は対象ケースをテスト分割で評価（未学習）。",
+  "subsets": {
+    "single_29": {
+      "target_ids_n": 29,
+      "LLM_direct": {
+        "MRR_first": 0.8305,
+        "Recall@K_correct": 0.7069,
+        "MAP": 0.817,
+        "n_cases": 29
+      },
+      "baseline": {
+        "MRR_first": 1.0,
+        "Recall@K_correct": 0.9815,
+        "MAP": 0.9855,
+        "n_target": 29,
+        "n_covered": 27,
+        "n_missing": 2,
+        "missing_ids": [
+          "core_036_v1",
+          "core_080_v4"
+        ],
+        "avg_test_seeds_per_case": 2.22
+      },
+      "reranker-10S": {
+        "MRR_first": 1.0,
+        "Recall@K_correct": 0.9753,
+        "MAP": 0.9865,
+        "n_target": 29,
+        "n_covered": 27,
+        "n_missing": 2,
+        "missing_ids": [
+          "core_036_v1",
+          "core_080_v4"
+        ],
+        "avg_test_seeds_per_case": 2.22
+      }
+    },
+    "multi_20": {
+      "target_ids_n": 20,
+      "LLM_direct": {
+        "MRR_first": 0.825,
+        "Recall@K_correct": 0.8417,
+        "MAP": 0.7845,
+        "n_cases": 20
+      },
+      "baseline": {
+        "MRR_first": 0.8417,
+        "Recall@K_correct": 0.575,
+        "MAP": 0.6606,
+        "n_target": 20,
+        "n_covered": 20,
+        "n_missing": 0,
+        "missing_ids": [],
+        "avg_test_seeds_per_case": 1.05
+      },
+      "reranker-10S": {
+        "MRR_first": 1.0,
+        "Recall@K_correct": 0.9417,
+        "MAP": 0.9717,
+        "n_target": 20,
+        "n_covered": 20,
+        "n_missing": 0,
+        "missing_ids": [],
+        "avg_test_seeds_per_case": 1.05
+      }
+    }
+  }
+}

@@ -287,7 +287,7 @@ GNNの強みは、\textbf{タスクに効く構造をグラフに載せ、その
   \item \textbf{ノード}：\textbf{式ノード}（0 から $N_{\mathrm{eq}}-1$）と \textbf{変数ノード}（$N_{\mathrm{eq}}$ から $N_{\mathrm{eq}}+N_{\mathrm{var}}-1$）。式ノードは \texttt{unified\_equations.json} の並びと一致。変数ノードは全式から出現する変数名のユニーク集合に 1 対 1 で対応する。
   \item \textbf{エッジ}：式 $i$ が変数 $v$ を含むときのみ、無向エッジ $(i,\; N_{\mathrm{eq}}+j)$ と $(N_{\mathrm{eq}}+j,\; i)$ を張る（$j$ は変数 $v$ の ID）。式同士は直接つながらず、\textbf{変数ノードを介した 2 ホップ}で「同じ変数を含む式」に情報が伝わる。これにより集約が「どの変数を共有しているか」に沿った形になり、局所性も保たれやすい。
   \item \textbf{ノード特徴 \texttt{x}}：式ノードには従来どおり \textbf{CodeBERT} の [CLS] ベクトル（768 次元）。変数ノードには、その変数を含む式の CodeBERT ベクトルの平均を 768 次元特徴として与える（学習可能な変数埋め込みにすることも可能）。\texttt{x} の形状は $(N_{\mathrm{eq}}+N_{\mathrm{var}},\; 768)$。
-  \item \textbf{保存内容}：\texttt{Data(x=x, edge\_index=edge\_index, num\_equations=N_{\mathrm{eq}})} に加え、後方互換のため式どうしの隣接 \texttt{edge\_index\_eq\_eq}（0..$N_{\mathrm{eq}}-1$ のみのインデックス）も保存する。学習・評価では式埋め込みは GCN 出力の \textbf{先頭 $N_{\mathrm{eq}}$ 行}のみを用いる。
+  \item \textbf{保存内容}：\texttt{Data(x=x, edge\_index=edge\_index, num\_equations=}$N_{\mathrm{eq}}$\texttt{)} に加え、後方互換のため式どうしの隣接 \texttt{edge\_index\_eq\_eq}（0..$N_{\mathrm{eq}}-1$ のみのインデックス）も保存する。学習・評価では式埋め込みは GCN 出力の \textbf{先頭 $N_{\mathrm{eq}}$ 行}のみを用いる。
 \end{itemize}
 
 \subsection{式の埋め込みの2系統}
@@ -358,6 +358,23 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-06-02（進捗報告 v6 作成：データ拡大・難易度勾配・仮説B再検定・頑健性・LLM 同一条件比較の統合）：
+    前回 v5（3{,}244式・1{,}107ケース）以降の Phase 3--5 成果と外部比較を\textbf{差分版の進捗報告 v6}としてまとめ，
+    \texttt{docs/progress\_report\_2026-06-02\_v6.tex}（lualatex / ltjsarticle，8ページ）を新規作成．
+    主な内容：(1) データ規模 11{,}146式・2{,}838ケース（DAE 1{,}000件含む），
+    (2) 難易度勾配で本手法の Recall@K\_correct 優位が標準 $+0.127$ $\to$ +DAE $+0.210$ $\to$ DAEのみ $+0.217$ と拡大，
+    (3) 仮説B再検定でフル DB が Recall@K\_correct で有意（$+0.048$，$p=0.044$，Cohen's $d=0.74$ 中；MRR\_first では飽和し差なし）と判明し v5 の暫定結論「DB 規模の影響なし」を訂正，
+    (4) ハイパラ sweep 13 設定で Recall@K\_correct レンジ $0.0094$（シード間 std の約 1/10）と頑健性を確認，
+    (5) \textbf{外部ベースライン（LLM 直接生成）との同一条件比較を現行 11{,}146式 DB で整合}．
+    \textbf{LLM 比較の再評価手順}：LLM 評価済みの単一ソース 29 件・複数ソース 20 件サブセットに対し，
+    \texttt{set\_aware\_reranker.py -{}-modes baseline,reranker-10S -{}-seeds 10 -{}-save-per-case}
+    で自然 5 variant（original / context\_paraphrased / random\_io\_from\_models / multisource\_original / multisource\_random\_io）学習・per-case 出力を生成し（\texttt{experiments/phase6\_full\_percase.json}），
+    各対象ケースを\textbf{テスト分割に入ったシードのみ}で集計（リーク防止の held-out 評価）する \texttt{aggregate\_llm\_subset\_v6.py} を新規作成（出力 \texttt{experiments/phase6\_llm\_subset\_comparison.json}）．
+    結果（Recall@K\_correct）：単一ソースは baseline $0.982$／reranker-10S $0.975$ がいずれも LLM $0.707$ を圧倒，
+    複数ソースは baseline $0.575 <$ LLM $0.842 <$ \textbf{reranker-10S $0.942$} となり，
+    古典 IR 単独では複数文献の組合せに不足し Set-aware リランカーが本質的に必要であることを同一条件で実証．
+    なお和文太字は明朝に太字ウェイトが無いため \texttt{BoldFont} を角ゴシックに設定した．
+
   \item 2026-06-01（Phase 5 完了：reranker ハイパーパラメータ sweep と頑健性の確認）：
     \texttt{set\_aware\_reranker.py} に \texttt{-{}-hidden-dim}, \texttt{-{}-margin}, \texttt{-{}-batch-size}, \texttt{-{}-n-neg-samples}, \texttt{-{}-weight-decay} を追加し，
     sweep 実行用 \texttt{run\_phase5\_sweep.py}（config を子プロセスで並列実行・結果集約）と
