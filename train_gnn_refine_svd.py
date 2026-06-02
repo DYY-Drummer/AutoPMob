@@ -157,9 +157,11 @@ def main() -> None:
         eq_sources.append(get_source_id(e))
 
     data = torch.load(GRAPH_PT, weights_only=False)
-    edge_index = data.edge_index
-    if data.num_nodes != len(eq_keys):
-        raise ValueError(f"Graph nodes ({data.num_nodes}) != equations ({len(eq_keys)}).")
+    num_equations = int(getattr(data, "num_equations", data.x.shape[0]))
+    # SVD refiner は式同士の隣接のみ使用（edge_index_eq_eq；二部グラフの場合は必須）
+    edge_index = getattr(data, "edge_index_eq_eq", data.edge_index)
+    if num_equations != len(eq_keys):
+        raise ValueError(f"Graph num_equations ({num_equations}) != equations ({len(eq_keys)}).")
 
     key_to_idx = {k: i for i, k in enumerate(eq_keys)}
 

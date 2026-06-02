@@ -1,0 +1,174 @@
+{
+  "phase": "custom",
+  "sweep_definition": {
+    "lr": [
+      0.0001,
+      0.0003,
+      0.001,
+      0.003,
+      0.01
+    ],
+    "hidden_dim": [
+      128
+    ],
+    "margin": [
+      0.1
+    ],
+    "epochs": [
+      40
+    ]
+  },
+  "fixed_params": {
+    "seeds": 10,
+    "modes": "baseline,reranker-10S",
+    "variants": "original,multisource_v3,dae_",
+    "batch_size": 16,
+    "weight_decay": 0.0001,
+    "top_k": 50,
+    "n_neg_samples": 8
+  },
+  "n_configs": 5,
+  "elapsed_s": 193395.2748119831,
+  "results": [
+    {
+      "config_id": "epochs=40_hidden_dim=128_lr=1e-3_margin=1e-1",
+      "config": {
+        "lr": 0.001,
+        "hidden_dim": 128,
+        "margin": 0.1,
+        "epochs": 40
+      },
+      "result_path": "/Users/kazuhiromiyamura/Desktop/AutoPMob/experiments/phase5_sweep/phase_local_lr/epochs=40_hidden_dim=128_lr=1e-3_margin=1e-1.json",
+      "status": "ok",
+      "elapsed_s": 155205.10061597824,
+      "summary": {
+        "baseline": {
+          "MRR_first": 0.8024,
+          "MAP": 0.5868,
+          "Recall@K_correct": 0.5254,
+          "FullRecall@3": 0.2495,
+          "multi_only__Recall@K_correct": 0.4892
+        },
+        "reranker-10S": {
+          "MRR_first": 0.9272,
+          "MAP": 0.8569,
+          "Recall@K_correct": 0.7351,
+          "FullRecall@3": 0.4225,
+          "multi_only__Recall@K_correct": 0.722
+        }
+      }
+    },
+    {
+      "config_id": "epochs=40_hidden_dim=128_lr=1e-4_margin=1e-1",
+      "config": {
+        "lr": 0.0001,
+        "hidden_dim": 128,
+        "margin": 0.1,
+        "epochs": 40
+      },
+      "result_path": "/Users/kazuhiromiyamura/Desktop/AutoPMob/experiments/phase5_sweep/phase_local_lr/epochs=40_hidden_dim=128_lr=1e-4_margin=1e-1.json",
+      "status": "ok",
+      "elapsed_s": 155213.05307722092,
+      "summary": {
+        "baseline": {
+          "MRR_first": 0.8024,
+          "MAP": 0.5868,
+          "Recall@K_correct": 0.5254,
+          "FullRecall@3": 0.2495,
+          "multi_only__Recall@K_correct": 0.4892
+        },
+        "reranker-10S": {
+          "MRR_first": 0.9209,
+          "MAP": 0.8526,
+          "Recall@K_correct": 0.7355,
+          "FullRecall@3": 0.4244,
+          "multi_only__Recall@K_correct": 0.722
+        }
+      }
+    },
+    {
+      "config_id": "epochs=40_hidden_dim=128_lr=3e-4_margin=1e-1",
+      "config": {
+        "lr": 0.0003,
+        "hidden_dim": 128,
+        "margin": 0.1,
+        "epochs": 40
+      },
+      "result_path": "/Users/kazuhiromiyamura/Desktop/AutoPMob/experiments/phase5_sweep/phase_local_lr/epochs=40_hidden_dim=128_lr=3e-4_margin=1e-1.json",
+      "status": "ok",
+      "elapsed_s": 155229.67578077316,
+      "summary": {
+        "baseline": {
+          "MRR_first": 0.8024,
+          "MAP": 0.5868,
+          "Recall@K_correct": 0.5254,
+          "FullRecall@3": 0.2495,
+          "multi_only__Recall@K_correct": 0.4892
+        },
+        "reranker-10S": {
+          "MRR_first": 0.9257,
+          "MAP": 0.8562,
+          "Recall@K_correct": 0.7381,
+          "FullRecall@3": 0.4181,
+          "multi_only__Recall@K_correct": 0.7258
+        }
+      }
+    },
+    {
+      "config_id": "epochs=40_hidden_dim=128_lr=1e-2_margin=1e-1",
+      "config": {
+        "lr": 0.01,
+        "hidden_dim": 128,
+        "margin": 0.1,
+        "epochs": 40
+      },
+      "result_path": "/Users/kazuhiromiyamura/Desktop/AutoPMob/experiments/phase5_sweep/phase_local_lr/epochs=40_hidden_dim=128_lr=1e-2_margin=1e-1.json",
+      "status": "ok",
+      "elapsed_s": 38171.48234009743,
+      "summary": {
+        "baseline": {
+          "MRR_first": 0.8024,
+          "MAP": 0.5868,
+          "Recall@K_correct": 0.5254,
+          "FullRecall@3": 0.2495,
+          "multi_only__Recall@K_correct": 0.4892
+        },
+        "reranker-10S": {
+          "MRR_first": 0.9272,
+          "MAP": 0.8571,
+          "Recall@K_correct": 0.739,
+          "FullRecall@3": 0.4222,
+          "multi_only__Recall@K_correct": 0.7252
+        }
+      }
+    },
+    {
+      "config_id": "epochs=40_hidden_dim=128_lr=3e-3_margin=1e-1",
+      "config": {
+        "lr": 0.003,
+        "hidden_dim": 128,
+        "margin": 0.1,
+        "epochs": 40
+      },
+      "result_path": "/Users/kazuhiromiyamura/Desktop/AutoPMob/experiments/phase5_sweep/phase_local_lr/epochs=40_hidden_dim=128_lr=3e-3_margin=1e-1.json",
+      "status": "ok",
+      "elapsed_s": 38190.08179306984,
+      "summary": {
+        "baseline": {
+          "MRR_first": 0.8024,
+          "MAP": 0.5868,
+          "Recall@K_correct": 0.5254,
+          "FullRecall@3": 0.2495,
+          "multi_only__Recall@K_correct": 0.4892
+        },
+        "reranker-10S": {
+          "MRR_first": 0.926,
+          "MAP": 0.8566,
+          "Recall@K_correct": 0.7358,
+          "FullRecall@3": 0.4204,
+          "multi_only__Recall@K_correct": 0.7204
+        }
+      }
+    }
+  ]
+}

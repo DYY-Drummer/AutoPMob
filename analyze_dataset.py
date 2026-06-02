@@ -93,15 +93,20 @@ def analyze_graph(data) -> dict[str, Any] | None:
         return None
     try:
         import torch
-        x = getattr(data, "x", None)
-        edge_index = getattr(data, "edge_index", None)
-        if edge_index is None or x is None:
+        x_full = getattr(data, "x", None)
+        if x_full is None:
+            return None
+        num_equations = int(getattr(data, "num_equations", x_full.shape[0]))
+        # 可視化・PCA 用には式ノードのみ。二部グラフの場合は式部分だけ使う
+        x = x_full[:num_equations]
+        # 次数は式同士の隣接で計算（二部グラフの場合は edge_index_eq_eq）
+        edge_index = getattr(data, "edge_index_eq_eq", getattr(data, "edge_index", None))
+        if edge_index is None:
             return None
         edge_index = edge_index if isinstance(edge_index, torch.Tensor) else torch.tensor(edge_index)
         n = x.shape[0] if hasattr(x, "shape") else 0
         if edge_index.dim() == 2 and edge_index.shape[0] == 2:
             e = edge_index.shape[1]
-            # 無向なのでエッジ数は実際のリンク数（双方向の片方だけ数えるなら e//2）
         else:
             e = 0
         degree = defaultdict(int)

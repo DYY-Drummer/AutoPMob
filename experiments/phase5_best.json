@@ -1,0 +1,32 @@
+{
+  "metric": "Recall@K_correct",
+  "best_config": {
+    "lr": 0.0003,
+    "hidden_dim": 64,
+    "epochs": 40,
+    "margin": 0.1
+  },
+  "best_primary": 0.7415,
+  "best_full_row": {
+    "config_id": "lr=0.0003_hidden_dim=64_epochs=40_margin=0.1_top_k=50_n_neg_samples=8",
+    "lr": 0.0003,
+    "hidden_dim": 64,
+    "epochs": 40,
+    "margin": 0.1,
+    "top_k": 50,
+    "n_neg_samples": 8,
+    "primary": 0.7415,
+    "MAP": 0.8583,
+    "MRR_first": 0.9235,
+    "FullRecall@3": 0.4264,
+    "Recall@K_correct": 0.7415,
+    "source": "phase_A",
+    "status": "ok"
+  },
+  "swept_params": [
+    "lr",
+    "hidden_dim",
+    "epochs",
+    "margin"
+  ]
+}

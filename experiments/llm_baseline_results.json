@@ -1,0 +1,508 @@
+{
+  "method": "claude_direct_generation",
+  "n_cases": 29,
+  "summary": {
+    "n_cases": 29,
+    "MRR_first": 0.8304597701149425,
+    "MRR_worst": 0.67183908045977,
+    "MRR_avg": 0.7405172413793103,
+    "Precision@C": 0.7068965517241379,
+    "MAP": 0.8169540229885057,
+    "FullRecall@3": 0.8275862068965517,
+    "Recall@3": 0.8620689655172413,
+    "FullRecall@5": 1.0,
+    "Recall@5": 1.0,
+    "FullRecall@10": 1.0,
+    "Recall@10": 1.0,
+    "FullRecall@20": 1.0,
+    "Recall@20": 1.0,
+    "single_only__MRR_first": 0.765873015873016,
+    "multi_only__MRR_first": 1.0,
+    "multi_only__MRR_worst": 0.425,
+    "multi_only__MAP": 0.9510416666666667,
+    "multi_only__FullRecall@3": 0.75,
+    "multi_only__FullRecall@10": 1.0,
+    "multi_only__Recall@3": 0.875,
+    "multi_only__Recall@10": 1.0,
+    "n_single": 21,
+    "n_multi": 8
+  },
+  "detailed": [
+    {
+      "case_id": "core_055_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_14",
+        "handbook_electrochemistry_adv__eq_12",
+        "handbook_polymer__eq_18",
+        "FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf__eq_3",
+        "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf__eq_3.2"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_048_v1",
+      "variant": "original",
+      "correct_keys": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27"
+      ],
+      "top5_matched": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27",
+        "handbook_vibrations__eq_13",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 0.5
+    },
+    {
+      "case_id": "core_067_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_hvac__eq_12",
+        "handbook_hvac__eq_13"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_12",
+        "handbook_hvac__eq_13",
+        "FB3_17_Efficient_Synthesis_of_Room_Acoustics_via_Scattering_Delay_N_2015.pdf__eq_2",
+        "handbook_hvac__eq_20",
+        "handbook_hvac__eq_17"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_068_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_geotechnical__eq_10"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_10",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_9-9",
+        "FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf__eq_12",
+        "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_37",
+        "FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf__eq_58"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_036_v1",
+      "variant": "original",
+      "correct_keys": [
+        "Process_Control_Chapter3.pdf__eq_3_6"
+      ],
+      "top5_matched": [
+        "ChemicalProcessDynamicsAndControls.pdf__p1281-1360_eq_5",
+        "Process_Control_Chapter3.pdf__eq_3_6",
+        "04_Bond-graph_modeling_2007.pdf__2",
+        "ChemicalProcessDynamicsAndControls.pdf__p1281-1360_eq_3",
+        "ChemicalProcessDynamicsAndControls.pdf__p1281-1360_eq_6"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_059_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_geotechnical__eq_6",
+        "handbook_geotechnical__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_6",
+        "handbook_geotechnical__eq_14",
+        "handbook_geotechnical__eq_3",
+        "handbook_geotechnical__eq_7",
+        "FB3_16_Phase-error_analysis_of_high-order_finite_difference_time_do_2007.pdf__eq_13"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_061_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_hvac__eq_1",
+        "handbook_hvac__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_2",
+        "handbook_hvac__eq_1",
+        "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_1",
+        "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf__eq_12",
+        "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf__eq_65"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_042_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_1",
+        "handbook_electrochemistry__eq_20",
+        "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf__eq_3.2",
+        "handbook_fluid_dynamics_adv__eq_18",
+        "handbook_thermodynamics__eq_3"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_063_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_geotechnical__eq_11"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_18",
+        "handbook_geotechnical__eq_11",
+        "ChemicalProcessDynamicsAndControls.pdf__p0241-0320_eq_22",
+        "handbook_geotechnical__eq_3",
+        "01_Physical_properties_of_hydrate_bearing_sediments_2009.pdf__eq_23"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_095_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_optics__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_5",
+        "FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf__eq_129",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.37",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-50",
+        "Chemical Process Dynamics.pdf__eq_3"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_097_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_optics__eq_8"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_8",
+        "06_A_Review_of_Kinetic_Modeling_Methodologies_for_Complex_Proce_2016.pdf__eq_13",
+        "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf__eq_27",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_17.11",
+        "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf__eq_33"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_055_v1_para1",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_14",
+        "handbook_electrochemistry_adv__eq_12",
+        "handbook_polymer__eq_18",
+        "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf__eq_30",
+        "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf__eq_un_2"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_053_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_5",
+        "FB3_08_Exploring_Instructive_Physiological_Signaling_with_the_Bioel_2016.pdf__eq_14",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-27",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-27",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0241-0320_13-1"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_043_v1_para1",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry__eq_16",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2"
+      ],
+      "MRR_first": 0.25,
+      "Recall@3": 0.0
+    },
+    {
+      "case_id": "core_067_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_hvac__eq_12",
+        "handbook_hvac__eq_13"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_12",
+        "handbook_hvac__eq_13",
+        "handbook_hvac__eq_20",
+        "handbook_hvac__eq_17",
+        "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf__eq_3.2"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_043_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry__eq_16",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2"
+      ],
+      "MRR_first": 0.25,
+      "Recall@3": 0.0
+    },
+    {
+      "case_id": "core_043_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry__eq_16",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2"
+      ],
+      "MRR_first": 0.25,
+      "Recall@3": 0.0
+    },
+    {
+      "case_id": "core_061_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_hvac__eq_1",
+        "handbook_hvac__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_2",
+        "handbook_hvac__eq_1",
+        "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_1",
+        "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf__eq_12",
+        "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf__eq_65"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_055_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_14",
+        "handbook_electrochemistry_adv__eq_12",
+        "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf__eq_30",
+        "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf__eq_un_2",
+        "FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf__eq_6"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_068_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_geotechnical__eq_10"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_10",
+        "FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf__eq_12",
+        "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_37",
+        "FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf__eq_58",
+        "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf__eq_3"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_068_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_geotechnical__eq_10"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_10",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_9-9",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_9-10",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_9-11",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-74"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_095_v5",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_optics__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_5",
+        "FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf__eq_129",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.37",
+        "Chemical Process Dynamics.pdf__eq_3",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-50"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_063_v6",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_geotechnical__eq_11"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_18",
+        "handbook_geotechnical__eq_11",
+        "handbook_geotechnical__eq_7",
+        "handbook_geotechnical__eq_6",
+        "FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf__eq_26"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_080_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "Process_Control_Chapter3.pdf__eq_3_78"
+      ],
+      "top5_matched": [
+        "Process_Control_Chapter3.pdf__eq_3_78",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_2.13",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0161-0240_eq_5.69",
+        "Process_Control_Chapter3.pdf__eq_3_79",
+        "Process_Control_Chapter3.pdf__eq_3_80"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_043_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2",
+        "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf__eq_4"
+      ],
+      "MRR_first": 0.3333333333333333,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_095_v8",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_optics__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_5",
+        "Chemical Process Dynamics.pdf__eq_3",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-50",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-55",
+        "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf__eq_4"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_061_v11",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_hvac__eq_1",
+        "handbook_hvac__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_2",
+        "handbook_hvac__eq_1",
+        "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_1",
+        "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf__eq_12",
+        "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf__eq_65"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_063_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_geotechnical__eq_11"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_18",
+        "handbook_geotechnical__eq_11",
+        "handbook_geotechnical__eq_6",
+        "handbook_geotechnical__eq_7",
+        "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf__eq_3"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_048_v11",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27"
+      ],
+      "top5_matched": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27",
+        "handbook_vibrations__eq_13",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 0.5
+    }
+  ]
+}

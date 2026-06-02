@@ -11,6 +11,10 @@ Methods included:
   - q_mlp_to_x: train a query MLP to map SVD(case) -> equation_graph.x space; eq embeddings fixed to x (L2-norm)
   - gnn_refine_svd_residual: train residual GCN refiner on SVD eq embeddings; queries use SVD cosine space
 
+Multi-seed mode (--seeds N):
+  Run evaluation over N different random seeds (different train/val/test splits).
+  Reports mean ± std and 95% bootstrap CI for each method.
+
 Outputs:
   - experiments/retrieval_experiments.json
   - experiments/retrieval_experiments.md
@@ -18,11 +22,12 @@ Outputs:
 
 from __future__ import annotations
 
+import argparse
 import json
 import random
 import time
 from collections import Counter
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any, Callable
 
@@ -158,6 +163,64 @@ def eval_by_scoring(
     return ranks
 
 
+def eval_by_scoring_with_variant(
+    case_indices: list[int],
+    correct_lists: list[list[int]],
+    cases: list[dict[str, Any]],
+    score_fn: Callable[[int], np.ndarray],
+) -> tuple[list[int], dict[str, list[int]]]:
+    """Like eval_by_scoring but also returns per-variant_type ranks."""
+    ranks: list[int] = []
+    variant_ranks: dict[str, list[int]] = {}
+    for i in case_indices:
+        correct = set(correct_lists[i])
+        if not correct:
+            continue
+        scores = score_fn(i)
+        order = np.argsort(-scores)
+        best = None
+        for r, j in enumerate(order, start=1):
+            if int(j) in correct:
+                best = r
+                break
+        if best is not None:
+            ranks.append(int(best))
+            vt = (cases[i].get("variant_type") or "unknown").strip()
+            variant_ranks.setdefault(vt, []).append(int(best))
+    return ranks, variant_ranks
+
+
+def bootstrap_ci(values: list[float], n_boot: int = 2000, alpha: float = 0.05, seed: int = 0) -> tuple[float, float]:
+    """Return (lower, upper) bootstrap percentile CI."""
+    if len(values) < 2:
+        m = values[0] if values else 0.0
+        return (m, m)
+    rng = np.random.RandomState(seed)
+    arr = np.array(values)
+    boot_means = np.array([arr[rng.randint(0, len(arr), len(arr))].mean() for _ in range(n_boot)])
+    lo = float(np.percentile(boot_means, 100 * alpha / 2))
+    hi = float(np.percentile(boot_means, 100 * (1 - alpha / 2)))
+    return (lo, hi)
+
+
+def aggregate_multi_seed_results(
+    all_seed_results: dict[str, list[dict[str, float]]],
+) -> dict[str, dict[str, Any]]:
+    """Aggregate metrics across seeds: mean, std, 95% CI for each method."""
+    agg = {}
+    for method, seed_metrics_list in all_seed_results.items():
+        metrics_keys = [k for k in seed_metrics_list[0].keys() if k != "n"]
+        method_agg: dict[str, Any] = {"n_seeds": len(seed_metrics_list)}
+        for mk in metrics_keys:
+            vals = [sm[mk] for sm in seed_metrics_list]
+            method_agg[f"{mk}_mean"] = round(float(np.mean(vals)), 4)
+            method_agg[f"{mk}_std"] = round(float(np.std(vals, ddof=1)) if len(vals) > 1 else 0.0, 4)
+            lo, hi = bootstrap_ci(vals)
+            method_agg[f"{mk}_ci95"] = [round(lo, 4), round(hi, 4)]
+        agg[method] = method_agg
+    return agg
+
+
 class QueryMLP(nn.Module):
     def __init__(self, in_dim: int, out_dim: int, dropout: float = 0.1):
         super().__init__()
@@ -227,10 +290,14 @@ def main() -> None:
         eq_sources.append(get_source_id(e))
 
     data = torch.load(GRAPH_PT, weights_only=False)
-    edge_index = data.edge_index
-    x_graph = data.x
-    if x_graph.shape[0] != len(eq_keys):
-        raise ValueError(f"Graph nodes ({x_graph.shape[0]}) != equations ({len(eq_keys)}).")
+    num_equations = int(getattr(data, "num_equations", data.x.shape[0]))
+    # 式ノードのみの特徴（q_mlp_to_x で使用）。二部グラフの場合は先頭 num_equations 行。
+    x_graph = data.x[:num_equations]
+    # SVD refiner は式同士の隣接のみ使用（インデックス 0..num_equations-1）
+    edge_index_eq = getattr(data, "edge_index_eq_eq", data.edge_index)
+    edge_index = data.edge_index  # 二部グラフ全体（q_mlp では使わず、必要なら別途）
+    if num_equations != len(eq_keys):
+        raise ValueError(f"Graph num_equations ({num_equations}) != equations ({len(eq_keys)}).")
 
     key_to_idx = {k: i for i, k in enumerate(eq_keys)}
     correct_lists: list[list[int]] = []
@@ -317,9 +384,9 @@ def main() -> None:
     # -------------------
     # Method 3: q_mlp_to_x (grid search)
     # -------------------
-    x0 = F.normalize(x_graph, p=2, dim=-1).to(device)
+    x0 = F.normalize(x_graph, p=2, dim=-1).to(device)  # [num_equations, 768]
     Q_t = torch.tensor(Q_svd, dtype=torch.float32).to(device)
-    edge_index_dev = edge_index.to(device)
+    edge_index_dev = edge_index.to(device)  # q_mlp_to_x では GCN を使わない
 
     def train_q_mlp(lr: float, wd: float, epochs: int = 5, neg_per_case: int = 128, batch_size: int = 64, temperature: float = 0.07) -> QueryMLP:
         model = QueryMLP(in_dim=svd_dim, out_dim=x0.shape[1], dropout=0.1).to(device)
@@ -403,10 +470,11 @@ def main() -> None:
             best_params = hp
 
     # -------------------
-    # Method 4: gnn_refine_svd_residual (small grid)
+    # Method 4: gnn_refine_svd_residual (small grid) — 式同士の隣接のみ使用
     # -------------------
     E0_t = torch.tensor(E_svd, dtype=torch.float32).to(device)
     Qd_t = torch.tensor(Q_svd, dtype=torch.float32).to(device)
+    edge_index_eq_dev = edge_index_eq.to(device)
 
     def train_gnn_refiner(lr: float, wd: float, epochs: int = 5, neg_per_case: int = 128, batch_size: int = 64, temperature: float = 0.07) -> ResidualGCNRefiner:
         gnn = ResidualGCNRefiner(dim=svd_dim, dropout=0.1).to(device)
@@ -420,7 +488,7 @@ def main() -> None:
                 if not batch:
                     continue
                 gnn.train()
-                E = gnn(E0_t, edge_index_dev)
+                E = gnn(E0_t, edge_index_eq_dev)
                 losses = []
                 for i in batch:
                     pos_list = correct_lists[i]
@@ -446,7 +514,7 @@ def main() -> None:
     def eval_gnn_refiner(gnn: ResidualGCNRefiner, case_idx: list[int]) -> list[int]:
         gnn.eval()
         with torch.no_grad():
-            E = gnn(E0_t, edge_index_dev)
+            E = gnn(E0_t, edge_index_eq_dev)
             ranks = []
             for i in case_idx:
                 correct = set(correct_lists[i])
@@ -523,6 +591,236 @@ def main() -> None:
     print(f"Best by val MRR: {best.method} {best.params} val={best.val} test={best.test}")
 
 
+def main_multi_seed() -> None:
+    """Run baseline methods over multiple seeds and report mean±std with CI."""
+    parser = argparse.ArgumentParser(description="Retrieval experiments (multi-seed)")
+    parser.add_argument("--seeds", type=int, default=5, help="Number of random seeds (default: 5)")
+    parser.add_argument("--seed-list", type=str, default=None, help="Comma-separated seed list (e.g. 42,123,456)")
+    parser.add_argument("--methods", type=str, default="baseline_mix,svd_cos",
+                        help="Comma-separated methods to evaluate (default: baseline_mix,svd_cos)")
+    parser.add_argument("--include-neural", action="store_true",
+                        help="Also run q_mlp_to_x and gnn_refine_svd_residual (slow)")
+    args = parser.parse_args()
+
+    if args.seed_list:
+        seeds = [int(s) for s in args.seed_list.split(",")]
+    else:
+        seeds = [42, 123, 456, 789, 1024][:args.seeds]
+
+    methods = [m.strip() for m in args.methods.split(",")]
+    if args.include_neural:
+        methods = list(set(methods) | {"q_mlp_to_x", "gnn_refine_svd_residual"})
+
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    equations = load_equations()
+    cases = load_training_cases()
+
+    eq_keys: list[str] = []
+    eq_texts: list[str] = []
+    eq_vars: list[set[str]] = []
+    eq_sources: list[str] = []
+    for e in equations:
+        k = equation_key(e)
+        if not k:
+            continue
+        eq_keys.append(k)
+        eq_texts.append(build_equation_text(e))
+        eq_vars.append(get_eq_vars(e))
+        eq_sources.append(get_source_id(e))
+
+    key_to_idx = {k: i for i, k in enumerate(eq_keys)}
+    correct_lists: list[list[int]] = []
+    case_source_ids = []
+    for c in cases:
+        mids = [norm(m) for m in (c.get("correct_model_ids") or [])]
+        correct = [key_to_idx[m] for m in mids if m in key_to_idx]
+        correct_lists.append(correct)
+        case_source_ids.append(case_source_id(c))
+
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    from sklearn.decomposition import TruncatedSVD
+
+    # Collect results: method -> list of per-seed metrics dicts
+    test_by_method: dict[str, list[dict[str, float]]] = {}
+    val_by_method: dict[str, list[dict[str, float]]] = {}
+    # Per-variant results: method -> variant_type -> list of per-seed metrics
+    test_by_method_variant: dict[str, dict[str, list[dict[str, float]]]] = {}
+
+    all_seed_details: list[dict[str, Any]] = []
+
+    for seed in seeds:
+        print(f"\n--- Seed {seed} ---")
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+
+        split = make_source_split(eq_sources, seed=seed)
+        train_cases_idx = [i for i, s in enumerate(case_source_ids) if s in split["train"] and correct_lists[i]]
+        val_cases_idx = [i for i, s in enumerate(case_source_ids) if s in split["val"] and correct_lists[i]]
+        test_cases_idx = [i for i, s in enumerate(case_source_ids) if s in split["test"] and correct_lists[i]]
+
+        seed_detail: dict[str, Any] = {
+            "seed": seed,
+            "n_train": len(train_cases_idx),
+            "n_val": len(val_cases_idx),
+            "n_test": len(test_cases_idx),
+            "split_sources": {k: sorted(v) for k, v in split.items()},
+            "results": {},
+        }
+
+        # TF-IDF (refit per seed is not necessary since corpus is the same, but split changes)
+        tfidf_eq = TfidfVectorizer(lowercase=True, max_features=50000, ngram_range=(1, 2), min_df=1)
+        X_eq_tfidf = tfidf_eq.fit_transform(eq_texts)
+
+        if "baseline_mix" in methods:
+            w_text, w_var = 0.7, 0.3
+            case_contexts = [build_case_text(c, include_io=False) for c in cases]
+            X_case_ctx = tfidf_eq.transform(case_contexts)
+            io_sets = [get_case_io_vars(c) for c in cases]
+
+            def score_bm(i: int) -> np.ndarray:
+                text_sim = cosine_similarity(X_case_ctx[i], X_eq_tfidf).ravel()
+                var_sim = np.array([jaccard(io_sets[i], eq_vars[j]) for j in range(len(eq_vars))], dtype=np.float32)
+                return w_text * text_sim + w_var * var_sim
+
+            val_ranks, val_vr = eval_by_scoring_with_variant(val_cases_idx, correct_lists, cases, score_bm)
+            test_ranks, test_vr = eval_by_scoring_with_variant(test_cases_idx, correct_lists, cases, score_bm)
+
+            val_m = ranks_to_metrics(val_ranks)
+            test_m = ranks_to_metrics(test_ranks)
+            val_by_method.setdefault("baseline_mix", []).append(val_m)
+            test_by_method.setdefault("baseline_mix", []).append(test_m)
+
+            # Per-variant
+            for vt, vr in test_vr.items():
+                test_by_method_variant.setdefault("baseline_mix", {}).setdefault(vt, []).append(ranks_to_metrics(vr))
+
+            seed_detail["results"]["baseline_mix"] = {"val": val_m, "test": test_m, "test_by_variant": {vt: ranks_to_metrics(vr) for vt, vr in test_vr.items()}}
+            print(f"  baseline_mix  val_MRR={val_m['MRR']:.4f}  test_MRR={test_m['MRR']:.4f}  n_test={test_m['n']:.0f}")
+
+        if "svd_cos" in methods:
+            svd_dim = 256
+            svd = TruncatedSVD(n_components=svd_dim, random_state=seed)
+            E_svd = svd.fit_transform(X_eq_tfidf)
+            E_svd = E_svd / (np.linalg.norm(E_svd, axis=1, keepdims=True) + 1e-12)
+            case_texts_io = [build_case_text(c, include_io=True) for c in cases]
+            X_case_io = tfidf_eq.transform(case_texts_io)
+            Q_svd = svd.transform(X_case_io)
+            Q_svd = Q_svd / (np.linalg.norm(Q_svd, axis=1, keepdims=True) + 1e-12)
+
+            def score_svd(i: int) -> np.ndarray:
+                return (E_svd @ Q_svd[i]).astype(np.float32)
+
+            val_ranks, val_vr = eval_by_scoring_with_variant(val_cases_idx, correct_lists, cases, score_svd)
+            test_ranks, test_vr = eval_by_scoring_with_variant(test_cases_idx, correct_lists, cases, score_svd)
+
+            val_m = ranks_to_metrics(val_ranks)
+            test_m = ranks_to_metrics(test_ranks)
+            val_by_method.setdefault("svd_cos", []).append(val_m)
+            test_by_method.setdefault("svd_cos", []).append(test_m)
+
+            for vt, vr in test_vr.items():
+                test_by_method_variant.setdefault("svd_cos", {}).setdefault(vt, []).append(ranks_to_metrics(vr))
+
+            seed_detail["results"]["svd_cos"] = {"val": val_m, "test": test_m, "test_by_variant": {vt: ranks_to_metrics(vr) for vt, vr in test_vr.items()}}
+            print(f"  svd_cos       val_MRR={val_m['MRR']:.4f}  test_MRR={test_m['MRR']:.4f}  n_test={test_m['n']:.0f}")
+
+        all_seed_details.append(seed_detail)
+
+    # Aggregate
+    test_agg = aggregate_multi_seed_results(test_by_method)
+    val_agg = aggregate_multi_seed_results(val_by_method)
+
+    # Per-variant aggregate
+    variant_agg: dict[str, dict[str, dict[str, Any]]] = {}
+    for method, vt_dict in test_by_method_variant.items():
+        variant_agg[method] = {}
+        for vt, metrics_list in vt_dict.items():
+            if metrics_list:
+                mrr_vals = [m["MRR"] for m in metrics_list]
+                variant_agg[method][vt] = {
+                    "n_seeds": len(mrr_vals),
+                    "MRR_mean": round(float(np.mean(mrr_vals)), 4),
+                    "MRR_std": round(float(np.std(mrr_vals, ddof=1)) if len(mrr_vals) > 1 else 0.0, 4),
+                    "avg_n": round(float(np.mean([m["n"] for m in metrics_list])), 1),
+                }
+
+    # Save
+    out_json = OUT_DIR / "retrieval_experiments_multiseed.json"
+    payload = {
+        "seeds": seeds,
+        "methods": methods,
+        "test_aggregate": test_agg,
+        "val_aggregate": val_agg,
+        "test_by_variant": variant_agg,
+        "per_seed_details": all_seed_details,
+    }
+    out_json.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    # Markdown summary
+    out_md = OUT_DIR / "retrieval_experiments_multiseed.md"
+    lines = []
+    lines.append("# Multi-seed Retrieval Experiment Summary\n\n")
+    lines.append(f"Seeds: {seeds}\n\n")
+
+    lines.append("## Test Metrics (mean ± std, 95% CI)\n\n")
+    lines.append("| Method | MRR | R@1 | R@5 | R@10 |\n")
+    lines.append("|--------|-----|-----|-----|------|\n")
+    for method, agg in sorted(test_agg.items()):
+        mrr = f"{agg['MRR_mean']:.3f}±{agg['MRR_std']:.3f}"
+        r1 = f"{agg['Recall@1_mean']:.3f}±{agg['Recall@1_std']:.3f}"
+        r5 = f"{agg['Recall@5_mean']:.3f}±{agg['Recall@5_std']:.3f}"
+        r10 = f"{agg['Recall@10_mean']:.3f}±{agg['Recall@10_std']:.3f}"
+        ci = agg['MRR_ci95']
+        mrr_full = f"{mrr} [{ci[0]:.3f}, {ci[1]:.3f}]"
+        lines.append(f"| {method} | {mrr_full} | {r1} | {r5} | {r10} |\n")
+
+    lines.append("\n## Test Metrics by Variant Type\n\n")
+    lines.append("| Method | Variant | MRR (mean±std) | Avg n |\n")
+    lines.append("|--------|---------|----------------|-------|\n")
+    for method in sorted(variant_agg.keys()):
+        for vt in sorted(variant_agg[method].keys()):
+            va = variant_agg[method][vt]
+            lines.append(f"| {method} | {vt} | {va['MRR_mean']:.3f}±{va['MRR_std']:.3f} | {va['avg_n']:.0f} |\n")
+
+    lines.append("\n## Per-seed Details\n\n")
+    for sd in all_seed_details:
+        lines.append(f"### Seed {sd['seed']} (train={sd['n_train']}, val={sd['n_val']}, test={sd['n_test']})\n\n")
+        for method, res in sd["results"].items():
+            lines.append(f"- **{method}**: val MRR={res['val']['MRR']:.4f}, test MRR={res['test']['MRR']:.4f}\n")
+            if res.get("test_by_variant"):
+                for vt, vm in sorted(res["test_by_variant"].items()):
+                    lines.append(f"  - {vt}: MRR={vm['MRR']:.4f} (n={vm['n']:.0f})\n")
+        lines.append("\n")
+
+    out_md.write_text("".join(lines), encoding="utf-8")
+
+    # Print summary
+    print("\n" + "=" * 60)
+    print("MULTI-SEED SUMMARY")
+    print("=" * 60)
+    print(f"Seeds: {seeds}")
+    for method, agg in sorted(test_agg.items()):
+        ci = agg['MRR_ci95']
+        print(f"\n{method}:")
+        print(f"  Test MRR:    {agg['MRR_mean']:.4f} ± {agg['MRR_std']:.4f}  95%CI [{ci[0]:.4f}, {ci[1]:.4f}]")
+        print(f"  Test R@1:    {agg['Recall@1_mean']:.4f} ± {agg['Recall@1_std']:.4f}")
+        print(f"  Test R@5:    {agg['Recall@5_mean']:.4f} ± {agg['Recall@5_std']:.4f}")
+        if method in variant_agg:
+            print(f"  By variant:")
+            for vt, va in sorted(variant_agg[method].items()):
+                print(f"    {vt:25s}  MRR={va['MRR_mean']:.4f}±{va['MRR_std']:.4f}  (avg n={va['avg_n']:.0f})")
+
+    print(f"\nWrote {out_json}")
+    print(f"Wrote {out_md}")
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--seeds" in sys.argv or "--seed-list" in sys.argv or "--multi" in sys.argv:
+        main_multi_seed()
+    else:
+        main()
 

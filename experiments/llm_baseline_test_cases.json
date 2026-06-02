@@ -1,0 +1,392 @@
+[
+  {
+    "case_id": "ms_diffusion_reaction_001",
+    "variant_type": "multisource_original",
+    "context": "In a diffusion-controlled reactor, calculate the molecular diffusion flux at the catalyst surface and the reactor residence time, given the diffusion coefficient, concentration gradient, and reactor kinetics.",
+    "input_variables": [
+      "D_{AB}",
+      "C_A",
+      "z",
+      "C_{A0}",
+      "r_A"
+    ],
+    "output_variables": [
+      "J_{Az}",
+      "\\tau"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_cstr_heat_002",
+    "variant_type": "multisource_original",
+    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "input_variables": [
+      "C_{A0}",
+      "C_A",
+      "r_A",
+      "h",
+      "A_s",
+      "T_s",
+      "T_\\infty"
+    ],
+    "output_variables": [
+      "\\tau",
+      "q_{conv}"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_rate_001",
+    "variant_type": "multisource_original",
+    "context": "Size a PFR for a first-order Arrhenius reaction by combining: (1) Arrhenius rate constant, (2) first-order rate equation, (3) PFR integral design equation. This requires equations from three different sources.",
+    "input_variables": [
+      "k_0",
+      "E",
+      "R",
+      "T",
+      "C_A",
+      "F_{A0}",
+      "X_{A,out}",
+      "-r_A"
+    ],
+    "output_variables": [
+      "k",
+      "r_a",
+      "V"
+    ],
+    "n_correct": 3
+  },
+  {
+    "case_id": "ms_bio_diffusion_001",
+    "variant_type": "multisource_original",
+    "context": "In a bioreactor, calculate the Monod growth rate and the diffusion flux of nutrients, given the substrate concentration profile and bioreactor parameters.",
+    "input_variables": [
+      "\\mu_{max}",
+      "S",
+      "K_S",
+      "D_{AB}",
+      "C_A",
+      "z"
+    ],
+    "output_variables": [
+      "\\mu",
+      "J_{Az}"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_convection_001",
+    "variant_type": "multisource_original",
+    "context": "For a tubular reactor with wall cooling, compute the PFR volume and the convective heat removal, given the conversion profile, kinetics, and heat transfer characteristics.",
+    "input_variables": [
+      "F_{A0}",
+      "X_{A,out}",
+      "-r_A",
+      "h",
+      "A_s",
+      "T_s",
+      "T_\\infty"
+    ],
+    "output_variables": [
+      "V",
+      "q_{conv}"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_reactor_sensor_001_rv6",
+    "variant_type": "multisource_random_io",
+    "context": "For a continuous reactor with a measurement sensor, determine the steady-state residence time from the reactor kinetics and the first-order plus dead time (FOPDT) transfer function of the sensor.",
+    "input_variables": [
+      "C_A",
+      "G_p(s)",
+      "K_p",
+      "\\tau",
+      "\\theta",
+      "r_A",
+      "s"
+    ],
+    "output_variables": [
+      "C_{A0}",
+      "\\tau_p"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_pid_001_rv3",
+    "variant_type": "multisource_random_io",
+    "context": "For a PFR with PID-controlled inlet flow rate, compute the required reactor volume and the PID controller output for setpoint tracking.",
+    "input_variables": [
+      "-r_A",
+      "K_d",
+      "K_i",
+      "K_p",
+      "V",
+      "X_{A,out}",
+      "\\tau",
+      "e(t)",
+      "t",
+      "u(t)",
+      "y(t)"
+    ],
+    "output_variables": [
+      "F_{A0}",
+      "r(t)"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_reactor_pid_001_rv3",
+    "variant_type": "multisource_random_io",
+    "context": "Compute both the steady-state residence time of a CSTR and the PID controller output for maintaining the desired conversion, given the kinetics and controller parameters.",
+    "input_variables": [
+      "C_A",
+      "C_{A0}",
+      "K_d",
+      "K_i",
+      "K_p",
+      "\\tau",
+      "e(t)",
+      "r_A",
+      "u(t)",
+      "y(t)"
+    ],
+    "output_variables": [
+      "r(t)",
+      "t"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_bio_diffusion_002_rv6",
+    "variant_type": "multisource_random_io",
+    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, compute the Monod growth rate and the substrate diffusion flux into the cell, given the substrate concentration profile.",
+    "input_variables": [
+      "C_A",
+      "D_{AB}",
+      "J_{Az}",
+      "\\mu",
+      "\\mu_{max}",
+      "z"
+    ],
+    "output_variables": [
+      "K_S",
+      "S"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_pid_001_rv4",
+    "variant_type": "multisource_random_io",
+    "context": "For a PFR with PID-controlled inlet flow rate, compute the required reactor volume and the PID controller output for setpoint tracking.",
+    "input_variables": [
+      "K_d",
+      "K_i",
+      "K_p",
+      "V",
+      "X_{A,out}",
+      "\\tau",
+      "e(t)",
+      "r(t)",
+      "t",
+      "u(t)",
+      "y(t)"
+    ],
+    "output_variables": [
+      "-r_A",
+      "F_{A0}"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_masstransfer_001_rv2",
+    "variant_type": "multisource_random_io",
+    "context": "For a packed bed reactor with external diffusion limitation, compute the PFR volume from the integral design equation and the mass transfer flux to the catalyst surface.",
+    "input_variables": [
+      "C_A",
+      "F_{A0}",
+      "J_{Az}",
+      "V",
+      "X_{A,out}",
+      "z"
+    ],
+    "output_variables": [
+      "-r_A",
+      "D_{AB}"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_kin_001_rv5",
+    "variant_type": "multisource_random_io",
+    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "input_variables": [
+      "-r_A",
+      "C_A",
+      "F_{A0}",
+      "V",
+      "X_{A,out}",
+      "r_A"
+    ],
+    "output_variables": [
+      "C_{A0}",
+      "\\tau"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_reactor_heat_arrhenius_001_rv2",
+    "variant_type": "multisource_random_io",
+    "context": "Three-source non-isothermal reactor design: combine the Arrhenius temperature dependence, the first-order rate expression, and the overall heat transfer law to determine the rate constant, reaction rate, and heat removal in a temperature-controlled CSTR.",
+    "input_variables": [
+      "C_A",
+      "E",
+      "R",
+      "U",
+      "\\Delta T_{overall}",
+      "k_0",
+      "q",
+      "r_a"
+    ],
+    "output_variables": [
+      "A",
+      "T",
+      "k"
+    ],
+    "n_correct": 3
+  },
+  {
+    "case_id": "ms_batch_arrhenius_001_rv1",
+    "variant_type": "multisource_random_io",
+    "context": "For a temperature-dependent batch reaction, compute the Arrhenius rate constant and the batch reactor conversion dynamics.",
+    "input_variables": [
+      "-r_A",
+      "E",
+      "N_{A0}",
+      "T",
+      "V",
+      "k",
+      "k_0",
+      "t"
+    ],
+    "output_variables": [
+      "R",
+      "X_A"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_cstr_heat_002_rv3",
+    "variant_type": "multisource_random_io",
+    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "input_variables": [
+      "C_A",
+      "C_{A0}",
+      "T_\\infty",
+      "T_s",
+      "\\tau",
+      "h",
+      "q_{conv}"
+    ],
+    "output_variables": [
+      "A_s",
+      "r_A"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_cstr_heat_002_rv2",
+    "variant_type": "multisource_random_io",
+    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "input_variables": [
+      "A_s",
+      "C_A",
+      "C_{A0}",
+      "T_\\infty",
+      "h",
+      "q_{conv}",
+      "r_A"
+    ],
+    "output_variables": [
+      "T_s",
+      "\\tau"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_kin_001_rv6",
+    "variant_type": "multisource_random_io",
+    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "input_variables": [
+      "-r_A",
+      "C_A",
+      "C_{A0}",
+      "F_{A0}",
+      "X_{A,out}",
+      "\\tau"
+    ],
+    "output_variables": [
+      "V",
+      "r_A"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_001_rv2",
+    "variant_type": "multisource_random_io",
+    "context": "Size a PFR for a first-order Arrhenius reaction: combine the temperature-dependent rate constant from one source with the PFR design equation from another.",
+    "input_variables": [
+      "-r_A",
+      "F_{A0}",
+      "R",
+      "T",
+      "V",
+      "X_A",
+      "k_0"
+    ],
+    "output_variables": [
+      "E",
+      "k"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_001_rv6",
+    "variant_type": "multisource_random_io",
+    "context": "Size a PFR for a first-order Arrhenius reaction: combine the temperature-dependent rate constant from one source with the PFR design equation from another.",
+    "input_variables": [
+      "-r_A",
+      "F_{A0}",
+      "R",
+      "T",
+      "V",
+      "X_A",
+      "k"
+    ],
+    "output_variables": [
+      "E",
+      "k_0"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "ms_batch_sensor_001_rv4",
+    "variant_type": "multisource_random_io",
+    "context": "For a batch reactor with a temperature sensor, compute the batch reaction time and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
+    "input_variables": [
+      "-r_A",
+      "G_p(s)",
+      "K_p",
+      "N_{A0}",
+      "V",
+      "X_A",
+      "\\tau_p",
+      "\\theta"
+    ],
+    "output_variables": [
+      "s",
+      "t"
+    ],
+    "n_correct": 2
+  }
+]

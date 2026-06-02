@@ -1,0 +1,458 @@
+[
+  {
+    "case_id": "core_055_v1",
+    "variant_type": "original",
+    "context": "Estimating the corrosion rate of a metal by calculating the corrosion current density from electrochemical measurements. The Stern-Geary equation is used, requiring the anodic and cathodic Tafel slopes and the polarization resistance, which are determined experimentally.",
+    "input_variables": [
+      "\\beta_a",
+      "\\beta_c",
+      "R_p"
+    ],
+    "output_variables": [
+      "j_{\\text{corr}}"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_048_v1",
+    "variant_type": "original",
+    "context": "Analysis of an electromechanical hoist system where a motor lifts a mass. Given motor characteristics, electrical input, and load properties, determine the linear and angular accelerations of the system, as well as the tension in the cable and the torque on the winch.",
+    "input_variables": [
+      "J",
+      "K_T",
+      "i_m",
+      "m",
+      "F_L",
+      "r"
+    ],
+    "output_variables": [
+      "\\ddot{\\theta}",
+      "\\ddot{y}",
+      "F_1",
+      "T_1"
+    ],
+    "n_correct": 4
+  },
+  {
+    "case_id": "core_067_v1",
+    "variant_type": "original",
+    "context": "A centrifugal pump's operating speed is changed from an initial value N_1 to a new value N_2. Given its initial performance characteristics (flow rate V̇_1 and pressure head ΔP_1), use the pump affinity laws to predict the new flow rate (V̇_2) and pressure head (ΔP_2) at the new speed.",
+    "input_variables": [
+      "N_1",
+      "N_2",
+      "\\dot{V}_1",
+      "\\Delta P_1"
+    ],
+    "output_variables": [
+      "\\dot{V}_2",
+      "\\Delta P_2"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "core_068_v1",
+    "variant_type": "original",
+    "context": "In soil mechanics, the time factor (T_v) is a dimensionless parameter used to analyze the progress of consolidation settlement. Calculate T_v for a clay layer given its coefficient of consolidation (c_v), the time elapsed since loading (t), and the length of the longest drainage path (H_dr).",
+    "input_variables": [
+      "c_v",
+      "t",
+      "H_{dr}"
+    ],
+    "output_variables": [
+      "T_v"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_036_v1",
+    "variant_type": "original",
+    "context": "Perform a degrees of freedom analysis on a process model by comparing the number of variables to the number of independent equations.",
+    "input_variables": [
+      "NV",
+      "NE"
+    ],
+    "output_variables": [
+      "DOF"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_059_v1",
+    "variant_type": "original",
+    "context": "Using Rankine's theory for soil mechanics, calculate the active earth pressure (p_a) at a certain depth behind a retaining wall. The calculation requires the soil's effective cohesion (c'), its effective friction angle (φ'), and the vertical effective stress (σ'_v) at the specified depth.",
+    "input_variables": [
+      "c'",
+      "\\phi'",
+      "\\sigma'_v"
+    ],
+    "output_variables": [
+      "p_a"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "core_061_v1",
+    "variant_type": "original",
+    "context": "In psychrometrics, determine the humidity ratio (W) of an air sample. This requires knowing the sample's relative humidity (φ), the saturation pressure of water at the sample's temperature (p_ws), and the partial pressure of the dry air (p_a).",
+    "input_variables": [
+      "\\phi",
+      "p_{ws}",
+      "p_a"
+    ],
+    "output_variables": [
+      "W"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "core_042_v1",
+    "variant_type": "original",
+    "context": "Calculation of the electrode potential of a half-cell under non-standard conditions using the Nernst equation. The standard electrode potential, temperature, number of electrons transferred, and activities of the oxidized and reduced species are known constants.",
+    "input_variables": [
+      "E^\\ominus",
+      "R",
+      "T",
+      "n",
+      "F",
+      "a_{\\text{Red}}",
+      "a_{\\text{Ox}}"
+    ],
+    "output_variables": [
+      "E"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_063_v1",
+    "variant_type": "original",
+    "context": "Using the Ordinary Method of Slices for a geotechnical slope stability analysis, calculate the Factor of Safety (FS) for a single potential failure slice. The inputs are the soil's effective cohesion (c') and friction angle (φ'), along with the slice's specific weight (W), base length (l), and base inclination angle (α).",
+    "input_variables": [
+      "c'",
+      "l",
+      "W",
+      "\\alpha",
+      "\\phi'"
+    ],
+    "output_variables": [
+      "FS"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_095_v1",
+    "variant_type": "original",
+    "context": "The focal length of a thin lens in air is determined by its refractive index and the radii of curvature of its front and back surfaces, as described by the Lensmaker's equation.",
+    "input_variables": [
+      "n",
+      "R_1",
+      "R_2"
+    ],
+    "output_variables": [
+      "f"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_097_v1_para3",
+    "variant_type": "context_paraphrased",
+    "context": "From the perspective of process modeling, this case focuses on: A beam of light with a known initial intensity passes through an absorbing medium with a specific absorption coefficient. The goal is to calculate the final intensity of the light after it has traveled a certain distance through the medium, according to the Beer-Lambert law.",
+    "input_variables": [
+      "I_0",
+      "\\alpha",
+      "z"
+    ],
+    "output_variables": [
+      "I(z)"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_055_v1_para1",
+    "variant_type": "context_paraphrased",
+    "context": "This case describes the following physical model: Estimating the corrosion rate of a metal by calculating the corrosion current density from electrochemical measurements. The Stern-Geary equation is used, requiring the anodic and cathodic Tafel slopes and the polarization resistance, which are determined experimentally.",
+    "input_variables": [
+      "\\beta_a",
+      "\\beta_c",
+      "R_p"
+    ],
+    "output_variables": [
+      "j_{\\text{corr}}"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_053_v1_para3",
+    "variant_type": "context_paraphrased",
+    "context": "From the perspective of process modeling, this case focuses on: Applying Faraday's law of electrolysis to determine the mass of a substance produced at an electrode. The total charge passed through the cell, the molar mass of the substance, and the number of electrons involved in the reaction are known.",
+    "input_variables": [
+      "Q",
+      "M",
+      "n",
+      "F"
+    ],
+    "output_variables": [
+      "m"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_043_v1_para1",
+    "variant_type": "context_paraphrased",
+    "context": "This case describes the following physical model: Determining the net current density for an electrode reaction based on the Butler-Volmer equation. The exchange current density, transfer coefficients, number of electrons, overpotential, and temperature are provided.",
+    "input_variables": [
+      "j_0",
+      "\\alpha_a",
+      "\\alpha_c",
+      "n",
+      "F",
+      "\\eta",
+      "R",
+      "T"
+    ],
+    "output_variables": [
+      "j"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_067_v1_para3",
+    "variant_type": "context_paraphrased",
+    "context": "From the perspective of process modeling, this case focuses on: A centrifugal pump's operating speed is changed from an initial value N_1 to a new value N_2. Given its initial performance characteristics (flow rate V̇_1 and pressure head ΔP_1), use the pump affinity laws to predict the new flow rate (V̇_2) and pressure head (ΔP_2) at the new speed.",
+    "input_variables": [
+      "N_1",
+      "N_2",
+      "\\dot{V}_1",
+      "\\Delta P_1"
+    ],
+    "output_variables": [
+      "\\dot{V}_2",
+      "\\Delta P_2"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "core_043_v1_para3",
+    "variant_type": "context_paraphrased",
+    "context": "From the perspective of process modeling, this case focuses on: Determining the net current density for an electrode reaction based on the Butler-Volmer equation. The exchange current density, transfer coefficients, number of electrons, overpotential, and temperature are provided.",
+    "input_variables": [
+      "j_0",
+      "\\alpha_a",
+      "\\alpha_c",
+      "n",
+      "F",
+      "\\eta",
+      "R",
+      "T"
+    ],
+    "output_variables": [
+      "j"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_043_v1_para2",
+    "variant_type": "context_paraphrased",
+    "context": "In this scenario, the underlying process can be summarized as: Determining the net current density for an electrode reaction based on the Butler-Volmer equation. The exchange current density, transfer coefficients, number of electrons, overpotential, and temperature are provided.",
+    "input_variables": [
+      "j_0",
+      "\\alpha_a",
+      "\\alpha_c",
+      "n",
+      "F",
+      "\\eta",
+      "R",
+      "T"
+    ],
+    "output_variables": [
+      "j"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_061_v1_para2",
+    "variant_type": "context_paraphrased",
+    "context": "In this scenario, the underlying process can be summarized as: In psychrometrics, determine the humidity ratio (W) of an air sample. This requires knowing the sample's relative humidity (φ), the saturation pressure of water at the sample's temperature (p_ws), and the partial pressure of the dry air (p_a).",
+    "input_variables": [
+      "\\phi",
+      "p_{ws}",
+      "p_a"
+    ],
+    "output_variables": [
+      "W"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "core_055_v1_para2",
+    "variant_type": "context_paraphrased",
+    "context": "In this scenario, the underlying process can be summarized as: Estimating the corrosion rate of a metal by calculating the corrosion current density from electrochemical measurements. The Stern-Geary equation is used, requiring the anodic and cathodic Tafel slopes and the polarization resistance, which are determined experimentally.",
+    "input_variables": [
+      "\\beta_a",
+      "\\beta_c",
+      "R_p"
+    ],
+    "output_variables": [
+      "j_{\\text{corr}}"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_068_v1_para2",
+    "variant_type": "context_paraphrased",
+    "context": "In this scenario, the underlying process can be summarized as: In soil mechanics, the time factor (T_v) is a dimensionless parameter used to analyze the progress of consolidation settlement. Calculate T_v for a clay layer given its coefficient of consolidation (c_v), the time elapsed since loading (t), and the length of the longest drainage path (H_dr).",
+    "input_variables": [
+      "c_v",
+      "t",
+      "H_{dr}"
+    ],
+    "output_variables": [
+      "T_v"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_068_v4",
+    "variant_type": "random_io_from_models",
+    "context": "From the perspective of process modeling, this case focuses on: In soil mechanics, the time factor (T_v) is a dimensionless parameter used to analyze the progress of consolidation settlement. Calculate T_v for a clay layer given its coefficient of consolidation (c_v), the time elapsed since loading (t), and the length of the longest drainage path (H_dr).",
+    "input_variables": [
+      "T_v",
+      "c_v",
+      "t"
+    ],
+    "output_variables": [
+      "H_{dr}"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_095_v5",
+    "variant_type": "random_io_from_models",
+    "context": "From the perspective of process modeling, this case focuses on: The focal length of a thin lens in air is determined by its refractive index and the radii of curvature of its front and back surfaces, as described by the Lensmaker's equation.",
+    "input_variables": [
+      "R_1",
+      "R_2",
+      "n"
+    ],
+    "output_variables": [
+      "f"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_063_v6",
+    "variant_type": "random_io_from_models",
+    "context": "From the perspective of process modeling, this case focuses on: Using the Ordinary Method of Slices for a geotechnical slope stability analysis, calculate the Factor of Safety (FS) for a single potential failure slice. The inputs are the soil's effective cohesion (c') and friction angle (φ'), along with the slice's specific weight (W), base length (l), and base inclination angle (α).",
+    "input_variables": [
+      "W",
+      "\\alpha",
+      "\\phi'",
+      "c'",
+      "l"
+    ],
+    "output_variables": [
+      "FS"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_080_v4",
+    "variant_type": "random_io_from_models",
+    "context": "From the perspective of process modeling, this case focuses on: A linearized dynamic model of an isothermal CSTR describes deviations from steady-state. Calculate the rate of change of the outlet concentration deviation, given the current deviations in feed flow rate and feed concentration, along with the process gains and time constant.",
+    "input_variables": [
+      "C'_A",
+      "C'_{A0}",
+      "F'",
+      "K_F",
+      "\\tau",
+      "t"
+    ],
+    "output_variables": [
+      "K_{CA0}"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_043_v4",
+    "variant_type": "random_io_from_models",
+    "context": "From the perspective of process modeling, this case focuses on: Determining the net current density for an electrode reaction based on the Butler-Volmer equation. The exchange current density, transfer coefficients, number of electrons, overpotential, and temperature are provided.",
+    "input_variables": [
+      "R",
+      "T",
+      "\\alpha_a",
+      "\\alpha_c",
+      "\\eta",
+      "j",
+      "j_0",
+      "n"
+    ],
+    "output_variables": [
+      "F"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_095_v8",
+    "variant_type": "random_io_from_models",
+    "context": "The focal length of a thin lens in air is determined by its refractive index and the radii of curvature of its front and back surfaces, as described by the Lensmaker's equation.",
+    "input_variables": [
+      "R_1",
+      "f",
+      "n"
+    ],
+    "output_variables": [
+      "R_2"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_061_v11",
+    "variant_type": "random_io_from_models",
+    "context": "In psychrometrics, determine the humidity ratio (W) of an air sample. This requires knowing the sample's relative humidity (φ), the saturation pressure of water at the sample's temperature (p_ws), and the partial pressure of the dry air (p_a).",
+    "input_variables": [
+      "W",
+      "p_a",
+      "p_{ws}"
+    ],
+    "output_variables": [
+      "\\phi",
+      "p_w"
+    ],
+    "n_correct": 2
+  },
+  {
+    "case_id": "core_063_v4",
+    "variant_type": "random_io_from_models",
+    "context": "From the perspective of process modeling, this case focuses on: Using the Ordinary Method of Slices for a geotechnical slope stability analysis, calculate the Factor of Safety (FS) for a single potential failure slice. The inputs are the soil's effective cohesion (c') and friction angle (φ'), along with the slice's specific weight (W), base length (l), and base inclination angle (α).",
+    "input_variables": [
+      "FS",
+      "W",
+      "\\alpha",
+      "\\phi'",
+      "c'"
+    ],
+    "output_variables": [
+      "l"
+    ],
+    "n_correct": 1
+  },
+  {
+    "case_id": "core_048_v11",
+    "variant_type": "random_io_from_models",
+    "context": "Analysis of an electromechanical hoist system where a motor lifts a mass. Given motor characteristics, electrical input, and load properties, determine the linear and angular accelerations of the system, as well as the tension in the cable and the torque on the winch.",
+    "input_variables": [
+      "F_1",
+      "F_L",
+      "J",
+      "T_1",
+      "\\ddot{\\theta}",
+      "i_m"
+    ],
+    "output_variables": [
+      "K_T",
+      "\\ddot{y}",
+      "m",
+      "r"
+    ],
+    "n_correct": 4
+  }
+]

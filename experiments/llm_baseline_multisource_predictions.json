@@ -1,0 +1,190 @@
+[
+  {
+    "case_id": "ms_diffusion_reaction_001",
+    "predictions": [
+      {"rank": 1, "equation": "J_{Az} = -D_{AB} \\frac{dC_A}{dz}"},
+      {"rank": 2, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 3, "equation": "\\tau = V/F"},
+      {"rank": 4, "equation": "J = -D \\nabla C"},
+      {"rank": 5, "equation": "\\frac{dC_A}{dt} = D_{AB} \\frac{d^2 C_A}{dz^2} + r_A"}
+    ]
+  },
+  {
+    "case_id": "ms_cstr_heat_002",
+    "predictions": [
+      {"rank": 1, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 2, "equation": "q_{conv} = h A_s (T_s - T_\\infty)"},
+      {"rank": 3, "equation": "\\tau = V/F"},
+      {"rank": 4, "equation": "q = U A \\Delta T"},
+      {"rank": 5, "equation": "V \\rho C_p \\frac{dT}{dt} = F \\rho C_p (T_0 - T) - q_{conv}"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_rate_001",
+    "predictions": [
+      {"rank": 1, "equation": "k = k_0 \\exp(-E/(RT))"},
+      {"rank": 2, "equation": "r_a = k C_A"},
+      {"rank": 3, "equation": "V = F_{A0} \\int_0^{X_{A,out}} \\frac{dX_A}{-r_A}"},
+      {"rank": 4, "equation": "k = k_0 e^{-E_a/RT}"},
+      {"rank": 5, "equation": "-r_A = k C_A^n"},
+      {"rank": 6, "equation": "\\frac{dC_A}{dt} = -k C_A"}
+    ]
+  },
+  {
+    "case_id": "ms_bio_diffusion_001",
+    "predictions": [
+      {"rank": 1, "equation": "\\mu = \\frac{\\mu_{max} S}{K_S + S}"},
+      {"rank": 2, "equation": "J_{Az} = -D_{AB} \\frac{dC_A}{dz}"},
+      {"rank": 3, "equation": "\\mu = \\mu_{max} \\frac{S}{K_S + S}"},
+      {"rank": 4, "equation": "J = -D \\frac{dC}{dx}"},
+      {"rank": 5, "equation": "r_X = \\mu X"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_convection_001",
+    "predictions": [
+      {"rank": 1, "equation": "V = F_{A0} \\int_0^{X_{A,out}} \\frac{dX_A}{-r_A}"},
+      {"rank": 2, "equation": "q_{conv} = h A_s (T_s - T_\\infty)"},
+      {"rank": 3, "equation": "V = \\frac{F_{A0} X_{A,out}}{-r_A}"},
+      {"rank": 4, "equation": "q = U A \\Delta T"},
+      {"rank": 5, "equation": "\\frac{dX_A}{dV} = \\frac{-r_A}{F_{A0}}"}
+    ]
+  },
+  {
+    "case_id": "ms_reactor_sensor_001_rv6",
+    "predictions": [
+      {"rank": 1, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 2, "equation": "G_p(s) = \\frac{K_p e^{-\\theta s}}{\\tau_p s + 1}"},
+      {"rank": 3, "equation": "C_{A0} = C_A + r_A \\tau"},
+      {"rank": 4, "equation": "Y(s)/U(s) = K_p e^{-\\theta s} / (\\tau_p s + 1)"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_pid_001_rv3",
+    "predictions": [
+      {"rank": 1, "equation": "V = F_{A0} \\int_0^{X_{A,out}} \\frac{dX_A}{-r_A}"},
+      {"rank": 2, "equation": "u(t) = K_p e(t) + K_i \\int_0^t e(\\tau) d\\tau + K_d \\frac{de(t)}{dt}"},
+      {"rank": 3, "equation": "F_{A0} = V \\cdot (-r_A) / X_{A,out}"},
+      {"rank": 4, "equation": "e(t) = r(t) - y(t)"},
+      {"rank": 5, "equation": "u(s) = K_c (1 + 1/(\\tau_I s) + \\tau_D s) e(s)"}
+    ]
+  },
+  {
+    "case_id": "ms_reactor_pid_001_rv3",
+    "predictions": [
+      {"rank": 1, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 2, "equation": "u(t) = K_p e(t) + K_i \\int_0^t e(\\tau) d\\tau + K_d \\frac{de(t)}{dt}"},
+      {"rank": 3, "equation": "e(t) = r(t) - y(t)"},
+      {"rank": 4, "equation": "u(t) = K_p e(t) + K_i \\int e dt + K_d \\frac{de}{dt}"}
+    ]
+  },
+  {
+    "case_id": "ms_bio_diffusion_002_rv6",
+    "predictions": [
+      {"rank": 1, "equation": "\\mu = \\frac{\\mu_{max} S}{K_S + S}"},
+      {"rank": 2, "equation": "J_{Az} = -D_{AB} \\frac{dC_A}{dz}"},
+      {"rank": 3, "equation": "S = \\frac{K_S \\mu}{\\mu_{max} - \\mu}"},
+      {"rank": 4, "equation": "K_S = S(\\mu_{max}/\\mu - 1)"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_pid_001_rv4",
+    "predictions": [
+      {"rank": 1, "equation": "V = F_{A0} \\int_0^{X_{A,out}} \\frac{dX_A}{-r_A}"},
+      {"rank": 2, "equation": "u(t) = K_p e(t) + K_i \\int_0^t e(\\tau) d\\tau + K_d \\frac{de(t)}{dt}"},
+      {"rank": 3, "equation": "F_{A0} = V (-r_A) / X_{A,out}"},
+      {"rank": 4, "equation": "-r_A = -(F_{A0}/V) X_{A,out}"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_masstransfer_001_rv2",
+    "predictions": [
+      {"rank": 1, "equation": "V = F_{A0} \\int_0^{X_{A,out}} \\frac{dX_A}{-r_A}"},
+      {"rank": 2, "equation": "J_{Az} = -D_{AB} \\frac{dC_A}{dz}"},
+      {"rank": 3, "equation": "-r_A = (F_{A0} X_{A,out}) / V"},
+      {"rank": 4, "equation": "D_{AB} = -J_{Az} \\frac{dz}{dC_A}"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_kin_001_rv5",
+    "predictions": [
+      {"rank": 1, "equation": "V = F_{A0} \\int_0^{X_{A,out}} \\frac{dX_A}{-r_A}"},
+      {"rank": 2, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 3, "equation": "\\tau = V/F"},
+      {"rank": 4, "equation": "C_{A0} = C_A - (-r_A) \\tau"}
+    ]
+  },
+  {
+    "case_id": "ms_reactor_heat_arrhenius_001_rv2",
+    "predictions": [
+      {"rank": 1, "equation": "k = k_0 \\exp(-E/(RT))"},
+      {"rank": 2, "equation": "r_a = k C_A"},
+      {"rank": 3, "equation": "q = U A \\Delta T_{overall}"},
+      {"rank": 4, "equation": "T = -E / (R \\ln(k/k_0))"},
+      {"rank": 5, "equation": "A = q / (U \\Delta T_{overall})"}
+    ]
+  },
+  {
+    "case_id": "ms_batch_arrhenius_001_rv1",
+    "predictions": [
+      {"rank": 1, "equation": "k = k_0 \\exp(-E/(RT))"},
+      {"rank": 2, "equation": "N_{A0} \\frac{dX_A}{dt} = -r_A V"},
+      {"rank": 3, "equation": "R = -E / (T \\ln(k/k_0))"},
+      {"rank": 4, "equation": "X_A = \\int_0^t \\frac{-r_A V}{N_{A0}} dt"}
+    ]
+  },
+  {
+    "case_id": "ms_cstr_heat_002_rv3",
+    "predictions": [
+      {"rank": 1, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 2, "equation": "q_{conv} = h A_s (T_s - T_\\infty)"},
+      {"rank": 3, "equation": "A_s = q_{conv} / (h (T_s - T_\\infty))"},
+      {"rank": 4, "equation": "-r_A = (C_{A0} - C_A)/\\tau"}
+    ]
+  },
+  {
+    "case_id": "ms_cstr_heat_002_rv2",
+    "predictions": [
+      {"rank": 1, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 2, "equation": "q_{conv} = h A_s (T_s - T_\\infty)"},
+      {"rank": 3, "equation": "T_s = T_\\infty + q_{conv} / (h A_s)"},
+      {"rank": 4, "equation": "\\tau = (C_{A0} - C_A) / r_A"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_kin_001_rv6",
+    "predictions": [
+      {"rank": 1, "equation": "V = F_{A0} \\int_0^{X_{A,out}} \\frac{dX_A}{-r_A}"},
+      {"rank": 2, "equation": "\\tau = \\frac{C_{A0} - C_A}{-r_A}"},
+      {"rank": 3, "equation": "V = F_{A0} X_{A,out} / (-r_A)"},
+      {"rank": 4, "equation": "r_A = -(C_{A0} - C_A)/\\tau"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_001_rv2",
+    "predictions": [
+      {"rank": 1, "equation": "k = k_0 \\exp(-E/(RT))"},
+      {"rank": 2, "equation": "\\frac{dX_A}{dV} = \\frac{-r_A}{F_{A0}}"},
+      {"rank": 3, "equation": "E = -RT \\ln(k/k_0)"},
+      {"rank": 4, "equation": "V = F_{A0} \\int_0^{X_A} \\frac{dX_A}{-r_A}"}
+    ]
+  },
+  {
+    "case_id": "ms_pfr_arrhenius_001_rv6",
+    "predictions": [
+      {"rank": 1, "equation": "k = k_0 \\exp(-E/(RT))"},
+      {"rank": 2, "equation": "\\frac{dX_A}{dV} = \\frac{-r_A}{F_{A0}}"},
+      {"rank": 3, "equation": "k_0 = k \\exp(E/(RT))"},
+      {"rank": 4, "equation": "E = -RT \\ln(k/k_0)"}
+    ]
+  },
+  {
+    "case_id": "ms_batch_sensor_001_rv4",
+    "predictions": [
+      {"rank": 1, "equation": "N_{A0} \\frac{dX_A}{dt} = -r_A V"},
+      {"rank": 2, "equation": "G_p(s) = \\frac{K_p e^{-\\theta s}}{\\tau_p s + 1}"},
+      {"rank": 3, "equation": "t = \\int_0^{X_A} \\frac{N_{A0}}{-r_A V} dX_A"},
+      {"rank": 4, "equation": "s = \\frac{1}{\\tau_p} (\\frac{K_p e^{-\\theta s}}{G_p(s)} - 1)"}
+    ]
+  }
+]

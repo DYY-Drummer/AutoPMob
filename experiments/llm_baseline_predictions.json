@@ -1,0 +1,265 @@
+[
+  {
+    "case_id": "core_055_v1",
+    "predictions": [
+      {"rank": 1, "equation": "j_{corr} = \\frac{\\beta_a \\beta_c}{2.303 (\\beta_a + \\beta_c) R_p}"},
+      {"rank": 2, "equation": "j_{corr} = \\frac{1}{2.303 R_p} \\cdot \\frac{\\beta_a \\beta_c}{\\beta_a + \\beta_c}"},
+      {"rank": 3, "equation": "B = \\frac{\\beta_a \\beta_c}{2.303(\\beta_a + \\beta_c)}"},
+      {"rank": 4, "equation": "j_{corr} = \\frac{B}{R_p}"},
+      {"rank": 5, "equation": "R_p = \\frac{\\Delta E}{\\Delta i}"}
+    ]
+  },
+  {
+    "case_id": "core_048_v1",
+    "predictions": [
+      {"rank": 1, "equation": "T_m = K_T i_m"},
+      {"rank": 2, "equation": "J \\ddot{\\theta} = T_m - T_1"},
+      {"rank": 3, "equation": "m \\ddot{y} = F_1 - F_L"},
+      {"rank": 4, "equation": "\\ddot{y} = r \\ddot{\\theta}"},
+      {"rank": 5, "equation": "T_1 = F_1 r"},
+      {"rank": 6, "equation": "J \\ddot{\\theta} = K_T i_m - F_1 r"},
+      {"rank": 7, "equation": "F_1 = m \\ddot{y} + F_L"}
+    ]
+  },
+  {
+    "case_id": "core_067_v1",
+    "predictions": [
+      {"rank": 1, "equation": "\\dot{V}_2 = \\dot{V}_1 \\frac{N_2}{N_1}"},
+      {"rank": 2, "equation": "\\Delta P_2 = \\Delta P_1 \\left(\\frac{N_2}{N_1}\\right)^2"},
+      {"rank": 3, "equation": "\\frac{\\dot{V}_2}{\\dot{V}_1} = \\frac{N_2}{N_1}"},
+      {"rank": 4, "equation": "\\frac{\\Delta P_2}{\\Delta P_1} = \\left(\\frac{N_2}{N_1}\\right)^2"},
+      {"rank": 5, "equation": "P_2 / P_1 = (N_2/N_1)^3"}
+    ]
+  },
+  {
+    "case_id": "core_068_v1",
+    "predictions": [
+      {"rank": 1, "equation": "T_v = \\frac{c_v t}{H_{dr}^2}"},
+      {"rank": 2, "equation": "T_v = \\frac{c_v \\cdot t}{H_{dr}^2}"},
+      {"rank": 3, "equation": "t = \\frac{T_v H_{dr}^2}{c_v}"}
+    ]
+  },
+  {
+    "case_id": "core_036_v1",
+    "predictions": [
+      {"rank": 1, "equation": "DOF = NV - NE"},
+      {"rank": 2, "equation": "\\text{DOF} = NV - NE"},
+      {"rank": 3, "equation": "f = NV - NE"}
+    ]
+  },
+  {
+    "case_id": "core_059_v1",
+    "predictions": [
+      {"rank": 1, "equation": "K_a = \\tan^2\\left(45 - \\frac{\\phi'}{2}\\right)"},
+      {"rank": 2, "equation": "p_a = \\sigma'_v K_a - 2 c' \\sqrt{K_a}"},
+      {"rank": 3, "equation": "p_a = \\sigma'_v \\tan^2(45 - \\phi'/2) - 2 c' \\tan(45 - \\phi'/2)"},
+      {"rank": 4, "equation": "K_a = \\frac{1 - \\sin\\phi'}{1 + \\sin\\phi'}"},
+      {"rank": 5, "equation": "p_a = K_a \\sigma'_v"}
+    ]
+  },
+  {
+    "case_id": "core_061_v1",
+    "predictions": [
+      {"rank": 1, "equation": "p_w = \\phi p_{ws}"},
+      {"rank": 2, "equation": "W = 0.622 \\frac{p_w}{p_a}"},
+      {"rank": 3, "equation": "W = 0.622 \\frac{\\phi p_{ws}}{p_a}"},
+      {"rank": 4, "equation": "W = \\frac{0.622 p_w}{p - p_w}"},
+      {"rank": 5, "equation": "\\phi = \\frac{p_w}{p_{ws}}"}
+    ]
+  },
+  {
+    "case_id": "core_042_v1",
+    "predictions": [
+      {"rank": 1, "equation": "E = E^\\ominus - \\frac{RT}{nF} \\ln\\frac{a_{Red}}{a_{Ox}}"},
+      {"rank": 2, "equation": "E = E^\\ominus + \\frac{RT}{nF} \\ln\\frac{a_{Ox}}{a_{Red}}"},
+      {"rank": 3, "equation": "E = E^0 - \\frac{0.0592}{n} \\log\\frac{a_{Red}}{a_{Ox}}"},
+      {"rank": 4, "equation": "\\Delta G = -nFE"}
+    ]
+  },
+  {
+    "case_id": "core_063_v1",
+    "predictions": [
+      {"rank": 1, "equation": "FS = \\frac{c' l + W \\cos\\alpha \\tan\\phi'}{W \\sin\\alpha}"},
+      {"rank": 2, "equation": "FS = \\frac{\\sum (c' l + W \\cos\\alpha \\tan\\phi')}{\\sum W \\sin\\alpha}"},
+      {"rank": 3, "equation": "N = W \\cos\\alpha"},
+      {"rank": 4, "equation": "T_{driving} = W \\sin\\alpha"},
+      {"rank": 5, "equation": "\\tau_f = c' + \\sigma' \\tan\\phi'"}
+    ]
+  },
+  {
+    "case_id": "core_095_v1",
+    "predictions": [
+      {"rank": 1, "equation": "\\frac{1}{f} = (n - 1)\\left(\\frac{1}{R_1} - \\frac{1}{R_2}\\right)"},
+      {"rank": 2, "equation": "\\frac{1}{f} = (n-1) \\left( \\frac{1}{R_1} - \\frac{1}{R_2} \\right)"},
+      {"rank": 3, "equation": "f = \\frac{R_1 R_2}{(n-1)(R_2 - R_1)}"}
+    ]
+  },
+  {
+    "case_id": "core_097_v1_para3",
+    "predictions": [
+      {"rank": 1, "equation": "I(z) = I_0 e^{-\\alpha z}"},
+      {"rank": 2, "equation": "I = I_0 \\exp(-\\alpha z)"},
+      {"rank": 3, "equation": "\\ln(I_0/I) = \\alpha z"},
+      {"rank": 4, "equation": "A = \\alpha z"},
+      {"rank": 5, "equation": "I(z) = I_0 10^{-\\epsilon c z}"}
+    ]
+  },
+  {
+    "case_id": "core_055_v1_para1",
+    "predictions": [
+      {"rank": 1, "equation": "j_{corr} = \\frac{\\beta_a \\beta_c}{2.303 (\\beta_a + \\beta_c) R_p}"},
+      {"rank": 2, "equation": "j_{corr} = \\frac{1}{2.303 R_p} \\cdot \\frac{\\beta_a \\beta_c}{\\beta_a + \\beta_c}"},
+      {"rank": 3, "equation": "B = \\frac{\\beta_a \\beta_c}{2.303(\\beta_a + \\beta_c)}"},
+      {"rank": 4, "equation": "j_{corr} = \\frac{B}{R_p}"}
+    ]
+  },
+  {
+    "case_id": "core_053_v1_para3",
+    "predictions": [
+      {"rank": 1, "equation": "m = \\frac{Q M}{n F}"},
+      {"rank": 2, "equation": "m = \\frac{I t M}{n F}"},
+      {"rank": 3, "equation": "n_{moles} = \\frac{Q}{nF}"},
+      {"rank": 4, "equation": "Q = n F N_e"}
+    ]
+  },
+  {
+    "case_id": "core_043_v1_para1",
+    "predictions": [
+      {"rank": 1, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a n F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c n F \\eta}{RT}\\right) \\right]"},
+      {"rank": 2, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c F \\eta}{RT}\\right) \\right]"},
+      {"rank": 3, "equation": "\\eta = \\frac{RT}{\\alpha n F} \\ln\\frac{j}{j_0}"},
+      {"rank": 4, "equation": "j = j_0 \\exp\\left(\\frac{\\alpha n F \\eta}{RT}\\right)"}
+    ]
+  },
+  {
+    "case_id": "core_067_v1_para3",
+    "predictions": [
+      {"rank": 1, "equation": "\\dot{V}_2 = \\dot{V}_1 \\frac{N_2}{N_1}"},
+      {"rank": 2, "equation": "\\Delta P_2 = \\Delta P_1 \\left(\\frac{N_2}{N_1}\\right)^2"},
+      {"rank": 3, "equation": "\\frac{\\dot{V}_2}{\\dot{V}_1} = \\frac{N_2}{N_1}"},
+      {"rank": 4, "equation": "\\frac{\\Delta P_2}{\\Delta P_1} = \\left(\\frac{N_2}{N_1}\\right)^2"}
+    ]
+  },
+  {
+    "case_id": "core_043_v1_para3",
+    "predictions": [
+      {"rank": 1, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a n F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c n F \\eta}{RT}\\right) \\right]"},
+      {"rank": 2, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c F \\eta}{RT}\\right) \\right]"},
+      {"rank": 3, "equation": "\\eta = \\frac{RT}{\\alpha n F} \\ln\\frac{j}{j_0}"}
+    ]
+  },
+  {
+    "case_id": "core_043_v1_para2",
+    "predictions": [
+      {"rank": 1, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a n F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c n F \\eta}{RT}\\right) \\right]"},
+      {"rank": 2, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c F \\eta}{RT}\\right) \\right]"},
+      {"rank": 3, "equation": "\\eta = \\frac{RT}{\\alpha n F} \\ln\\frac{j}{j_0}"}
+    ]
+  },
+  {
+    "case_id": "core_061_v1_para2",
+    "predictions": [
+      {"rank": 1, "equation": "p_w = \\phi p_{ws}"},
+      {"rank": 2, "equation": "W = 0.622 \\frac{p_w}{p_a}"},
+      {"rank": 3, "equation": "W = 0.622 \\frac{\\phi p_{ws}}{p_a}"},
+      {"rank": 4, "equation": "W = \\frac{0.622 p_w}{p - p_w}"}
+    ]
+  },
+  {
+    "case_id": "core_055_v1_para2",
+    "predictions": [
+      {"rank": 1, "equation": "j_{corr} = \\frac{\\beta_a \\beta_c}{2.303 (\\beta_a + \\beta_c) R_p}"},
+      {"rank": 2, "equation": "j_{corr} = \\frac{1}{2.303 R_p} \\cdot \\frac{\\beta_a \\beta_c}{\\beta_a + \\beta_c}"},
+      {"rank": 3, "equation": "B = \\frac{\\beta_a \\beta_c}{2.303(\\beta_a + \\beta_c)}"}
+    ]
+  },
+  {
+    "case_id": "core_068_v1_para2",
+    "predictions": [
+      {"rank": 1, "equation": "T_v = \\frac{c_v t}{H_{dr}^2}"},
+      {"rank": 2, "equation": "T_v = \\frac{c_v \\cdot t}{H_{dr}^2}"}
+    ]
+  },
+  {
+    "case_id": "core_068_v4",
+    "predictions": [
+      {"rank": 1, "equation": "T_v = \\frac{c_v t}{H_{dr}^2}"},
+      {"rank": 2, "equation": "H_{dr} = \\sqrt{\\frac{c_v t}{T_v}}"},
+      {"rank": 3, "equation": "H_{dr}^2 = \\frac{c_v t}{T_v}"}
+    ]
+  },
+  {
+    "case_id": "core_095_v5",
+    "predictions": [
+      {"rank": 1, "equation": "\\frac{1}{f} = (n - 1)\\left(\\frac{1}{R_1} - \\frac{1}{R_2}\\right)"},
+      {"rank": 2, "equation": "f = \\frac{R_1 R_2}{(n-1)(R_2 - R_1)}"}
+    ]
+  },
+  {
+    "case_id": "core_063_v6",
+    "predictions": [
+      {"rank": 1, "equation": "FS = \\frac{c' l + W \\cos\\alpha \\tan\\phi'}{W \\sin\\alpha}"},
+      {"rank": 2, "equation": "FS = \\frac{\\sum (c' l + W \\cos\\alpha \\tan\\phi')}{\\sum W \\sin\\alpha}"}
+    ]
+  },
+  {
+    "case_id": "core_080_v4",
+    "predictions": [
+      {"rank": 1, "equation": "\\tau \\frac{dC'_A}{dt} + C'_A = K_F F' + K_{CA0} C'_{A0}"},
+      {"rank": 2, "equation": "K_{CA0} = \\frac{F_s}{F_s + k V}"},
+      {"rank": 3, "equation": "\\frac{dC'_A}{dt} = -\\frac{C'_A}{\\tau} + \\frac{K_F F'}{\\tau} + \\frac{K_{CA0} C'_{A0}}{\\tau}"},
+      {"rank": 4, "equation": "K_{CA0} = \\frac{1}{1 + k\\tau}"}
+    ]
+  },
+  {
+    "case_id": "core_043_v4",
+    "predictions": [
+      {"rank": 1, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a n F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c n F \\eta}{RT}\\right) \\right]"},
+      {"rank": 2, "equation": "j = j_0 \\left[ \\exp\\left(\\frac{\\alpha_a F \\eta}{RT}\\right) - \\exp\\left(-\\frac{\\alpha_c F \\eta}{RT}\\right) \\right]"}
+    ]
+  },
+  {
+    "case_id": "core_095_v8",
+    "predictions": [
+      {"rank": 1, "equation": "\\frac{1}{f} = (n - 1)\\left(\\frac{1}{R_1} - \\frac{1}{R_2}\\right)"},
+      {"rank": 2, "equation": "R_2 = \\frac{1}{\\frac{1}{R_1} - \\frac{1}{f(n-1)}}"}
+    ]
+  },
+  {
+    "case_id": "core_061_v11",
+    "predictions": [
+      {"rank": 1, "equation": "p_w = \\phi p_{ws}"},
+      {"rank": 2, "equation": "W = 0.622 \\frac{p_w}{p_a}"},
+      {"rank": 3, "equation": "\\phi = \\frac{p_w}{p_{ws}}"},
+      {"rank": 4, "equation": "p_w = \\frac{W p_a}{0.622}"}
+    ]
+  },
+  {
+    "case_id": "core_048_v6",
+    "predictions": [
+      {"rank": 1, "equation": "T_m = K_T i_m"},
+      {"rank": 2, "equation": "J \\ddot{\\theta} = T_m - T_1"},
+      {"rank": 3, "equation": "m \\ddot{y} = F_1 - F_L"},
+      {"rank": 4, "equation": "\\ddot{y} = r \\ddot{\\theta}"},
+      {"rank": 5, "equation": "T_1 = F_1 r"},
+      {"rank": 6, "equation": "\\ddot{\\theta} = \\frac{K_T i_m - T_1}{J}"}
+    ]
+  },
+  {
+    "case_id": "core_063_v4",
+    "predictions": [
+      {"rank": 1, "equation": "FS = \\frac{c' l + W \\cos\\alpha \\tan\\phi'}{W \\sin\\alpha}"},
+      {"rank": 2, "equation": "l = \\frac{FS \\cdot W \\sin\\alpha - W \\cos\\alpha \\tan\\phi'}{c'}"}
+    ]
+  },
+  {
+    "case_id": "core_048_v11",
+    "predictions": [
+      {"rank": 1, "equation": "T_m = K_T i_m"},
+      {"rank": 2, "equation": "J \\ddot{\\theta} = T_m - T_1"},
+      {"rank": 3, "equation": "m \\ddot{y} = F_1 - F_L"},
+      {"rank": 4, "equation": "\\ddot{y} = r \\ddot{\\theta}"},
+      {"rank": 5, "equation": "T_1 = F_1 r"}
+    ]
+  }
+]

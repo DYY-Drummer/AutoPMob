@@ -5,8 +5,9 @@ def test_api():
     api_key = (
         os.environ.get("GEMINI_API_KEY")
         or os.environ.get("GOOGLE_API_KEY")
-        or "AIzaSyD5GuIuXVUSeLavZc7_Q0J_muL8Mycwp70"
     )
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY or GOOGLE_API_KEY environment variable is required")
     client = genai.Client(api_key=api_key)
 
     print("APIの通信テストを開始します...")

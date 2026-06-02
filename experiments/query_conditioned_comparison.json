@@ -1,0 +1,703 @@
+{
+  "config": {
+    "seeds": 5,
+    "top_k": 50,
+    "epochs": 15,
+    "lr": 0.001
+  },
+  "results": {
+    "baseline": {
+      "mode": "baseline",
+      "MRR_mean": 0.9369,
+      "MRR_std": 0.0446,
+      "MRR_ci95": [
+        0.9019,
+        0.9713
+      ],
+      "n_features": 0,
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9209,
+          "MRR_std": 0.0518
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9682,
+          "MRR_std": 0.0326
+        },
+        "original": {
+          "MRR_mean": 0.9635,
+          "MRR_std": 0.0282
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 42,
+          "m": {
+            "n": 162.0,
+            "MRR": 0.9053497942386831,
+            "Recall@1": 0.8148148148148148,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 110.0,
+              "MRR": 0.8787878787878788,
+              "Recall@1": 0.7636363636363637,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 39.0,
+              "MRR": 0.9615384615384616,
+              "Recall@1": 0.9230769230769231,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 13.0,
+              "MRR": 0.9615384615384616,
+              "Recall@1": 0.9230769230769231,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 123,
+          "m": {
+            "n": 157.0,
+            "MRR": 0.8800424628450105,
+            "Recall@1": 0.7643312101910829,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "context_paraphrased": {
+              "n": 39.0,
+              "MRR": 0.9230769230769231,
+              "Recall@1": 0.8461538461538461,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 104.0,
+              "MRR": 0.8573717948717949,
+              "Recall@1": 0.7211538461538461,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 1.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 13.0,
+              "MRR": 0.9230769230769231,
+              "Recall@1": 0.8461538461538461,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 456,
+          "m": {
+            "n": 250.0,
+            "MRR": 0.942,
+            "Recall@1": 0.884,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "original": {
+              "n": 23.0,
+              "MRR": 0.9565217391304348,
+              "Recall@1": 0.9130434782608695,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 157.0,
+              "MRR": 0.9331210191082803,
+              "Recall@1": 0.8662420382165605,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 69.0,
+              "MRR": 0.9565217391304348,
+              "Recall@1": 0.9130434782608695,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 1.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 789,
+          "m": {
+            "n": 243.0,
+            "MRR": 0.9677640603566529,
+            "Recall@1": 0.9382716049382716,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 159.0,
+              "MRR": 0.9538784067085954,
+              "Recall@1": 0.9119496855345912,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 63.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 21.0,
+              "MRR": 0.9761904761904762,
+              "Recall@1": 0.9523809523809523,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 1024,
+          "m": {
+            "n": 94.0,
+            "MRR": 0.9893617021276596,
+            "Recall@1": 0.9787234042553191,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 54.0,
+              "MRR": 0.9814814814814815,
+              "Recall@1": 0.9629629629629629,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 30.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 10.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        }
+      ]
+    },
+    "reranker-7": {
+      "mode": "reranker-7",
+      "MRR_mean": 0.9591,
+      "MRR_std": 0.0363,
+      "MRR_ci95": [
+        0.9304,
+        0.9862
+      ],
+      "n_features": 7,
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9506,
+          "MRR_std": 0.0445
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9734,
+          "MRR_std": 0.0247
+        },
+        "original": {
+          "MRR_mean": 0.9836,
+          "MRR_std": 0.0225
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 42,
+          "m": {
+            "n": 162.0,
+            "MRR": 0.9300411522633745,
+            "Recall@1": 0.8641975308641975,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 110.0,
+              "MRR": 0.9106060606060606,
+              "Recall@1": 0.8272727272727273,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 39.0,
+              "MRR": 0.9615384615384616,
+              "Recall@1": 0.9230769230769231,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 13.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 123,
+          "m": {
+            "n": 157.0,
+            "MRR": 0.9182590233545647,
+            "Recall@1": 0.8407643312101911,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "context_paraphrased": {
+              "n": 39.0,
+              "MRR": 0.9487179487179487,
+              "Recall@1": 0.8974358974358975,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 104.0,
+              "MRR": 0.9006410256410257,
+              "Recall@1": 0.8076923076923077,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 1.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 13.0,
+              "MRR": 0.9615384615384616,
+              "Recall@1": 0.9230769230769231,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 456,
+          "m": {
+            "n": 250.0,
+            "MRR": 0.9553333333333334,
+            "Recall@1": 0.912,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "original": {
+              "n": 23.0,
+              "MRR": 0.9565217391304348,
+              "Recall@1": 0.9130434782608695,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 157.0,
+              "MRR": 0.9543524416135881,
+              "Recall@1": 0.910828025477707,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 69.0,
+              "MRR": 0.9565217391304348,
+              "Recall@1": 0.9130434782608695,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 1.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 789,
+          "m": {
+            "n": 243.0,
+            "MRR": 0.9917695473251029,
+            "Recall@1": 0.9835390946502057,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 159.0,
+              "MRR": 0.9874213836477987,
+              "Recall@1": 0.9748427672955975,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 63.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 21.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 1024,
+          "m": {
+            "n": 94.0,
+            "MRR": 1.0,
+            "Recall@1": 1.0,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 54.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 30.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 10.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        }
+      ]
+    },
+    "reranker-10": {
+      "mode": "reranker-10",
+      "MRR_mean": 0.9386,
+      "MRR_std": 0.0489,
+      "MRR_ci95": [
+        0.902,
+        0.9753
+      ],
+      "n_features": 10,
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9241,
+          "MRR_std": 0.0565
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9653,
+          "MRR_std": 0.0344
+        },
+        "original": {
+          "MRR_mean": 0.9653,
+          "MRR_std": 0.0344
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      },
+      "per_seed": [
+        {
+          "seed": 42,
+          "m": {
+            "n": 162.0,
+            "MRR": 0.9135802469135802,
+            "Recall@1": 0.8271604938271605,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 110.0,
+              "MRR": 0.8909090909090909,
+              "Recall@1": 0.7818181818181819,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 39.0,
+              "MRR": 0.9615384615384616,
+              "Recall@1": 0.9230769230769231,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 13.0,
+              "MRR": 0.9615384615384616,
+              "Recall@1": 0.9230769230769231,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 123,
+          "m": {
+            "n": 157.0,
+            "MRR": 0.8853503184713376,
+            "Recall@1": 0.7707006369426752,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "context_paraphrased": {
+              "n": 39.0,
+              "MRR": 0.9230769230769231,
+              "Recall@1": 0.8461538461538461,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 104.0,
+              "MRR": 0.8653846153846154,
+              "Recall@1": 0.7307692307692307,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 1.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 13.0,
+              "MRR": 0.9230769230769231,
+              "Recall@1": 0.8461538461538461,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 456,
+          "m": {
+            "n": 250.0,
+            "MRR": 0.9128,
+            "Recall@1": 0.868,
+            "Recall@3": 0.936,
+            "Recall@5": 0.98,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "original": {
+              "n": 23.0,
+              "MRR": 0.9420289855072465,
+              "Recall@1": 0.9130434782608695,
+              "Recall@3": 0.9565217391304348,
+              "Recall@5": 0.9565217391304348,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 157.0,
+              "MRR": 0.8951167728237792,
+              "Recall@1": 0.8407643312101911,
+              "Recall@3": 0.9235668789808917,
+              "Recall@5": 0.9936305732484076,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 69.0,
+              "MRR": 0.9420289855072463,
+              "Recall@1": 0.9130434782608695,
+              "Recall@3": 0.9565217391304348,
+              "Recall@5": 0.9565217391304348,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 1.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 789,
+          "m": {
+            "n": 243.0,
+            "MRR": 0.9938271604938271,
+            "Recall@1": 0.9876543209876543,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 159.0,
+              "MRR": 0.9905660377358491,
+              "Recall@1": 0.9811320754716981,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 63.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 21.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        {
+          "seed": 1024,
+          "m": {
+            "n": 94.0,
+            "MRR": 0.9875886524822695,
+            "Recall@1": 0.9787234042553191,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "vr": {
+            "random_io_from_models": {
+              "n": 54.0,
+              "MRR": 0.9783950617283951,
+              "Recall@1": 0.9629629629629629,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 30.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 10.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        }
+      ]
+    }
+  }
+}

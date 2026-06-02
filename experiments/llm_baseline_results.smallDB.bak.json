@@ -1,0 +1,508 @@
+{
+  "method": "claude_direct_generation",
+  "n_cases": 29,
+  "summary": {
+    "n_cases": 29,
+    "MRR_first": 0.8333333333333333,
+    "MRR_worst": 0.6747126436781608,
+    "MRR_avg": 0.743390804597701,
+    "Precision@C": 0.7068965517241379,
+    "MAP": 0.8198275862068966,
+    "FullRecall@3": 0.9310344827586207,
+    "Recall@3": 0.9655172413793104,
+    "FullRecall@5": 1.0,
+    "Recall@5": 1.0,
+    "FullRecall@10": 1.0,
+    "Recall@10": 1.0,
+    "FullRecall@20": 1.0,
+    "Recall@20": 1.0,
+    "single_only__MRR_first": 0.7698412698412699,
+    "multi_only__MRR_first": 1.0,
+    "multi_only__MRR_worst": 0.425,
+    "multi_only__MAP": 0.9510416666666667,
+    "multi_only__FullRecall@3": 0.75,
+    "multi_only__FullRecall@10": 1.0,
+    "multi_only__Recall@3": 0.875,
+    "multi_only__Recall@10": 1.0,
+    "n_single": 21,
+    "n_multi": 8
+  },
+  "detailed": [
+    {
+      "case_id": "core_055_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_14",
+        "handbook_electrochemistry_adv__eq_12",
+        "handbook_polymer__eq_18",
+        "handbook_fluid_dynamics_adv__eq_18",
+        "handbook_heat_transfer__eq_11"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_048_v1",
+      "variant": "original",
+      "correct_keys": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29"
+      ],
+      "top5_matched": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27",
+        "handbook_vibrations__eq_13",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 0.5
+    },
+    {
+      "case_id": "core_067_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_hvac__eq_13",
+        "handbook_hvac__eq_12"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_12",
+        "handbook_hvac__eq_13",
+        "handbook_combustion__eq_11",
+        "handbook_hvac__eq_17",
+        "handbook_hvac__eq_20"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_068_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_geotechnical__eq_10"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_10",
+        "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_37",
+        "Process_Control_Chapter3.pdf__eq_3_20",
+        "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_36",
+        "Process_Control_Chapter3.pdf__eq_3_13"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_036_v1",
+      "variant": "original",
+      "correct_keys": [
+        "Process_Control_Chapter3.pdf__eq_3_6"
+      ],
+      "top5_matched": [
+        "ChemicalProcessDynamicsAndControls.pdf__p1281-1360_eq_5",
+        "Process_Control_Chapter3.pdf__eq_3_6",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-27",
+        "ChemicalProcessDynamicsAndControls.pdf__p1281-1360_eq_3",
+        "ChemicalProcessDynamicsAndControls.pdf__p1281-1360_eq_6"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_059_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_geotechnical__eq_6",
+        "handbook_geotechnical__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_6",
+        "handbook_geotechnical__eq_14",
+        "handbook_geotechnical__eq_3",
+        "handbook_geotechnical__eq_7",
+        "handbook_geotechnical__eq_1"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_061_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_hvac__eq_1",
+        "handbook_hvac__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_2",
+        "handbook_hvac__eq_1",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_series_phi",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_16.14",
+        "handbook_food_process__eq_5"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_042_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_1",
+        "handbook_electrochemistry__eq_20",
+        "handbook_fluid_dynamics_adv__eq_18",
+        "handbook_thermodynamics__eq_3",
+        "ChemicalProcessDynamicsAndControls.pdf__p0241-0320_eq_10"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_063_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_geotechnical__eq_11"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_18",
+        "handbook_geotechnical__eq_11",
+        "ChemicalProcessDynamicsAndControls.pdf__p0241-0320_eq_22",
+        "handbook_geotechnical__eq_3",
+        "handbook_geotechnical__eq_1"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_095_v1",
+      "variant": "original",
+      "correct_keys": [
+        "handbook_optics__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_5",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.37",
+        "Chemical Process Dynamics.pdf__eq_3",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-50",
+        "handbook_optics__eq_4"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_097_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_optics__eq_8"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_8",
+        "1990_A_dynamic_model_for_helium_core_heat_exchangers.pdf__eq_40",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_17.6",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_17.4",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_17.11"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_055_v1_para1",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_14",
+        "handbook_electrochemistry_adv__eq_12",
+        "handbook_polymer__eq_18",
+        "energies-17-01344.pdf__eq_14",
+        "1-s2.0-0009250974800898-main.pdf__eq_29"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_053_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_5",
+        "handbook_reaction_engineering__eq_24",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-27",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-27",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0241-0320_13-1"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_043_v1_para1",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2",
+        "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf__eq_4"
+      ],
+      "MRR_first": 0.3333333333333333,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_067_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_hvac__eq_13",
+        "handbook_hvac__eq_12"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_12",
+        "handbook_hvac__eq_13",
+        "handbook_hvac__eq_17",
+        "handbook_hvac__eq_20",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_9-7"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_043_v1_para3",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2",
+        "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf__eq_4"
+      ],
+      "MRR_first": 0.3333333333333333,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_043_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2",
+        "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf__eq_4"
+      ],
+      "MRR_first": 0.3333333333333333,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_061_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_hvac__eq_1",
+        "handbook_hvac__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_2",
+        "handbook_hvac__eq_1",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_series_phi",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_16.14",
+        "handbook_food_process__eq_5"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_055_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_14"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry__eq_14",
+        "handbook_electrochemistry_adv__eq_12",
+        "energies-17-01344.pdf__eq_14",
+        "1-s2.0-0009250974800898-main.pdf__eq_29",
+        "1-s2.0-0009250974800898-main.pdf__eq_25"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_068_v1_para2",
+      "variant": "context_paraphrased",
+      "correct_keys": [
+        "handbook_geotechnical__eq_10"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_10",
+        "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_37",
+        "Process_Control_Chapter3.pdf__eq_3_20",
+        "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_36",
+        "Process_Control_Chapter3.pdf__eq_3_13"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_068_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_geotechnical__eq_10"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_10",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_9-9",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_9-10",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-74",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-59"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_095_v5",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_optics__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_5",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.37",
+        "Chemical Process Dynamics.pdf__eq_3",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-50",
+        "handbook_optics__eq_4"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_063_v6",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_geotechnical__eq_11"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_18",
+        "handbook_geotechnical__eq_11",
+        "handbook_geotechnical__eq_7",
+        "handbook_geotechnical__eq_6",
+        "2015_Towards_the_modelling_of_a_heat_exchanger_reactor_by_a_dynam.pdf__eq_2"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_080_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "Process_Control_Chapter3.pdf__eq_3_78"
+      ],
+      "top5_matched": [
+        "Process_Control_Chapter3.pdf__eq_3_78",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_2.13",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0161-0240_eq_5.69",
+        "Process_Control_Chapter3.pdf__eq_3_79",
+        "Process_Control_Chapter3.pdf__eq_3_80"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_043_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_electrochemistry__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_electrochemistry_adv__eq_5",
+        "handbook_electrochemistry_adv__eq_19",
+        "handbook_electrochemistry__eq_2",
+        "Chemical Process Dynamics.pdf__eq_2",
+        "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf__eq_4"
+      ],
+      "MRR_first": 0.3333333333333333,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_095_v8",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_optics__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_optics__eq_5",
+        "Chemical Process Dynamics.pdf__eq_3",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-50",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_4-55",
+        "handbook_optics__eq_4"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_061_v11",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_hvac__eq_1",
+        "handbook_hvac__eq_2"
+      ],
+      "top5_matched": [
+        "handbook_hvac__eq_2",
+        "handbook_hvac__eq_1",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_series_phi",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_16.14",
+        "handbook_food_process__eq_5"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_063_v4",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "handbook_geotechnical__eq_11"
+      ],
+      "top5_matched": [
+        "handbook_geotechnical__eq_18",
+        "handbook_geotechnical__eq_6",
+        "handbook_geotechnical__eq_11",
+        "handbook_geotechnical__eq_7",
+        "1990_A_dynamic_model_for_helium_core_heat_exchangers.pdf__eq_40"
+      ],
+      "MRR_first": 0.3333333333333333,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "core_048_v11",
+      "variant": "random_io_from_models",
+      "correct_keys": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29"
+      ],
+      "top5_matched": [
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.27",
+        "handbook_vibrations__eq_13",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.28",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.31",
+        "Basic_Dyn_Con_Textbook_free.pdf__eq_3.29"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 0.5
+    }
+  ]
+}

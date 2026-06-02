@@ -1,0 +1,393 @@
+{
+  "method": "claude_direct_generation_multisource",
+  "n_cases": 20,
+  "summary": {
+    "n_cases": 20,
+    "MRR_first": 0.825,
+    "MRR_worst": 0.3581147875816993,
+    "MRR_avg": 0.5930851715686275,
+    "Precision@C": 0.8416666666666666,
+    "MAP": 0.7845036764705882,
+    "FullRecall@3": 0.65,
+    "Recall@3": 0.8416666666666666,
+    "FullRecall@5": 0.7,
+    "Recall@5": 0.8666666666666666,
+    "FullRecall@10": 0.8,
+    "Recall@10": 0.9083333333333332,
+    "FullRecall@20": 0.9,
+    "Recall@20": 0.9583333333333333,
+    "multi_only__MRR_first": 0.825,
+    "multi_only__MRR_worst": 0.3581147875816993,
+    "multi_only__MAP": 0.7845036764705882,
+    "multi_only__FullRecall@3": 0.65,
+    "multi_only__FullRecall@10": 0.8,
+    "multi_only__Recall@3": 0.8416666666666666,
+    "multi_only__Recall@10": 0.9083333333333332,
+    "n_single": 0,
+    "n_multi": 20
+  },
+  "detailed": [
+    {
+      "case_id": "ms_diffusion_reaction_001",
+      "variant": "multisource_original",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_mass_transfer__eq_1",
+        "handbook_chemeng__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_mass_transfer__eq_1",
+        "handbook_chemeng__eq_3",
+        "handbook_electrical__eq_5",
+        "2023_Evolution_of_Flame_Displacement_Speed_Within_Flame_Front_in.pdf__eq_3",
+        "handbook_reaction_eng_adv__eq_16"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_cstr_heat_002",
+      "variant": "multisource_original",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_chemeng__eq_3",
+        "handbook_heat_transfer__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_chemeng__eq_3",
+        "handbook_heat_transfer__eq_3",
+        "handbook_electrical__eq_5",
+        "handbook_hvac__eq_6",
+        "Process_Control_Chapter3.pdf__eq_3_58"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_pfr_arrhenius_rate_001",
+      "variant": "multisource_original",
+      "n_correct": 3,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_5",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_14.13_reaction_rate"
+      ],
+      "top5_matched": [
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-63",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_14.13_reaction_rate",
+        "handbook_reaction_engineering__eq_5",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-63",
+        "handbook_chemeng__eq_8"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 0.6666666666666666
+    },
+    {
+      "case_id": "ms_bio_diffusion_001",
+      "variant": "multisource_original",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_mass_transfer__eq_1",
+        "handbook_bioprocess__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_environmental__eq_6",
+        "handbook_mass_transfer__eq_1",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-94",
+        "handbook_pharma__eq_16",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-93"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 0.5
+    },
+    {
+      "case_id": "ms_pfr_convection_001",
+      "variant": "multisource_original",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_heat_transfer__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_heat_transfer__eq_3",
+        "handbook_hvac__eq_6",
+        "handbook_reaction_engineering__eq_4",
+        "handbook_thermodynamics__eq_3"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_reactor_sensor_001_rv6",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_process_control__eq_5",
+        "handbook_chemeng__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_chemeng__eq_3",
+        "handbook_process_control__eq_5",
+        "2018_Book_ProcessControl.pdf__eq_1.18",
+        "handbook_reaction_engineering__eq_3",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_9.3"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_pfr_pid_001_rv3",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_process_control__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_process_control__eq_1",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_def_comparator",
+        "handbook_process_control__eq_4",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_1_optimization"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_reactor_pid_001_rv3",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_chemeng__eq_3",
+        "handbook_process_control__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_chemeng__eq_3",
+        "handbook_process_control__eq_1",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_def_comparator",
+        "handbook_reaction_engineering__eq_3",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_1_optimization"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_bio_diffusion_002_rv6",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_mass_transfer__eq_1",
+        "handbook_bioprocess__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_environmental__eq_6",
+        "handbook_mass_transfer__eq_1",
+        "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-94",
+        "2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf__eq_9",
+        "handbook_bioprocess__eq_1"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 0.5
+    },
+    {
+      "case_id": "ms_pfr_pid_001_rv4",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_process_control__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_process_control__eq_1",
+        "ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_1_optimization",
+        "ChemicalProcessDynamicsAndControls.pdf__p0721-0800_eq_8",
+        "handbook_reaction_engineering__eq_2"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_pfr_masstransfer_001_rv2",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_mass_transfer__eq_1",
+        "handbook_reaction_engineering__eq_5"
+      ],
+      "top5_matched": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_mass_transfer__eq_1",
+        "handbook_reaction_engineering__eq_2",
+        "handbook_reaction_engineering__eq_4",
+        "handbook_chemeng__eq_3"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_pfr_kin_001_rv5",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_chemeng__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_chemeng__eq_3",
+        "handbook_electrical__eq_5",
+        "Chemical Process Dynamics.pdf__eq_5",
+        "handbook_reaction_engineering__eq_3"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_reactor_heat_arrhenius_001_rv2",
+      "variant": "multisource_random_io",
+      "n_correct": 3,
+      "correct_keys": [
+        "handbook_heat_transfer__eq_5",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_14.13_reaction_rate"
+      ],
+      "top5_matched": [
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-63",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_14.13_reaction_rate",
+        "handbook_heat_transfer__eq_5",
+        "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_28",
+        "2018_Book_ProcessControl_Chapter1.pdf__1.18"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 0.6666666666666666
+    },
+    {
+      "case_id": "ms_batch_arrhenius_001_rv1",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63",
+        "handbook_reaction_engineering__eq_1"
+      ],
+      "top5_matched": [
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-63",
+        "handbook_reaction_engineering__eq_1",
+        "handbook_reaction_eng_adv__eq_4",
+        "handbook_reaction_engineering__eq_2",
+        "handbook_reaction_engineering__eq_4"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 0.5
+    },
+    {
+      "case_id": "ms_cstr_heat_002_rv3",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_chemeng__eq_3",
+        "handbook_heat_transfer__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_chemeng__eq_3",
+        "handbook_heat_transfer__eq_3",
+        "handbook_reaction_engineering__eq_3",
+        "Chemical Process Dynamics.pdf__eq_6",
+        "handbook_reaction_engineering__eq_5"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_cstr_heat_002_rv2",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_chemeng__eq_3",
+        "handbook_heat_transfer__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_chemeng__eq_3",
+        "handbook_heat_transfer__eq_3",
+        "2018_Book_ProcessControl.pdf__eq_1.18",
+        "handbook_reaction_engineering__eq_3",
+        "2018_Book_ProcessControl_Chapter1_6.pdf__1.18"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_pfr_kin_001_rv6",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_chemeng__eq_3"
+      ],
+      "top5_matched": [
+        "handbook_reaction_engineering__eq_5",
+        "handbook_chemeng__eq_3",
+        "2018_Book_ProcessControl.pdf__eq_1.18",
+        "handbook_reaction_engineering__eq_3",
+        "handbook_reaction_engineering__eq_2"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    },
+    {
+      "case_id": "ms_pfr_arrhenius_001_rv2",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_4",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63"
+      ],
+      "top5_matched": [
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-63",
+        "handbook_reaction_engineering__eq_4",
+        "ChemicalProcessDynamicsAndControls.pdf__p0241-0320_eq_44",
+        "handbook_reaction_engineering__eq_2",
+        "handbook_reaction_engineering__eq_5"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 0.5
+    },
+    {
+      "case_id": "ms_pfr_arrhenius_001_rv6",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_reaction_engineering__eq_4",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0081-0160_eq_2-63"
+      ],
+      "top5_matched": [
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0001-0080_eq_2-63",
+        "handbook_reaction_engineering__eq_4",
+        "ChemicalProcessDynamicsAndControls.pdf__p0241-0320_eq_44",
+        "handbook_reaction_engineering__eq_20",
+        "ChemicalProcessDynamicsAndControls.pdf__p0481-0560_eq_75"
+      ],
+      "MRR_first": 0.5,
+      "Recall@3": 0.5
+    },
+    {
+      "case_id": "ms_batch_sensor_001_rv4",
+      "variant": "multisource_random_io",
+      "n_correct": 2,
+      "correct_keys": [
+        "handbook_process_control__eq_5",
+        "handbook_reaction_engineering__eq_1"
+      ],
+      "top5_matched": [
+        "handbook_reaction_engineering__eq_1",
+        "handbook_process_control__eq_5",
+        "handbook_reaction_engineering__eq_2",
+        "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_9.3",
+        "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0241-0320_12-43"
+      ],
+      "MRR_first": 1.0,
+      "Recall@3": 1.0
+    }
+  ]
+}

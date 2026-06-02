@@ -1,0 +1,242 @@
+{
+  "target_case_ids": [
+    "ms_pfr_arrhenius_rate_001",
+    "ms_pfr_convection_001",
+    "ms_cstr_heat_002_rv3",
+    "ms_pfr_arrhenius_001_rv2",
+    "ms_diffusion_reaction_001",
+    "ms_pfr_masstransfer_001_rv2",
+    "ms_pfr_pid_001_rv4",
+    "ms_pfr_kin_001_rv5",
+    "ms_cstr_heat_002_rv2",
+    "ms_pfr_pid_001_rv3",
+    "ms_bio_diffusion_001",
+    "ms_cstr_heat_002",
+    "ms_reactor_pid_001_rv3",
+    "ms_pfr_arrhenius_001_rv6",
+    "ms_bio_diffusion_002_rv6",
+    "ms_batch_arrhenius_001_rv1",
+    "ms_reactor_sensor_001_rv6",
+    "ms_pfr_kin_001_rv6",
+    "ms_batch_sensor_001_rv4",
+    "ms_reactor_heat_arrhenius_001_rv2"
+  ],
+  "results": {
+    "baseline": {
+      "mode": "baseline",
+      "n_seeds": 3,
+      "MRR_first": {
+        "mean": 0.8417,
+        "std": 0.0
+      },
+      "Recall@3": {
+        "mean": 0.6833,
+        "std": 0.0
+      },
+      "Recall@5": {
+        "mean": 0.825,
+        "std": 0.0
+      },
+      "Recall@10": {
+        "mean": 0.9667,
+        "std": 0.0
+      },
+      "MAP": {
+        "mean": 0.6849,
+        "std": 0.0
+      },
+      "per_seed": [
+        {
+          "n_cases": 20,
+          "MRR_first": 0.8416666666666668,
+          "MRR_worst": 0.2698587501362101,
+          "MRR_avg": 0.5439310913152446,
+          "Precision@C": 0.5583333333333333,
+          "MAP": 0.6848587501362101,
+          "FullRecall@3": 0.4,
+          "Recall@3": 0.6833333333333333,
+          "FullRecall@5": 0.65,
+          "Recall@5": 0.825,
+          "FullRecall@10": 0.9,
+          "Recall@10": 0.9666666666666666,
+          "FullRecall@20": 0.9,
+          "Recall@20": 0.9666666666666666,
+          "multi_only__MRR_first": 0.8416666666666668,
+          "multi_only__MRR_worst": 0.2698587501362101,
+          "multi_only__MAP": 0.6848587501362101,
+          "multi_only__FullRecall@3": 0.4,
+          "multi_only__FullRecall@10": 0.9,
+          "multi_only__Recall@3": 0.6833333333333333,
+          "multi_only__Recall@10": 0.9666666666666666,
+          "n_single": 0,
+          "n_multi": 20,
+          "seed": 42
+        },
+        {
+          "n_cases": 20,
+          "MRR_first": 0.8416666666666668,
+          "MRR_worst": 0.2698587501362101,
+          "MRR_avg": 0.5439310913152446,
+          "Precision@C": 0.5583333333333333,
+          "MAP": 0.6848587501362101,
+          "FullRecall@3": 0.4,
+          "Recall@3": 0.6833333333333333,
+          "FullRecall@5": 0.65,
+          "Recall@5": 0.825,
+          "FullRecall@10": 0.9,
+          "Recall@10": 0.9666666666666666,
+          "FullRecall@20": 0.9,
+          "Recall@20": 0.9666666666666666,
+          "multi_only__MRR_first": 0.8416666666666668,
+          "multi_only__MRR_worst": 0.2698587501362101,
+          "multi_only__MAP": 0.6848587501362101,
+          "multi_only__FullRecall@3": 0.4,
+          "multi_only__FullRecall@10": 0.9,
+          "multi_only__Recall@3": 0.6833333333333333,
+          "multi_only__Recall@10": 0.9666666666666666,
+          "n_single": 0,
+          "n_multi": 20,
+          "seed": 123
+        },
+        {
+          "n_cases": 20,
+          "MRR_first": 0.8416666666666668,
+          "MRR_worst": 0.2698587501362101,
+          "MRR_avg": 0.5439310913152446,
+          "Precision@C": 0.5583333333333333,
+          "MAP": 0.6848587501362101,
+          "FullRecall@3": 0.4,
+          "Recall@3": 0.6833333333333333,
+          "FullRecall@5": 0.65,
+          "Recall@5": 0.825,
+          "FullRecall@10": 0.9,
+          "Recall@10": 0.9666666666666666,
+          "FullRecall@20": 0.9,
+          "Recall@20": 0.9666666666666666,
+          "multi_only__MRR_first": 0.8416666666666668,
+          "multi_only__MRR_worst": 0.2698587501362101,
+          "multi_only__MAP": 0.6848587501362101,
+          "multi_only__FullRecall@3": 0.4,
+          "multi_only__FullRecall@10": 0.9,
+          "multi_only__Recall@3": 0.6833333333333333,
+          "multi_only__Recall@10": 0.9666666666666666,
+          "n_single": 0,
+          "n_multi": 20,
+          "seed": 456
+        }
+      ],
+      "Precision@C": {
+        "mean": 0.5583,
+        "std": 0.0
+      }
+    },
+    "reranker-10": {
+      "mode": "reranker-10",
+      "n_seeds": 3,
+      "MRR_first": {
+        "mean": 0.95,
+        "std": 0.025
+      },
+      "Recall@3": {
+        "mean": 0.9861,
+        "std": 0.0241
+      },
+      "Recall@5": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "Recall@10": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "MAP": {
+        "mean": 0.9464,
+        "std": 0.0182
+      },
+      "per_seed": [
+        {
+          "n_cases": 20,
+          "MRR_first": 0.975,
+          "MRR_worst": 0.4583333333333333,
+          "MRR_avg": 0.711111111111111,
+          "Precision@C": 0.925,
+          "MAP": 0.9624999999999998,
+          "FullRecall@3": 1.0,
+          "Recall@3": 1.0,
+          "FullRecall@5": 1.0,
+          "Recall@5": 1.0,
+          "FullRecall@10": 1.0,
+          "Recall@10": 1.0,
+          "FullRecall@20": 1.0,
+          "Recall@20": 1.0,
+          "multi_only__MRR_first": 0.975,
+          "multi_only__MRR_worst": 0.4583333333333333,
+          "multi_only__MAP": 0.9624999999999998,
+          "multi_only__FullRecall@3": 1.0,
+          "multi_only__FullRecall@10": 1.0,
+          "multi_only__Recall@3": 1.0,
+          "multi_only__Recall@10": 1.0,
+          "n_single": 0,
+          "n_multi": 20,
+          "seed": 42
+        },
+        {
+          "n_cases": 20,
+          "MRR_first": 0.95,
+          "MRR_worst": 0.4583333333333333,
+          "MRR_avg": 0.698611111111111,
+          "Precision@C": 0.925,
+          "MAP": 0.9499999999999998,
+          "FullRecall@3": 1.0,
+          "Recall@3": 1.0,
+          "FullRecall@5": 1.0,
+          "Recall@5": 1.0,
+          "FullRecall@10": 1.0,
+          "Recall@10": 1.0,
+          "FullRecall@20": 1.0,
+          "Recall@20": 1.0,
+          "multi_only__MRR_first": 0.95,
+          "multi_only__MRR_worst": 0.4583333333333333,
+          "multi_only__MAP": 0.9499999999999998,
+          "multi_only__FullRecall@3": 1.0,
+          "multi_only__FullRecall@10": 1.0,
+          "multi_only__Recall@3": 1.0,
+          "multi_only__Recall@10": 1.0,
+          "n_single": 0,
+          "n_multi": 20,
+          "seed": 123
+        },
+        {
+          "n_cases": 20,
+          "MRR_first": 0.925,
+          "MRR_worst": 0.44749999999999995,
+          "MRR_avg": 0.6813888888888888,
+          "Precision@C": 0.9083333333333332,
+          "MAP": 0.9266666666666665,
+          "FullRecall@3": 0.9,
+          "Recall@3": 0.9583333333333333,
+          "FullRecall@5": 1.0,
+          "Recall@5": 1.0,
+          "FullRecall@10": 1.0,
+          "Recall@10": 1.0,
+          "FullRecall@20": 1.0,
+          "Recall@20": 1.0,
+          "multi_only__MRR_first": 0.925,
+          "multi_only__MRR_worst": 0.44749999999999995,
+          "multi_only__MAP": 0.9266666666666665,
+          "multi_only__FullRecall@3": 0.9,
+          "multi_only__FullRecall@10": 1.0,
+          "multi_only__Recall@3": 0.9583333333333333,
+          "multi_only__Recall@10": 1.0,
+          "n_single": 0,
+          "n_multi": 20,
+          "seed": 456
+        }
+      ],
+      "Precision@C": {
+        "mean": 0.9194,
+        "std": 0.0096
+      }
+    }
+  }
+}

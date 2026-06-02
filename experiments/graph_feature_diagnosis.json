@@ -1,0 +1,184 @@
+{
+  "n_pairs": 11150,
+  "n_positives": 359,
+  "n_negatives": 10791,
+  "per_feature": {
+    "f0_tfidf_cos": {
+      "pos_mean": 0.162,
+      "neg_mean": 0.0722,
+      "pos_std": 0.0972,
+      "neg_std": 0.0476,
+      "diff_mean": 0.0899,
+      "auc": 0.7937,
+      "is_graph": false
+    },
+    "f1_io_jaccard": {
+      "pos_mean": 0.7098,
+      "neg_mean": 0.1473,
+      "pos_std": 0.2686,
+      "neg_std": 0.1392,
+      "diff_mean": 0.5625,
+      "auc": 0.9766,
+      "is_graph": false
+    },
+    "f2_svd_cos": {
+      "pos_mean": 0.4263,
+      "neg_mean": 0.1595,
+      "pos_std": 0.2633,
+      "neg_std": 0.1101,
+      "diff_mean": 0.2667,
+      "auc": 0.8197,
+      "is_graph": false
+    },
+    "f3_input_cov": {
+      "pos_mean": 0.7199,
+      "neg_mean": 0.2144,
+      "pos_std": 0.2944,
+      "neg_std": 0.2032,
+      "diff_mean": 0.5055,
+      "auc": 0.9074,
+      "is_graph": false
+    },
+    "f4_output_cov": {
+      "pos_mean": 0.7117,
+      "neg_mean": 0.1984,
+      "pos_std": 0.3663,
+      "neg_std": 0.3766,
+      "diff_mean": 0.5133,
+      "auc": 0.8124,
+      "is_graph": false
+    },
+    "f5_reverse_cov": {
+      "pos_mean": 0.9786,
+      "neg_mean": 0.3004,
+      "pos_std": 0.0944,
+      "neg_std": 0.2505,
+      "diff_mean": 0.6783,
+      "auc": 0.9765,
+      "is_graph": false
+    },
+    "f6_domain_match": {
+      "pos_mean": 0.1643,
+      "neg_mean": 0.0663,
+      "pos_std": 0.3706,
+      "neg_std": 0.2487,
+      "diff_mean": 0.0981,
+      "auc": 0.549,
+      "is_graph": false
+    },
+    "f7_2hop_reach": {
+      "pos_mean": 0.995,
+      "neg_mean": 0.7982,
+      "pos_std": 0.0218,
+      "neg_std": 0.3492,
+      "diff_mean": 0.1968,
+      "auc": 0.6442,
+      "is_graph": true,
+      "zero_ratio": 0.1128,
+      "n_unique": 21
+    },
+    "f8_neighbor_jaccard": {
+      "pos_mean": 0.7334,
+      "neg_mean": 0.3636,
+      "pos_std": 0.2997,
+      "neg_std": 0.3094,
+      "diff_mean": 0.3698,
+      "auc": 0.8095,
+      "is_graph": true,
+      "zero_ratio": 0.1128,
+      "n_unique": 932
+    },
+    "f9_bridge_ratio": {
+      "pos_mean": 0.0214,
+      "neg_mean": 0.5246,
+      "pos_std": 0.0944,
+      "neg_std": 0.2819,
+      "diff_mean": -0.5032,
+      "auc": 0.0874,
+      "is_graph": true,
+      "zero_ratio": 0.1748,
+      "n_unique": 42
+    }
+  },
+  "correlations": {
+    "f0_tfidf_cos": {
+      "f7_2hop_reach": -0.0779,
+      "f8_neighbor_jaccard": 0.034,
+      "f9_bridge_ratio": -0.1269
+    },
+    "f1_io_jaccard": {
+      "f7_2hop_reach": 0.4956,
+      "f8_neighbor_jaccard": 0.6334,
+      "f9_bridge_ratio": -0.2453
+    },
+    "f2_svd_cos": {
+      "f7_2hop_reach": -0.147,
+      "f8_neighbor_jaccard": -0.0184,
+      "f9_bridge_ratio": -0.1833
+    },
+    "f3_input_cov": {
+      "f7_2hop_reach": 0.5391,
+      "f8_neighbor_jaccard": 0.5819,
+      "f9_bridge_ratio": -0.0389
+    },
+    "f4_output_cov": {
+      "f7_2hop_reach": 0.2834,
+      "f8_neighbor_jaccard": 0.3183,
+      "f9_bridge_ratio": -0.0518
+    },
+    "f5_reverse_cov": {
+      "f7_2hop_reach": 0.605,
+      "f8_neighbor_jaccard": 0.6991,
+      "f9_bridge_ratio": -0.259
+    },
+    "f6_domain_match": {
+      "f7_2hop_reach": 0.1008,
+      "f8_neighbor_jaccard": 0.0546,
+      "f9_bridge_ratio": 0.0402
+    },
+    "f7_2hop_reach": {
+      "f7_2hop_reach": 1.0,
+      "f8_neighbor_jaccard": 0.6089,
+      "f9_bridge_ratio": 0.5394
+    },
+    "f8_neighbor_jaccard": {
+      "f7_2hop_reach": 0.6089,
+      "f8_neighbor_jaccard": 1.0,
+      "f9_bridge_ratio": 0.0107
+    },
+    "f9_bridge_ratio": {
+      "f7_2hop_reach": 0.5394,
+      "f8_neighbor_jaccard": 0.0107,
+      "f9_bridge_ratio": 1.0
+    }
+  },
+  "per_variant": {
+    "context_paraphrased": {
+      "n_pos": 84,
+      "n_neg": 2916,
+      "graph_aucs": {
+        "f7_2hop_reach": 0.6373,
+        "f8_neighbor_jaccard": 0.8405,
+        "f9_bridge_ratio": 0.125
+      }
+    },
+    "original": {
+      "n_pos": 28,
+      "n_neg": 972,
+      "graph_aucs": {
+        "f7_2hop_reach": 0.6412,
+        "f8_neighbor_jaccard": 0.8413,
+        "f9_bridge_ratio": 0.1266
+      }
+    },
+    "random_io_from_models": {
+      "n_pos": 247,
+      "n_neg": 6903,
+      "graph_aucs": {
+        "f7_2hop_reach": 0.6482,
+        "f8_neighbor_jaccard": 0.795,
+        "f9_bridge_ratio": 0.0681
+      }
+    }
+  }
+}

@@ -91,6 +91,7 @@ class TrainConfig:
     epochs: int = 3
     device: str = "cpu"
     use_gnn: bool = True
+    gnn_type: str = "gcn"  # "gcn" | "gat"
     temperature: float = 0.07
 
 
@@ -106,6 +107,26 @@ class GCNEncoder(nn.Module):
     def forward(self, x: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
         x = self.conv1(x, edge_index)
         x = F.relu(x)
+        x = F.dropout(x, p=self.dropout, training=self.training)
+        x = self.conv2(x, edge_index)
+        x = F.normalize(x, p=2, dim=-1)
+        return x
+
+
+class GATEncoder(nn.Module):
+    """2-layer GAT; multi-head then project to out_dim. Suited for bipartite (attend over variable nodes)."""
+
+    def __init__(self, in_dim: int, hidden_dim: int = 768, out_dim: int = 768, heads: int = 4, dropout: float = 0.1):
+        super().__init__()
+        from torch_geometric.nn import GATConv
+
+        self.conv1 = GATConv(in_dim, hidden_dim // heads, heads=heads, dropout=dropout)
+        self.conv2 = GATConv(hidden_dim, out_dim, heads=1, dropout=dropout)
+        self.dropout = dropout
+
+    def forward(self, x: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
+        x = self.conv1(x, edge_index)
+        x = F.elu(x)
         x = F.dropout(x, p=self.dropout, training=self.training)
         x = self.conv2(x, edge_index)
         x = F.normalize(x, p=2, dim=-1)
@@ -167,6 +188,7 @@ def main() -> None:
     p.add_argument("--epochs", type=int, default=3)
     p.add_argument("--use-gnn", action="store_true", default=False)
     p.add_argument("--no-gnn", action="store_true", default=False)
+    p.add_argument("--gnn-type", type=str, default="gcn", choices=("gcn", "gat"), help="GNN encoder: gcn or gat")
     p.add_argument("--test-ratio", type=float, default=0.2)
     p.add_argument("--neg-per-case", type=int, default=64)
     p.add_argument("--batch-size", type=int, default=64)
@@ -181,6 +203,7 @@ def main() -> None:
         cfg.use_gnn = True
     if args.no_gnn:
         cfg.use_gnn = False
+    cfg.gnn_type = (args.gnn_type or "gcn").lower()
     torch.manual_seed(cfg.seed)
     random.seed(cfg.seed)
 
@@ -205,10 +228,12 @@ def main() -> None:
     data = torch.load(GRAPH_PT, weights_only=False)
     assert getattr(data, "edge_index", None) is not None
     assert getattr(data, "x", None) is not None
+    num_equations = int(getattr(data, "num_equations", data.x.shape[0]))
     edge_index = data.edge_index
-    x_graph = data.x
-    if data.num_nodes != len(eq_keys):
-        raise ValueError(f"Graph nodes ({data.num_nodes}) != equations ({len(eq_keys)}). Rebuild graph or align ordering.")
+    # 二部グラフの場合は全ノード特徴を GCN に渡し、式埋め込みは出力の先頭 num_equations 行のみ使う
+    x_graph_full = data.x
+    if num_equations != len(eq_keys):
+        raise ValueError(f"Graph num_equations ({num_equations}) != equations ({len(eq_keys)}). Rebuild graph or align ordering.")
 
     key_to_idx = {k: i for i, k in enumerate(eq_keys)}
 
@@ -256,15 +281,22 @@ def main() -> None:
 
     # Models
     # Query encoder learns to map (context + IO vars) -> same space as equation node embeddings (768).
-    q_encoder = QueryEncoder(in_dim=cfg.svd_dim, out_dim=int(x_graph.shape[1]), dropout=0.1).to(cfg.device)
-    # Equation encoder: start from graph node features x (768). Optionally refine via GCN.
-    eq_gnn = (GCNEncoder(in_dim=int(x_graph.shape[1]), hidden_dim=768, out_dim=int(x_graph.shape[1]), dropout=0.1).to(cfg.device) if cfg.use_gnn else None)
+    q_encoder = QueryEncoder(in_dim=cfg.svd_dim, out_dim=int(x_graph_full.shape[1]), dropout=0.1).to(cfg.device)
+    # Equation encoder: GCN or GAT over full graph; use first num_equations rows as equation embeddings.
+    if cfg.use_gnn:
+        emb_dim = int(x_graph_full.shape[1])
+        if cfg.gnn_type == "gat":
+            eq_gnn = GATEncoder(in_dim=emb_dim, hidden_dim=768, out_dim=emb_dim, heads=4, dropout=0.1).to(cfg.device)
+        else:
+            eq_gnn = GCNEncoder(in_dim=emb_dim, hidden_dim=768, out_dim=emb_dim, dropout=0.1).to(cfg.device)
+    else:
+        eq_gnn = None
 
     params = list(q_encoder.parameters()) + (list(eq_gnn.parameters()) if eq_gnn is not None else [])
     opt = torch.optim.AdamW(params, lr=cfg.lr, weight_decay=cfg.weight_decay)
 
     edge_index_dev = edge_index.to(cfg.device)
-    x_dev = x_graph.to(cfg.device)
+    x_dev = x_graph_full.to(cfg.device)
 
     def sample_negs(exclude: set[int], n: int) -> list[int]:
         res = []
@@ -289,12 +321,12 @@ def main() -> None:
             if not batch:
                 continue
 
-            # equation embeddings (full graph)
+            # equation embeddings (full graph; take first num_equations rows for equation nodes)
             if eq_gnn is None:
-                # fixed embeddings: no need to recompute every step
-                z_eq = F.normalize(x_dev, p=2, dim=-1)
+                z_eq = F.normalize(x_dev[:num_equations], p=2, dim=-1)
             else:
-                z_eq = eq_gnn(F.normalize(x_dev, p=2, dim=-1), edge_index_dev)
+                z_full = eq_gnn(F.normalize(x_dev, p=2, dim=-1), edge_index_dev)
+                z_eq = z_full[:num_equations]
 
             losses = []
             for i in batch:
@@ -326,9 +358,11 @@ def main() -> None:
     if eq_gnn is not None:
         eq_gnn.eval()
     with torch.no_grad():
-        z_eq = F.normalize(x_dev, p=2, dim=-1)
-        if eq_gnn is not None:
-            z_eq = eq_gnn(z_eq, edge_index_dev)
+        if eq_gnn is None:
+            z_eq = F.normalize(x_dev[:num_equations], p=2, dim=-1)
+        else:
+            z_full = eq_gnn(F.normalize(x_dev, p=2, dim=-1), edge_index_dev)
+            z_eq = z_full[:num_equations]
         ranks: list[int] = []
         for i in test_case_idx[:500]:  # cap for quick sanity
             pos_list = set(valid_pos_indices(i))

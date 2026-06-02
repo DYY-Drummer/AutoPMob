@@ -1,0 +1,915 @@
+{
+  "seeds": [
+    42,
+    123,
+    456,
+    789,
+    1024
+  ],
+  "methods": [
+    "baseline_mix",
+    "svd_cos"
+  ],
+  "test_aggregate": {
+    "baseline_mix": {
+      "n_seeds": 5,
+      "MRR_mean": 0.8897,
+      "MRR_std": 0.095,
+      "MRR_ci95": [
+        0.8036,
+        0.9492
+      ],
+      "Recall@1_mean": 0.8263,
+      "Recall@1_std": 0.1542,
+      "Recall@1_ci95": [
+        0.6889,
+        0.9117
+      ],
+      "Recall@3_mean": 0.9603,
+      "Recall@3_std": 0.0421,
+      "Recall@3_ci95": [
+        0.9247,
+        0.9873
+      ],
+      "Recall@5_mean": 0.9749,
+      "Recall@5_std": 0.0482,
+      "Recall@5_ci95": [
+        0.9317,
+        0.9987
+      ],
+      "Recall@10_mean": 0.9867,
+      "Recall@10_std": 0.0298,
+      "Recall@10_ci95": [
+        0.96,
+        1.0
+      ]
+    },
+    "svd_cos": {
+      "n_seeds": 5,
+      "MRR_mean": 0.6667,
+      "MRR_std": 0.1396,
+      "MRR_ci95": [
+        0.5639,
+        0.7709
+      ],
+      "Recall@1_mean": 0.5229,
+      "Recall@1_std": 0.1676,
+      "Recall@1_ci95": [
+        0.3994,
+        0.6491
+      ],
+      "Recall@3_mean": 0.7829,
+      "Recall@3_std": 0.1632,
+      "Recall@3_ci95": [
+        0.6561,
+        0.9031
+      ],
+      "Recall@5_mean": 0.8737,
+      "Recall@5_std": 0.1053,
+      "Recall@5_ci95": [
+        0.7922,
+        0.9552
+      ],
+      "Recall@10_mean": 0.9443,
+      "Recall@10_std": 0.0561,
+      "Recall@10_ci95": [
+        0.9002,
+        0.9883
+      ]
+    }
+  },
+  "val_aggregate": {
+    "baseline_mix": {
+      "n_seeds": 5,
+      "MRR_mean": 0.8915,
+      "MRR_std": 0.0917,
+      "MRR_ci95": [
+        0.8106,
+        0.9433
+      ],
+      "Recall@1_mean": 0.8143,
+      "Recall@1_std": 0.1473,
+      "Recall@1_ci95": [
+        0.6842,
+        0.8969
+      ],
+      "Recall@3_mean": 0.9849,
+      "Recall@3_std": 0.0192,
+      "Recall@3_ci95": [
+        0.9685,
+        0.9986
+      ],
+      "Recall@5_mean": 0.995,
+      "Recall@5_std": 0.0084,
+      "Recall@5_ci95": [
+        0.9873,
+        1.0
+      ],
+      "Recall@10_mean": 1.0,
+      "Recall@10_std": 0.0,
+      "Recall@10_ci95": [
+        1.0,
+        1.0
+      ]
+    },
+    "svd_cos": {
+      "n_seeds": 5,
+      "MRR_mean": 0.6074,
+      "MRR_std": 0.2201,
+      "MRR_ci95": [
+        0.413,
+        0.7458
+      ],
+      "Recall@1_mean": 0.453,
+      "Recall@1_std": 0.2633,
+      "Recall@1_ci95": [
+        0.2178,
+        0.613
+      ],
+      "Recall@3_mean": 0.6958,
+      "Recall@3_std": 0.2136,
+      "Recall@3_ci95": [
+        0.5162,
+        0.8356
+      ],
+      "Recall@5_mean": 0.817,
+      "Recall@5_std": 0.1336,
+      "Recall@5_ci95": [
+        0.6966,
+        0.9088
+      ],
+      "Recall@10_mean": 0.9261,
+      "Recall@10_std": 0.0598,
+      "Recall@10_ci95": [
+        0.8741,
+        0.9704
+      ]
+    }
+  },
+  "test_by_variant": {
+    "baseline_mix": {
+      "swap_io": {
+        "n_seeds": 5,
+        "MRR_mean": 0.8662,
+        "MRR_std": 0.0944,
+        "avg_n": 26.0
+      },
+      "random_io_from_models": {
+        "n_seeds": 5,
+        "MRR_mean": 0.9245,
+        "MRR_std": 0.112,
+        "avg_n": 104.0
+      },
+      "original": {
+        "n_seeds": 5,
+        "MRR_mean": 0.8511,
+        "MRR_std": 0.08,
+        "avg_n": 26.0
+      },
+      "context_paraphrased": {
+        "n_seeds": 5,
+        "MRR_mean": 0.8641,
+        "MRR_std": 0.0975,
+        "avg_n": 78.0
+      }
+    },
+    "svd_cos": {
+      "swap_io": {
+        "n_seeds": 5,
+        "MRR_mean": 0.665,
+        "MRR_std": 0.1478,
+        "avg_n": 26.0
+      },
+      "random_io_from_models": {
+        "n_seeds": 5,
+        "MRR_mean": 0.6622,
+        "MRR_std": 0.134,
+        "avg_n": 104.0
+      },
+      "original": {
+        "n_seeds": 5,
+        "MRR_mean": 0.6861,
+        "MRR_std": 0.155,
+        "avg_n": 26.0
+      },
+      "context_paraphrased": {
+        "n_seeds": 5,
+        "MRR_mean": 0.6667,
+        "MRR_std": 0.145,
+        "avg_n": 78.0
+      }
+    }
+  },
+  "per_seed_details": [
+    {
+      "seed": 42,
+      "n_train": 612,
+      "n_val": 729,
+      "n_test": 45,
+      "split_sources": {
+        "train": [
+          "038.pdf",
+          "1-s2.0-0009250974800898-main.pdf",
+          "2018_Book_ProcessControl.pdf",
+          "2018_Book_ProcessControl_Chapter1.pdf",
+          "9781852337766-c1.pdf",
+          "Basic_Dyn_Con_Textbook_free.pdf",
+          "Chemical Process Dynamics.pdf",
+          "Process_Control_Chapter4.pdf",
+          "Process_Control_Symbols_and_Acronyms.pdf",
+          "WJET_2015040715405408.pdf",
+          "applsci-10-00992-v2.pdf",
+          "kinetics_soybean_oil.pdf",
+          "matecconf_cscc2019_01027.pdf",
+          "s41598-024-60757-5.pdf"
+        ],
+        "val": [
+          "Process_Control_Chapter3.pdf",
+          "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf",
+          "handbook_chemeng",
+          "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf"
+        ],
+        "test": [
+          "1-s2.0-S1369703X09000059-main.pdf",
+          "2018_Book_ProcessControl_Chapter1_6.pdf",
+          "energies-17-01344.pdf",
+          "vol20no2p7.pdf"
+        ]
+      },
+      "results": {
+        "baseline_mix": {
+          "val": {
+            "n": 729.0,
+            "MRR": 0.9532731290961743,
+            "Recall@1": 0.9135802469135802,
+            "Recall@3": 0.9931412894375857,
+            "Recall@5": 0.9945130315500685,
+            "Recall@10": 1.0
+          },
+          "test": {
+            "n": 45.0,
+            "MRR": 0.8993041526374859,
+            "Recall@1": 0.8888888888888888,
+            "Recall@3": 0.8888888888888888,
+            "Recall@5": 0.8888888888888888,
+            "Recall@10": 0.9333333333333333
+          },
+          "test_by_variant": {
+            "swap_io": {
+              "n": 5.0,
+              "MRR": 0.8166666666666667,
+              "Recall@1": 0.8,
+              "Recall@3": 0.8,
+              "Recall@5": 0.8,
+              "Recall@10": 0.8
+            },
+            "random_io_from_models": {
+              "n": 20.0,
+              "MRR": 1.0,
+              "Recall@1": 1.0,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 5.0,
+              "MRR": 0.8181818181818181,
+              "Recall@1": 0.8,
+              "Recall@3": 0.8,
+              "Recall@5": 0.8,
+              "Recall@10": 0.8
+            },
+            "context_paraphrased": {
+              "n": 15.0,
+              "MRR": 0.8196296296296296,
+              "Recall@1": 0.8,
+              "Recall@3": 0.8,
+              "Recall@5": 0.8,
+              "Recall@10": 0.9333333333333333
+            }
+          }
+        },
+        "svd_cos": {
+          "val": {
+            "n": 729.0,
+            "MRR": 0.7620613191674892,
+            "Recall@1": 0.6515775034293553,
+            "Recall@3": 0.8518518518518519,
+            "Recall@5": 0.879286694101509,
+            "Recall@10": 0.9506172839506173
+          },
+          "test": {
+            "n": 45.0,
+            "MRR": 0.7740740740740741,
+            "Recall@1": 0.6444444444444445,
+            "Recall@3": 0.9555555555555556,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "test_by_variant": {
+            "swap_io": {
+              "n": 5.0,
+              "MRR": 0.7666666666666667,
+              "Recall@1": 0.6,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 20.0,
+              "MRR": 0.7375,
+              "Recall@1": 0.6,
+              "Recall@3": 0.95,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 5.0,
+              "MRR": 0.8666666666666666,
+              "Recall@1": 0.8,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 15.0,
+              "MRR": 0.7944444444444444,
+              "Recall@1": 0.6666666666666666,
+              "Recall@3": 0.9333333333333333,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "n_train": 468,
+      "n_val": 315,
+      "n_test": 603,
+      "split_sources": {
+        "train": [
+          "038.pdf",
+          "1-s2.0-0009250974800898-main.pdf",
+          "1-s2.0-S1369703X09000059-main.pdf",
+          "2018_Book_ProcessControl.pdf",
+          "2018_Book_ProcessControl_Chapter1_6.pdf",
+          "9781852337766-c1.pdf",
+          "Chemical Process Dynamics.pdf",
+          "Process_Control_Symbols_and_Acronyms.pdf",
+          "WJET_2015040715405408.pdf",
+          "kinetics_soybean_oil.pdf",
+          "matecconf_cscc2019_01027.pdf",
+          "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf",
+          "s41598-024-60757-5.pdf",
+          "vol20no2p7.pdf"
+        ],
+        "val": [
+          "2018_Book_ProcessControl_Chapter1.pdf",
+          "Basic_Dyn_Con_Textbook_free.pdf",
+          "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf",
+          "applsci-10-00992-v2.pdf"
+        ],
+        "test": [
+          "Process_Control_Chapter3.pdf",
+          "Process_Control_Chapter4.pdf",
+          "energies-17-01344.pdf",
+          "handbook_chemeng"
+        ]
+      },
+      "results": {
+        "baseline_mix": {
+          "val": {
+            "n": 315.0,
+            "MRR": 0.944973544973545,
+            "Recall@1": 0.8952380952380953,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "test": {
+            "n": 603.0,
+            "MRR": 0.9391422517044408,
+            "Recall@1": 0.8938640132669984,
+            "Recall@3": 0.978441127694859,
+            "Recall@5": 0.9933665008291874,
+            "Recall@10": 1.0
+          },
+          "test_by_variant": {
+            "original": {
+              "n": 67.0,
+              "MRR": 0.9058457711442787,
+              "Recall@1": 0.8507462686567164,
+              "Recall@3": 0.9552238805970149,
+              "Recall@5": 0.9850746268656716,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 67.0,
+              "MRR": 0.9271144278606965,
+              "Recall@1": 0.8805970149253731,
+              "Recall@3": 0.9552238805970149,
+              "Recall@5": 0.9850746268656716,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 268.0,
+              "MRR": 0.9626865671641791,
+              "Recall@1": 0.9253731343283582,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 201.0,
+              "MRR": 0.922857932559425,
+              "Recall@1": 0.8706467661691543,
+              "Recall@3": 0.9651741293532339,
+              "Recall@5": 0.9900497512437811,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        "svd_cos": {
+          "val": {
+            "n": 315.0,
+            "MRR": 0.6045748936555974,
+            "Recall@1": 0.4603174603174603,
+            "Recall@3": 0.692063492063492,
+            "Recall@5": 0.7682539682539683,
+            "Recall@10": 0.9015873015873016
+          },
+          "test": {
+            "n": 603.0,
+            "MRR": 0.8217737624454042,
+            "Recall@1": 0.714759535655058,
+            "Recall@3": 0.9154228855721394,
+            "Recall@5": 0.9436152570480929,
+            "Recall@10": 0.9900497512437811
+          },
+          "test_by_variant": {
+            "original": {
+              "n": 67.0,
+              "MRR": 0.8214285714285714,
+              "Recall@1": 0.7164179104477612,
+              "Recall@3": 0.9104477611940298,
+              "Recall@5": 0.9402985074626866,
+              "Recall@10": 0.9850746268656716
+            },
+            "swap_io": {
+              "n": 67.0,
+              "MRR": 0.8527540867093105,
+              "Recall@1": 0.7761194029850746,
+              "Recall@3": 0.9104477611940298,
+              "Recall@5": 0.9552238805970149,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 268.0,
+              "MRR": 0.8132428516756876,
+              "Recall@1": 0.6940298507462687,
+              "Recall@3": 0.9216417910447762,
+              "Recall@5": 0.9477611940298507,
+              "Recall@10": 0.9888059701492538
+            },
+            "context_paraphrased": {
+              "n": 201.0,
+              "MRR": 0.822936599056002,
+              "Recall@1": 0.7213930348258707,
+              "Recall@3": 0.9104477611940298,
+              "Recall@5": 0.9353233830845771,
+              "Recall@10": 0.9900497512437811
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 456,
+      "n_train": 1080,
+      "n_val": 180,
+      "n_test": 126,
+      "split_sources": {
+        "train": [
+          "1-s2.0-0009250974800898-main.pdf",
+          "2018_Book_ProcessControl.pdf",
+          "2018_Book_ProcessControl_Chapter1_6.pdf",
+          "Basic_Dyn_Con_Textbook_free.pdf",
+          "Process_Control_Chapter3.pdf",
+          "Process_Control_Symbols_and_Acronyms.pdf",
+          "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf",
+          "WJET_2015040715405408.pdf",
+          "applsci-10-00992-v2.pdf",
+          "handbook_chemeng",
+          "kinetics_soybean_oil.pdf",
+          "matecconf_cscc2019_01027.pdf",
+          "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf",
+          "vol20no2p7.pdf"
+        ],
+        "val": [
+          "038.pdf",
+          "1-s2.0-S1369703X09000059-main.pdf",
+          "Process_Control_Chapter4.pdf",
+          "s41598-024-60757-5.pdf"
+        ],
+        "test": [
+          "2018_Book_ProcessControl_Chapter1.pdf",
+          "9781852337766-c1.pdf",
+          "Chemical Process Dynamics.pdf",
+          "energies-17-01344.pdf"
+        ]
+      },
+      "results": {
+        "baseline_mix": {
+          "val": {
+            "n": 180.0,
+            "MRR": 0.9168518518518518,
+            "Recall@1": 0.8666666666666667,
+            "Recall@3": 0.9555555555555556,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "test": {
+            "n": 126.0,
+            "MRR": 0.7264550264550265,
+            "Recall@1": 0.5555555555555556,
+            "Recall@3": 0.9682539682539683,
+            "Recall@5": 0.9920634920634921,
+            "Recall@10": 1.0
+          },
+          "test_by_variant": {
+            "random_io_from_models": {
+              "n": 56.0,
+              "MRR": 0.7261904761904762,
+              "Recall@1": 0.5535714285714286,
+              "Recall@3": 0.9821428571428571,
+              "Recall@5": 0.9821428571428571,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 14.0,
+              "MRR": 0.7380952380952381,
+              "Recall@1": 0.5714285714285714,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 14.0,
+              "MRR": 0.7321428571428571,
+              "Recall@1": 0.5714285714285714,
+              "Recall@3": 0.9285714285714286,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 42.0,
+              "MRR": 0.721031746031746,
+              "Recall@1": 0.5476190476190477,
+              "Recall@3": 0.9523809523809523,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        "svd_cos": {
+          "val": {
+            "n": 180.0,
+            "MRR": 0.6702521244187911,
+            "Recall@1": 0.5444444444444444,
+            "Recall@3": 0.7055555555555556,
+            "Recall@5": 0.9,
+            "Recall@10": 0.9388888888888889
+          },
+          "test": {
+            "n": 126.0,
+            "MRR": 0.4677529260862594,
+            "Recall@1": 0.2857142857142857,
+            "Recall@3": 0.5476190476190477,
+            "Recall@5": 0.746031746031746,
+            "Recall@10": 0.8809523809523809
+          },
+          "test_by_variant": {
+            "random_io_from_models": {
+              "n": 56.0,
+              "MRR": 0.460463048855906,
+              "Recall@1": 0.2857142857142857,
+              "Recall@3": 0.5178571428571429,
+              "Recall@5": 0.7678571428571429,
+              "Recall@10": 0.8571428571428571
+            },
+            "original": {
+              "n": 14.0,
+              "MRR": 0.493001443001443,
+              "Recall@1": 0.2857142857142857,
+              "Recall@3": 0.5714285714285714,
+              "Recall@5": 0.7857142857142857,
+              "Recall@10": 0.9285714285714286
+            },
+            "swap_io": {
+              "n": 14.0,
+              "MRR": 0.47295918367346934,
+              "Recall@1": 0.2857142857142857,
+              "Recall@3": 0.5714285714285714,
+              "Recall@5": 0.7142857142857143,
+              "Recall@10": 0.9285714285714286
+            },
+            "context_paraphrased": {
+              "n": 42.0,
+              "MRR": 0.46732117089259945,
+              "Recall@1": 0.2857142857142857,
+              "Recall@3": 0.5714285714285714,
+              "Recall@5": 0.7142857142857143,
+              "Recall@10": 0.8809523809523809
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 789,
+      "n_train": 1071,
+      "n_val": 81,
+      "n_test": 234,
+      "split_sources": {
+        "train": [
+          "1-s2.0-0009250974800898-main.pdf",
+          "2018_Book_ProcessControl.pdf",
+          "2018_Book_ProcessControl_Chapter1.pdf",
+          "2018_Book_ProcessControl_Chapter1_6.pdf",
+          "Chemical Process Dynamics.pdf",
+          "Process_Control_Chapter3.pdf",
+          "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf",
+          "applsci-10-00992-v2.pdf",
+          "energies-17-01344.pdf",
+          "handbook_chemeng",
+          "kinetics_soybean_oil.pdf",
+          "matecconf_cscc2019_01027.pdf",
+          "s41598-024-60757-5.pdf",
+          "vol20no2p7.pdf"
+        ],
+        "val": [
+          "1-s2.0-S1369703X09000059-main.pdf",
+          "9781852337766-c1.pdf",
+          "Process_Control_Symbols_and_Acronyms.pdf",
+          "WJET_2015040715405408.pdf"
+        ],
+        "test": [
+          "038.pdf",
+          "Basic_Dyn_Con_Textbook_free.pdf",
+          "Process_Control_Chapter4.pdf",
+          "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf"
+        ]
+      },
+      "results": {
+        "baseline_mix": {
+          "val": {
+            "n": 81.0,
+            "MRR": 0.7304526748971193,
+            "Recall@1": 0.5555555555555556,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "test": {
+            "n": 234.0,
+            "MRR": 0.9146723646723647,
+            "Recall@1": 0.8547008547008547,
+            "Recall@3": 0.9658119658119658,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "test_by_variant": {
+            "original": {
+              "n": 26.0,
+              "MRR": 0.8487179487179487,
+              "Recall@1": 0.7692307692307693,
+              "Recall@3": 0.9230769230769231,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 26.0,
+              "MRR": 0.8826923076923077,
+              "Recall@1": 0.8076923076923077,
+              "Recall@3": 0.9230769230769231,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 104.0,
+              "MRR": 0.9615384615384616,
+              "Recall@1": 0.9230769230769231,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 78.0,
+              "MRR": 0.8848290598290598,
+              "Recall@1": 0.8076923076923077,
+              "Recall@3": 0.9487179487179487,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        "svd_cos": {
+          "val": {
+            "n": 81.0,
+            "MRR": 0.23277172073468372,
+            "Recall@1": 0.0,
+            "Recall@3": 0.345679012345679,
+            "Recall@5": 0.6049382716049383,
+            "Recall@10": 0.8395061728395061
+          },
+          "test": {
+            "n": 234.0,
+            "MRR": 0.6547878346265442,
+            "Recall@1": 0.5128205128205128,
+            "Recall@3": 0.7735042735042735,
+            "Recall@5": 0.8888888888888888,
+            "Recall@10": 0.9615384615384616
+          },
+          "test_by_variant": {
+            "original": {
+              "n": 26.0,
+              "MRR": 0.6394688644688645,
+              "Recall@1": 0.5,
+              "Recall@3": 0.7307692307692307,
+              "Recall@5": 0.8461538461538461,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 26.0,
+              "MRR": 0.6248168498168497,
+              "Recall@1": 0.46153846153846156,
+              "Recall@3": 0.7692307692307693,
+              "Recall@5": 0.8846153846153846,
+              "Recall@10": 1.0
+            },
+            "random_io_from_models": {
+              "n": 104.0,
+              "MRR": 0.6837007414628382,
+              "Recall@1": 0.5480769230769231,
+              "Recall@3": 0.7980769230769231,
+              "Recall@5": 0.9230769230769231,
+              "Recall@10": 0.9519230769230769
+            },
+            "context_paraphrased": {
+              "n": 78.0,
+              "MRR": 0.6313339438339438,
+              "Recall@1": 0.48717948717948717,
+              "Recall@3": 0.7564102564102564,
+              "Recall@5": 0.8589743589743589,
+              "Recall@10": 0.9487179487179487
+            }
+          }
+        }
+      }
+    },
+    {
+      "seed": 1024,
+      "n_train": 1017,
+      "n_val": 207,
+      "n_test": 162,
+      "split_sources": {
+        "train": [
+          "038.pdf",
+          "1-s2.0-0009250974800898-main.pdf",
+          "2018_Book_ProcessControl.pdf",
+          "2018_Book_ProcessControl_Chapter1_6.pdf",
+          "9781852337766-c1.pdf",
+          "Chemical Process Dynamics.pdf",
+          "Process_Control_Chapter4.pdf",
+          "Process_Control_Symbols_and_Acronyms.pdf",
+          "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf",
+          "WJET_2015040715405408.pdf",
+          "applsci-10-00992-v2.pdf",
+          "energies-17-01344.pdf",
+          "handbook_chemeng",
+          "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf"
+        ],
+        "val": [
+          "1-s2.0-S1369703X09000059-main.pdf",
+          "Process_Control_Chapter3.pdf",
+          "kinetics_soybean_oil.pdf",
+          "vol20no2p7.pdf"
+        ],
+        "test": [
+          "2018_Book_ProcessControl_Chapter1.pdf",
+          "Basic_Dyn_Con_Textbook_free.pdf",
+          "matecconf_cscc2019_01027.pdf",
+          "s41598-024-60757-5.pdf"
+        ]
+      },
+      "results": {
+        "baseline_mix": {
+          "val": {
+            "n": 207.0,
+            "MRR": 0.9119296833064949,
+            "Recall@1": 0.8405797101449275,
+            "Recall@3": 0.9758454106280193,
+            "Recall@5": 0.9806763285024155,
+            "Recall@10": 1.0
+          },
+          "test": {
+            "n": 162.0,
+            "MRR": 0.9691358024691358,
+            "Recall@1": 0.9382716049382716,
+            "Recall@3": 1.0,
+            "Recall@5": 1.0,
+            "Recall@10": 1.0
+          },
+          "test_by_variant": {
+            "random_io_from_models": {
+              "n": 72.0,
+              "MRR": 0.9722222222222222,
+              "Recall@1": 0.9444444444444444,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "original": {
+              "n": 18.0,
+              "MRR": 0.9444444444444444,
+              "Recall@1": 0.8888888888888888,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "swap_io": {
+              "n": 18.0,
+              "MRR": 0.9722222222222222,
+              "Recall@1": 0.9444444444444444,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            },
+            "context_paraphrased": {
+              "n": 54.0,
+              "MRR": 0.9722222222222222,
+              "Recall@1": 0.9444444444444444,
+              "Recall@3": 1.0,
+              "Recall@5": 1.0,
+              "Recall@10": 1.0
+            }
+          }
+        },
+        "svd_cos": {
+          "val": {
+            "n": 207.0,
+            "MRR": 0.7673682999769956,
+            "Recall@1": 0.6086956521739131,
+            "Recall@3": 0.8840579710144928,
+            "Recall@5": 0.9323671497584541,
+            "Recall@10": 1.0
+          },
+          "test": {
+            "n": 162.0,
+            "MRR": 0.6149205903835533,
+            "Recall@1": 0.4567901234567901,
+            "Recall@3": 0.7222222222222222,
+            "Recall@5": 0.7901234567901234,
+            "Recall@10": 0.8888888888888888
+          },
+          "test_by_variant": {
+            "random_io_from_models": {
+              "n": 72.0,
+              "MRR": 0.6159551867885201,
+              "Recall@1": 0.4583333333333333,
+              "Recall@3": 0.7222222222222222,
+              "Recall@5": 0.7777777777777778,
+              "Recall@10": 0.875
+            },
+            "original": {
+              "n": 18.0,
+              "MRR": 0.6101430976430976,
+              "Recall@1": 0.4444444444444444,
+              "Recall@3": 0.7222222222222222,
+              "Recall@5": 0.7777777777777778,
+              "Recall@10": 0.8888888888888888
+            },
+            "swap_io": {
+              "n": 18.0,
+              "MRR": 0.607982603815937,
+              "Recall@1": 0.4444444444444444,
+              "Recall@3": 0.7222222222222222,
+              "Recall@5": 0.8333333333333334,
+              "Recall@10": 0.9444444444444444
+            },
+            "context_paraphrased": {
+              "n": 54.0,
+              "MRR": 0.6174462882796216,
+              "Recall@1": 0.46296296296296297,
+              "Recall@3": 0.7222222222222222,
+              "Recall@5": 0.7962962962962963,
+              "Recall@10": 0.8888888888888888
+            }
+          }
+        }
+      }
+    }
+  ]
+}

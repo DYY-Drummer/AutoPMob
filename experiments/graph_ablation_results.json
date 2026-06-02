@@ -1,0 +1,168 @@
+{
+  "config": {
+    "seeds": 5,
+    "top_k": 50,
+    "epochs": 15,
+    "lr": 0.001,
+    "modes": "reranker-7,reranker-7+C,reranker-7+BS,reranker-7+BSC,reranker-7+BC"
+  },
+  "results": {
+    "reranker-7": {
+      "mode": "reranker-7",
+      "n_features": 7,
+      "graph_feats_used": [],
+      "MRR_mean": 0.9591,
+      "MRR_std": 0.0363,
+      "MRR_ci95": [
+        0.9304,
+        0.9862
+      ],
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9506,
+          "MRR_std": 0.0445
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9734,
+          "MRR_std": 0.0247
+        },
+        "original": {
+          "MRR_mean": 0.9836,
+          "MRR_std": 0.0225
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      }
+    },
+    "reranker-7+C": {
+      "mode": "reranker-7+C",
+      "n_features": 8,
+      "graph_feats_used": [
+        "C"
+      ],
+      "MRR_mean": 0.9472,
+      "MRR_std": 0.0311,
+      "MRR_ci95": [
+        0.9236,
+        0.9708
+      ],
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9369,
+          "MRR_std": 0.0394
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9656,
+          "MRR_std": 0.021
+        },
+        "original": {
+          "MRR_mean": 0.9712,
+          "MRR_std": 0.0177
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      }
+    },
+    "reranker-7+BS": {
+      "mode": "reranker-7+BS",
+      "n_features": 9,
+      "graph_feats_used": [
+        "B",
+        "S"
+      ],
+      "MRR_mean": 0.9628,
+      "MRR_std": 0.0327,
+      "MRR_ci95": [
+        0.9372,
+        0.9882
+      ],
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9531,
+          "MRR_std": 0.0438
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9822,
+          "MRR_std": 0.0248
+        },
+        "original": {
+          "MRR_mean": 0.9836,
+          "MRR_std": 0.0225
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      }
+    },
+    "reranker-7+BSC": {
+      "mode": "reranker-7+BSC",
+      "n_features": 10,
+      "graph_feats_used": [
+        "B",
+        "S",
+        "C"
+      ],
+      "MRR_mean": 0.9515,
+      "MRR_std": 0.0358,
+      "MRR_ci95": [
+        0.9229,
+        0.9801
+      ],
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9394,
+          "MRR_std": 0.0421
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9734,
+          "MRR_std": 0.0247
+        },
+        "original": {
+          "MRR_mean": 0.9759,
+          "MRR_std": 0.0221
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      }
+    },
+    "reranker-7+BC": {
+      "mode": "reranker-7+BC",
+      "n_features": 9,
+      "graph_feats_used": [
+        "B",
+        "C"
+      ],
+      "MRR_mean": 0.9429,
+      "MRR_std": 0.0437,
+      "MRR_ci95": [
+        0.9102,
+        0.975
+      ],
+      "by_variant": {
+        "random_io_from_models": {
+          "MRR_mean": 0.9348,
+          "MRR_std": 0.0507
+        },
+        "context_paraphrased": {
+          "MRR_mean": 0.9577,
+          "MRR_std": 0.0326
+        },
+        "original": {
+          "MRR_mean": 0.9591,
+          "MRR_std": 0.0311
+        },
+        "swap_io": {
+          "MRR_mean": 1.0,
+          "MRR_std": 0.0
+        }
+      }
+    }
+  }
+}
