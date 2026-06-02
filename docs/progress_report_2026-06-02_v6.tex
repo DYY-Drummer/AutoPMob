@@ -155,8 +155,8 @@
   \item \textbf{なぜ効くか}：DAE・複数式・多変数のケースは単独式の文章類似度では絞れず，式どうしの\textbf{変数共有（補完性・一貫性）}という構造情報が効く．易しい問題は baseline が天井のため上乗せは小さい（図~\ref{fig:impact}a）．
   \item \textbf{指標の重要性}：MRR\_first の飽和は DB 規模の効果（仮説B）も改善幅も隠していた．$\rkc$ への切替で初めて両者が可視化された．
   \item \textbf{頑健性と外部比較}：13 設定で差が出ないことは優位が\textbf{構造的特徴量そのもの}に由来することを示す．LLM 直接生成との比較では\textbf{全難易度で reranker $>$ baseline $>$ LLM}であり，難ケースほど LLM が大きく劣化する（古典 IR でも LLM でも足りず，本手法が必要）．
-  \item \textbf{精度の上限と改善}：DAE の厳格 $\rkc$ は Stage1 の retrieval 天井（top-50 で $0.86$）と Stage2 の順位付けに律速される．top-$k$ 拡大で実用 Recall@20 を $0.97$ に高めた一方，厳格 $\rkc$ の更なる向上には補完性・一貫性を軸とした Stage2 強化（アブレーションが示す gDom の再設計を含む）が有効と見込まれる．
-  \item \textbf{今後}：(1) 修論・論文「Set-aware graph features for multi-equation physical model retrieval」の執筆，(2) Stage2 強化（hard negative・listwise 学習）と gDom 特徴量の再設計，(3) 変数記述の意味類似度による表記揺れの学習的吸収．
+  \item \textbf{精度の上限と改善（負の結果を含む）}：DAE の厳格 $\rkc$ は，候補は top-20 に揃う（Recall@20 $=0.91$）一方，それらを\textbf{ちょうど上位 $K$ 件に「集合として」並べる}ことが律速である．top-$k$ 拡大は実用 Recall@20 を $0.97$ に高めた．他方，\textbf{Stage2 の標準的強化（hard negative マイニング・listwise 損失・出力補完特徴 gOutNov による gDom 置換）は，厳格 $\rkc$ を 0.77 前後でシード分散内でしか動かさなかった}（3 シード，差 $\le 0.006$ vs 標準偏差 $\pm 0.07$）．これは候補を\textbf{独立に}スコアする現行 MLP では集合選択を表現できないためであり，次の本質的レバーは候補集合上の相互作用を陽に扱う\textbf{構造的拡張}と判明した．
+  \item \textbf{今後}：(1) 修論・論文「Set-aware graph features for multi-equation physical model retrieval」の執筆，(2) \textbf{候補集合の相互作用を陽にモデル化する構造的拡張}（候補集合への注意機構／GNN，逐次的な集合構成），(3) 変数記述の意味類似度による表記揺れの学習的吸収．
 \end{itemize}
 
 %======================================================================

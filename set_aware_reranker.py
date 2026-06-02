@@ -61,16 +61,18 @@ def compute_set_aware_features(
     eq_domains: list[str],
     k_ref: int = K_REF,
     which: tuple = ("Comp", "Coh", "Dom"),
+    output_vars: Optional[set] = None,
 ) -> np.ndarray:
     """Set-aware 特徴量を計算.
 
     参照集合 = Stage 1 の上位 k_ref 件（候補自身は除外）
 
-    Args:
-        which: どの特徴量を計算するか（タプル）。デフォルトは全 3 特徴量。
+    特徴量（列）: 0=gComp 補完性, 1=gCoh 一貫性, 2=gDom ドメイン一致,
+    3=gOutNov 出力補完性（候補が参照集合にない出力変数を固有に覆う割合）。
     """
     n = len(cand_indices)
-    feats = np.zeros((n, 3), dtype=np.float32)  # always compute all 3, select later
+    feats = np.zeros((n, 4), dtype=np.float32)  # Comp, Coh, Dom, OutNov
+    output_vars = output_vars or set()
 
     # Union of top-k_ref variables (excluding each candidate when computing for itself)
     # To keep it deterministic, we use Stage 1 order: cand_indices[0..k_ref]
@@ -108,6 +110,11 @@ def compute_set_aware_features(
             feats[k, 2] = same / len(local_domains)
         else:
             feats[k, 2] = 0.0
+
+        # gOutNov: 出力補完性（参照集合に無い出力変数を候補がどれだけ固有に覆うか）
+        if output_vars:
+            out_contrib = (cand_vars & output_vars) - local_union
+            feats[k, 3] = len(out_contrib) / len(output_vars)
 
     return feats
 
@@ -151,9 +158,10 @@ def compute_features_with_set(
     if set_aware_mask:
         set_feats_all = compute_set_aware_features(
             cand_indices, query_vars or set(), eq_vars_list, eq_domains,
+            output_vars=output_v,
         )
         # Select requested columns
-        idx_map = {"Comp": 0, "Coh": 1, "Dom": 2}
+        idx_map = {"Comp": 0, "Coh": 1, "Dom": 2, "OutNov": 3}
         for i, name in enumerate(set_aware_mask):
             if name in idx_map:
                 feats[:, col + i] = set_feats_all[:, idx_map[name]]
@@ -166,6 +174,8 @@ MODE_CONFIGS = {
     "reranker-7":       {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ()},
     "reranker-10":      {"use_mlp": True,  "use_existing_graph": True,  "set_aware_mask": ()},
     "reranker-10S":     {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ("Comp", "Coh", "Dom")},
+    "reranker-10S2":    {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ("Comp", "Coh", "OutNov")},
+    "reranker-11S":     {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ("Comp", "Coh", "Dom", "OutNov")},
     "reranker-13":      {"use_mlp": True,  "use_existing_graph": True,  "set_aware_mask": ("Comp", "Coh", "Dom")},
     # --- アブレーション：単独特徴量 ---
     "reranker-7+Comp":  {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ("Comp",)},
@@ -182,7 +192,7 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
              eq_domains_l, eq_sources_l, correct_lists, case_srcs,
              top_k, epochs, lr, save_per_case=False,
              hidden_dim=64, margin=0.1, batch_size=16, n_neg_samples=8,
-             weight_decay=1e-4):
+             weight_decay=1e-4, loss_type="pairwise", hard_neg=False):
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -258,10 +268,22 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                         )
                         scores = model(torch.tensor(feats, dtype=torch.float32))
                         c2k = {j: k for k, j in enumerate(cands)}
-                        ns = min(n_neg_samples, len(neg))
-                        for p in pos:
-                            for ng in rng.sample(neg, ns):
-                                losses.append(F.relu(margin - scores[c2k[p]] + scores[c2k[ng]]))
+                        pos_k = [c2k[p] for p in pos]
+                        if loss_type == "listwise":
+                            # multi-positive softmax CE: 各正解をリスト全体より上へ押す
+                            lse = torch.logsumexp(scores, dim=0)
+                            losses.append(lse - scores[torch.tensor(pos_k)].mean())
+                        else:
+                            ns = min(n_neg_samples, len(neg))
+                            if hard_neg:
+                                # 現在スコアが高い（最も紛らわしい）negative を優先
+                                neg_sorted = sorted(neg, key=lambda j: -float(scores[c2k[j]].detach()))
+                                chosen = neg_sorted[:ns]
+                            else:
+                                chosen = rng.sample(neg, ns)
+                            for pk in pos_k:
+                                for ng in chosen:
+                                    losses.append(F.relu(margin - scores[pk] + scores[c2k[ng]]))
                     if losses:
                         loss = torch.stack(losses).mean()
                         opt.zero_grad(); loss.backward(); opt.step()
@@ -358,6 +380,11 @@ def main():
                         help="positive 1 件あたりの negative サンプル数（default: 8）")
     parser.add_argument("--weight-decay", type=float, default=1e-4,
                         help="AdamW の weight_decay（default: 1e-4）")
+    parser.add_argument("--loss", type=str, default="pairwise",
+                        choices=["pairwise", "listwise"],
+                        help="損失関数（pairwise margin / listwise softmax CE）")
+    parser.add_argument("--hard-neg", action="store_true",
+                        help="hard negative マイニング（現在スコア上位の negative を採用）")
     args = parser.parse_args()
 
     all_seeds = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
@@ -405,6 +432,8 @@ def main():
             batch_size=args.batch_size,
             n_neg_samples=args.n_neg_samples,
             weight_decay=args.weight_decay,
+            loss_type=args.loss,
+            hard_neg=args.hard_neg,
         )
 
     print(f"\n{'='*100}")

@@ -358,6 +358,18 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-06-03（Stage2 reranker 強化の試行と\textbf{負の結果}）：
+    厳格 Recall@K\_correct の向上を狙い，\texttt{set\_aware\_reranker.py} に
+    (1) hard negative マイニング（\texttt{-{}-hard-neg}：現在スコア上位の negative を採用），
+    (2) listwise 損失（\texttt{-{}-loss listwise}：multi-positive softmax CE），
+    (3) 出力補完特徴 gOutNov（候補が参照集合に無い出力変数を固有に覆う割合）と
+    新モード \texttt{reranker-10S2}（gDom$\to$gOutNov）・\texttt{reranker-11S}（set-aware 4 特徴量）を追加した（既存 reranker-10S は不変・後方互換）．
+    DAE・3 シードで比較した結果，\textbf{全構成が Recall@K\_correct $=0.771$--$0.776$（差 $\le 0.006$）でシード標準偏差 $\pm 0.07$ の内側}に収まり，
+    hard negative・listwise・gOutNov のいずれも有意な改善を生まなかった．Recall@20 は $0.91$ で候補自体は上位に揃うため，
+    律速は候補を\textbf{独立にスコアする}現行 MLP が\textbf{集合としての選択}を表現できない点にあると診断．
+    次の本質的改善は候補集合の相互作用を陽に扱う\textbf{構造的拡張}（候補集合への注意機構／GNN，逐次的集合構成）と結論した．
+    結果：\texttt{experiments/stage2\_\{feat,hardneg,listwise\}.json}．進捗報告 v6 §考察の「精度の上限と改善」に反映．
+
   \item 2026-06-02（進捗報告 v6 作成：データ拡大・難易度勾配・仮説B再検定・頑健性・LLM 同一条件比較の統合）：
     前回 v5（3{,}244式・1{,}107ケース）以降の Phase 3--5 成果と外部比較を\textbf{差分版の進捗報告 v6}としてまとめ，
     \texttt{docs/progress\_report\_2026-06-02\_v6.tex}（lualatex / ltjsarticle，8ページ）を新規作成．
