@@ -113,6 +113,7 @@ def case_metrics(ranks: list[int], K_list=(3, 5, 10, 20),
         "Precision@C": float(precision_at_C),
         "Recall@K_correct": float(recall_at_n_correct),  # ★ K=n_correct で正解の天井問題解消
         "AP": float(avg_precision),
+        "ranks": [int(r) for r in sorted_ranks],  # ★ 各正解式の順位（昇順）。near-miss 分析用
     }
 
 

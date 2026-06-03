@@ -133,6 +133,15 @@
 \label{fig:stage2}
 \end{figure}
 
+\paragraph{漏れた正解はどれだけ惜しいか（near-miss 分析）} 厳格 $\rkc$ で「漏れた」正解（上位 $K$ 件に入らなかった正解式）が，すぐ下に詰まっているのか遥か下方なのかを，余裕 $m$ を足した\textbf{回復曲線 Recall@$(K+m)$} と\textbf{超過順位（順位 $-K$）の分布}で分析した（図~\ref{fig:nearmiss}，候補 200 件予算で統一）．\textbf{reranker・greedy は漏れた正解の $45$--$47\%$ を上位 $3$ 件以内に詰めており}（baseline は $18\%$），\textbf{$K+3$ 件まで見れば Recall は $0.89$--$0.91$}に達する．回復曲線の急な立ち上がりと超過順位 CDF の左寄りは，本手法の誤りの大半が\textbf{「ほぼ正解（near-miss）」}であることを示す（実用上は人手レビューで容易に拾える）．一方，漏れの $12$--$13\%$ は候補 200 件の外（far-miss）で，これが残る改善余地（Stage1 の retrieval 強化）を指し示す．
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_v6_nearmiss.png}
+\caption{漏れた正解の near-miss 分析（DAE，候補 200 件予算，3 シード）．(a) 回復曲線 Recall@$(K+m)$（$m{=}0$ が $\rkc$）：reranker・greedy は急に立ち上がり $K+3$ で $\approx 0.9$，baseline は緩慢．(b) 漏れた正解の超過順位の累積分布：\textbf{左に立つほど「惜しい」}．reranker・greedy は漏れの $45$--$47\%$ が超過 $\le 3$（baseline $18\%$）で，誤りが near-miss に集中することを示す．}
+\label{fig:nearmiss}
+\end{figure}
+
 %======================================================================
 \section{補遺：特徴量アブレーションとシード分散}
 %======================================================================

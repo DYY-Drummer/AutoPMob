@@ -496,6 +496,89 @@ def fig_stage2():
     print(f"saved fig_v6_stage2.png  ref={refc:.3f} best={bestc:.3f} (+{bestc-refc:.3f})")
 
 
+# ============================================================
+# 図I：漏れた正解の near-miss 分析（回復曲線 ＋ 超過順位分布）
+# ============================================================
+MISS_RANK = 10000  # top-k 圏外
+
+
+def _nearmiss_stats(recs, m_max=15, topk_clamp=200):
+    """per-case の ranks から 回復曲線 Recall@(K+m) と 超過順位(excess) を計算.
+
+    公平のため，全手法で順位 > topk_clamp（候補予算 200 件）を圏外として統一。
+    """
+    def clamp(ranks):
+        return [x if x <= topk_clamp else MISS_RANK for x in ranks]
+
+    curve = []
+    for m in range(0, m_max + 1):
+        vals = []
+        for r in recs:
+            ranks = r.get("ranks")
+            if not ranks:
+                continue
+            C = len(ranks)
+            ranks = clamp(ranks)
+            vals.append(sum(1 for x in ranks if x <= C + m) / C)
+        curve.append(float(np.mean(vals)) if vals else 0.0)
+    excess = []
+    for r in recs:
+        ranks = r.get("ranks")
+        if not ranks:
+            continue
+        C = len(ranks)
+        for x in clamp(ranks):
+            if x > C:  # 漏れた正解
+                excess.append((x - C) if x < MISS_RANK else MISS_RANK)
+    excess = np.array(excess, dtype=float)
+    return curve, excess
+
+
+def fig_nearmiss():
+    methods = [
+        ("baseline", json.load(open(EXP / "ranks_std.json"))["results"]["baseline"]["per_case"], C_BASE, "o-"),
+        ("reranker-10S", json.load(open(EXP / "ranks_std.json"))["results"]["reranker-10S"]["per_case"], C_OURS, "s-"),
+        ("reranker-10S +greedy", json.load(open(EXP / "ranks_greedy.json"))["results"]["reranker-10S"]["per_case"], C_DAE, "^-"),
+    ]
+    m_max = 12
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.2))
+
+    print("=== near-miss summary ===")
+    for name, recs, col, mk in methods:
+        curve, excess = _nearmiss_stats(recs, m_max)
+        ms = np.arange(len(curve))
+        ax1.plot(ms, curve, mk, color=col, lw=2.2, ms=7, label=name)
+        # 超過順位 CDF（漏れた正解のうち超過 ≤ x の割合）
+        xs = np.arange(0, m_max + 1)
+        n_miss = len(excess)
+        cdf = [np.mean(excess <= x) if n_miss else 0.0 for x in xs]
+        ax2.plot(xs, cdf, mk, color=col, lw=2.2, ms=7, label=name)
+        near3 = float(np.mean(excess <= 3)) if n_miss else 0.0
+        lost = float(np.mean(excess >= MISS_RANK)) if n_miss else 0.0
+        print(f"  {name:22s} R@K={curve[0]:.3f} R@K+1={curve[1]:.3f} R@K+3={curve[3]:.3f} "
+              f"R@K+5={curve[5]:.3f} | miss:near≤3={near3:.2f} lost(>top200)={lost:.2f} n_miss={n_miss}")
+
+    ax1.axvline(0, color="#bbb", lw=1)
+    ax1.set_xlabel("追加で見る件数 $m$（正解数 $K$ に対する余裕）", fontsize=12)
+    ax1.set_ylabel("Recall@$(K+m)$", fontsize=12)
+    ax1.set_xticks(range(0, m_max + 1, 2)); ax1.set_ylim(0.4, 1.0)
+    ax1.set_title("(a) 回復曲線：Recall@$(K+m)$\n$m{=}0$ が現行 R@K$_{correct}$．立ち上がりが急＝漏れが上位に詰む", fontsize=12)
+    ax1.legend(fontsize=10, loc="lower right"); ax1.grid(alpha=0.3)
+
+    ax2.set_xlabel("超過順位 $($順位 $- K)$", fontsize=12)
+    ax2.set_ylabel("漏れた正解の累積割合（CDF）", fontsize=12)
+    ax2.set_xticks(range(0, m_max + 1, 2)); ax2.set_ylim(0, 1.0)
+    ax2.set_title("(b) 漏れた正解の超過順位分布\n左に立つほど『惜しい』（すぐ下に詰まっている）", fontsize=12)
+    ax2.legend(fontsize=10, loc="lower right"); ax2.grid(alpha=0.3)
+
+    fig.suptitle("漏れた正解はどれだけ上位に詰まっているか（DAE，top-200，3 シード）",
+                 fontsize=14, fontweight="bold")
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    fig.savefig(FIG / "fig_v6_nearmiss.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+    print("saved fig_v6_nearmiss.png")
+
+
 if __name__ == "__main__":
     fig_dataset()
     fig_gradient()
@@ -505,4 +588,5 @@ if __name__ == "__main__":
     fig_ablation()
     fig_topk()
     fig_stage2()
+    fig_nearmiss()
     print("done -> docs/figures/fig_v6_*.png")

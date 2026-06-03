@@ -378,6 +378,13 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
     \textbf{Recall@K\_correct $0.745\to0.792$（$+0.048$，$+6.4\%$），Recall@20 $0.887\to0.953$}を達成
     （\texttt{cap\_ref.json}, \texttt{cap\_greedy200.json}）．損失・負例の改良では届かなかった厳格指標を「集合としての選択」が動かすことを実証．
     図 H（\texttt{docs/figures/fig\_v6\_stage2.png}）を追加し v6 §精度向上を更新．次は greedy の学習段階導入（teacher forcing）が課題．
+    \textbf{（追記2：near-miss 分析）}「漏れた正解がどれだけ上位に詰まっているか」を測る指標を新設．
+    \texttt{evaluate\_multi\_eq.py} の \texttt{case\_metrics} が各正解式の順位 \texttt{ranks} を返すようにし，
+    \texttt{generate\_figures\_v6.py} の \texttt{fig\_nearmiss} で\textbf{回復曲線 Recall@$(K+m)$}（正解数 $K$ に余裕 $m$ を足した Recall，$m{=}0$ が Recall@K\_correct）と
+    \textbf{超過順位（順位 $-K$）の累積分布}を作図（候補 200 件予算で統一）．DAE・top-200・3 シードで baseline／reranker-10S／+greedy を比較した結果，
+    \textbf{reranker・greedy は漏れた正解の 45--47\% を上位 3 件以内に詰める}（baseline 18\%），$K+3$ で Recall $\approx 0.9$．
+    本手法の誤りの大半が near-miss であり，残る far-miss（漏れの 12--13\% が候補 200 件外）が Stage1 強化の余地と判明．
+    図 I（\texttt{fig\_v6\_nearmiss.png}）を v6 §精度向上に追加．データ：\texttt{experiments/ranks\_std.json}, \texttt{experiments/ranks\_greedy.json}．
 
   \item 2026-06-02（進捗報告 v6 作成：データ拡大・難易度勾配・仮説B再検定・頑健性・LLM 同一条件比較の統合）：
     前回 v5（3{,}244式・1{,}107ケース）以降の Phase 3--5 成果と外部比較を\textbf{差分版の進捗報告 v6}としてまとめ，
