@@ -62,6 +62,7 @@ def compute_set_aware_features(
     k_ref: int = K_REF,
     which: tuple = ("Comp", "Coh", "Dom"),
     output_vars: Optional[set] = None,
+    ref_indices: Optional[list] = None,
 ) -> np.ndarray:
     """Set-aware 特徴量を計算.
 
@@ -74,9 +75,8 @@ def compute_set_aware_features(
     feats = np.zeros((n, 4), dtype=np.float32)  # Comp, Coh, Dom, OutNov
     output_vars = output_vars or set()
 
-    # Union of top-k_ref variables (excluding each candidate when computing for itself)
-    # To keep it deterministic, we use Stage 1 order: cand_indices[0..k_ref]
-    ref_set = cand_indices[:k_ref]
+    # 参照集合：ref_indices があればそれ（greedy の既選択集合）、無ければ Stage 1 上位 k_ref
+    ref_set = list(ref_indices) if ref_indices is not None else cand_indices[:k_ref]
     ref_vars_union = set()
     for r in ref_set:
         ref_vars_union |= eq_vars_list[r]
@@ -169,6 +169,39 @@ def compute_features_with_set(
     return feats
 
 
+def greedy_order(cands, full_feats, init_scores, model, set_mask,
+                 eq_vars_l, eq_domains_l, output_v, query_vars,
+                 n_base, greedy_cap=20):
+    """推論時 greedy 集合構築：1 件選ぶごとに set-aware 特徴量を「既選択集合」を
+    参照に再計算して次を選ぶ（学習済みモデルをそのまま使用，新規学習不要）。
+
+    full_feats : 通常スコアリング用の全特徴量（base + set-aware）。
+    init_scores: full_feats による初期スコア（最初の 1 件と残りの順序付けに使用）。
+    n_base     : set-aware より前の特徴量数（基本 7 [+既存グラフ 3]）。
+    """
+    idx_map = {"Comp": 0, "Coh": 1, "Dom": 2, "OutNov": 3}
+    npos = len(cands)
+    sel, remaining = [], list(range(npos))
+    first = max(remaining, key=lambda k: init_scores[k])
+    sel.append(first); remaining.remove(first)
+    cap = min(greedy_cap, npos)
+    while remaining and len(sel) < cap:
+        ref_idx = [cands[k] for k in sel]            # 既選択集合（DB index）
+        rem_db = [cands[k] for k in remaining]
+        setf = compute_set_aware_features(
+            rem_db, query_vars or set(), eq_vars_l, eq_domains_l,
+            output_vars=output_v, ref_indices=ref_idx,
+        )
+        feat = np.array(full_feats[remaining], dtype=np.float32, copy=True)
+        for i, name in enumerate(set_mask):
+            feat[:, n_base + i] = setf[:, idx_map[name]]
+        sc = model(torch.tensor(feat)).numpy().ravel()
+        best = remaining[int(np.argmax(sc))]
+        sel.append(best); remaining.remove(best)
+    remaining.sort(key=lambda k: -init_scores[k])
+    return [cands[k] for k in sel + remaining]
+
+
 MODE_CONFIGS = {
     "baseline":         {"use_mlp": False, "use_existing_graph": False, "set_aware_mask": ()},
     "reranker-7":       {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ()},
@@ -192,7 +225,7 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
              eq_domains_l, eq_sources_l, correct_lists, case_srcs,
              top_k, epochs, lr, save_per_case=False,
              hidden_dim=64, margin=0.1, batch_size=16, n_neg_samples=8,
-             weight_decay=1e-4, loss_type="pairwise", hard_neg=False):
+             weight_decay=1e-4, loss_type="pairwise", hard_neg=False, greedy=False):
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -300,9 +333,16 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                         svd_sim[ci], eq_vars_l, eq_domains_l, case_text(cases[ci]),
                         graph, ios[ci], use_existing, set_mask,
                     )
-                    scores = model(torch.tensor(feats, dtype=torch.float32)).numpy()
-                    order = sorted(range(len(cands)), key=lambda k: -scores[k])
-                    ranked_topK = [cands[k] for k in order]
+                    scores = model(torch.tensor(feats, dtype=torch.float32)).numpy().ravel()
+                    if greedy and set_mask:
+                        ranked_topK = greedy_order(
+                            cands, feats, scores, model, set_mask,
+                            eq_vars_l, eq_domains_l, out_vars(cases[ci]), ios[ci],
+                            n_feat - len(set_mask),
+                        )
+                    else:
+                        order = sorted(range(len(cands)), key=lambda k: -scores[k])
+                        ranked_topK = [cands[k] for k in order]
                     ranks = compute_all_ranks(ranked_topK, corr, miss_rank=10_000)
                     cm = case_metrics(ranks)
                     cm["variant"] = norm(cases[ci].get("variant_type") or "?")
@@ -385,6 +425,8 @@ def main():
                         help="損失関数（pairwise margin / listwise softmax CE）")
     parser.add_argument("--hard-neg", action="store_true",
                         help="hard negative マイニング（現在スコア上位の negative を採用）")
+    parser.add_argument("--greedy", action="store_true",
+                        help="推論時 greedy 集合構築（既選択集合を参照に set-aware を再計算）")
     args = parser.parse_args()
 
     all_seeds = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
@@ -434,6 +476,7 @@ def main():
             weight_decay=args.weight_decay,
             loss_type=args.loss,
             hard_neg=args.hard_neg,
+            greedy=args.greedy,
         )
 
     print(f"\n{'='*100}")

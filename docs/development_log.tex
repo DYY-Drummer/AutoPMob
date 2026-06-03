@@ -368,7 +368,16 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
     hard negative・listwise・gOutNov のいずれも有意な改善を生まなかった．Recall@20 は $0.91$ で候補自体は上位に揃うため，
     律速は候補を\textbf{独立にスコアする}現行 MLP が\textbf{集合としての選択}を表現できない点にあると診断．
     次の本質的改善は候補集合の相互作用を陽に扱う\textbf{構造的拡張}（候補集合への注意機構／GNN，逐次的集合構成）と結論した．
-    結果：\texttt{experiments/stage2\_\{feat,hardneg,listwise\}.json}．進捗報告 v6 §考察の「精度の上限と改善」に反映．
+    結果：\texttt{experiments/stage2\_\{feat,hardneg,listwise\}.json}．
+    \textbf{（追記：greedy 逐次選択は成功）}上記の負の結果を受け，診断「集合選択が律速」を直接検証するため
+    \texttt{set\_aware\_reranker.py} に\textbf{推論時 greedy 集合構築}（\texttt{-{}-greedy}：1 式選ぶごとに
+    set-aware 特徴量を既選択集合を参照に再計算して次を選ぶ）と関数 \texttt{greedy\_order}，
+    \texttt{compute\_set\_aware\_features} の \texttt{ref\_indices} 引数を追加した（学習済みモデルをそのまま使用，新規学習不要）．
+    DAE・3 シードで \textbf{reranker-10S/10S2/11S すべてが $+0.015$--$0.018$ 一貫して改善}（\texttt{stage2\_greedy.json}）．
+    効いた 2 レバー（top-$k$ 拡大と greedy）を結合し，reranker-10S・5 シードで
+    \textbf{Recall@K\_correct $0.745\to0.792$（$+0.048$，$+6.4\%$），Recall@20 $0.887\to0.953$}を達成
+    （\texttt{cap\_ref.json}, \texttt{cap\_greedy200.json}）．損失・負例の改良では届かなかった厳格指標を「集合としての選択」が動かすことを実証．
+    図 H（\texttt{docs/figures/fig\_v6\_stage2.png}）を追加し v6 §精度向上を更新．次は greedy の学習段階導入（teacher forcing）が課題．
 
   \item 2026-06-02（進捗報告 v6 作成：データ拡大・難易度勾配・仮説B再検定・頑健性・LLM 同一条件比較の統合）：
     前回 v5（3{,}244式・1{,}107ケース）以降の Phase 3--5 成果と外部比較を\textbf{差分版の進捗報告 v6}としてまとめ，

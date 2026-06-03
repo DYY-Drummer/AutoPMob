@@ -430,6 +430,72 @@ def fig_topk():
     print("saved fig_v6_topk.png  rkc=", [round(v, 3) for v in rkc], "r20=", [round(v, 3) for v in r20])
 
 
+def _rkc_of(path, mode="reranker-10S"):
+    d = json.load(open(EXP / path))["results"][mode]
+    v = d.get("Recall@K_correct") or d.get("Precision@C")
+    return v["mean"]
+
+
+# ============================================================
+# 図H：Stage2 強化の各レバー（失敗した改良 vs 効いた構造的改良）
+# ============================================================
+def fig_stage2():
+    ref = _rkc_of("stage2_feat.json", "reranker-10S")
+    levers = [
+        ("基本\n(参照)", ref, C_BASE),
+        ("+hard\nneg", _rkc_of("stage2_hardneg.json", "reranker-10S"), C_BASE),
+        ("+list\nwise", _rkc_of("stage2_listwise.json", "reranker-10S"), C_BASE),
+        ("+gOutNov\n(特徴)", _rkc_of("stage2_feat.json", "reranker-10S2"), C_BASE),
+        ("+greedy\n逐次選択", _rkc_of("stage2_greedy.json", "reranker-10S"), C_OURS),
+    ]
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.0),
+                                   gridspec_kw={"width_ratios": [3, 2]})
+
+    # (a) レバー比較（3 シード）
+    xs = np.arange(len(levers))
+    bars = ax1.bar(xs, [v for _, v, _ in levers], 0.62,
+                   color=[c for _, _, c in levers], edgecolor="black", linewidth=0.8)
+    _bar_labels(ax1, bars, dy=0.002, fs=10)
+    ax1.axhline(ref, color=C_BASE, ls="--", lw=1.2, alpha=0.8)
+    for i in range(1, len(levers)):
+        d = levers[i][1] - ref
+        ax1.text(xs[i], levers[i][1] + 0.006,
+                 ("+%.3f" % d) if d >= 0 else ("%.3f" % d), ha="center",
+                 fontsize=9.5, color=(C_GAP if d > 0.01 else "#888"), fontweight="bold")
+    ax1.set_xticks(xs); ax1.set_xticklabels([l for l, _, _ in levers], fontsize=10)
+    ax1.set_ylabel("Recall@K$_{correct}$（DAE, 3 シード）", fontsize=11.5)
+    ax1.set_ylim(0.74, 0.81)
+    ax1.set_title("(a) 試した Stage2 レバー\n損失・負例・特徴の改良は無効，集合選択(greedy)のみ有効",
+                  fontsize=11.5)
+    ax1.grid(axis="y", alpha=0.3)
+
+    # (b) 結合（5 シード）：参照 vs top200+greedy
+    refc = _rkc_of("cap_ref.json"); bestc = _rkc_of("cap_greedy200.json")
+    r20r = json.load(open(EXP / "cap_ref.json"))["results"]["reranker-10S"]["Recall@20"]["mean"]
+    r20b = json.load(open(EXP / "cap_greedy200.json"))["results"]["reranker-10S"]["Recall@20"]["mean"]
+    metrics = ["Recall@K$_{correct}$", "Recall@20\n(実用)"]
+    refv = [refc, r20r]; bestv = [bestc, r20b]
+    xi = np.arange(2); w = 0.36
+    b1 = ax2.bar(xi - w/2, refv, w, color=C_BASE, edgecolor="black", linewidth=0.8,
+                 label="reranker-10S（参照）")
+    b2 = ax2.bar(xi + w/2, bestv, w, color=C_OURS, edgecolor="black", linewidth=0.8,
+                 label="+top200 +greedy")
+    _bar_labels(ax2, b1, dy=0.006, fs=9.5); _bar_labels(ax2, b2, dy=0.006, fs=9.5)
+    for i in range(2):
+        ax2.text(xi[i], max(refv[i], bestv[i]) + 0.04, f"+{bestv[i]-refv[i]:.3f}",
+                 ha="center", color=C_GAP, fontsize=10.5, fontweight="bold")
+    ax2.set_xticks(xi); ax2.set_xticklabels(metrics, fontsize=10.5)
+    ax2.set_ylim(0.6, 1.05); ax2.set_ylabel("評点（DAE, 5 シード）", fontsize=11.5)
+    ax2.set_title("(b) 効いた 2 レバーの結合\ntop-k 拡大 + greedy 逐次選択", fontsize=11.5)
+    ax2.legend(fontsize=9.5, loc="lower right"); ax2.grid(axis="y", alpha=0.3)
+
+    fig.suptitle("Stage2 強化：何が厳格 Recall@K$_{correct}$ を動かすか", fontsize=14, fontweight="bold")
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    fig.savefig(FIG / "fig_v6_stage2.png", dpi=160, bbox_inches="tight")
+    plt.close(fig)
+    print(f"saved fig_v6_stage2.png  ref={refc:.3f} best={bestc:.3f} (+{bestc-refc:.3f})")
+
+
 if __name__ == "__main__":
     fig_dataset()
     fig_gradient()
@@ -438,4 +504,5 @@ if __name__ == "__main__":
     fig_boxplot()
     fig_ablation()
     fig_topk()
+    fig_stage2()
     print("done -> docs/figures/fig_v6_*.png")
