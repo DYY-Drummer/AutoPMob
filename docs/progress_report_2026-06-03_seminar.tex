@@ -1,0 +1,173 @@
+\documentclass[11pt,a4paper]{ltjsarticle}
+\usepackage{luatexja-fontspec}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\geometry{margin=24mm}
+\setmainjfont[BoldFont=Hiragino Kaku Gothic ProN]{Hiragino Mincho ProN}
+\setsansjfont{Hiragino Kaku Gothic ProN}
+\hypersetup{colorlinks=true, linkcolor=blue!55!black, urlcolor=blue!55!black}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{研究進捗報告}
+\rhead{2026 年 6 月 3 日}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+
+\newcommand{\rkc}{\textrm{Recall@}K_{\textrm{correct}}}
+\setlist{nosep}
+
+\begin{document}
+
+\begin{center}
+{\sffamily\large 物理モデル自動構築：データベース大規模化・評価指標の精緻化・\\集合選択による精度向上}
+\end{center}
+\vspace{0.3em}
+\hfill 作成者：M2\ 一洋
+\vspace{0.8em}
+
+%======================================================================
+\section{前回レビュー（2026-05-19 ゼミ）}
+%======================================================================
+\textbf{タスク}：文献から数式を集め、入力（説明文 ＋ 入出力変数）に対し物理モデル構築に必要な\textbf{数式集合}をグラフニューラルネットワーク（GNN）で順位付けして提示する。前回までの到達点は次の通り。
+
+\begin{itemize}[leftmargin=1.5em]
+  \item 論文 39 報からの抽出 ＋ LLM による化学工学近隣分野の汎用式生成で \textbf{3{,}244 式}・訓練ケース \textbf{1{,}338 件}を構築。
+  \item このデータで GNN を評価し \textbf{MRR（平均逆順位；最初に当てた正解の順位の逆数の平均）0.963、MAP（平均適合率；正解の上位集中度）0.953}。LLM 直接生成（Claude）を含む 3 手法比較で、文献横断ケースにおいて本手法が LLM より \textbf{MRR $+18\%$、MAP $+21\%$}。
+  \item \textbf{議論点}：(1)「関連性の低い数式も予測精度向上に機能するか」を判明させる実験の設計、(2) 論文 PDF の収集方法。
+  \item \textbf{今後の予定}：(a) 31 ドメイン $\times$ 論文 10 報を収集して再評価、(b) 数式数・入出力変数数・ソース数のヒストグラムを揃えた訓練／テスト分割とパラメータ調整、PSE Asia 準備。
+\end{itemize}
+
+%======================================================================
+\section{今回の進捗（要約）}
+%======================================================================
+前回の予定（データ収集・再評価・分割・調整）を完了し、さらに評価の精緻化と精度向上にまで踏み込んだ。要点は以下。
+
+\begin{enumerate}[leftmargin=1.8em]
+  \item \textbf{データベースを 3.4 倍に拡大}：3{,}244 $\to$ \textbf{11{,}146 式}、1{,}338 $\to$ \textbf{2{,}838 ケース}。微分方程式と代数式が連立する系（微分代数方程式系、DAE）を模した\textbf{難ケースを 1{,}000 件}追加（\S\ref{sec:data}）。
+  \item \textbf{評価指標を精緻化}：MRR\_first は天井で飽和し差を隠すため、正解数 $K$ で測る $\rkc$（情報検索の R-precision と同義）を主指標に採用（\S\ref{sec:metric}）。
+  \item \textbf{議論点(1)への回答}：分野横断的に広く集めた「関連性の低い」式も\textbf{実際に精度を上げる}（フル DB $>$ 限定 DB、$+0.048$、$p=0.044$）ことを定量実証（\S\ref{sec:hypoB}）。
+  \item \textbf{難ケースほど本手法の優位が拡大}し、全難易度で本手法 $>$ 古典 IR $>$ LLM（\S\ref{sec:gradient}）。ハイパーパラメータにも頑健（\S\ref{sec:robust}）。
+  \item \textbf{精度向上}：診断に基づき\textbf{集合としての逐次選択（貪欲法、greedy）}を導入し、最難 DAE で $\rkc$ $0.745\to0.792$・実用 Recall@20 $0.887\to0.953$（\S\ref{sec:acc}）。漏れた正解の大半が「ほぼ正解」であることも示した（\S\ref{sec:nearmiss}）。
+\end{enumerate}
+
+%======================================================================
+\section{データベースの大規模化}\label{sec:data}
+%======================================================================
+前回予定の「31 ドメイン $\times$ 論文 10 報の収集」を実施し、PDF 抽出・ハンドブック式・文献横断ケースを拡充して表~\ref{tab:scale}の規模に拡大した。訓練ケースの \textbf{74.6\%} が正解に 2 式以上を要する複数式ケースであり、「式を組合せとして選ぶ」本手法の主戦場をなす。
+
+\begin{table}[h]\centering
+\caption{データ規模（前回ゼミ比）}\label{tab:scale}
+\begin{tabular}{lrr}
+\toprule
+項目 & 前回（5/19）& \textbf{今回} \\
+\midrule
+収録数式数 & 3{,}244 & \textbf{11{,}146} \\
+訓練ケース総数 & 1{,}338 & \textbf{2{,}838} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+新規追加した \textbf{DAE 難ケース}（1{,}000 件、Claude Sonnet 4.5 で生成、正解式数 $X\in\{1,\dots,10\}$ 各 100 件）は、典型的な物理モデルである「常微分方程式（ODE）＋付随する代数式」の連立を模す。たとえば連続槽型反応器（CSTR）で槽内濃度 $C_A$（mol/m$^3$）と反応速度 $r_A$（mol/(m$^3\cdot$s)）を、流量 $F$（m$^3$/s）・槽体積 $V$（m$^3$）・入口濃度 $C_{A0}$（mol/m$^3$）から求める問題は、物質収支 ODE $V\,dC_A/dt = F(C_{A0}-C_A)-Vr_A$ と Arrhenius 速度式 $r_A=k\,C_A$ を\textbf{組合せて}初めて解ける。生成時に各式の代表変数を出力へ加え\textbf{自由度ゼロ}（入力数 ＋ 方程式数 ＝ 出力数 ＋ 既知数）を構成上保証している。データの規模・内訳・難易度を図~\ref{fig:data}に示す。
+
+\begin{figure}[h]\centering
+\includegraphics[width=\linewidth]{figures/fig_v6_dataset.png}
+\caption{(a) 訓練ケース 2{,}838 件の内訳（DAE 1{,}000 件を新規追加）。(b) 正解式数の分布：複数式（2 式以上）が 74.6\%。}
+\label{fig:data}
+\end{figure}
+
+%======================================================================
+\section{評価指標の精緻化}\label{sec:metric}
+%======================================================================
+前回の主指標 MRR\_first（最初に当たった正解の順位の逆数）は、正解が 1 件でも上位に来れば 1.0 に近づくため、\textbf{複数式を揃える能力を測れず}、天井付近で飽和して手法間の差を覆い隠す。本報告では、正解式が $n_{\textrm{correct}}$ 件あるとき\textbf{上位ちょうど $K=n_{\textrm{correct}}$ 件}の正解割合 $\rkc=|\mathrm{Top}_K\cap\mathcal{R}_q|/|\mathcal{R}_q|$（$\mathcal{R}_q$ は正解集合、R-precision と同義）を主指標とする。「必要な式をちょうどその本数だけ上位に並べられたか」を直接測り、飽和しにくい。以降の評価はすべて 10 シード（\texttt{source\_id} 単位で訓練／テストを分割しリーク防止）で行う。
+
+%======================================================================
+\section{評価結果}
+%======================================================================
+
+\subsection{難易度勾配と 3 手法比較}\label{sec:gradient}
+評価集合に占める難ケースの比率を 3 段階に変え、baseline（比較対象＝古典的情報検索、Stage~1）・LLM 直接生成・reranker-10S（本手法＝候補集合を考慮して並べ替える再順位付け器、Stage~2）を比較した（図~\ref{fig:gradient}）。\textbf{全 3 設定で reranker $>$ baseline $>$ LLM} であり、難ケースが増えると baseline は $\rkc$ が $0.79\to0.48$ へ、\textbf{LLM はさらに急に $0.54\to0.26$ へ}落ちる一方、本手法は $0.91\to0.70$ と緩やかにしか落ちない。本手法は LLM を全設定で $+0.37\sim0.45$ 上回り、最難の DAE でも LLM の約 2.6 倍を保つ。前回の LLM 比較（単一テストセット）を、より広い難易度と現行 11{,}146 式 DB へ拡張した結果である。
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.96\linewidth]{figures/fig_v6_gradient.png}
+\caption{難ケース比率の異なる 3 設定での 3 者比較（$\rkc$）。全設定で reranker $>$ baseline $>$ LLM。baseline・本手法は 10 シード平均（エラーバー＝標準偏差）、LLM はサンプル評価。}
+\label{fig:gradient}
+\end{figure}
+
+前回ゼミの主結果であった\textbf{文献横断（複数ソース）設定での LLM 比較}も、現行 11{,}146 式 DB 上で同一条件（リーク防止の held-out 評価）に更新した（図~\ref{fig:llm}）。\textbf{易しい単一ソースでは検索系（両 Stage）が LLM を圧倒}する（$\rkc$ で baseline $0.982$／reranker $0.975$ vs LLM $0.707$）一方、\textbf{難しい複数ソースでは古典 IR 単独（baseline）は LLM を下回る}（$0.575<0.842$）が、\textbf{reranker-10S は baseline を $+0.367$ 改善して LLM をも上回る}（$0.942$）。文章類似度と変数の一致だけでは複数文献の式を組合せられず、候補集合を考慮した再順位付け（reranker）が本質的に必要であることを示す。なお標本は単一ソース 29 件・複数ソース 20 件と小規模であり、傾向の確認と位置づける。
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.88\linewidth]{figures/fig_v6_llm.png}
+\caption{LLM 直接生成 vs baseline（Stage1）vs reranker-10S（Stage2）の同一条件比較（$\rkc$、現行 11{,}146 式 DB）。複数ソースで baseline $<$ LLM $<$ 本手法。}
+\label{fig:llm}
+\end{figure}
+
+\subsection{【議論点(1)への回答】分野横断的な収集は精度を上げるか}\label{sec:hypoB}
+前回の議論点「\textbf{関連性の低い数式も予測精度向上に機能するか}」に答える実験を行った。具体的には、本手法の検索対象 DB を\textbf{フル DB（11{,}146 式・全分野）}と\textbf{化学工学限定 DB} に切替え、同一テストケースでの性能を比較した（reranker-10S、10 シード、対応のある検定）。結果を表~\ref{tab:hypoB}と図~\ref{fig:impact}(b) に示す。
+
+\begin{table}[h]\centering
+\caption{フル DB（全分野）vs 限定 DB（化学工学のみ）の本手法性能}\label{tab:hypoB}
+\begin{tabular}{lccccc}
+\toprule
+指標 & 限定 DB & フル DB & 差 & $p$ 値（対応 $t$）& 効果量 $d$ \\
+\midrule
+MRR\_first & 0.9593 & 0.9625 & $+0.0032$ & 0.78（n.s.）& 0.09（小）\\
+$\rkc$ & 0.8749 & \textbf{0.9229} & $\mathbf{+0.0480}$ & \textbf{0.044}$^\star$ & 0.74（中）\\
+MAP & 0.9309 & 0.9531 & $+0.0222$ & 0.096 & 0.59（中）\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{飽和した MRR\_first では差が見えない}（$+0.003$、$p=0.78$）が、飽和しない $\rkc$ では\textbf{フル DB が有意に優れる}（$+0.048$）。ここで\textbf{対応のある $t$ 検定}（同一テストケースをシード間で対にして差を検定する手法）で $p=0.044$、ノンパラメトリックな Wilcoxon 符号順位検定でも $p=0.037$、効果量 Cohen's $d$（平均差を標準偏差で正規化した指標、0.2 小・0.5 中・0.8 大）は $0.74$（中程度）である。すなわち、\textbf{直接は関連しない分野横断的な式も、広く集めることで予測精度を上げる}。これは議論点(1) への定量的な回答であり、「広く集めた上でテストに必要な分野の網羅を検証する」方針の妥当性を裏づける（ただし差は中程度で、限定 DB でも $\rkc=0.87$ の実用水準には達する）。あわせて、改善は\textbf{複数式・多変数のケースに集中}する（図~\ref{fig:impact}(a)、単一式では $\approx 0$、複数式で $+0.21\sim0.26$）ことも確認した。
+
+\begin{figure}[h]\centering
+\includegraphics[width=\linewidth]{figures/fig_v6_impact.png}
+\caption{(a) 正解式数別の $\rkc$：改善は複数式・複雑な問題ほど大きい。(b) 議論点(1) の検証：飽和した MRR\_first では差が見えないが、$\rkc$ ではフル DB が有意に優位（$p=0.044$）。}
+\label{fig:impact}
+\end{figure}
+
+\subsection{頑健性}\label{sec:robust}
+前回予定の「パラメータ調整」に関連し、本手法の優位が脆弱なチューニングの産物でないことを確認した。学習率（$10^{-4}$--$10^{-2}$）・隠れ層次元（64/128/256）・epoch（20/40）・margin（0.1/0.3）を振った\textbf{13 設定すべてが $\rkc=0.732$--$0.742$ の狭い範囲}に収まり、設定間レンジ $0.0094$ はシード間標準偏差（約 $0.097$）の約 $1/10$ にすぎない。優位は構造的特徴量そのものに由来し、特定のチューニングに依存しない。
+
+%======================================================================
+\section{精度向上：診断・集合選択（greedy）・near-miss 分析}\label{sec:acc}
+%======================================================================
+最難の DAE で $\rkc$ が $0.70$ 前後に留まる点を診断し、改善した。なお $\rkc$ は\textbf{上位ちょうど $K$ 件に正解を全て揃える最も厳しい指標}であり、実用的な Recall@20（上位 20 件に必要な式が含まれるか）は本手法で DAE でも $0.86$ ある。
+
+\textbf{診断}：reranker は Stage~1 が返す上位 $K$ 候補のみを再順位付けするため、上限は「正解が上位 $K$ に retrieve される割合」である。DAE では Stage~1 Recall@50 $=0.86$（高 $X$ ケースで取りこぼし）。かつ現行 MLP は候補を\textbf{独立にスコアする}ため、「集合としての選択」を表現できない。
+
+\textbf{試行と結果}：まず Stage~2 の標準的強化（hard negative マイニング・listwise 損失・出力補完特徴）を試したが、いずれも $\rkc$ を $\le 0.006$ しか動かさなかった（図~\ref{fig:stage2}(a)）。一方、学習済みモデルをそのまま用い、\textbf{1 式選ぶごとに特徴量を「既選択集合」を参照に再計算して次を選ぶ逐次選択（greedy）}を推論時に導入すると、\textbf{$\rkc$ が各特徴量構成で $+0.015$〜$0.018$ 一貫して改善}した（reranker-10S で $+0.018$）。効いた 2 レバー、すなわち Stage~1 が渡す候補数（top-$k$、正解数 $K$ とは別概念）の $50\to200$ 拡大と逐次選択を結合すると、DAE で\textbf{$\rkc$ $0.745\to0.792$（$+0.048$、$+6.4\%$）、Recall@20 $0.887\to0.953$}に達した（図~\ref{fig:stage2}(b)、5 シード）。なおこの $+0.048$ は \S\ref{sec:hypoB} の DB 規模効果（同値だが別の結果）とは無関係である。「集合としての選択」を陽に行うことが厳格指標を動かす鍵であると実証された。
+
+\begin{figure}[h]\centering
+\includegraphics[width=\linewidth]{figures/fig_v6_stage2.png}
+\caption{(a) 試した Stage~2 レバー：損失・負例・特徴の標準的改良は無効（$\le 0.006$）、\textbf{集合選択（greedy）のみ $+0.018$}。(b) 効いた 2 レバー（top-$k$ 拡大 ＋ greedy）の結合で $\rkc$ $+0.048$・Recall@20 $+0.066$。}
+\label{fig:stage2}
+\end{figure}
+
+\subsection{漏れた正解はどれだけ惜しいか（near-miss 分析）}\label{sec:nearmiss}
+議論点に通じる問いとして、\textbf{上位 $K$ 件から漏れた正解}がすぐ下に詰まっているのか遥か下方なのかを、余裕 $m$ を足した\textbf{回復曲線 Recall@$(K+m)$}と\textbf{超過順位（順位 $-K$）の分布}で分析した（図~\ref{fig:nearmiss}、候補 200 件予算で統一）。\textbf{reranker・greedy は漏れた正解の $45$--$47\%$ を上位 3 件以内に詰めており}（baseline は $18\%$）、\textbf{$K+3$ 件まで見れば Recall は $0.89$--$0.91$}に達する。すなわち本手法の誤りの大半は\textbf{「ほぼ正解（near-miss）」}であり、人手レビュー前提なら容易に拾える。一方、漏れの $12$--$13\%$ は候補 200 件の外（far-miss）で、これが残る改善余地（Stage~1 の retrieval 強化）を指し示す。
+
+\begin{figure}[h]\centering
+\includegraphics[width=\linewidth]{figures/fig_v6_nearmiss.png}
+\caption{near-miss 分析（DAE、候補 200 件予算）。(a) 回復曲線 Recall@$(K+m)$（$m{=}0$ が $\rkc$）：reranker・greedy は急に立ち上がり $K+3$ で $\approx 0.9$。(b) 漏れた正解の超過順位の累積分布：左に立つほど「惜しい」。}
+\label{fig:nearmiss}
+\end{figure}
+
+%======================================================================
+\section{今後の仕事}
+%======================================================================
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{精度のさらなる向上}：greedy を\textbf{学習段階にも導入}（既選択集合を参照する特徴で teacher forcing 学習）して効果を増幅。far-miss（漏れの $12$--$13\%$）を減らす\textbf{Stage~1 retrieval の強化}（候補生成の recall 改善）。
+  \item \textbf{PSE Asia 準備}：本報告の難易度勾配・指標精緻化・分野横断収集の効果・精度向上を中核に、発表・原稿を整備。
+  \item \textbf{論文執筆}：「Set-aware graph features for multi-equation physical model retrieval」を軸に投稿準備。
+\end{itemize}
+
+\end{document}

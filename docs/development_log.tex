@@ -385,6 +385,13 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
     \textbf{reranker・greedy は漏れた正解の 45--47\% を上位 3 件以内に詰める}（baseline 18\%），$K+3$ で Recall $\approx 0.9$．
     本手法の誤りの大半が near-miss であり，残る far-miss（漏れの 12--13\% が候補 200 件外）が Stage1 強化の余地と判明．
     図 I（\texttt{fig\_v6\_nearmiss.png}）を v6 §精度向上に追加．データ：\texttt{experiments/ranks\_std.json}, \texttt{experiments/ranks\_greedy.json}．
+    \textbf{（追記3：ゼミ報告 2026-06-03 作成）}前回ゼミ（2026-05-19，3{,}244式・1{,}338ケース・MRR 0.963）からの進捗をまとめた新ゼミ報告
+    \texttt{docs/progress\_report\_2026-06-03\_seminar.tex/.pdf}（7 ページ，前回と同形式）を作成．
+    構成：前回レビュー $\to$ データ大規模化（11{,}146式・2{,}838ケース）$\to$ 評価指標精緻化（Recall@K\_correct）$\to$
+    評価結果（難易度勾配の 3 者比較・文献横断 LLM 比較・議論点(1)への回答=仮説B・頑健性）$\to$ 精度向上（greedy・near-miss）$\to$ 今後．
+    前回の議論点(1)「関連性の低い式も精度向上に機能するか」へは，フル DB vs 限定 DB（$+0.048$，$p=0.044$）で\textbf{回答}した．
+    Ultracode の検証 workflow（9 エージェント並列）で全数値を実験 JSON に敵対的照合し \textbf{86 件 MATCH}，指摘 23 件
+    （用語の和文説明・文献横断 LLM 比較の補完・Recall@20 の表記統一・記号 K と top-$k$ の区別等）を修正した．
 
   \item 2026-06-02（進捗報告 v6 作成：データ拡大・難易度勾配・仮説B再検定・頑健性・LLM 同一条件比較の統合）：
     前回 v5（3{,}244式・1{,}107ケース）以降の Phase 3--5 成果と外部比較を\textbf{差分版の進捗報告 v6}としてまとめ，
