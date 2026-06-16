@@ -51,10 +51,10 @@ def dataset():
     cases = json.load(open(ROOT / "training_cases.json"))
     vt = Counter(c.get("variant_type", "?") for c in cases)
     fam = {
-        "original（原型）": vt["original"],
-        "言い換え\n（context_paraphrased）": vt["context_paraphrased"],
-        "random_io\n（無作為入替）": vt["random_io_from_models"] + vt["swap_io"],
-        "multisource\n（複数文献）": vt["multisource_original"] + vt["multisource_random_io"] + vt["multisource_v3"],
+        "原型": vt["original"],
+        "言い換え": vt["context_paraphrased"],
+        "無作為入替": vt["random_io_from_models"] + vt["swap_io"],
+        "複数文献": vt["multisource_original"] + vt["multisource_random_io"] + vt["multisource_v3"],
         "DAE\n（微分代数・難）": sum(v for k, v in vt.items() if k.startswith("dae_")),
     }
     labels, vals = list(fam.keys()), list(fam.values())
