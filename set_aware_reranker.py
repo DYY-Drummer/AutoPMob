@@ -47,6 +47,47 @@ def get_src(e):
     return norm(e.get("source_id") or "unknown") or "unknown"
 
 
+def stratified_src_split(case_srcs, case_feats, seed=42, test_frac=0.2,
+                         val_frac=0.2, n_try=400):
+    """ソース単位の分割（リーク防止）を多数のランダム候補から生成し，
+    ケースの特徴量（正解式数・入力変数数・出力変数数・横断ソース数）の
+    train/test 分布が最も揃う候補を選ぶ（best-of-N 層化分割）.
+
+    case_feats: 各ケースの特徴量タプルのリスト [(n_correct, n_input, ...), ...]
+    Returns: {"train": set, "test": set, "val": set} のソース集合.
+    """
+    from collections import Counter
+    srcs = sorted(set(case_srcs))
+    nfeat = len(case_feats[0])
+
+    def fdist(idx, f):
+        c = Counter(case_feats[i][f] for i in idx)
+        t = max(1, sum(c.values()))
+        return {k: v / t for k, v in c.items()}
+
+    def l1(a, b):
+        keys = set(a) | set(b)
+        return sum(abs(a.get(k, 0) - b.get(k, 0)) for k in keys)
+
+    base = random.Random(seed)
+    best, best_score = None, None
+    for _ in range(n_try):
+        sl = srcs[:]
+        random.Random(base.random()).shuffle(sl)
+        nt = max(1, round(len(sl) * test_frac))
+        nv = max(1, round(len(sl) * val_frac))
+        sp = {"test": set(sl[:nt]), "val": set(sl[nt:nt + nv]),
+              "train": set(sl[nt + nv:])}
+        tr = [i for i, s in enumerate(case_srcs) if s in sp["train"]]
+        te = [i for i, s in enumerate(case_srcs) if s in sp["test"]]
+        if not tr or not te:
+            continue
+        score = sum(l1(fdist(tr, f), fdist(te, f)) for f in range(nfeat))
+        if best_score is None or score < best_score:
+            best_score, best = score, sp
+    return best or {"train": set(srcs), "test": set(), "val": set()}
+
+
 ROOT = Path(__file__).parent
 OUT_DIR = ROOT / "experiments"
 OUT_JSON = OUT_DIR / "set_aware_results.json"
@@ -225,7 +266,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
              eq_domains_l, eq_sources_l, correct_lists, case_srcs,
              top_k, epochs, lr, save_per_case=False,
              hidden_dim=64, margin=0.1, batch_size=16, n_neg_samples=8,
-             weight_decay=1e-4, loss_type="pairwise", hard_neg=False, greedy=False):
+             weight_decay=1e-4, loss_type="pairwise", hard_neg=False, greedy=False,
+             split_mode="random"):
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -243,7 +285,14 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
 
     for seed in seeds:
         random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
-        split = src_split(eq_sources_l, seed)
+        if split_mode == "stratified":
+            feats = [(len(correct_lists[i]), len(in_vars(cases[i])),
+                      len(out_vars(cases[i])),
+                      len({eq_keys_l[j].split("__")[0] for j in correct_lists[i]}))
+                     for i in range(len(cases))]
+            split = stratified_src_split(case_srcs, feats, seed)
+        else:
+            split = src_split(eq_sources_l, seed)
         tr = [i for i, s in enumerate(case_srcs) if s in split["train"] and correct_lists[i]]
         te = [i for i, s in enumerate(case_srcs) if s in split["test"] and correct_lists[i]]
 
@@ -427,6 +476,9 @@ def main():
                         help="hard negative マイニング（現在スコア上位の negative を採用）")
     parser.add_argument("--greedy", action="store_true",
                         help="推論時 greedy 集合構築（既選択集合を参照に set-aware を再計算）")
+    parser.add_argument("--split", type=str, default="random",
+                        choices=["random", "stratified"],
+                        help="train/test 分割：random（source_id ランダム）/ stratified（正解式数分布を均衡）")
     args = parser.parse_args()
 
     all_seeds = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
@@ -477,6 +529,7 @@ def main():
             loss_type=args.loss,
             hard_neg=args.hard_neg,
             greedy=args.greedy,
+            split_mode=args.split,
         )
 
     print(f"\n{'='*100}")

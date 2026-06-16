@@ -579,6 +579,60 @@ def fig_nearmiss():
     print("saved fig_v6_nearmiss.png")
 
 
+# ============================================================
+# 図J：層化分割の均衡（訓練/テストの特徴量分布）
+# ============================================================
+def fig_split_balance(seed=42):
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from set_aware_reranker import stratified_src_split
+    from two_stage_query_conditioned import load_cases, case_src, in_vars, out_vars
+    cases = load_cases()
+    keep = lambda v: v == "original" or v.startswith("multisource_") or v.startswith("dae_")
+    sub = [c for c in cases if keep(c.get("variant_type", ""))]
+    csrc = [case_src(c) for c in sub]
+    nc = [len(c.get("correct_model_ids") or []) for c in sub]
+    nin = [len(in_vars(c)) for c in sub]
+    nout = [len(out_vars(c)) for c in sub]
+    nsrc = [len({m.split("__", 1)[0] for m in (c.get("correct_model_ids") or [])}) for c in sub]
+    feats = list(zip(nc, nin, nout, nsrc))
+    sp = stratified_src_split(csrc, feats, seed)
+    tr = [i for i, s in enumerate(csrc) if s in sp["train"]]
+    te = [i for i, s in enumerate(csrc) if s in sp["test"]]
+
+    panels = [("正解式数", nc), ("入力変数数", nin), ("出力変数数", nout), ("横断ソース数", nsrc)]
+    fig, axes = plt.subplots(1, 4, figsize=(13, 3.3))
+    for ax, (name, vals) in zip(axes, panels):
+        allv = sorted(set(vals))
+        # 連続的な変数はビン化
+        if len(allv) > 12:
+            import numpy as _np
+            bins = _np.linspace(min(vals), max(vals), 10)
+            trh, _ = _np.histogram([vals[i] for i in tr], bins=bins, density=True)
+            teh, _ = _np.histogram([vals[i] for i in te], bins=bins, density=True)
+            x = (bins[:-1] + bins[1:]) / 2
+            w = (bins[1] - bins[0]) * 0.4
+            ax.bar(x - w/2, trh, w, color=C_OURS, alpha=0.8, label="訓練")
+            ax.bar(x + w/2, teh, w, color=C_LLM, alpha=0.8, label="テスト")
+        else:
+            from collections import Counter
+            ctr = Counter(vals[i] for i in tr); cte = Counter(vals[i] for i in te)
+            ntr = sum(ctr.values()); nte = sum(cte.values())
+            x = np.arange(len(allv)); w = 0.38
+            ax.bar(x - w/2, [ctr[v]/ntr for v in allv], w, color=C_OURS, alpha=0.85, label="訓練")
+            ax.bar(x + w/2, [cte[v]/nte for v in allv], w, color=C_LLM, alpha=0.85, label="テスト")
+            ax.set_xticks(x); ax.set_xticklabels(allv, fontsize=8)
+        ax.set_title(name, fontsize=12); ax.set_xlabel("値", fontsize=9)
+        ax.grid(axis="y", alpha=0.3)
+    axes[0].set_ylabel("割合", fontsize=11); axes[0].legend(fontsize=10)
+    fig.suptitle(f"層化分割：訓練（青）とテスト（橙）で特徴量の分布が揃う（対象 {len(sub):,} 件）",
+                 fontsize=13, fontweight="bold")
+    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    fig.savefig(FIG / "fig_v6_splitbalance.png", dpi=120, bbox_inches="tight")
+    plt.close(fig)
+    print(f"saved fig_v6_splitbalance.png  train/test = {len(tr)}/{len(te)}")
+
+
 if __name__ == "__main__":
     fig_dataset()
     fig_gradient()
