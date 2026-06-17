@@ -35,6 +35,7 @@ if os.path.exists(_fp):
     matplotlib.rcParams["font.family"] = "Hiragino Sans"
 matplotlib.rcParams["axes.unicode_minus"] = False
 matplotlib.rcParams["axes.axisbelow"] = True
+matplotlib.rcParams["pdf.fonttype"] = 42  # TrueType埋め込み（和文をPDFに出すため）
 
 # 統一カラー
 C_BASE = "#999999"   # 比較対象（baseline / Stage1）
@@ -629,6 +630,7 @@ def fig_split_balance(seed=42):
                  fontsize=13, fontweight="bold")
     fig.tight_layout(rect=[0, 0, 1, 0.93])
     fig.savefig(FIG / "fig_v6_splitbalance.png", dpi=120, bbox_inches="tight")
+    fig.savefig(FIG / "fig_v6_splitbalance.pdf", bbox_inches="tight")
     plt.close(fig)
     print(f"saved fig_v6_splitbalance.png  train/test = {len(tr)}/{len(te)}")
 

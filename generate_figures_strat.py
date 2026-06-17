@@ -32,9 +32,11 @@ if os.path.exists(_fp):
     matplotlib.rcParams["font.family"] = "Hiragino Sans"
 matplotlib.rcParams["axes.unicode_minus"] = False
 matplotlib.rcParams["axes.axisbelow"] = True
+matplotlib.rcParams["pdf.fonttype"] = 42  # TrueType埋め込み（和文をPDFに出すため）
 
 C_BASE = "#999999"   # baseline（古典 IR, Stage1）
 C_OURS = "#4A90E2"   # reranker-10S（本手法, Stage2）
+C_LLM = "#E27D60"    # LLM 直接生成（外部比較）
 C_DAE = "#16A085"    # DAE 難ケース強調
 C_GAP = "#D64550"
 
@@ -96,6 +98,7 @@ def dataset():
     fig.tight_layout(rect=[0, 0, 1, 0.96])
     out = FIG / "fig_strat_dataset.png"
     fig.savefig(out, dpi=160, bbox_inches="tight")
+    fig.savefig(FIG / "fig_strat_dataset.pdf", bbox_inches="tight")
     print(f"saved {out}  multi_ratio={multi_ratio:.3f}")
 
 
@@ -246,6 +249,7 @@ def characteristic():
     fig.tight_layout(rect=[0, 0, 1, 0.96])
     out = FIG / "fig_strat_characteristic.png"
     fig.savefig(out, dpi=120, bbox_inches="tight")
+    fig.savefig(FIG / "fig_strat_characteristic.pdf", bbox_inches="tight")
     print(f"\nsaved {out}")
 
 
@@ -253,51 +257,63 @@ def characteristic():
 # (3) データ拡張の影響：全データ／設定A／設定B の差（gap）比較
 # ----------------------------------------------------------------------
 def augmentation():
-    files = [("全データ\n（拡張込み, 2,838）", "strat_full.json"),
-             ("設定 A\n（拡張除外, 1,823）", "strat_A.json"),
-             ("設定 B\n（DAE のみ, 1,000）", "strat_B.json")]
-    base_m, base_s, ours_m, ours_s, gaps = [], [], [], [], []
-    for _, fn in files:
-        d = load(fn)
+    # strat（baseline/reranker, 10シード全件）＋ LLM直接生成（各設定の一様サンプル・等価判定）
+    files = [("全データ\n（拡張込み, 2,838）", "strat_full.json", "llm_set_full_equiv_results.json"),
+             ("設定 A\n（拡張除外, 1,823）", "strat_A.json", "llm_set_A_equiv_results.json"),
+             ("設定 B\n（DAE のみ, 1,000）", "strat_B.json", "llm_set_B_equiv_results.json")]
+    base_m, base_s, ours_m, ours_s, llm_m, llm_cov, llm_n, gaps = [], [], [], [], [], [], [], []
+    for _, strat_fn, llm_fn in files:
+        d = load(strat_fn)
         b = d["results"]["baseline"]["Recall@K_correct"]
         r = d["results"]["reranker-10S"]["Recall@K_correct"]
         base_m.append(b["mean"]); base_s.append(b["std"])
         ours_m.append(r["mean"]); ours_s.append(r["std"])
         gaps.append(r["mean"] - b["mean"])
+        ld = json.load(open(EXP / llm_fn))
+        llm_m.append(ld["Recall@K_correct"]); llm_cov.append(ld.get("coverage", 0.0))
+        llm_n.append(ld["n_cases"])
 
-    fig, ax = plt.subplots(figsize=(8.8, 5.2))
-    x = np.arange(3); w = 0.36
-    ax.bar(x - w / 2, base_m, w, yerr=base_s, capsize=4, color=C_BASE,
+    fig, ax = plt.subplots(figsize=(9.8, 5.4))
+    x = np.arange(3); w = 0.26
+    ax.bar(x - w, base_m, w, yerr=base_s, capsize=3, color=C_BASE,
            edgecolor="black", linewidth=0.8, label="baseline（古典 IR）",
-           error_kw=dict(ecolor="#555", lw=1.1))
-    ax.bar(x + w / 2, ours_m, w, yerr=ours_s, capsize=4, color=C_OURS,
+           error_kw=dict(ecolor="#555", lw=1.0))
+    ax.bar(x, llm_m, w, color=C_LLM, edgecolor="black", linewidth=0.8,
+           label="LLM 直接生成（外部比較・等価判定・サンプル）")
+    ax.bar(x + w, ours_m, w, yerr=ours_s, capsize=3, color=C_OURS,
            edgecolor="black", linewidth=0.8, label="reranker-10S（本手法）",
-           error_kw=dict(ecolor="#1a3a5c", lw=1.1))
+           error_kw=dict(ecolor="#1a3a5c", lw=1.0))
     for i in range(3):
-        ax.text(x[i] - w / 2, base_m[i] + base_s[i] + 0.015, f"{base_m[i]:.3f}",
-                ha="center", fontsize=9)
-        ax.text(x[i] + w / 2, ours_m[i] + ours_s[i] + 0.015, f"{ours_m[i]:.3f}",
-                ha="center", fontsize=9, fontweight="bold")
-        ytop = max(base_m[i] + base_s[i], ours_m[i] + ours_s[i]) + 0.075
-        ax.text(x[i], ytop, f"差 +{gaps[i]:.3f}", ha="center", color=C_GAP,
-                fontsize=11, fontweight="bold")
-    # 拡張で baseline が水増しされる量を注記
-    ax.annotate(f"拡張で baseline が\n+{base_m[0]-base_m[1]:.3f} 水増し",
-                xy=(x[0] - w / 2, base_m[0]), xytext=(x[0] - 0.05, base_m[0] + 0.20),
-                ha="center", fontsize=9.5, color="#555",
-                arrowprops=dict(arrowstyle="->", color="#555", lw=1.1))
-    ax.set_xticks(x); ax.set_xticklabels([t for t, _ in files], fontsize=11)
+        ax.text(x[i] - w, base_m[i] + base_s[i] + 0.012, f"{base_m[i]:.3f}",
+                ha="center", fontsize=8.5)
+        ax.text(x[i], llm_m[i] + 0.012, f"{llm_m[i]:.3f}",
+                ha="center", fontsize=8.5, color="#9c4a2f")
+        ax.text(x[i] + w, ours_m[i] + ours_s[i] + 0.012, f"{ours_m[i]:.3f}",
+                ha="center", fontsize=8.5, fontweight="bold")
+        ytop = max(base_m[i] + base_s[i], ours_m[i] + ours_s[i]) + 0.065
+        ax.text(x[i] + w / 2, ytop, f"差 +{gaps[i]:.3f}", ha="center", color=C_GAP,
+                fontsize=10, fontweight="bold")
+    # LLM の coverage（順位を問わず等価式を生成できた割合）を破線で重ねる
+    for i in range(3):
+        lbl = "LLM coverage（順位不問）" if i == 0 else None
+        ax.plot([x[i] - w * 0.55, x[i] + w * 0.55], [llm_cov[i]] * 2,
+                color="#7a2e18", lw=1.6, ls=(0, (3, 2)), zorder=6, label=lbl)
+        ax.text(x[i] + w * 0.6, llm_cov[i], f"cov {llm_cov[i]:.2f}", va="center",
+                ha="left", fontsize=7.5, color="#7a2e18")
+    ax.set_xticks(x); ax.set_xticklabels([t for t, _, _ in files], fontsize=11)
     ax.set_ylabel("Recall@K（正解集合の再現率）", fontsize=12)
-    ax.set_ylim(0, 1.0)
-    ax.legend(fontsize=10, loc="upper right")
+    ax.set_ylim(0, 1.18)
+    ax.legend(fontsize=9, loc="upper right", framealpha=0.95)
     ax.grid(alpha=0.3, axis="y")
-    ax.set_title("データ拡張を含めると baseline が水増しされ、手法の差が縮んで見える\n"
-                 "（拡張を除いた設定 A で本来の差 +0.222 が現れる）",
-                 fontsize=12.5, fontweight="bold")
+    ax.set_title("3 手法の比較：reranker（本手法）＞ baseline（古典 IR）＞ LLM 直接生成（上位K件）\n"
+                 "破線=LLM coverage（順位を問わず等価式を生成できた割合）。拡張は baseline を水増しし手法差を縮める",
+                 fontsize=11.5, fontweight="bold")
     fig.tight_layout()
     out = FIG / "fig_strat_augmentation.png"
     fig.savefig(out, dpi=140, bbox_inches="tight")
-    print(f"saved {out}  gaps={[round(g,3) for g in gaps]}")
+    fig.savefig(FIG / "fig_strat_augmentation.pdf", bbox_inches="tight")
+    print(f"saved {out}  gaps={[round(g,3) for g in gaps]}  "
+          f"LLM R@K={[round(v,3) for v in llm_m]} (n={llm_n})")
 
 
 if __name__ == "__main__":

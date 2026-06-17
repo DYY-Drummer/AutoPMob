@@ -40,7 +40,7 @@ EQS_JSON = ROOT / "unified_equations.json"
 OUT_JSON = ROOT / "dae_cases.json"
 REPORT = ROOT / "dae_generation_report.json"
 
-MODEL = "claude-sonnet-4-5-20250929"  # コスト効率重視（OPus でも可）
+MODEL = "claude-opus-4-8"  # Opus 4.8（最新・最上位）。API モデル ID は日付サフィックスを付けない
 RATE_LIMIT_INTERVAL = 1.0   # API 呼出間隔（秒）
 N_PER_X = 100               # 各 X につき何件生成するか
 X_MAX = 10                  # X の最大値

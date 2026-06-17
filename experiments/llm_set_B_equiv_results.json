@@ -1,0 +1,750 @@
+{
+  "method": "claude_direct_generation_equiv",
+  "judge_model": "claude-opus-4-8",
+  "n_cases": 50,
+  "Recall@K_correct": 0.22577777777777774,
+  "coverage": 0.3427063492063492,
+  "by_n_correct": {
+    "8": 0.22727272727272727,
+    "6": 0.2333333333333333,
+    "9": 0.4444444444444444,
+    "10": 0.16666666666666666,
+    "1": 0.0,
+    "5": 0.3,
+    "4": 0.1,
+    "2": 0.4,
+    "7": 0.2,
+    "3": 0.3333333333333333
+  },
+  "per_case": [
+    {
+      "case_id": "dae_X8_076",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        0,
+        1,
+        0,
+        10,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.125,
+      "coverage_equiv": 0.25
+    },
+    {
+      "case_id": "dae_X6_007",
+      "n_correct": 6,
+      "variant": "dae_X6",
+      "match_index": [
+        0,
+        0,
+        0,
+        7,
+        0,
+        11
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.3333333333333333
+    },
+    {
+      "case_id": "dae_X9_095",
+      "n_correct": 9,
+      "variant": "dae_X9",
+      "match_index": [
+        3,
+        6,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.3333333333333333,
+      "coverage_equiv": 0.3333333333333333
+    },
+    {
+      "case_id": "dae_X10_022",
+      "n_correct": 10,
+      "variant": "dae_X10",
+      "match_index": [
+        1,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.3,
+      "coverage_equiv": 0.3
+    },
+    {
+      "case_id": "dae_X1_033",
+      "n_correct": 1,
+      "variant": "dae_X1",
+      "match_index": [
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X5_083",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        0,
+        4,
+        6,
+        7,
+        2
+      ],
+      "Recall@K_equiv": 0.4,
+      "coverage_equiv": 0.8
+    },
+    {
+      "case_id": "dae_X1_085",
+      "n_correct": 1,
+      "variant": "dae_X1",
+      "match_index": [
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X8_050",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        10,
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.125
+    },
+    {
+      "case_id": "dae_X4_054",
+      "n_correct": 4,
+      "variant": "dae_X4",
+      "match_index": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.25,
+      "coverage_equiv": 0.25
+    },
+    {
+      "case_id": "dae_X6_023",
+      "n_correct": 6,
+      "variant": "dae_X6",
+      "match_index": [
+        2,
+        4,
+        0,
+        0,
+        1,
+        0
+      ],
+      "Recall@K_equiv": 0.5,
+      "coverage_equiv": 0.5
+    },
+    {
+      "case_id": "dae_X2_084",
+      "n_correct": 2,
+      "variant": "dae_X2",
+      "match_index": [
+        1,
+        8
+      ],
+      "Recall@K_equiv": 0.5,
+      "coverage_equiv": 1.0
+    },
+    {
+      "case_id": "dae_X9_009",
+      "n_correct": 9,
+      "variant": "dae_X9",
+      "match_index": [
+        1,
+        7,
+        3,
+        5,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.5555555555555556,
+      "coverage_equiv": 0.5555555555555556
+    },
+    {
+      "case_id": "dae_X5_018",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X7_015",
+      "n_correct": 7,
+      "variant": "dae_X7",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        7
+      ],
+      "Recall@K_equiv": 0.2857142857142857,
+      "coverage_equiv": 0.2857142857142857
+    },
+    {
+      "case_id": "dae_X7_082",
+      "n_correct": 7,
+      "variant": "dae_X7",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5
+      ],
+      "Recall@K_equiv": 0.14285714285714285,
+      "coverage_equiv": 0.14285714285714285
+    },
+    {
+      "case_id": "dae_X6_001",
+      "n_correct": 6,
+      "variant": "dae_X6",
+      "match_index": [
+        1,
+        4,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.3333333333333333,
+      "coverage_equiv": 0.3333333333333333
+    },
+    {
+      "case_id": "dae_X8_060",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        1,
+        5,
+        0,
+        7,
+        3,
+        0,
+        10,
+        0
+      ],
+      "Recall@K_equiv": 0.5,
+      "coverage_equiv": 0.625
+    },
+    {
+      "case_id": "dae_X1_049",
+      "n_correct": 1,
+      "variant": "dae_X1",
+      "match_index": [
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X8_032",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        1,
+        3,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.375,
+      "coverage_equiv": 0.375
+    },
+    {
+      "case_id": "dae_X4_036",
+      "n_correct": 4,
+      "variant": "dae_X4",
+      "match_index": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X5_050",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        1,
+        3,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.4,
+      "coverage_equiv": 0.4
+    },
+    {
+      "case_id": "dae_X8_090",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.125,
+      "coverage_equiv": 0.125
+    },
+    {
+      "case_id": "dae_X4_050",
+      "n_correct": 4,
+      "variant": "dae_X4",
+      "match_index": [
+        4,
+        5,
+        8,
+        0
+      ],
+      "Recall@K_equiv": 0.25,
+      "coverage_equiv": 0.75
+    },
+    {
+      "case_id": "dae_X5_067",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.2,
+      "coverage_equiv": 0.2
+    },
+    {
+      "case_id": "dae_X7_022",
+      "n_correct": 7,
+      "variant": "dae_X7",
+      "match_index": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.14285714285714285,
+      "coverage_equiv": 0.14285714285714285
+    },
+    {
+      "case_id": "dae_X5_076",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X7_014",
+      "n_correct": 7,
+      "variant": "dae_X7",
+      "match_index": [
+        3,
+        10,
+        8,
+        0,
+        2,
+        0,
+        9
+      ],
+      "Recall@K_equiv": 0.2857142857142857,
+      "coverage_equiv": 0.7142857142857143
+    },
+    {
+      "case_id": "dae_X6_054",
+      "n_correct": 6,
+      "variant": "dae_X6",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "Recall@K_equiv": 0.16666666666666666,
+      "coverage_equiv": 0.16666666666666666
+    },
+    {
+      "case_id": "dae_X4_065",
+      "n_correct": 4,
+      "variant": "dae_X4",
+      "match_index": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X8_070",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        0,
+        12,
+        10,
+        0,
+        0,
+        11,
+        6,
+        1
+      ],
+      "Recall@K_equiv": 0.25,
+      "coverage_equiv": 0.625
+    },
+    {
+      "case_id": "dae_X7_030",
+      "n_correct": 7,
+      "variant": "dae_X7",
+      "match_index": [
+        1,
+        11,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.14285714285714285,
+      "coverage_equiv": 0.2857142857142857
+    },
+    {
+      "case_id": "dae_X10_040",
+      "n_correct": 10,
+      "variant": "dae_X10",
+      "match_index": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.1,
+      "coverage_equiv": 0.1
+    },
+    {
+      "case_id": "dae_X8_097",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        0,
+        5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      "Recall@K_equiv": 0.25,
+      "coverage_equiv": 0.25
+    },
+    {
+      "case_id": "dae_X5_096",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        0,
+        0,
+        4,
+        2,
+        3
+      ],
+      "Recall@K_equiv": 0.6,
+      "coverage_equiv": 0.6
+    },
+    {
+      "case_id": "dae_X10_024",
+      "n_correct": 10,
+      "variant": "dae_X10",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8
+      ],
+      "Recall@K_equiv": 0.1,
+      "coverage_equiv": 0.1
+    },
+    {
+      "case_id": "dae_X4_069",
+      "n_correct": 4,
+      "variant": "dae_X4",
+      "match_index": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X6_096",
+      "n_correct": 6,
+      "variant": "dae_X6",
+      "match_index": [
+        0,
+        7,
+        0,
+        1,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.16666666666666666,
+      "coverage_equiv": 0.3333333333333333
+    },
+    {
+      "case_id": "dae_X8_020",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.125,
+      "coverage_equiv": 0.125
+    },
+    {
+      "case_id": "dae_X1_053",
+      "n_correct": 1,
+      "variant": "dae_X1",
+      "match_index": [
+        0
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.0
+    },
+    {
+      "case_id": "dae_X5_026",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        1,
+        0,
+        5,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.4,
+      "coverage_equiv": 0.4
+    },
+    {
+      "case_id": "dae_X1_056",
+      "n_correct": 1,
+      "variant": "dae_X1",
+      "match_index": [
+        3
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 1.0
+    },
+    {
+      "case_id": "dae_X3_064",
+      "n_correct": 3,
+      "variant": "dae_X3",
+      "match_index": [
+        1,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.3333333333333333,
+      "coverage_equiv": 0.3333333333333333
+    },
+    {
+      "case_id": "dae_X8_072",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        0,
+        0,
+        4,
+        1,
+        0,
+        0,
+        0,
+        7
+      ],
+      "Recall@K_equiv": 0.375,
+      "coverage_equiv": 0.375
+    },
+    {
+      "case_id": "dae_X2_085",
+      "n_correct": 2,
+      "variant": "dae_X2",
+      "match_index": [
+        1,
+        12
+      ],
+      "Recall@K_equiv": 0.5,
+      "coverage_equiv": 1.0
+    },
+    {
+      "case_id": "dae_X5_066",
+      "n_correct": 5,
+      "variant": "dae_X5",
+      "match_index": [
+        0,
+        0,
+        0,
+        5,
+        4
+      ],
+      "Recall@K_equiv": 0.4,
+      "coverage_equiv": 0.4
+    },
+    {
+      "case_id": "dae_X8_089",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        0,
+        0,
+        0,
+        0,
+        4,
+        7,
+        0,
+        0
+      ],
+      "Recall@K_equiv": 0.25,
+      "coverage_equiv": 0.25
+    },
+    {
+      "case_id": "dae_X2_074",
+      "n_correct": 2,
+      "variant": "dae_X2",
+      "match_index": [
+        2,
+        0
+      ],
+      "Recall@K_equiv": 0.5,
+      "coverage_equiv": 0.5
+    },
+    {
+      "case_id": "dae_X2_050",
+      "n_correct": 2,
+      "variant": "dae_X2",
+      "match_index": [
+        0,
+        8
+      ],
+      "Recall@K_equiv": 0.0,
+      "coverage_equiv": 0.5
+    },
+    {
+      "case_id": "dae_X8_041",
+      "n_correct": 8,
+      "variant": "dae_X8",
+      "match_index": [
+        12,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        6
+      ],
+      "Recall@K_equiv": 0.125,
+      "coverage_equiv": 0.25
+    },
+    {
+      "case_id": "dae_X2_013",
+      "n_correct": 2,
+      "variant": "dae_X2",
+      "match_index": [
+        11,
+        2
+      ],
+      "Recall@K_equiv": 0.5,
+      "coverage_equiv": 1.0
+    }
+  ]
+}

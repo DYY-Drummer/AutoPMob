@@ -33,7 +33,7 @@ sys.path.insert(0, str(ROOT))
 from set_aware_reranker import load_equations, load_cases, eq_key, norm
 from evaluate_multi_eq import compute_all_ranks, case_metrics, aggregate_metrics
 
-MODEL = "claude-sonnet-4-5-20250929"
+MODEL = "claude-opus-4-8"  # Opus 4.8（API モデル ID は日付サフィックス不要）
 RATE = 0.8
 PRED = ROOT / "experiments" / "llm_dae_predictions.json"
 OUT = ROOT / "experiments" / "llm_dae_results.json"
@@ -97,6 +97,8 @@ def main():
                     help="サンプル対象の variant（カンマ区切り・末尾 _ で前方一致）")
     ap.add_argument("--n-sample", type=int, default=None,
                     help="一様サンプル件数（指定時は X 層化でなく一様抽出）")
+    ap.add_argument("--model", default=MODEL,
+                    help="LLM のモデル ID（既定は MODEL 定数）")
     args = ap.parse_args()
     global PRED, OUT
     PRED = ROOT / "experiments" / f"llm_{args.label}_predictions.json"
@@ -140,7 +142,7 @@ def main():
         preds = []
         for i, c in enumerate(sample):
             X = len(c.get("correct_model_ids") or [])
-            eqs_gen = gen_equations(client, c, max(12, X + 4))
+            eqs_gen = gen_equations(client, c, max(12, X + 4), model=args.model)
             preds.append({"case_id": c["case_id"], "n_correct": X,
                           "predictions": [{"equation": e} for e in eqs_gen]})
             print(f"  [{i+1}/{len(sample)}] {c['case_id']} X={X} -> {len(eqs_gen)} eqs")
