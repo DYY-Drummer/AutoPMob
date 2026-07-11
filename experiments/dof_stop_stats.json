@@ -1,0 +1,214 @@
+{
+  "A": {
+    "n_per_case": 4594,
+    "seeds": [
+      42,
+      123,
+      456,
+      789,
+      1024,
+      2024,
+      3141,
+      5926,
+      7777,
+      9999
+    ],
+    "set_f1_oracleK": {
+      "mean": 0.7968,
+      "std": 0.053
+    },
+    "set_f1_dof": {
+      "mean": 0.7889,
+      "std": 0.0488
+    },
+    "set_exact_oracleK": {
+      "mean": 0.5262,
+      "std": 0.0851
+    },
+    "set_exact_dof": {
+      "mean": 0.5262,
+      "std": 0.0851
+    },
+    "closed_oracleK": {
+      "mean": 0.8651,
+      "std": 0.0441
+    },
+    "closed_dof": {
+      "mean": 0.9363,
+      "std": 0.0181
+    },
+    "Recall@K_correct": {
+      "mean": 0.7968,
+      "std": 0.053
+    },
+    "K_exact_rate": 0.8644,
+    "K_within1_rate": 0.9044,
+    "K_MAE": 0.9297,
+    "K_median_abs_err": 0.0,
+    "K_bias": 0.9293,
+    "dof_vs_oracle_f1": {
+      "mean_delta": -0.0079,
+      "std_delta": 0.007,
+      "t": -3.551,
+      "p_ttest": 0.00621,
+      "cohen_dz": -1.123
+    }
+  },
+  "dae": {
+    "n_per_case": 2432,
+    "seeds": [
+      42,
+      123,
+      456,
+      789,
+      1024,
+      2024,
+      3141,
+      5926,
+      7777,
+      9999
+    ],
+    "set_f1_oracleK": {
+      "mean": 0.7649,
+      "std": 0.0425
+    },
+    "set_f1_dof": {
+      "mean": 0.742,
+      "std": 0.0402
+    },
+    "set_exact_oracleK": {
+      "mean": 0.3678,
+      "std": 0.0412
+    },
+    "set_exact_dof": {
+      "mean": 0.3678,
+      "std": 0.0412
+    },
+    "closed_oracleK": {
+      "mean": 0.7806,
+      "std": 0.054
+    },
+    "closed_dof": {
+      "mean": 0.8826,
+      "std": 0.0379
+    },
+    "Recall@K_correct": {
+      "mean": 0.7649,
+      "std": 0.0425
+    },
+    "K_exact_rate": 0.7759,
+    "K_within1_rate": 0.8232,
+    "K_MAE": 1.7212,
+    "K_median_abs_err": 0.0,
+    "K_bias": 1.7212,
+    "dof_vs_oracle_f1": {
+      "mean_delta": -0.0229,
+      "std_delta": 0.0115,
+      "t": -6.289,
+      "p_ttest": 0.00014,
+      "cohen_dz": -1.989
+    }
+  },
+  "dae_by_X": [
+    {
+      "X": 1,
+      "n": 240,
+      "set_f1_oracleK": 0.789,
+      "set_f1_dof": 0.789,
+      "set_exact_dof": 0.789,
+      "closed_oracleK": 1.0,
+      "K_exact_rate": 1.0,
+      "k_pred_mean": 1.0
+    },
+    {
+      "X": 2,
+      "n": 241,
+      "set_f1_oracleK": 0.8329,
+      "set_f1_dof": 0.8391,
+      "set_exact_dof": 0.7175,
+      "closed_oracleK": 0.9771,
+      "K_exact_rate": 0.975,
+      "k_pred_mean": 2.03
+    },
+    {
+      "X": 3,
+      "n": 251,
+      "set_f1_oracleK": 0.8037,
+      "set_f1_dof": 0.7885,
+      "set_exact_dof": 0.5242,
+      "closed_oracleK": 0.8579,
+      "K_exact_rate": 0.857,
+      "k_pred_mean": 4.13
+    },
+    {
+      "X": 4,
+      "n": 239,
+      "set_f1_oracleK": 0.7673,
+      "set_f1_dof": 0.7625,
+      "set_exact_dof": 0.3882,
+      "closed_oracleK": 0.8799,
+      "K_exact_rate": 0.879,
+      "k_pred_mean": 4.42
+    },
+    {
+      "X": 5,
+      "n": 233,
+      "set_f1_oracleK": 0.7896,
+      "set_f1_dof": 0.7732,
+      "set_exact_dof": 0.3929,
+      "closed_oracleK": 0.8216,
+      "K_exact_rate": 0.82,
+      "k_pred_mean": 5.96
+    },
+    {
+      "X": 6,
+      "n": 230,
+      "set_f1_oracleK": 0.7841,
+      "set_f1_dof": 0.7416,
+      "set_exact_dof": 0.2686,
+      "closed_oracleK": 0.7737,
+      "K_exact_rate": 0.77,
+      "k_pred_mean": 8.2
+    },
+    {
+      "X": 7,
+      "n": 245,
+      "set_f1_oracleK": 0.72,
+      "set_f1_dof": 0.6857,
+      "set_exact_dof": 0.2108,
+      "closed_oracleK": 0.6555,
+      "K_exact_rate": 0.653,
+      "k_pred_mean": 9.92
+    },
+    {
+      "X": 8,
+      "n": 252,
+      "set_f1_oracleK": 0.7308,
+      "set_f1_dof": 0.6986,
+      "set_exact_dof": 0.1864,
+      "closed_oracleK": 0.6884,
+      "K_exact_rate": 0.675,
+      "k_pred_mean": 10.54
+    },
+    {
+      "X": 9,
+      "n": 249,
+      "set_f1_oracleK": 0.739,
+      "set_f1_dof": 0.6939,
+      "set_exact_dof": 0.1236,
+      "closed_oracleK": 0.6042,
+      "K_exact_rate": 0.598,
+      "k_pred_mean": 12.19
+    },
+    {
+      "X": 10,
+      "n": 252,
+      "set_f1_oracleK": 0.7032,
+      "set_f1_dof": 0.66,
+      "set_exact_dof": 0.1063,
+      "closed_oracleK": 0.5692,
+      "K_exact_rate": 0.556,
+      "k_pred_mean": 13.62
+    }
+  ]
+}

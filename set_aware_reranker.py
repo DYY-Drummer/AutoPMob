@@ -243,6 +243,80 @@ def greedy_order(cands, full_feats, init_scores, model, set_mask,
     return [cands[k] for k in sel + remaining]
 
 
+def greedy_close(cands, full_feats, init_scores, model, set_mask,
+                 eq_vars_l, eq_domains_l, output_v, query_vars,
+                 n_base, input_v, greedy_cap=20):
+    """greedy_order と同じ貪欲順序を作りつつ、系が閉じた（自由度ゼロ）最初の長さ
+    k_stop を記録して返す。停止条件（DoF=0）:
+      出力変数がすべて被覆され、かつ 未知数（＝選んだ式の全変数 − 入力変数）の数が
+      選んだ式の数以下（|unknowns| <= |S|、正方系で等号）。
+    K を与えずに「系が閉じたら止める」本来の物理モデル構築に対応。
+    返り値: (ranked_db_list, k_stop)。k_stop は予測した式数（閉じなければ選択総数）。
+    """
+    idx_map = {"Comp": 0, "Coh": 1, "Dom": 2, "OutNov": 3}
+    input_v = input_v or set()
+    npos = len(cands)
+    sel, remaining = [], list(range(npos))
+    first = max(remaining, key=lambda k: init_scores[k])
+    sel.append(first); remaining.remove(first)
+    covered = set(eq_vars_l[cands[first]])
+    k_stop = None
+
+    def closed():
+        return (output_v <= covered) and (len(covered - input_v) <= len(sel))
+
+    if closed():
+        k_stop = len(sel)
+    cap = min(greedy_cap, npos)
+    while remaining and len(sel) < cap:
+        ref_idx = [cands[k] for k in sel]
+        rem_db = [cands[k] for k in remaining]
+        setf = compute_set_aware_features(
+            rem_db, query_vars or set(), eq_vars_l, eq_domains_l,
+            output_vars=output_v, ref_indices=ref_idx,
+        )
+        feat = np.array(full_feats[remaining], dtype=np.float32, copy=True)
+        for i, name in enumerate(set_mask):
+            feat[:, n_base + i] = setf[:, idx_map[name]]
+        sc = model(torch.tensor(feat)).numpy().ravel()
+        best = remaining[int(np.argmax(sc))]
+        sel.append(best); remaining.remove(best)
+        covered |= eq_vars_l[cands[best]]
+        if k_stop is None and closed():
+            k_stop = len(sel)
+    remaining.sort(key=lambda k: -init_scores[k])
+    ranked = [cands[k] for k in sel + remaining]
+    if k_stop is None:
+        k_stop = len(sel)  # 閉じなければ選択総数を予測とする
+    return ranked, k_stop
+
+
+def is_closed(pred_list, eq_vars_l, input_v, output_v):
+    """予測集合が自由度ゼロ（出力被覆かつ |未知数|<=|式数|）で閉じているか."""
+    if not pred_list:
+        return 0.0
+    covered = set()
+    for j in pred_list:
+        covered |= eq_vars_l[j]
+    return 1.0 if (output_v <= covered and len(covered - (input_v or set())) <= len(pred_list)) else 0.0
+
+
+def set_metrics(pred_list, correct_set, suffix=""):
+    """予測した式集合 vs 正解集合の集合レベル指標."""
+    pred = set(pred_list); C = set(correct_set)
+    inter = len(pred & C)
+    prec = inter / len(pred) if pred else 0.0
+    rec = inter / len(C) if C else 0.0
+    f1 = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+    return {
+        f"set_exact{suffix}": 1.0 if pred == C else 0.0,
+        f"set_precision{suffix}": prec,
+        f"set_recall{suffix}": rec,
+        f"set_f1{suffix}": f1,
+        f"k_pred{suffix}": len(pred),
+    }
+
+
 MODE_CONFIGS = {
     "baseline":         {"use_mlp": False, "use_existing_graph": False, "set_aware_mask": ()},
     "reranker-7":       {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ()},
@@ -267,7 +341,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
              top_k, epochs, lr, save_per_case=False,
              hidden_dim=64, margin=0.1, batch_size=16, n_neg_samples=8,
              weight_decay=1e-4, loss_type="pairwise", hard_neg=False, greedy=False,
-             split_mode="random"):
+             split_mode="random", train_greedy=False, greedy_train_cap=8,
+             stop_dof=False):
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -348,8 +423,40 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                             svd_sim[ci], eq_vars_l, eq_domains_l, case_text(cases[ci]),
                             graph, ios[ci], use_existing, set_mask,
                         )
-                        scores = model(torch.tensor(feats, dtype=torch.float32))
                         c2k = {j: k for k, j in enumerate(cands)}
+
+                        if train_greedy and set_mask:
+                            # --- 学習版 greedy：teacher forcing で逐次集合構築 ---
+                            # 各ステップ t で「既選択集合 sel_db」を参照に set-aware を
+                            # 再計算し、次の正解 pos[t] を負例より上へ押す（推論の greedy_order と
+                            # 同じ問い「今これらを選んだ。次に系を閉じるのはどれか」で学習）。
+                            # t=0 は静的特徴（top-k_ref 参照）で「種」の選択を学習。
+                            idx_map = {"Comp": 0, "Coh": 1, "Dom": 2, "OutNov": 3}
+                            out_v = out_vars(cases[ci]); qv = ios[ci]
+                            n_base = n_feat - len(set_mask)
+                            cap = min(len(pos), greedy_train_cap)
+                            ns = min(n_neg_samples, len(neg))
+                            sel_db = []
+                            for t in range(cap):
+                                if t == 0:
+                                    feat_t = feats  # 種：静的参照
+                                else:
+                                    setf = compute_set_aware_features(
+                                        cands, qv, eq_vars_l, eq_domains_l,
+                                        output_vars=out_v, ref_indices=sel_db,
+                                    )
+                                    feat_t = np.array(feats, dtype=np.float32, copy=True)
+                                    for i, name in enumerate(set_mask):
+                                        feat_t[:, n_base + i] = setf[:, idx_map[name]]
+                                scores = model(torch.tensor(feat_t, dtype=torch.float32))
+                                pk = c2k[pos[t]]
+                                chosen = rng.sample(neg, ns)
+                                for ng in chosen:
+                                    losses.append(F.relu(margin - scores[pk] + scores[c2k[ng]]))
+                                sel_db.append(pos[t])  # teacher forcing：正解接頭辞を既選択に
+                            continue
+
+                        scores = model(torch.tensor(feats, dtype=torch.float32))
                         pos_k = [c2k[p] for p in pos]
                         if loss_type == "listwise":
                             # multi-positive softmax CE: 各正解をリスト全体より上へ押す
@@ -383,7 +490,14 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                         graph, ios[ci], use_existing, set_mask,
                     )
                     scores = model(torch.tensor(feats, dtype=torch.float32)).numpy().ravel()
-                    if greedy and set_mask:
+                    k_stop = None
+                    if stop_dof and set_mask:
+                        ranked_topK, k_stop = greedy_close(
+                            cands, feats, scores, model, set_mask,
+                            eq_vars_l, eq_domains_l, out_vars(cases[ci]), ios[ci],
+                            n_feat - len(set_mask), in_vars(cases[ci]),
+                        )
+                    elif (greedy or train_greedy) and set_mask:
                         ranked_topK = greedy_order(
                             cands, feats, scores, model, set_mask,
                             eq_vars_l, eq_domains_l, out_vars(cases[ci]), ios[ci],
@@ -399,6 +513,17 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                     cm["n_input"] = len(in_vars(cases[ci]))
                     cm["n_output"] = len(out_vars(cases[ci]))
                     cm["n_sources"] = len({(eq_keys_l[j].split("__")[0] if j < len(eq_keys_l) else "?") for j in corr})
+                    if stop_dof and set_mask:
+                        # DoF=0 停止で予測した集合 と 正解K既知の上限、両方を採点
+                        inv = in_vars(cases[ci]); outv = out_vars(cases[ci])
+                        pred_dof = ranked_topK[:k_stop]
+                        pred_orc = ranked_topK[:len(corr)]
+                        cm.update(set_metrics(pred_dof, corr, suffix="_dof"))
+                        cm.update(set_metrics(pred_orc, corr, suffix="_oracleK"))
+                        cm["k_stop"] = int(k_stop)
+                        # 閉包の保証：DoF停止集合は構成上閉じる。oracle-K（スコア上位K件）は？
+                        cm["closed_dof"] = is_closed(pred_dof, eq_vars_l, inv, outv)
+                        cm["closed_oracleK"] = is_closed(pred_orc, eq_vars_l, inv, outv)
                     case_results.append(cm)
 
         agg = aggregate_metrics(case_results)
@@ -444,6 +569,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seeds", type=int, default=5)
+    parser.add_argument("--seed-list", type=str, default=None,
+                        help="使用するseedをカンマ区切りで明示指定（並列実行用、--seedsより優先）")
     parser.add_argument("--top-k", type=int, default=50)
     parser.add_argument("--epochs", type=int, default=15)
     parser.add_argument("--lr", type=float, default=1e-3)
@@ -476,13 +603,23 @@ def main():
                         help="hard negative マイニング（現在スコア上位の negative を採用）")
     parser.add_argument("--greedy", action="store_true",
                         help="推論時 greedy 集合構築（既選択集合を参照に set-aware を再計算）")
+    parser.add_argument("--train-greedy", action="store_true",
+                        help="学習版 greedy：teacher forcing で逐次集合構築を学習（推論も自動で greedy）")
+    parser.add_argument("--greedy-train-cap", type=int, default=8,
+                        help="学習版 greedy の逐次ステップ上限（既定 8）")
+    parser.add_argument("--stop-dof", action="store_true",
+                        help="DoF=0 停止規則で集合を予測（K を与えず系が閉じたら停止）。"
+                             "集合レベル指標 set_f1/set_exact/k_pred を per-case に記録")
     parser.add_argument("--split", type=str, default="random",
                         choices=["random", "stratified"],
                         help="train/test 分割：random（source_id ランダム）/ stratified（正解式数分布を均衡）")
     args = parser.parse_args()
 
     all_seeds = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
-    seeds = all_seeds[:args.seeds]
+    if args.seed_list:
+        seeds = [int(s) for s in args.seed_list.split(",") if s.strip()]
+    else:
+        seeds = all_seeds[:args.seeds]
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     eqs = load_equations(); cases = load_cases()
@@ -530,6 +667,9 @@ def main():
             hard_neg=args.hard_neg,
             greedy=args.greedy,
             split_mode=args.split,
+            train_greedy=args.train_greedy,
+            greedy_train_cap=args.greedy_train_cap,
+            stop_dof=args.stop_dof,
         )
 
     print(f"\n{'='*100}")
