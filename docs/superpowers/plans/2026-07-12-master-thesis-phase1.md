@@ -33,7 +33,7 @@
 | `thesis/master_thesis/figures/` | 論文用英語図（Task 4-5が生成） |
 | `analyze_significance.py` + `tests/test_significance.py` | baseline vs 本手法の対応あり検定（新規） |
 | `run_greedy_3way_A.sh` | 設定Aでの3者比較実行（30ジョブ） |
-| `analyze_greedy_3way_A.py` | 設定A 3者比較の集計・検定 |
+| `analyze_greedy_3way.py`（引数追加） | 設定A 3者比較の集計・検定（既定=DAE挙動不変） |
 | `generate_figures_thesis.py` | 論文用英語図の一括生成 |
 
 ---
@@ -452,7 +452,7 @@ git commit -m "feat: baseline vs 本手法の対応ありWilcoxon検定を追加
 
 **Files:**
 - Create: `run_greedy_3way_A.sh`
-- Create: `analyze_greedy_3way_A.py`（`analyze_greedy_3way.py` のコピーに3点の編集）
+- Modify: `analyze_greedy_3way.py`（argparse引数を追加。既定挙動は不変）
 - Output: `experiments/xg_A/{static,infer,train}__{seed}.json`（30本・コミットしない）、`experiments/greedy_3way_A_stats.json`、`docs/figures/fig_greedy_3way_A.png`
 
 **Interfaces:**
@@ -518,17 +518,19 @@ Run: `./run_greedy_3way_A.sh 2>&1 | tee experiments/xg_A/run.log`
 （1ジョブ=MLP訓練込みのため数分×30。スクリプトは非空JSONをskipする再開可能設計なので、中断しても再実行すればよい。バックグラウンド実行し完了を待つ間に Task 4 を進めてよい — Task 5 と Task 11 の前までに完了していること。）
 Expected: 最終行 `ALL JOBS FINISHED`、`ls experiments/xg_A/*.json | wc -l` → 30、FAIL行なし。
 
-- [ ] **Step 4: analyze_greedy_3way_A.py を作る**
+- [ ] **Step 4: analyze_greedy_3way.py に引数を追加する（ユーザー承認済み: コピーでなくDRY化）**
 
-`cp analyze_greedy_3way.py analyze_greedy_3way_A.py` してから、次の3点だけを編集する:
-1. 入力ディレクトリ: `XG = ROOT / "experiments" / "xg"` → `XG = ROOT / "experiments" / "xg_A"`
-2. 出力: `experiments/greedy_3way_stats.json` → `experiments/greedy_3way_A_stats.json`、`docs/figures/fig_greedy_3way.png` → `docs/figures/fig_greedy_3way_A.png`
-3. 図中の文字列: 「DAEのみ」→「設定A」、「(DAE)」→「(設定A)」、suptitle「学習版greedy 3者比較（DAEのみ・層化分割）」→「学習版greedy 3者比較（設定A・層化分割）」
+`analyze_greedy_3way.py` に argparse で次の4引数を追加する。**既定値は現行のハードコード値と厳密に一致させ、無引数実行の挙動・出力を完全に不変に保つ**:
+- `--dir`（既定 `experiments/xg`）: 入力ディレクトリ
+- `--out-json`（既定 `experiments/greedy_3way_stats.json`）
+- `--out-fig`（既定 `docs/figures/fig_greedy_3way.png`）
+- `--tag`（既定 `DAEのみ`）: 図中のデータセット表記（「DAEのみ」「(DAE)」を含むtitle/ylabel/suptitle文字列にこのタグを埋め込む形へ変更）
 （ファイル名正規表現 `(static|infer|train)__(\d+).json` と METRIC="Recall@K_correct" は変更しない。）
+無回帰確認: `python3 analyze_greedy_3way.py`（無引数）を実行し、`git diff --stat experiments/greedy_3way_stats.json docs/figures/fig_greedy_3way.png` で**統計JSONに差分が出ない**こと（図PNGはメタデータ差のみ許容、JSONは同一必須）。
 
-- [ ] **Step 5: 集計を実行して確認**
+- [ ] **Step 5: 設定Aの集計を実行して確認**
 
-Run: `python3 analyze_greedy_3way_A.py && python3 -c "import json; d=json.load(open('experiments/greedy_3way_A_stats.json')); print(json.dumps(d['overall'], indent=1)); print(json.dumps(d['tests']['train_vs_infer'], indent=1))"`
+Run: `python3 analyze_greedy_3way.py --dir experiments/xg_A --out-json experiments/greedy_3way_A_stats.json --out-fig docs/figures/fig_greedy_3way_A.png --tag 設定A && python3 -c "import json; d=json.load(open('experiments/greedy_3way_A_stats.json')); print(json.dumps(d['overall'], indent=1)); print(json.dumps(d['tests']['train_vs_infer'], indent=1))"`
 Expected: `overall` に static/infer/train の mean±std（n_seeds=10）。static の mean は 0.72〜0.78 程度（Step 2 と同水準）。DAE版（0.7237<0.7556<0.7649）と同様に static < infer ≤ train の順になるかを確認し、**ならなかった場合も値をそのまま記録**（結果の向きは論文で正直に書く。G2）。
 
 - [ ] **Step 6: development_log.tex に追記**
@@ -538,7 +540,7 @@ Expected: `overall` に static/infer/train の mean±std（n_seeds=10）。stati
 - [ ] **Step 7: Commit**
 
 ```bash
-git add run_greedy_3way_A.sh analyze_greedy_3way_A.py experiments/greedy_3way_A_stats.json docs/figures/fig_greedy_3way_A.png docs/development_log.tex
+git add run_greedy_3way_A.sh analyze_greedy_3way.py experiments/greedy_3way_A_stats.json docs/figures/fig_greedy_3way_A.png docs/development_log.tex
 git commit -m "feat: greedy3者比較を設定A(1,823件)に拡張（10シード・検定つき）"
 ```
 （`experiments/xg_A/` はコミットしない。）
