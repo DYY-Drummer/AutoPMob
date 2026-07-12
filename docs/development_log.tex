@@ -524,6 +524,7 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
   \item 開発記録の自動追記ルール（Cursor）とコミット時自動 push（post-commit フック）を導入。
   \item 初版：モデル変更、レートリミット対策、$c_w$/正規化の記録を追加。
   \item 2026-07-12（有意差検定スクリプト）：baseline vs reranker-10S の対応ある Wilcoxon 符号順位検定を実装（\texttt{analyze\_significance.py}）。設定A/B とも Recall@K\_correct・MAP・Recall@20 の全指標で p=0.00195（両側、10乱数全て reranker $>$ baseline のため理論最小値）。Cohen dz は Recall@K\_correct で11.9～12.9、MAP で9.4～32.3 と強効果。TDD に従い pytest で検証済み（tests/test\_significance.py）。出力は \texttt{experiments/significance\_stats.json}。
+  \item 2026-07-12（greedy 3者比較の設定A拡張）：DAEのみ（設定B相当）で実施済みの3者比較（静的参照／推論のみgreedy／学習版greedy）を設定A（原型+複数文献+DAE、1,823件）に拡張。\texttt{run\_greedy\_3way\_A.sh} を新規作成し、reranker-10S・層化分割・top-k 200・10シード（計30ジョブ）で実行。集計は \texttt{analyze\_greedy\_3way.py} を引数化（\texttt{-{}-dir}／\texttt{-{}-out-json}／\texttt{-{}-out-fig}／\texttt{-{}-tag}。無引数時の既定挙動・出力はバイト同一で不変）して流用。結果（Recall@K\_correct、seed平均±SD、n=10）：静的参照 $0.7568 \pm 0.0560$、推論のみgreedy $0.7865 \pm 0.0487$、学習版greedy $0.7968 \pm 0.0530$ で、DAEのみと同じ 静的 $<$ 推論 $<$ 学習版 の順序を再現。検定（Wilcoxon 符号順位、両側）：train vs static は $\Delta=+0.0400$、p=0.00195 で有意、infer vs static は $\Delta=+0.0297$、p=0.00195 で有意。一方 train vs infer は $\Delta=+0.0103$、p=0.13086 で有意差なし（DAEのみでは p=0.03711 で有意だった差が、設定Aでは検出されず）。最難端 X$\ge$8 でも train vs static は $\Delta=+0.0481$、p=0.00195 で有意、train vs infer は $\Delta=+0.0086$、p=0.06445 で有意差なし。統計は \texttt{experiments/greedy\_3way\_A\_stats.json}、図は \texttt{docs/figures/fig\_greedy\_3way\_A.png}（生の per-case 出力 \texttt{experiments/xg\_A/} はコミット対象外）。
 \end{itemize}
 
 \end{document}
