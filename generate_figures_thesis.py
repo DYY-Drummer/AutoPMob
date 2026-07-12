@@ -392,8 +392,8 @@ def _greedy_seed_means(dirname, config):
     return [float(np.mean(v)) for _, v in sorted(vals.items())]
 
 
-GREEDY_CONFIGS = [("static", "Static", C_BASE), ("infer", "Greedy (inference)", C_INFER),
-                  ("train", "Greedy (trained)", C_TRAIN)]
+GREEDY_CONFIGS = [("static", "Static", C_BASE), ("infer", "Greedy\n(inference)", C_INFER),
+                  ("train", "Greedy\n(trained)", C_TRAIN)]
 
 
 def greedy_3way():
@@ -424,7 +424,7 @@ def greedy_3way():
             means.append(sm.mean())
             sems.append(sm.std(ddof=1) / np.sqrt(len(sm)))
         ax.errorbar(xs, means, yerr=sems, marker="o", ms=4, lw=1.6, capsize=3,
-                    label=label, color=color)
+                    label=label.replace("\n", " "), color=color)
     ax.set_xlabel("Number of equations in the true model (DAE)")
     ax.set_title("(c) By difficulty (Setting B)")
     ax.legend(fontsize=8.5)
@@ -454,6 +454,11 @@ def dof_stop():
         oracle = _dof_seed_means(setting, "set_f1_oracleK")
         dof = _dof_seed_means(setting, "set_f1_dof")
         _box(ax, [oracle, dof], [i * 2.4 - 0.45, i * 2.4 + 0.45], [C_BASE, C_PROP])
+        dof_closed = stats_doc[setting]["closed_dof"]["mean"]
+        oracle_closed = stats_doc[setting]["closed_oracleK"]["mean"]
+        ax.text(i * 2.4, 1.02, f"closure {dof_closed:.2f} vs {oracle_closed:.2f} (oracle)",
+                ha="center", fontsize=7.5)
+    ax.set_ylim(top=1.10)
     ax.set_xticks([0, 2.4])
     ax.set_xticklabels([g[1] for g in groups])
     ax.set_ylabel("Set F1 (seed mean)")
