@@ -1,1 +1,65 @@
-% Chapter 1: Introduction — outline inserted by Task 6 of docs/superpowers/plans/2026-07-12-master-thesis-phase1.md
+% ============================================================
+% Chapter 1: Introduction — OUTLINE (Phase 1)
+% ============================================================
+\begin{itemize}
+  \item \textbf{P1.} Physical models are essential for realizing digital twins and play an important role in process design and operation in the process industry.
+  \begin{itemize}
+    \item Purpose-built tools such as MATLAB/Simulink\cite{simulink} and Aspen Plus\cite{aspen} let engineers build models quickly, but only for the processes they support.
+    \item For unsupported processes, engineers must survey a vast number of documents and refine a prototype by trial and error.
+    \item (wrap) Physical model building therefore remains time-consuming and labor-intensive.
+  \end{itemize}
+
+  \item \textbf{P2.} To free engineers from this laborious work, our group aims to develop an automated physical model builder (AutoPMoB).
+  \begin{itemize}
+    \item AutoPMoB collects documents about a target process, extracts formulas, variables, and experimental data, and reorganizes them into a desired model.
+    \item Fundamental technologies have been developed step by step, such as judging the equivalence of variable definitions across documents\cite{ProcessBERT}.
+    \item (wrap) This study addresses the next fundamental step: assembling extracted equations into the model.
+  \end{itemize}
+
+  \item \textbf{P3.} Given a description of the desired model and its input and output variables, this study retrieves the set of equations that composes the model from an equation database built from multiple documents.
+  \begin{itemize}
+    \item A physical model is not a list of independent equations but a system of equations that share variables and must be solved simultaneously; the system is solvable when the number of equations equals the number of unknown variables (zero degrees of freedom).
+    \item Example: the concentration dynamics of a continuous stirred-tank reactor (CSTR) requires three coupled equations — a mass-balance ordinary differential equation, a reaction-rate equation, and the Arrhenius equation.
+    \item Text similarity alone cannot capture these inter-equation dependencies, especially when the equations come from different documents.
+    \item (wrap) Retrieval must therefore evaluate candidate equations as a set, not one by one.
+  \end{itemize}
+
+  \item \textbf{P4.} We propose a two-stage retrieval method whose second stage evaluates each candidate against the already selected equations with set-aware features.
+  \begin{itemize}
+    \item Stage 1 narrows candidates with seven query--equation features such as text similarity and variable overlap.
+    \item Stage 2 reranks candidates with a multilayer perceptron (MLP) using three additional set-aware features: complementarity, coherence, and domain agreement.
+    \item We further introduce a learned greedy selection trained with teacher forcing, and a self-terminating criterion (DoF-stop) that stops retrieval when the selected set becomes a closed system.
+    \item (wrap) The method returns a ranked, solvable equation set without knowing the answer size.
+  \end{itemize}
+
+  \item \textbf{P5.} To evaluate the method under realistic difficulty, we construct a large equation database and solvable test cases, and split them so that no document leaks between training and testing.
+  \begin{itemize}
+    % source: docs/progress_report_2026-06-14_seminar.tex §3（11,146式・361ソース・2,838件）
+    \item The database holds 11,146 equations from 361 sources; 2,838 training cases include 1,000 differential--algebraic equation (DAE) cases generated to be solvable by construction.
+    \item Sources are assigned wholly to train, validation, or test, and the split is stratified so that four difficulty-related distributions match between train and test.
+    \item (wrap) Evaluation uses 10 random splits and reports the mean and spread.
+  \end{itemize}
+
+  \item \textbf{P6.} Experiments show that the proposed method retrieves equation sets far better than a classical information-retrieval baseline and than direct generation by a large language model (LLM), and analyses explain why.
+  \begin{itemize}
+    % source: experiments/strat_A.json / strat_B.json results.*.Recall@K_correct
+    \item Recall@K improves from 0.521 to 0.743 in Setting A and from 0.466 to 0.689 in the hardest DAE-only setting (both +0.22, Wilcoxon signed-rank test).
+    % source: llm_set_A_equiv_results.json / llm_set_B_equiv_results.json
+    \item LLM direct generation reaches only 0.23--0.30 even with equivalence-based scoring.
+    % source: experiments/feature_x_difficulty_stats.json overall_tests
+    \item The structural set-aware features (complementarity and coherence) cause the improvement; the domain feature contributes nothing (p = 0.98).
+    % source: experiments/greedy_3way_stats.json, experiments/dof_stop_stats.json
+    \item Learned greedy selection recovers the saturation on the hardest cases, and DoF-stop returns closed systems more often than the oracle that knows the answer size.
+    \item (wrap) These results establish set-aware retrieval as a practical component of AutoPMoB.
+  \end{itemize}
+
+  \item \textbf{P7.} The contributions of this thesis are threefold.
+  \begin{itemize}
+    \item A solvable-by-construction dataset: an 11,146-equation database, DAE case generation with zero degrees of freedom, and a stratified source-disjoint split.
+    \item A set-aware two-stage retrieval method with learned greedy selection and self-terminating DoF-stop.
+    \item An empirical account of the mechanism: which features cause the improvement, where it saturates, and how the intervention recovers it.
+  \end{itemize}
+
+  \item \textbf{P8.} The rest of this thesis is organized as follows. (Chapter roadmap: Related work → Method → Dataset → Experiments → Results and discussion → Conclusion.)
+  % Fig. 1（AutoPMoB全体像と本研究の位置づけ）は Phase 2 で作成し、P2 の直後に挿入する。
+\end{itemize}
