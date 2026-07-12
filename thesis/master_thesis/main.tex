@@ -1,0 +1,192 @@
+\documentclass[uplatex,a4j,onecolumn,11pt,openany,english,oneside]{jsbook}
+\usepackage{array,enumerate}
+\usepackage[dvipdfmx]{graphicx,color}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{amssymb}
+\usepackage{comment}
+\usepackage{algorithmic,algorithm}
+\usepackage{otf}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{remreset}
+\usepackage{ascmac}
+\usepackage{multirow}
+\usepackage{appendix}
+\usepackage{url}
+\usepackage{setspace}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{lscape}
+\usepackage{threeparttable}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{arydshln}
+\captionsetup[table]{labelsep=period, labelfont=bf, justification=centering, singlelinecheck=off}
+\captionsetup[figure]{labelsep=period, labelfont=bf, justification=centering, singlelinecheck=off}
+
+% 図表を通し番号にする（テンプレート踏襲）
+\makeatletter
+	\@removefromreset{figure}{chapter}
+	\def\thefigure{\arabic{figure}}
+	\@removefromreset{table}{chapter}
+	\def\thetable{\arabic{table}}
+	\@removefromreset{equation}{chapter}
+	\def\theequation{\arabic{equation}}
+\makeatother
+\setlength{\textwidth}{\fullwidth}
+\setlength{\evensidemargin}{\oddsidemargin}
+\setstretch{1.3}
+
+\newcommand{\argmax}{\mathop{\rm arg~max}\limits}
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+
+\renewcommand{\figurename}{Fig. }
+\renewcommand{\tablename}{Table }
+\renewcommand{\bibname}{References}
+\renewcommand{\contentsname}{Contents}
+\renewcommand{\prechaptername}{Chapter }
+\renewcommand{\postchaptername}{}
+
+\makeatletter
+ \def\@cite#1{\textsuperscript{#1)}}
+ \def\@biblabel#1{#1)}
+\makeatother
+
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{5pt}
+
+\begin{document}
+\thispagestyle{empty}
+%%%%% 表紙 %%%%%
+\begin{center}
+\vspace*{3mm}
+{\huge  修士論文}
+\vspace{10mm}
+
+{\huge Set-aware Retrieval of Equation Sets\\ from Multiple Documents\\ for Automated Physical Model Building\\}
+\vspace{5mm}
+{\LARGE 物理モデル自動構築に向けた複数文献からの\\
+\vspace{5mm}
+集合を考慮した数式検索}
+
+\vspace{12mm}
+
+{\huge ~指導教員　　加納　学　　教授}\\
+\vspace{3mm}
+\vspace{12mm}
+
+{\huge 京都大学大学院情報学研究科}\\
+\vspace{3mm}
+{\huge システム科学専攻修士課程}\\
+\vspace{3mm}
+{\huge 令和 7 年度入学}\\
+\vspace{30mm}
+
+{\huge DING YIYANG}\\
+\vspace{12mm}
+{\huge 令和 9 年 2 月提出}
+\end{center}
+
+\newpage
+%%%%% Abstract（初稿。全章完成後に書き直す） %%%%%
+\thispagestyle{empty}
+{\huge \bf Abstract}
+\\
+\\
+\\
+\\
+\\
+Physical models are essential for digital twins and play an important role in process design and operation in the process industry.
+Building a physical model requires engineers to survey a vast number of documents and to assemble the equations scattered across them into a solvable system.
+To automate this work, we aim to develop an automated physical model builder (AutoPMoB).
+This study addresses one of its core tasks: given a description of the desired model and its input and output variables, retrieve the set of equations that composes the model from an equation database built from multiple documents.
+
+We propose a two-stage retrieval method.
+The first stage narrows candidates with seven query--equation features such as text similarity, and the second stage reranks them with three set-aware features that evaluate each candidate against the already selected set: complementarity, coherence, and domain agreement.
+We further introduce a learned greedy selection trained with teacher forcing and a self-terminating criterion that stops retrieval when the selected equations form a closed system with zero degrees of freedom.
+% source: experiments/strat_A.json results.*.Recall@K_correct
+On a database of 11,146 equations from 361 sources, the proposed method improves Recall@K from 0.521 to 0.743 against a classical information-retrieval baseline and also outperforms direct generation by a large language model.
+Analyses show that the structural set-aware features cause the improvement, that the improvement grows on harder cases, and that the self-terminating criterion returns solvable systems without knowing the answer size.
+
+\newpage
+%%%%% 目次 %%%%%
+\pagenumbering{roman}
+\setcounter{tocdepth}{4}
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+
+\newpage
+\pagenumbering{arabic}
+\chapter{Introduction}
+\label{Introduction}
+\input{Introduction}
+\clearpage
+
+\chapter{Related Work}
+\label{RelatedWork}
+\input{RelatedWork}
+\clearpage
+
+\chapter{Set-aware Equation-Set Retrieval}
+\label{Method}
+\input{Method}
+\clearpage
+
+\chapter{Equation Database and Test Case Construction}
+\label{Dataset}
+\input{Dataset}
+\clearpage
+
+\chapter{Experiments}
+\label{Experiment}
+\input{Experiment}
+\clearpage
+
+\chapter{Results and Discussion}
+\label{ResultsAndDiscussion}
+\input{ResultsAndDiscussion}
+\clearpage
+
+\chapter{Conclusion}
+\label{Conclusion}
+\input{Conclusion}
+\clearpage
+
+%%%%% References（Phase 2で拡充。現時点は確実に使う実在文献のみ） %%%%%
+\begin{thebibliography}{99}
+
+\bibitem{simulink}
+Simulink - Simulation and Model-Based Design - MATLAB \& Simulink.
+\ \url{https://www.mathworks.com/products/simulink.html}.
+\ (Accessed on 2026/07/12).
+
+\bibitem{aspen}
+AspenTech | Asset Optimization Software.
+\ \url{https://www.aspentech.com/}.
+\ (Accessed on 2026/07/12).
+
+\bibitem{ProcessBERT}
+金上和毅.
+\ Development of ProcessBERT for Judging Equivalence of Variables among Multiple Documents.
+\ 京都大学大学院情報学研究科システム科学専攻 修士論文, 2022.
+
+\bibitem{BERT}
+J. Devlin, M. Chang, K. Lee, K. Toutanova.
+\ BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.
+\ {\it Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies}, {\bf 1}, pp.4171-4186, 2019.
+
+\end{thebibliography}
+
+%%%%% 謝辞（最終段階で執筆） %%%%%
+%\newpage
+%\chapter*{謝辞}
+
+\newpage
+\appendix
+\def\thechapter{Appendix \Alph{chapter}}
+\input{Appendix}
+\thispagestyle{empty}
+\end{document}
