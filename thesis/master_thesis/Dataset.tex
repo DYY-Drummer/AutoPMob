@@ -30,7 +30,9 @@
 \begin{itemize}
   \item \textbf{P3.} Earlier test cases were biased toward few and algebraic equations, so we regenerated hard cases as differential--algebraic systems that are solvable by construction.
   \begin{itemize}
+    % source: docs/progress_report_2026-06-14_seminar.tex §5 の手順ボックス
     \item Procedure (proposed by Mr.\ Kato): start from an ordinary differential equation, take its differentiated variable as an output, repeatedly add equations that share non-output variables, and stop at the target size $X$; accept only square systems in which the number of unknowns equals the number of equations (zero degrees of freedom).
+    % source: docs/progress_report_2026-06-14_seminar.tex §5（手順・X=1..10×100件）; 実装 generate_dae_cases.py
     \item $X = 1, \dots, 10$ with 100 cases each (1,000 in total); only the case description is written by an LLM (Anthropic Claude), everything else is rule-based.
     \item CSTR example: mass-balance ODE + reaction-rate equation $r_A = k C_A$ + Arrhenius equation $k = A \exp(-E/RT)$.
     \item (wrap) The construction guarantees that a correct answer exists and is solvable.
@@ -41,7 +43,9 @@
 \begin{itemize}
   \item \textbf{P4.} Sources are assigned wholly to train, validation, or test, and the assignment is chosen so that difficulty-related distributions match across splits.
   \begin{itemize}
+    % source: docs/progress_report_2026-06-14_seminar.tex §4（6:2:2・400候補）; 実装 set_aware_reranker.py stratified_src_split
     \item Source-disjoint assignment (roughly 6:2:2) prevents answer leakage through paraphrases of the same document.
+    % source: docs/progress_report_2026-06-14_seminar.tex §4（6:2:2・400候補）; 実装 set_aware_reranker.py stratified_src_split
     \item Among 400 random candidate assignments, we select the one minimizing the summed $L_1$ distance of four distributions: number of equations, input variables, output variables, and spanned sources.
     % source: docs/progress_report_2026-06-14_seminar.tex §4（L1 0.27→0.07 等。Phase 2 で一次ソースから再導出する）
     \item Evaluation repeats over 10 random seeds and reports mean and spread. (Figure: fig\_split\_balance)
