@@ -60,7 +60,7 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
   \item \textbf{P4.} Feature-by-difficulty ablation shows that the structural set-aware features cause the improvement, while the domain feature contributes nothing.
   \begin{itemize}
     % source: experiments/feature_x_difficulty_stats.json overall_tests
-    \item Adding complementarity alone: +0.052 ($p < 0.001$); coherence alone: +0.050 ($p < 0.001$); domain alone: $-0.0001$ ($p = 0.98$).
+    \item Adding complementarity alone: +0.052 (Wilcoxon $p = 0.00195$); coherence alone: +0.050 (Wilcoxon $p = 0.00195$); domain alone: $-0.0001$ ($p = 0.98$).
     \item All three together add +0.050 over the 7-feature reranker (0.693 → 0.743), so the pure set-feature contribution is about +0.05 of the total +0.22; the rest comes from the MLP learning the 7 base features.
     % source: experiments/feature_x_difficulty_stats.json lift_by_n_correct / lift_by_n_input
     \item The lift has a threshold-and-hump shape: none for single-equation cases ($-0.01$ at $X=1$), peak at $X=3$ (+0.12), and saturation at the hardest end (input variables $\ge 16$).
@@ -77,7 +77,7 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
     % source: experiments/greedy_3way_stats.json tests.train_vs_infer
     \item Learned greedy beats inference-only greedy by +0.009 (Wilcoxon $p = 0.037$) — training must match inference.
     % source: experiments/greedy_3way_stats.json tests_hard_X8plus.train_vs_static
-    \item The gain concentrates at the predicted saturation: at $X \ge 8$, learned greedy beats static by +0.056 ($p < 0.001$).
+    \item The gain concentrates at the predicted saturation: at $X \ge 8$, learned greedy beats static by +0.056 (Wilcoxon $p = 0.00195$).
     % source: experiments/greedy_3way_A_stats.json overall / tests
     \item Setting A: static 0.757 $<$ inference greedy 0.787 $<$ learned greedy 0.797; both greedy variants beat static significantly (Wilcoxon $p = 0.00195$), while the learned-vs-inference increment (+0.010) is directionally consistent but not significant in this setting ($p = 0.13$).
     \item (wrap) Predict saturation → intervene → recover: the arc establishes causality, not mere correlation. (Figure: fig\_greedy\_3way)
