@@ -1,1 +1,65 @@
-% Chapter 3: Set-aware Equation-Set Retrieval — outline inserted by Task 8 of docs/superpowers/plans/2026-07-12-master-thesis-phase1.md
+% ============================================================
+% Chapter 3: Set-aware Equation-Set Retrieval — OUTLINE (Phase 1)
+% 特徴量定義の source: two_stage_query_conditioned.py compute_features (L212-236),
+%                     set_aware_reranker.py docstring (gComp/gCoh/gDom) — 実装と一致させること
+% ============================================================
+\section{Problem Formulation}
+\begin{itemize}
+  \item \textbf{P1.} We formulate equation-set retrieval as ranking the equations in a database against a query that specifies the desired model.
+  \begin{itemize}
+    \item Query $q = (c, \mathcal{I}, \mathcal{O})$: a natural-language description $c$, input variables $\mathcal{I}$, and output variables $\mathcal{O}$.
+    \item Database $\mathcal{E} = \{e_j\}$: each equation has its variable set $V(e_j)$, source document, and domain label.
+    \item Ground truth: the equation set $\mathcal{R}_q \subset \mathcal{E}$ that composes the target model.
+    \item Degrees of freedom of a selected set $S$: $\mathrm{DoF}(S) = |\mathrm{unknowns}(S)| - |S|$; the system is closed (solvable given the inputs) when $\mathrm{DoF}(S) = 0$.
+    \item (wrap) The goal is to rank $\mathcal{R}_q$ at the top and, optionally, to return a closed set without knowing $|\mathcal{R}_q|$.
+  \end{itemize}
+\end{itemize}
+
+\section{Stage 1: Candidate Retrieval with Query--Equation Features}
+\begin{itemize}
+  \item \textbf{P2.} The first stage scores each equation independently with seven query--equation features.
+  \begin{itemize}
+    % source: two_stage_query_conditioned.py compute_features L212-236（f0〜f6）
+    \item (1) TF-IDF cosine similarity between the description and the equation text; (2) Jaccard similarity between the query I/O variables and the equation variables; (3) latent text similarity after singular-value decomposition (SVD); (4) input-variable coverage; (5) output-variable coverage; (6) fraction of the equation's variables that appear in the query I/O set; (7) binary domain match.
+    \item The top-$k$ candidates by this score form the reference set for Stage 2.
+    \item (wrap) Stage 1 is a strong classical-IR method on its own and serves as the baseline.
+  \end{itemize}
+\end{itemize}
+
+\section{Stage 2: Set-aware Reranking}
+\begin{itemize}
+  \item \textbf{P3.} The second stage evaluates each candidate not in isolation but against a reference set, using three set-aware features.
+  \begin{itemize}
+    % source: set_aware_reranker.py docstring（gComp/gCoh/gDom の定義）
+    \item Complementarity $g_{\mathrm{Comp}} = |V(e) \cap \mathcal{Q} \setminus \bigcup V(\mathrm{ref})| / |\mathcal{Q}|$: how many still-uncovered query variables the candidate supplies.
+    \item Coherence $g_{\mathrm{Coh}} = |V(e) \cap \bigcup V(\mathrm{ref})| / |V(e)|$: how strongly the candidate shares variables with the reference set.
+    \item Domain agreement $g_{\mathrm{Dom}}$: the fraction of the reference set that shares the candidate's domain.
+    \item A multilayer perceptron (one hidden layer of 64 units, ReLU, dropout 0.1) scores the 10 features (7 + 3) and is trained with a pairwise ranking loss (margin 0.1).
+    % source: experiments/strat_A.json config（hidden_dim 64, margin 0.1, loss pairwise）
+    \item (wrap) We call this configuration reranker-10S.
+  \end{itemize}
+\end{itemize}
+
+\section{Sequential Selection Strategies}
+\begin{itemize}
+  \item \textbf{P4.} Because set-aware features depend on what has already been selected, we compare three selection strategies.
+  \begin{itemize}
+    \item Static: set features are computed once against the fixed Stage-1 top-$k$ reference.
+    \item Greedy at inference: after each selection, set features are recomputed against the already selected set; the model itself is trained statically.
+    \item Learned greedy: the model is also \emph{trained} on sequential contexts with teacher forcing — during training the true partial set is given as the reference, so training matches inference.
+    % source: set_aware_reranker.py --train-greedy, --greedy-train-cap 8
+    \item (wrap) The comparison isolates the effect of matching the training condition to the inference condition.
+  \end{itemize}
+\end{itemize}
+
+\section{Self-terminating Retrieval with Degrees of Freedom}
+\begin{itemize}
+  \item \textbf{P5.} Retrieval should stop by itself when the selected equations form a solvable system, rather than requiring the answer size $K$.
+  \begin{itemize}
+    \item DoF-stop keeps selecting greedily and stops when $\mathrm{DoF}(S) = 0$, i.e., when every non-input variable is determined by some equation.
+    % source: set_aware_reranker.py --stop-dof（greedy_close）
+    \item The returned set is closed by construction, which is exactly what a downstream simulator needs.
+    \item (wrap) DoF-stop turns the ranker into a self-contained model builder that needs no oracle knowledge.
+  \end{itemize}
+\end{itemize}
+% 手法パイプライン図（2段階＋greedy＋DoF停止）は Phase 2 で作成し §3.2 冒頭に挿入する。
