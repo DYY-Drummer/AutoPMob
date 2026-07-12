@@ -1,1 +1,58 @@
-% Chapter 5: Experiments — outline inserted by Task 10 of docs/superpowers/plans/2026-07-12-master-thesis-phase1.md
+% ============================================================
+% Chapter 5: Experiments — OUTLINE (Phase 1)
+% ============================================================
+\section{Evaluation Settings}
+\begin{itemize}
+  \item \textbf{P1.} We evaluate on two settings that exclude training-only augmentation, because augmentation inflates the baseline and hides the true difficulty.
+  \begin{itemize}
+    \item Setting A: original + multi-source + DAE cases (1,823). Setting B: DAE only (1,000), the hardest setting.
+    % source: experiments/strat_full.json vs strat_A.json baseline Recall@K_correct（0.6218 vs 0.5206）
+    \item With augmentation included, the baseline rises from 0.521 to 0.622 (+0.101), shrinking the apparent gap of the proposed method from +0.222 to +0.156.
+    \item (wrap) All results use the stratified source-disjoint split with 10 random seeds.
+  \end{itemize}
+\end{itemize}
+
+\section{Compared Methods}
+\begin{itemize}
+  \item \textbf{P2.} We compare the proposed method against one internal and one external baseline.
+  \begin{itemize}
+    \item Baseline (classical IR): Stage-1 ranking with the seven query--equation features.
+    \item Proposed (reranker-10S): Stage-2 set-aware reranking; greedy and DoF-stop variants are examined in Sections 6.4--6.5.
+    \item LLM direct generation (external): the LLM generates the needed equations from the query alone; generated equations are matched to the database with LLM-based equivalence judgment and then ranked.
+    % source: llm_set_*_equiv_results.json（n=48〜50、等価判定モデル claude-opus-4-8）
+    \item (wrap) The LLM comparison uses a uniform sample of about 50 cases per setting because equivalence judgment is expensive.
+  \end{itemize}
+\end{itemize}
+
+\section{Evaluation Metrics}
+\begin{itemize}
+  \item \textbf{P3.} The primary metric is Recall@$K$ with the window matched to the answer size $K$ of each case.
+  \begin{itemize}
+    \item Recall@$K$ measures whether the needed equations are placed in the top $K$, no more and no less; a fixed window (e.g., Recall@3) over- or under-rewards cases whose $K$ differs from 3.
+    \item Secondary metrics: MAP (mean average precision) and Recall@20 (screening with human review in mind).
+    \item For self-terminating retrieval: exact-match rate of the returned set, set F1, and closure rate (fraction of returned sets with zero degrees of freedom).
+    \item (wrap) Together the metrics cover ranking quality, screening utility, and solvability.
+  \end{itemize}
+\end{itemize}
+
+\section{Implementation and Reproducibility}
+\begin{itemize}
+  \item \textbf{P4.} All experiments run as deterministic scripts against pinned application programming interface (API) models, so that a third party can reproduce them.
+  \begin{itemize}
+    % source: docs/progress_report_2026-06-14_seminar.tex §6（claude-sonnet-4-5-20250929）
+    \item LLM-dependent steps (DAE descriptions, LLM baseline) call date-pinned API models; the proposed method itself uses no LLM.
+    \item Hyperparameters are listed in Appendix A.
+    \item (wrap) Scripts, data, and random seeds are versioned in the repository.
+  \end{itemize}
+\end{itemize}
+
+\section{Statistical Testing}
+\begin{itemize}
+  \item \textbf{P5.} Paired differences over the 10 seeds are tested with the Wilcoxon signed-rank test (with the paired $t$-test as reference).
+  \begin{itemize}
+    % source: experiments/significance_stats.json（Task 2）
+    \item Baseline vs.\ proposed in Settings A and B; static vs.\ greedy variants in Section 6.4.
+    \item We report effect size (Cohen's $d_z$) together with $p$-values; "significant" is used only after these tests.
+    \item (wrap) With $n = 10$ pairs the smallest two-sided Wilcoxon $p$ is 0.00195.
+  \end{itemize}
+\end{itemize}
