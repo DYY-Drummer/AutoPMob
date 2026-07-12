@@ -308,8 +308,186 @@ def method_comparison():
     save(fig, "fig_method_comparison")
 
 
+# ----------------------------------------------------------------------
+# mechanism() — feature x difficulty cross (per Task 5 brief Step 1)
+# ----------------------------------------------------------------------
+MODES_MECH = [
+    ("reranker-7+Comp", "+Complementarity (gComp)", "#1a73e8"),
+    ("reranker-7+Coh", "+Coherence (gCoh)", "#188038"),
+    ("reranker-7+Dom", "+Domain (gDom)", "#9aa0a6"),
+    ("reranker-10S", "All three (10S)", "#d93025"),
+]
+BASE_MECH = "reranker-7"
+
+
+def _seed_bucket_means(per_case, bucket_fn):
+    """per_case を (seed, bucket) 別に平均 → {bucket: {seed: mean}}."""
+    acc = {}
+    for rec in per_case:
+        b = bucket_fn(rec)
+        if b is None:
+            continue
+        acc.setdefault(b, {}).setdefault(rec["seed"], []).append(rec["Recall@K_correct"])
+    return {b: {s: float(np.mean(v)) for s, v in d.items()} for b, d in acc.items()}
+
+
+def _lift_sem(base_by, mode_by):
+    """シード対応リフトの mean±SEM を bucket ごとに返す."""
+    out = {}
+    for b in sorted(set(base_by) & set(mode_by)):
+        seeds = sorted(set(base_by[b]) & set(mode_by[b]))
+        d = np.array([mode_by[b][s] - base_by[b][s] for s in seeds])
+        if len(d) >= 2:
+            out[b] = (float(d.mean()), float(d.std(ddof=1) / np.sqrt(len(d))))
+    return out
+
+
+def mechanism():
+    doc = json.load(open(EXP / "ablation_x_difficulty.json"))
+    res = doc["results"]
+    nin_edges = [(1, 3, "1–3"), (4, 6, "4–6"), (7, 10, "7–10"), (11, 15, "11–15"), (16, 10**9, "≥16")]
+
+    def by_x(rec):
+        return rec["n_correct"] if 1 <= rec["n_correct"] <= 10 else None
+
+    def by_nin(rec):
+        for lo, hi, lab in nin_edges:
+            if lo <= rec["n_input"] <= hi:
+                return lab
+        return None
+
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
+    for bucket_fn, ax, xlabel, order in [
+        (by_x, axes[0], "Number of equations in the true model", list(range(1, 11))),
+        (by_nin, axes[1], "Number of input variables", [e[2] for e in nin_edges]),
+    ]:
+        base_by = _seed_bucket_means(res[BASE_MECH]["per_case"], bucket_fn)
+        for mode, label, color in MODES_MECH:
+            ls = _lift_sem(base_by, _seed_bucket_means(res[mode]["per_case"], bucket_fn))
+            xs = [b for b in order if b in ls]
+            ax.errorbar(range(len(xs)), [ls[b][0] for b in xs], yerr=[ls[b][1] for b in xs],
+                        marker="o", ms=4, lw=1.6, capsize=3, label=label, color=color)
+        ax.axhline(0, color="black", lw=0.8)
+        ax.set_xticks(range(len([b for b in order if b in ls])))
+        ax.set_xticklabels([str(b) for b in order if b in ls])
+        ax.set_xlabel(xlabel)
+        ax.grid(alpha=0.3)
+    axes[0].set_ylabel("Recall@K lift over 7-feature reranker")
+    axes[0].set_title("(a) Stratified by number of equations")
+    axes[1].set_title("(b) Stratified by number of input variables")
+    axes[0].legend(fontsize=8.5)
+    save(fig, "fig_mechanism")
+
+
+# ----------------------------------------------------------------------
+# greedy_3way() — static / inference-greedy / trained-greedy comparison
+# ----------------------------------------------------------------------
+def _greedy_seed_means(dirname, config):
+    vals = {}
+    for f in sorted((EXP / dirname).glob(f"{config}__*.json")):
+        doc = json.load(open(f))
+        for mode_res in doc["results"].values():
+            for rec in mode_res.get("per_case", []):
+                vals.setdefault(rec["seed"], []).append(rec["Recall@K_correct"])
+    return [float(np.mean(v)) for _, v in sorted(vals.items())]
+
+
+GREEDY_CONFIGS = [("static", "Static", C_BASE), ("infer", "Greedy (inference)", C_INFER),
+                  ("train", "Greedy (trained)", C_TRAIN)]
+
+
+def greedy_3way():
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4.2))
+    for ax, dirname, title in [(axes[0], "xg", "(a) Setting B (DAE only)"),
+                               (axes[1], "xg_A", "(b) Setting A")]:
+        data = [_greedy_seed_means(dirname, c) for c, _, _ in GREEDY_CONFIGS]
+        _box(ax, data, [0, 1, 2], [c for _, _, c in GREEDY_CONFIGS])
+        ax.set_xticks([0, 1, 2])
+        ax.set_xticklabels([lab for _, lab, _ in GREEDY_CONFIGS], fontsize=8.5)
+        ax.set_title(title)
+        ax.grid(axis="y", alpha=0.3)
+    axes[0].set_ylabel("Recall@K (seed mean)")
+    # (c) DAE の正解式数別（シード別平均の mean±SEM）
+    ax = axes[2]
+    for config, label, color in GREEDY_CONFIGS:
+        acc = {}
+        for f in sorted((EXP / "xg").glob(f"{config}__*.json")):
+            doc = json.load(open(f))
+            for mode_res in doc["results"].values():
+                for rec in mode_res.get("per_case", []):
+                    acc.setdefault(rec["n_correct"], {}).setdefault(rec["seed"], []).append(
+                        rec["Recall@K_correct"])
+        xs = sorted(x for x in acc if 1 <= x <= 10)
+        means, sems = [], []
+        for x in xs:
+            sm = np.array([np.mean(v) for v in acc[x].values()])
+            means.append(sm.mean())
+            sems.append(sm.std(ddof=1) / np.sqrt(len(sm)))
+        ax.errorbar(xs, means, yerr=sems, marker="o", ms=4, lw=1.6, capsize=3,
+                    label=label, color=color)
+    ax.set_xlabel("Number of equations in the true model (DAE)")
+    ax.set_title("(c) By difficulty (Setting B)")
+    ax.legend(fontsize=8.5)
+    ax.grid(alpha=0.3)
+    save(fig, "fig_greedy_3way")
+
+
+# ----------------------------------------------------------------------
+# dof_stop() — DoF-based self-stopping vs. oracle-K
+# ----------------------------------------------------------------------
+def _dof_seed_means(setting, key):
+    vals = {}
+    for f in sorted((EXP / "xd_dof").glob(f"{setting}__*.json")):
+        doc = json.load(open(f))
+        for mode_res in doc["results"].values():
+            for rec in mode_res.get("per_case", []):
+                vals.setdefault(rec["seed"], []).append(rec[key])
+    return [float(np.mean(v)) for _, v in sorted(vals.items())]
+
+
+def dof_stop():
+    stats_doc = json.load(open(EXP / "dof_stop_stats.json"))
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
+    ax = axes[0]
+    groups = [("dae", "Setting B (DAE)"), ("A", "Setting A")]
+    for i, (setting, glabel) in enumerate(groups):
+        oracle = _dof_seed_means(setting, "set_f1_oracleK")
+        dof = _dof_seed_means(setting, "set_f1_dof")
+        _box(ax, [oracle, dof], [i * 2.4 - 0.45, i * 2.4 + 0.45], [C_BASE, C_PROP])
+    ax.set_xticks([0, 2.4])
+    ax.set_xticklabels([g[1] for g in groups])
+    ax.set_ylabel("Set F1 (seed mean)")
+    ax.set_title("(a) Oracle-K vs. DoF-stop")
+    handles = [plt.Rectangle((0, 0), 1, 1, fc=C_BASE, alpha=0.85, label="Oracle-K (K given)"),
+               plt.Rectangle((0, 0), 1, 1, fc=C_PROP, alpha=0.85, label="DoF-stop (K unknown)")]
+    ax.legend(handles=handles, fontsize=8.5, loc="lower right")
+    ax.grid(axis="y", alpha=0.3)
+    ax = axes[1]
+    series = [("set_f1_oracleK", "Set F1, oracle-K", C_BASE), ("set_f1_dof", "Set F1, DoF-stop", C_PROP),
+              ("set_exact_dof", "Exact match, DoF-stop", C_TRAIN)]
+    for key, label, color in series:
+        acc = {}
+        for f in sorted((EXP / "xd_dof").glob("dae__*.json")):
+            doc = json.load(open(f))
+            for mode_res in doc["results"].values():
+                for rec in mode_res.get("per_case", []):
+                    acc.setdefault(rec["n_correct"], {}).setdefault(rec["seed"], []).append(rec[key])
+        xs = sorted(x for x in acc if 1 <= x <= 10)
+        sm = [np.array([np.mean(v) for v in acc[x].values()]) for x in xs]
+        ax.errorbar(xs, [m.mean() for m in sm], yerr=[m.std(ddof=1) / np.sqrt(len(m)) for m in sm],
+                    marker="o", ms=4, lw=1.6, capsize=3, label=label, color=color)
+    ax.set_xlabel("Number of equations in the true model (DAE)")
+    ax.set_title("(b) By difficulty (Setting B)")
+    ax.legend(fontsize=8.5)
+    ax.grid(alpha=0.3)
+    save(fig, "fig_dof_stop")
+
+
 if __name__ == "__main__":
     dataset()
     split_balance()
     method_comparison()
     characteristic()
+    mechanism()
+    greedy_3way()
+    dof_stop()
