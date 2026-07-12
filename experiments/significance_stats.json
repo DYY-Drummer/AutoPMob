@@ -1,0 +1,92 @@
+{
+ "A": {
+  "file": "strat_A.json",
+  "seeds": [
+   42,
+   123,
+   456,
+   789,
+   1024,
+   2024,
+   3141,
+   5926,
+   7777,
+   9999
+  ],
+  "Recall@K_correct": {
+   "n": 10,
+   "mean_base": 0.5206,
+   "mean_rer": 0.7429,
+   "mean_delta": 0.2223,
+   "std_delta": 0.0187,
+   "p_ttest": 0.0,
+   "p_wilcoxon": 0.00195,
+   "cohen_dz": 11.893
+  },
+  "MAP": {
+   "n": 10,
+   "mean_base": 0.5813,
+   "mean_rer": 0.8629,
+   "mean_delta": 0.2815,
+   "std_delta": 0.0087,
+   "p_ttest": 0.0,
+   "p_wilcoxon": 0.00195,
+   "cohen_dz": 32.32
+  },
+  "Recall@20": {
+   "n": 10,
+   "mean_base": 0.8362,
+   "mean_rer": 0.9095,
+   "mean_delta": 0.0732,
+   "std_delta": 0.0126,
+   "p_ttest": 0.0,
+   "p_wilcoxon": 0.00195,
+   "cohen_dz": 5.816
+  }
+ },
+ "B": {
+  "file": "strat_B.json",
+  "seeds": [
+   42,
+   123,
+   456,
+   789,
+   1024,
+   2024,
+   3141,
+   5926,
+   7777,
+   9999
+  ],
+  "Recall@K_correct": {
+   "n": 10,
+   "mean_base": 0.4661,
+   "mean_rer": 0.689,
+   "mean_delta": 0.2229,
+   "std_delta": 0.0173,
+   "p_ttest": 0.0,
+   "p_wilcoxon": 0.00195,
+   "cohen_dz": 12.903
+  },
+  "MAP": {
+   "n": 10,
+   "mean_base": 0.512,
+   "mean_rer": 0.8321,
+   "mean_delta": 0.3201,
+   "std_delta": 0.034,
+   "p_ttest": 0.0,
+   "p_wilcoxon": 0.00195,
+   "cohen_dz": 9.426
+  },
+  "Recall@20": {
+   "n": 10,
+   "mean_base": 0.7213,
+   "mean_rer": 0.8384,
+   "mean_delta": 0.1171,
+   "std_delta": 0.0101,
+   "p_ttest": 0.0,
+   "p_wilcoxon": 0.00195,
+   "cohen_dz": 11.615
+  }
+ }
+}

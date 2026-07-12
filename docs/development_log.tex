@@ -523,6 +523,7 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
   \item \texttt{build\_equation\_graph.py} を追加（PDF 一括、Handbook 生成、\texttt{unified\_equations.json} 統合）。処理済み PDF を \texttt{processed\_pdfs.json} で管理し未抽出のみ処理するよう変更。
   \item 開発記録の自動追記ルール（Cursor）とコミット時自動 push（post-commit フック）を導入。
   \item 初版：モデル変更、レートリミット対策、$c_w$/正規化の記録を追加。
+  \item 2026-07-12（有意差検定スクリプト）：baseline vs reranker-10S の対応ある Wilcoxon 符号順位検定を実装（\texttt{analyze\_significance.py}）。設定A/B とも Recall@K\_correct・MAP・Recall@20 の全指標で p=0.00195（両側、10乱数全て reranker $>$ baseline のため理論最小値）。Cohen dz は Recall@K\_correct で11.9～12.9、MAP で9.4～32.3 と強効果。TDD に従い pytest で検証済み（tests/test\_significance.py）。出力は \texttt{experiments/significance\_stats.json}。
 \end{itemize}
 
 \end{document}
