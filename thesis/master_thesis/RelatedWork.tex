@@ -1,1 +1,44 @@
-% Chapter 2: Related Work — outline inserted by Task 7 of docs/superpowers/plans/2026-07-12-master-thesis-phase1.md
+% ============================================================
+% Chapter 2: Related Work — OUTLINE (Phase 1)
+% 各節末に必ず「本研究との相違」を置く（Kotoba Tech ルール）。
+% ============================================================
+\section{Component Technologies for Automated Physical Model Building}
+\begin{itemize}
+  \item \textbf{P1.} Automating physical model building requires a chain of component technologies, several of which have been developed in our group.
+  \begin{itemize}
+    \item Document collection, formula extraction, and variable-equivalence judgment (ProcessBERT\cite{ProcessBERT}) precede model assembly.
+    % cite: 数式抽出・文書情報抽出の先行研究（Phase 2で実文献を検証して追加。捏造禁止）
+    \item (difference) These works produce the equation database; this study addresses the downstream step of selecting a solvable equation set from it.
+  \end{itemize}
+\end{itemize}
+
+\section{Information Retrieval and Reranking}
+\begin{itemize}
+  \item \textbf{P2.} Classical information retrieval ranks items independently by query--item relevance, and modern systems refine the top candidates with a second-stage reranker.
+  \begin{itemize}
+    % cite: TF-IDF/BM25 と retrieve-then-rerank の代表文献（Phase 2で検証して追加）
+    \item Lexical methods (TF-IDF) and learned rerankers assume that item relevances are independent given the query.
+    \item Diversification methods consider inter-item redundancy but not solvability.
+    \item (difference) Our items are interdependent: a correct answer is a set that closes a system of equations, which motivates set-aware features.
+  \end{itemize}
+\end{itemize}
+
+\section{Direct Generation of Domain Knowledge by Large Language Models}
+\begin{itemize}
+  \item \textbf{P3.} Large language models can generate domain equations directly from a description, which makes them a natural alternative to retrieval.
+  \begin{itemize}
+    % cite: LLMの科学知識生成・hallucination に関する代表文献（Phase 2で検証して追加）
+    \item Generated equations may be physically valid yet differ in notation, and empirical equations with fitted coefficients are hard to reproduce verbatim.
+    \item (difference) We use an LLM only as an external baseline (and for generating case descriptions); our method retrieves from a database, which keeps provenance and reproducibility.
+  \end{itemize}
+\end{itemize}
+
+\section{Mathematical Information Retrieval}
+\begin{itemize}
+  \item \textbf{P4.} Mathematical information retrieval searches for single formulas similar to a query formula or text.
+  \begin{itemize}
+    % cite: math IR / formula search の代表文献（Phase 2で検証して追加）
+    \item Existing systems rank individual formulas by structural or textual similarity.
+    \item (difference) Our task returns a set of equations that jointly form a solvable model, a requirement absent from formula search.
+  \end{itemize}
+\end{itemize}
