@@ -1,1 +1,141 @@
-% Chapter 6: Results and Discussion — outline inserted by Task 11 of docs/superpowers/plans/2026-07-12-master-thesis-phase1.md
+% ============================================================
+% Chapter 6: Results and Discussion — OUTLINE (Phase 1)
+% 弧: 性能 → 機構 → 介入 → 自己停止 → 留意点
+% ============================================================
+\section{Overall Comparison}
+\begin{itemize}
+  \item \textbf{P1.} The proposed method improves Recall@K by +0.22 over the classical-IR baseline in both settings and clearly outperforms LLM direct generation.
+  \begin{itemize}
+    % source: experiments/strat_A.json / strat_B.json results.*.Recall@K_correct
+    \item Setting A: 0.521 → 0.743 (+0.222); Setting B (DAE only): 0.466 → 0.689 (+0.223).
+    % source: experiments/significance_stats.json A/B Recall@K_correct p_wilcoxon
+    \item Both improvements are significant (Wilcoxon signed-rank, $p = 0.00195$, all 10 seeds improved).
+    % source: experiments/strat_A.json MAP/Recall@20
+    \item MAP rises from 0.581 to 0.863 (A) and 0.512 to 0.832 (B); Recall@20 reaches 0.909 (A) and 0.838 (B).
+    \item (wrap) The gain is stable across seeds and metrics. (Figure: fig\_method\_comparison, Table 1)
+  \end{itemize}
+  \item \textbf{P2.} LLM direct generation can produce equivalent equations but cannot rank them into the top $K$.
+  \begin{itemize}
+    % source: llm_set_A_equiv_results.json / llm_set_B_equiv_results.json / llm_set_full_equiv_results.json
+    \item Recall@K stays at 0.23--0.30 while rank-free coverage reaches 0.34--0.57; the gap means "can generate, cannot arrange."
+    \item Database answers often contain source-specific empirical equations with fitted coefficients that are hard to generate verbatim.
+    \item (wrap) Neither classical IR nor an LLM alone suffices; set-aware reranking over a database is needed.
+  \end{itemize}
+\end{itemize}
+
+\begin{table}[h]\centering
+\caption{Recall@K, MAP, and Recall@20 over 10 stratified splits (mean $\pm$ SD for Recall@K).}
+\label{tab:overall}
+\begin{tabular}{llccc}
+\toprule
+Setting & Method & Recall@K & MAP & Recall@20 \\
+\midrule
+% source: experiments/strat_A.json results.baseline / results.reranker-10S
+\multirow{2}{*}{A (1,823 cases)}
+ & Baseline & $0.521 \pm 0.045$ & 0.581 & 0.836 \\
+ & \textbf{Proposed (reranker-10S)} & $\mathbf{0.743 \pm 0.054}$ & \textbf{0.863} & \textbf{0.909} \\
+\midrule
+% source: experiments/strat_B.json results.baseline / results.reranker-10S
+\multirow{2}{*}{B (DAE only, 1,000 cases)}
+ & Baseline & $0.466 \pm 0.037$ & 0.512 & 0.721 \\
+ & \textbf{Proposed (reranker-10S)} & $\mathbf{0.689 \pm 0.033}$ & \textbf{0.832} & \textbf{0.838} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Performance by Case Characteristics}
+\begin{itemize}
+  \item \textbf{P3.} The harder the case, the larger the advantage of the proposed method.
+  \begin{itemize}
+    % source: experiments/strat_A.json per_case（層別は fig_characteristic と同じバケット）
+    \item By number of equations: the baseline falls from 0.85 (single equation) to about 0.28 (ten equations), while the proposed method falls only to about 0.54; the gap widens from +0.03 to +0.21--0.29.
+    \item By number of input variables: the gap widens from +0.05 ($\le$5) to +0.28 ($\ge$21).
+    \item By number of sources: the effect is roughly constant (+0.22--0.26) because source count is confounded with equation count.
+    \item (wrap) The method leaves easy cases intact and helps exactly where selection is combinatorial. (Figure: fig\_characteristic)
+  \end{itemize}
+\end{itemize}
+
+\section{Mechanism Analysis: Which Features Cause the Improvement}
+\begin{itemize}
+  \item \textbf{P4.} Feature-by-difficulty ablation shows that the structural set-aware features cause the improvement, while the domain feature contributes nothing.
+  \begin{itemize}
+    % source: experiments/feature_x_difficulty_stats.json overall_tests
+    \item Adding complementarity alone: +0.052 ($p < 0.001$); coherence alone: +0.050 ($p < 0.001$); domain alone: $-0.0001$ ($p = 0.98$).
+    \item All three together add +0.050 over the 7-feature reranker (0.693 → 0.743), so the pure set-feature contribution is about +0.05 of the total +0.22; the rest comes from the MLP learning the 7 base features.
+    % source: experiments/feature_x_difficulty_stats.json lift_by_n_correct / lift_by_n_input
+    \item The lift has a threshold-and-hump shape: none for single-equation cases ($-0.01$ at $X=1$), peak at $X=3$ (+0.12), and saturation at the hardest end (input variables $\ge 16$).
+    \item (wrap) The saturation at the hardest end predicts that a sequential method should help there — tested next. (Figure: fig\_mechanism)
+  \end{itemize}
+\end{itemize}
+
+\section{Intervention: Learned Greedy Selection}
+\begin{itemize}
+  \item \textbf{P5.} Making both inference and training sequential recovers the saturation, confirming the mechanism causally.
+  \begin{itemize}
+    % source: experiments/greedy_3way_stats.json overall
+    \item Setting B (DAE): static 0.724 $<$ greedy at inference 0.756 $<$ learned greedy 0.765 (10 seeds).
+    % source: experiments/greedy_3way_stats.json tests.train_vs_infer
+    \item Learned greedy beats inference-only greedy by +0.009 (Wilcoxon $p = 0.037$) — training must match inference.
+    % source: experiments/greedy_3way_stats.json tests_hard_X8plus.train_vs_static
+    \item The gain concentrates at the predicted saturation: at $X \ge 8$, learned greedy beats static by +0.056 ($p < 0.001$).
+    % source: experiments/greedy_3way_A_stats.json overall / tests
+    \item Setting A: static 0.757 $<$ inference greedy 0.787 $<$ learned greedy 0.797; both greedy variants beat static significantly (Wilcoxon $p = 0.00195$), while the learned-vs-inference increment (+0.010) is directionally consistent but not significant in this setting ($p = 0.13$).
+    \item (wrap) Predict saturation → intervene → recover: the arc establishes causality, not mere correlation. (Figure: fig\_greedy\_3way)
+  \end{itemize}
+\end{itemize}
+
+\section{Self-terminating Retrieval}
+\begin{itemize}
+  \item \textbf{P6.} DoF-stop returns closed, solvable equation sets without knowing the answer size, at almost no cost in accuracy.
+  \begin{itemize}
+    % source: experiments/dof_stop_stats.json set_exact_*
+    \item Exact-match rate is identical to the oracle that knows $K$: 0.368 (DAE) and 0.526 (Setting A).
+    % source: experiments/dof_stop_stats.json closed_*
+    \item Closure rate exceeds the oracle: 0.883 vs.\ 0.781 (DAE) and 0.936 vs.\ 0.865 (A) — DoF-stop returns solvable systems by design.
+    % source: experiments/dof_stop_stats.json dof_vs_oracle_f1
+    \item The set-F1 cost is small: $-0.008$ (A, $p = 0.006$) and $-0.023$ (DAE).
+    \item Caveat, stated honestly: in this dataset $K$ nearly equals the number of output variables, so predicting $K$ itself is easy; the claim is self-termination with a closure guarantee, not $K$ prediction.
+    \item (wrap) The ranker becomes a self-contained builder: retrieve, close the system, stop. (Figure: fig\_dof\_stop)
+  \end{itemize}
+\end{itemize}
+
+\section{Limitations}
+\begin{itemize}
+  \item \textbf{P7.} Four limitations qualify the results.
+  \begin{itemize}
+    \item DAE case descriptions are LLM-generated and contain stylistic variation.
+    \item Source count is confounded with equation count, so its effect is not causal.
+    \item The stratified split is one scheme chosen from 400 candidates; 10 seeds mitigate but do not remove this choice.
+    \item Evaluation is database-internal: retrieval cannot find equations absent from the database, and the LLM comparison covers about 50 cases per setting.
+  \end{itemize}
+\end{itemize}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_method_comparison.pdf}
+\caption{Recall@K of the three methods in the three settings. Boxes show 10 seeds (baseline and proposed); diamonds show the single-run LLM direct generation (n$\approx$50, equivalence-judged), with dashed lines for its rank-free coverage.}
+\label{fig:comparison}
+\end{figure}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_characteristic.pdf}
+\caption{Recall@K stratified by case characteristics (Setting A): (a) number of equations, (b) number of sources, (c) number of input variables.}
+\label{fig:characteristic}
+\end{figure}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_mechanism.pdf}
+\caption{Recall@K lift of each set-aware feature over the 7-feature reranker, stratified by difficulty (mean $\pm$ SEM over 10 seeds). Structural features (complementarity, coherence) carry the lift; the domain feature stays at zero.}
+\label{fig:mechanism}
+\end{figure}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_greedy_3way.pdf}
+\caption{Three selection strategies (static, greedy at inference, learned greedy): (a) Setting B and (b) Setting A over 10 seeds; (c) by number of equations in Setting B.}
+\label{fig:greedy}
+\end{figure}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_dof_stop.pdf}
+\caption{Self-terminating retrieval: (a) set F1 of oracle-K vs.\ DoF-stop (10 seeds); (b) set quality by number of equations in Setting B.}
+\label{fig:dof}
+\end{figure}
