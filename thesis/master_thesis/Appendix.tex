@@ -1,1 +1,33 @@
-% Chapter Appendix — outline inserted by Task 12 of docs/superpowers/plans/2026-07-12-master-thesis-phase1.md
+% ============================================================
+% Appendix — OUTLINE (Phase 1)
+% ============================================================
+\chapter{Hyperparameters and Reproducibility}
+% source: experiments/strat_A.json config / set_aware_reranker.py argparse defaults
+\begin{table}[h]\centering
+\caption{Hyperparameters of the reranker (identical across settings unless noted).}
+\begin{tabular}{ll}
+\toprule
+Item & Value \\
+\midrule
+MLP hidden units / dropout & 64 / 0.1 \\
+Loss / margin & pairwise ranking / 0.1 \\
+Epochs / learning rate / batch size & 15 / 0.001 / 16 \\
+Negative samples / weight decay & 8 / 0.0001 \\
+Stage-1 top-$k$ & 50 (Settings A, B); 200 (greedy and DoF-stop runs) \\
+Greedy training cap & 8 \\
+Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\chapter{Example of a Generated DAE Case}
+\begin{itemize}
+  \item One DAE case ($X=3$, CSTR) with its description, I/O variables, and ground-truth equations.
+  % Phase 2: dae_cases.json から実例を1件転記する（改変しない）。
+\end{itemize}
+
+\chapter{LLM Prompts}
+\begin{itemize}
+  \item Prompts used for DAE description generation and for the LLM direct-generation baseline, with pinned model identifiers.
+  % Phase 2: generate_dae_cases.py / evaluate_llm_dae.py から実プロンプトを転記する（改変しない）。
+\end{itemize}
