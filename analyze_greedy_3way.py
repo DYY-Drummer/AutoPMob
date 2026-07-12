@@ -159,7 +159,11 @@ def main():
     bars = ax.bar(xs, means, yerr=errs, capsize=5, color=[COLOR[c] for c in CONFIGS])
     ax.set_xticks(xs); ax.set_xticklabels([LABEL[c] for c in CONFIGS])
     ax.set_ylabel(f"{METRIC}（{tag}・seed平均）")
-    ax.set_title("(a) 全体：DAE（最難）での Recall@K")
+    # 「（最難）」はDAE限定の主張のため、既定タグのときのみ元の文言（既定バイト一致を維持）
+    if tag == "DAEのみ":
+        ax.set_title("(a) 全体：DAE（最難）での Recall@K")
+    else:
+        ax.set_title(f"(a) 全体：{tag}での Recall@K")
     for b, m in zip(bars, means):
         ax.text(b.get_x() + b.get_width() / 2, m + 0.005, f"{m:.3f}", ha="center", fontsize=10)
     ax.set_ylim(0, max(means) * 1.18)
