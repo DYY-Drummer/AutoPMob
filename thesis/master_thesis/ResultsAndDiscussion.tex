@@ -24,20 +24,24 @@
 \end{itemize}
 
 \begin{table}[h]\centering
-\caption{Recall@K, MAP, and Recall@20 over 10 stratified splits (mean $\pm$ SD for Recall@K).}
+\caption{Recall@K, MAP, and Recall@20 of the three compared methods (baseline and proposed: mean $\pm$ SD over 10 stratified splits). LLM direct generation is a single-run evaluation on a uniform sample ($n=48$ for A, $n=50$ for B) with equivalence judged by another LLM; its rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are not available for it.}
 \label{tab:overall}
 \begin{tabular}{llccc}
 \toprule
 Setting & Method & Recall@K & MAP & Recall@20 \\
 \midrule
 % source: experiments/strat_A.json results.baseline / results.reranker-10S
-\multirow{2}{*}{A (1,823 cases)}
- & Baseline & $0.521 \pm 0.045$ & 0.581 & 0.836 \\
+\multirow{3}{*}{A (1,823 cases)}
+ & Baseline (classical IR) & $0.521 \pm 0.045$ & 0.581 & 0.836 \\
+% source: llm_set_A_equiv_results.json（Recall@K_correct 0.2545, coverage 0.41875, n=48）
+ & LLM direct generation & $0.254$ & --- & --- \\
  & \textbf{Proposed (reranker-10S)} & $\mathbf{0.743 \pm 0.054}$ & \textbf{0.863} & \textbf{0.909} \\
 \midrule
 % source: experiments/strat_B.json results.baseline / results.reranker-10S
-\multirow{2}{*}{B (DAE only, 1,000 cases)}
- & Baseline & $0.466 \pm 0.037$ & 0.512 & 0.721 \\
+\multirow{3}{*}{B (DAE only, 1,000 cases)}
+ & Baseline (classical IR) & $0.466 \pm 0.037$ & 0.512 & 0.721 \\
+% source: llm_set_B_equiv_results.json（Recall@K_correct 0.2258, coverage 0.34271, n=50）
+ & LLM direct generation & $0.226$ & --- & --- \\
  & \textbf{Proposed (reranker-10S)} & $\mathbf{0.689 \pm 0.033}$ & \textbf{0.832} & \textbf{0.838} \\
 \bottomrule
 \end{tabular}

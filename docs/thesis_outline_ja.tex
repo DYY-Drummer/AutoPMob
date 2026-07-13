@@ -100,17 +100,19 @@
 
 \begin{table}[h]\centering
 \small
-\caption{全体結果（層化分割・10 乱数の平均、$\pm$ は乱数間の標準偏差）。}
+\caption{全体結果（baseline・本手法は層化分割・10 乱数の平均、$\pm$ は乱数間の標準偏差）。LLM 直接生成は各設定の一様サンプル（A: $n=48$、B: $n=50$）の単発評価で、生成式の等価性を別の LLM（claude-opus-4-8）で判定して採点した。順位を問わない coverage は 0.419（A）・0.343（B）。}
 \begin{tabular}{llccc}
 \toprule
 設定 & 手法 & $\rk$ & MAP & Recall@20 \\
 \midrule
-\multirow{2}{*}{A（1{,}823 件）}
+\multirow{3}{*}{A（1{,}823 件）}
  & baseline（古典 IR） & $0.521\pm0.045$ & 0.581 & 0.836 \\
+ & LLM 直接生成（外部比較） & $0.254$ & --- & --- \\
  & \textbf{reranker-10S（本手法）} & $\mathbf{0.743\pm0.054}$ & \textbf{0.863} & \textbf{0.909} \\
 \midrule
-\multirow{2}{*}{B（DAE のみ 1{,}000 件）}
+\multirow{3}{*}{B（DAE のみ 1{,}000 件）}
  & baseline（古典 IR） & $0.466\pm0.037$ & 0.512 & 0.721 \\
+ & LLM 直接生成（外部比較） & $0.226$ & --- & --- \\
  & \textbf{reranker-10S（本手法）} & $\mathbf{0.689\pm0.033}$ & \textbf{0.832} & \textbf{0.838} \\
 \bottomrule
 \end{tabular}
