@@ -112,31 +112,40 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
 \end{itemize}
 
 \begin{figure}[h]\centering
-\includegraphics[width=0.95\linewidth]{figures/fig_method_comparison.pdf}
+\includegraphics[width=0.6\linewidth]{figures/fig_method_comparison.pdf}
 \caption{Recall@K of the three methods in the three settings. Boxes show 10 seeds (baseline and proposed); diamonds show the single-run LLM direct generation (n$\approx$50, equivalence-judged), with dashed lines for its rank-free coverage.}
 \label{fig:comparison}
 \end{figure}
 
+% 骨子段階は非表示（本文化時に comment 環境を外す）
+\begin{comment}
 \begin{figure}[h]\centering
-\includegraphics[width=0.95\linewidth]{figures/fig_characteristic.pdf}
+\includegraphics[width=0.6\linewidth]{figures/fig_characteristic.pdf}
 \caption{Recall@K stratified by case characteristics (Setting A): (a) number of equations, (b) number of sources, (c) number of input variables.}
 \label{fig:characteristic}
 \end{figure}
+\end{comment}
 
+% 骨子段階は非表示（本文化時に comment 環境を外す）
+\begin{comment}
 \begin{figure}[h]\centering
-\includegraphics[width=0.95\linewidth]{figures/fig_mechanism.pdf}
+\includegraphics[width=0.6\linewidth]{figures/fig_mechanism.pdf}
 \caption{Recall@K lift of each set-aware feature over the 7-feature reranker, stratified by difficulty (mean $\pm$ SEM over 10 seeds). Structural features (complementarity, coherence) carry the lift; the domain feature stays at zero.}
 \label{fig:mechanism}
 \end{figure}
+\end{comment}
 
+% 骨子段階は非表示（本文化時に comment 環境を外す）
+\begin{comment}
 \begin{figure}[h]\centering
-\includegraphics[width=0.95\linewidth]{figures/fig_greedy_3way.pdf}
+\includegraphics[width=0.6\linewidth]{figures/fig_greedy_3way.pdf}
 \caption{Three selection strategies (static, greedy at inference, learned greedy): (a) Setting B and (b) Setting A over 10 seeds; (c) by number of equations in Setting B.}
 \label{fig:greedy}
 \end{figure}
+\end{comment}
 
 \begin{figure}[h]\centering
-\includegraphics[width=0.95\linewidth]{figures/fig_dof_stop.pdf}
+\includegraphics[width=0.6\linewidth]{figures/fig_dof_stop.pdf}
 \caption{Self-terminating retrieval: (a) set F1 of oracle-K vs.\ DoF-stop (10 seeds); (b) set quality by number of equations in Setting B.}
 \label{fig:dof}
 \end{figure}

@@ -6,14 +6,12 @@
   \begin{itemize}
     \item Purpose-built tools such as MATLAB/Simulink\cite{simulink} and Aspen Plus\cite{aspen} let engineers build models quickly, but only for the processes they support.
     \item For unsupported processes, engineers must survey a vast number of documents and refine a prototype by trial and error.
-    \item (wrap) Physical model building therefore remains time-consuming and labor-intensive.
   \end{itemize}
 
   \item \textbf{P2.} To free engineers from this laborious work, our group aims to develop an automated physical model builder (AutoPMoB).
   \begin{itemize}
     \item AutoPMoB collects documents about a target process, extracts formulas, variables, and experimental data, and reorganizes them into a desired model.
     \item Fundamental technologies have been developed step by step, such as judging the equivalence of variable definitions across documents\cite{ProcessBERT}.
-    \item (wrap) This study addresses the next fundamental step: assembling extracted equations into the model.
   \end{itemize}
 
   \item \textbf{P3.} Given a description of the desired model and its input and output variables, this study retrieves the set of equations that composes the model from an equation database built from multiple documents.
@@ -50,7 +48,6 @@
     \item The structural set-aware features (complementarity and coherence) cause the improvement; the domain feature contributes nothing (p = 0.98).
     % source: experiments/greedy_3way_stats.json, experiments/dof_stop_stats.json
     \item Learned greedy selection recovers the saturation on the hardest cases, and DoF-stop returns closed systems more often than the oracle that knows the answer size.
-    \item (wrap) These results establish set-aware retrieval as a practical component of AutoPMoB.
   \end{itemize}
 
   \item \textbf{P7.} The contributions of this thesis are threefold.

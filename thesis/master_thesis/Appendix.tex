@@ -1,7 +1,10 @@
 % ============================================================
 % Appendix — OUTLINE (Phase 1)
+% 骨子段階は1章に統合（ページ節約）。本文化時に章分割を検討。
 % ============================================================
-\chapter{Hyperparameters and Reproducibility}
+\chapter{Supplementary Materials}
+
+\section{Hyperparameters and Reproducibility}
 % source: experiments/strat_A.json config / set_aware_reranker.py argparse defaults
 \begin{table}[h]\centering
 \caption{Hyperparameters of the reranker (identical across settings unless noted).}
@@ -20,13 +23,13 @@ Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
 \end{tabular}
 \end{table}
 
-\chapter{Example of a Generated DAE Case}
+\section{Example of a Generated DAE Case}
 \begin{itemize}
   \item One DAE case ($X=3$, CSTR) with its description, I/O variables, and ground-truth equations.
   % Phase 2: dae_cases.json から実例を1件転記する（改変しない）。
 \end{itemize}
 
-\chapter{LLM Prompts}
+\section{LLM Prompts}
 \begin{itemize}
   \item Prompts used for DAE description generation and for the LLM direct-generation baseline, with pinned model identifiers.
   % Phase 2: generate_dae_cases.py / evaluate_llm_dae.py から実プロンプトを転記する（改変しない）。

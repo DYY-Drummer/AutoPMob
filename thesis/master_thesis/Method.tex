@@ -59,7 +59,6 @@
     \item DoF-stop keeps selecting greedily and stops when $\mathrm{DoF}(S) = 0$, i.e., when every non-input variable is determined by some equation.
     % source: set_aware_reranker.py --stop-dof（greedy_close）
     \item The returned set is closed by construction, which is exactly what a downstream simulator needs.
-    \item (wrap) DoF-stop turns the ranker into a self-contained model builder that needs no oracle knowledge.
   \end{itemize}
 \end{itemize}
 % 手法パイプライン図（2段階＋greedy＋DoF停止）は Phase 2 で作成し §3.2 冒頭に挿入する。

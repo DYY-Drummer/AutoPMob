@@ -23,6 +23,8 @@
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{arydshln}
+\usepackage{enumitem}   % 骨子段階のコンパクト表示用（本文化後も維持可）
+\setlist{nosep, leftmargin=1.6em}
 \captionsetup[table]{labelsep=period, labelfont=bf, justification=centering, singlelinecheck=off}
 \captionsetup[figure]{labelsep=period, labelfont=bf, justification=centering, singlelinecheck=off}
 
@@ -37,7 +39,7 @@
 \makeatother
 \setlength{\textwidth}{\fullwidth}
 \setlength{\evensidemargin}{\oddsidemargin}
-\setstretch{1.3}
+\setstretch{1.0}   % 骨子段階はコンパクト表示。本文化時に 1.3 へ戻す（テンプレート既定）
 
 \newcommand{\argmax}{\mathop{\rm arg~max}\limits}
 \newcommand{\argmin}{\mathop{\rm arg~min}\limits}
@@ -56,6 +58,19 @@
 
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{5pt}
+
+% ===== 骨子段階のみ：章の強制改ページを抑制（本文化時にこのブロックを丸ごと削除） =====
+\makeatletter
+\renewcommand{\chapter}{%
+  \par\vspace{1.2\baselineskip}%   % 改ページの代わりに縦スペース
+  \plainifnotempty
+  \global\@topnum\z@
+  \if@english \@afterindentfalse \else \@afterindenttrue \fi
+  \secdef
+    {\@omit@numberfalse\@chapter}%
+    {\@omit@numbertrue\@schapter}}
+\makeatother
+% ==================================================================================
 
 \begin{document}
 \thispagestyle{empty}
@@ -113,47 +128,45 @@ Analyses show that the structural set-aware features cause the improvement, that
 \newpage
 %%%%% 目次 %%%%%
 \pagenumbering{roman}
-\setcounter{tocdepth}{4}
+\setcounter{tocdepth}{1}   % 骨子段階は章・節のみ。本文化時に 4 へ戻す
 \tableofcontents
 \thispagestyle{empty}
-\newpage
-
 \newpage
 \pagenumbering{arabic}
 \chapter{Introduction}
 \label{Introduction}
 \input{Introduction}
-\clearpage
+% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 \chapter{Related Work}
 \label{RelatedWork}
 \input{RelatedWork}
-\clearpage
+% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 \chapter{Set-aware Equation-Set Retrieval}
 \label{Method}
 \input{Method}
-\clearpage
+% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 \chapter{Equation Database and Test Case Construction}
 \label{Dataset}
 \input{Dataset}
-\clearpage
+% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 \chapter{Experiments}
 \label{Experiment}
 \input{Experiment}
-\clearpage
+% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 \chapter{Results and Discussion}
 \label{ResultsAndDiscussion}
 \input{ResultsAndDiscussion}
-\clearpage
+% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 \chapter{Conclusion}
 \label{Conclusion}
 \input{Conclusion}
-\clearpage
+% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 %%%%% References（Phase 2で拡充。現時点は確実に使う実在文献のみ） %%%%%
 \begin{thebibliography}{99}
