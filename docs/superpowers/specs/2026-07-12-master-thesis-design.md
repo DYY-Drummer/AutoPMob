@@ -32,9 +32,9 @@
 
 ## 4. タイトル
 
-- 英語: **Context- and Set-aware Retrieval of Equation Sets from the Literature for Automated Physical Model Building**
-- 日本語（表紙用）: **物理モデル自動構築に向けた文献からの文脈と集合を考慮した数式検索**
-- 改訂履歴: 当初案 T1（Set-aware Retrieval of Equation Sets from Multiple Documents ...）から 2026-07-13 に変更（本人指示: Documents→Literature、文献から式とともに抽出した文脈の利用を明示。第1段=文脈類似・第2段=集合特徴量という実装と1対1対応）。
+- 英語: **Equation-Set Retrieval Using Equations and Context Extracted from the Literature for Automated Physical Model Building**
+- 日本語（表紙用）: **文献から抽出した数式と文脈を用いた物理モデル自動構築のための数式集合検索**
+- 改訂履歴: T1（Set-aware ... from Multiple Documents、2026-07-12）→ L2（Context- and Set-aware ... from the Literature、2026-07-13）→ **V1（現行、2026-07-13）**。本人の意図＝「文献から抽出した数式」と「文脈」の明示。主題は過大主張を避け「数式集合検索」に固定（構築は目的句）。「集合考慮（set-aware）」はタイトルから外れたが第3章名と貢献2で担保。
 
 選定理由: 手法の核心（set-aware＝式を単独でなく集合として評価する特徴量）と AutoPMoB の文脈（複数文献からの情報再構成）の両方を含み、研究室の過去タイトル（…among Multiple Documents）の系譜に乗る。
 
