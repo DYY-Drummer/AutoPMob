@@ -72,8 +72,9 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
 \begin{itemize}
   \item \textbf{P5.} Making both inference and training sequential recovers the saturation, confirming the mechanism causally.
   \begin{itemize}
+    % top-k: run_greedy_3way.sh TOPK=200 / strat_B.json config top_k=50
     % source: experiments/greedy_3way_stats.json overall
-    \item Setting B (DAE): static 0.724 $<$ greedy at inference 0.756 $<$ learned greedy 0.765 (10 seeds).
+    \item Setting B (DAE): static 0.724 $<$ greedy at inference 0.756 $<$ learned greedy 0.765 (10 seeds) (the greedy experiments use a Stage-1 window of top-$k = 200$, so the static value is not directly comparable to the top-$k = 50$ result 0.689 in Table~\ref{tab:overall}).
     % source: experiments/greedy_3way_stats.json tests.train_vs_infer
     \item Learned greedy beats inference-only greedy by +0.009 (Wilcoxon $p = 0.037$) — training must match inference.
     % source: experiments/greedy_3way_stats.json tests_hard_X8plus.train_vs_static
