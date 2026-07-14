@@ -319,6 +319,15 @@ def set_metrics(pred_list, correct_set, suffix=""):
 
 MODE_CONFIGS = {
     "baseline":         {"use_mlp": False, "use_existing_graph": False, "set_aware_mask": ()},
+    # baseline と同じ 2 特徴量（text_sim, io_jaccard）だけを MLP で学習：
+    # baseline→reranker-7 の改善を「重みの学習」と「特徴量の追加」に分解するための中間条件
+    "reranker-2":       {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": (), "base_subset": (0, 1)},
+    # --- 基本特徴量の個別追加（2特徴量に1つずつ足す）：+0.092 の内訳分解 ---
+    "reranker-2+Svd":    {"use_mlp": True, "use_existing_graph": False, "set_aware_mask": (), "base_subset": (0, 1, 2)},
+    "reranker-2+InCov":  {"use_mlp": True, "use_existing_graph": False, "set_aware_mask": (), "base_subset": (0, 1, 3)},
+    "reranker-2+OutCov": {"use_mlp": True, "use_existing_graph": False, "set_aware_mask": (), "base_subset": (0, 1, 4)},
+    "reranker-2+Spec":   {"use_mlp": True, "use_existing_graph": False, "set_aware_mask": (), "base_subset": (0, 1, 5)},
+    "reranker-2+Dom":    {"use_mlp": True, "use_existing_graph": False, "set_aware_mask": (), "base_subset": (0, 1, 6)},
     "reranker-7":       {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ()},
     "reranker-10":      {"use_mlp": True,  "use_existing_graph": True,  "set_aware_mask": ()},
     "reranker-10S":     {"use_mlp": True,  "use_existing_graph": False, "set_aware_mask": ("Comp", "Coh", "Dom")},
@@ -351,7 +360,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
     use_mlp = cfg["use_mlp"]
     use_existing = cfg["use_existing_graph"]
     set_mask = cfg.get("set_aware_mask", ())
-    n_feat = 7 + (3 if use_existing else 0) + len(set_mask)
+    base_subset = cfg.get("base_subset")  # 基本7特徴量のうち使う列（None=全7）
+    n_feat = (len(base_subset) if base_subset else 7) + (3 if use_existing else 0) + len(set_mask)
     n_eq = len(eq_keys_l)
     graph = BipartiteGraph(eq_vars_l) if use_existing else None
 
@@ -423,6 +433,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                             svd_sim[ci], eq_vars_l, eq_domains_l, case_text(cases[ci]),
                             graph, ios[ci], use_existing, set_mask,
                         )
+                        if base_subset:
+                            feats = feats[:, list(base_subset)]
                         c2k = {j: k for k, j in enumerate(cands)}
 
                         if train_greedy and set_mask:
@@ -489,6 +501,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                         svd_sim[ci], eq_vars_l, eq_domains_l, case_text(cases[ci]),
                         graph, ios[ci], use_existing, set_mask,
                     )
+                    if base_subset:
+                        feats = feats[:, list(base_subset)]
                     scores = model(torch.tensor(feats, dtype=torch.float32)).numpy().ravel()
                     k_stop = None
                     if stop_dof and set_mask:

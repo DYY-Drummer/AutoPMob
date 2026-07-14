@@ -21,7 +21,7 @@ ROOT = Path(__file__).parent
 XG = ROOT / "experiments" / "xg"
 METRIC = "Recall@K_correct"
 CONFIGS = ["static", "infer", "train"]
-LABEL = {"static": "静的参照 (既定)", "infer": "推論のみgreedy", "train": "学習版greedy"}
+LABEL = {"static": "静的参照（従来）", "infer": "推論のみgreedy", "train": "学習版greedy"}
 COLOR = {"static": "#9e9e9e", "infer": "#1f77b4", "train": "#d62728"}
 
 
@@ -158,12 +158,8 @@ def main():
     errs = [out["overall"][c]["std"] for c in CONFIGS]
     bars = ax.bar(xs, means, yerr=errs, capsize=5, color=[COLOR[c] for c in CONFIGS])
     ax.set_xticks(xs); ax.set_xticklabels([LABEL[c] for c in CONFIGS])
-    ax.set_ylabel(f"{METRIC}（{tag}・seed平均）")
-    # 「（最難）」はDAE限定の主張のため、既定タグのときのみ元の文言（既定バイト一致を維持）
-    if tag == "DAEのみ":
-        ax.set_title("(a) 全体：DAE（最難）での Recall@K")
-    else:
-        ax.set_title(f"(a) 全体：{tag}での Recall@K")
+    ax.set_ylabel(f"Recall@K（{tag}・乱数10通りの平均）")
+    ax.set_title("(a) 全体")
     for b, m in zip(bars, means):
         ax.text(b.get_x() + b.get_width() / 2, m + 0.005, f"{m:.3f}", ha="center", fontsize=10)
     ax.set_ylim(0, max(means) * 1.18)
@@ -175,10 +171,10 @@ def main():
         xs = [r["X"] for r in rows]; ys = [r["mean"] for r in rows]
         es = [r["sem"] or 0 for r in rows]
         ax.errorbar(xs, ys, yerr=es, marker="o", capsize=3, lw=2, color=COLOR[c], label=LABEL[c])
-    ax.set_xlabel(f"正解式数 X ({short_tag})"); ax.set_ylabel(METRIC)
-    ax.set_title("(b) 正解式数別：飽和端で差が開くか")
+    ax.set_xlabel("正解式数"); ax.set_ylabel("Recall@K")
+    ax.set_title("(b) 正解式数別")
     ax.grid(alpha=0.25); ax.legend(fontsize=9); ax.set_xticks(range(1, 11))
-    fig.suptitle(f"学習版greedy 3者比較（{tag}・層化分割）", fontsize=13, y=1.02)
+    fig.suptitle(f"参照集合の与え方3通りの比較（{tag}・層化分割）", fontsize=13, y=1.02)
     fig.tight_layout()
     out_fig_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_fig_path, dpi=150, bbox_inches="tight")

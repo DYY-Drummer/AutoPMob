@@ -131,16 +131,16 @@ def main():
     dof = [out[s]["set_f1_dof"]["mean"] for s in settings]
     orc_e = [out[s]["set_f1_oracleK"]["std"] for s in settings]
     dof_e = [out[s]["set_f1_dof"]["std"] for s in settings]
-    ax.bar(xs - w/2, orc, w, yerr=orc_e, capsize=4, color="#9e9e9e", label="oracle-K（K既知の上限）")
-    ax.bar(xs + w/2, dof, w, yerr=dof_e, capsize=4, color="#d62728", label="DoF=0停止（K未知）")
+    ax.bar(xs - w/2, orc, w, yerr=orc_e, capsize=4, color="#9e9e9e", label="正解式数Kを教えた場合（上位K件）")
+    ax.bar(xs + w/2, dof, w, yerr=dof_e, capsize=4, color="#d62728", label="自由度ゼロ停止（Kを教えない）")
     for i, s in enumerate(settings):
         ax.text(xs[i]-w/2, orc[i]+0.01, f"{orc[i]:.3f}", ha="center", fontsize=9)
         ax.text(xs[i]+w/2, dof[i]+0.01, f"{dof[i]:.3f}", ha="center", fontsize=9)
         cl = out[s]["closed_oracleK"]["mean"]
-        ax.text(xs[i], 0.03, f"oracle-K集合の\n閉包率={cl:.2f}", ha="center", fontsize=8, color="#555")
+        ax.text(xs[i], 0.03, f"上位K件が解ける系\nである割合={cl:.2f}", ha="center", fontsize=8, color="#555")
     ax.set_xticks(xs); ax.set_xticklabels([labs[s] for s in settings])
     ax.set_ylabel("集合F1"); ax.set_ylim(0, 1.0)
-    ax.set_title("(a) K未知(DoF停止) は K既知(oracle) に迫る")
+    ax.set_title("(a) 集合F1")
     ax.legend(fontsize=9, loc="upper right")
 
     # (b) DAE X別：set_f1 と K予測
@@ -148,13 +148,13 @@ def main():
         ax = axes[1]
         rows = [r for r in out["dae_by_X"] if r["set_f1_dof"] is not None]
         xs = [r["X"] for r in rows]
-        ax.plot(xs, [r["set_f1_oracleK"] for r in rows], "o-", color="#9e9e9e", lw=2, label="F1 oracle-K")
-        ax.plot(xs, [r["set_f1_dof"] for r in rows], "o-", color="#d62728", lw=2, label="F1 DoF停止")
-        ax.plot(xs, [r["set_exact_dof"] for r in rows], "s--", color="#1f77b4", lw=1.6, label="完全一致率 DoF停止")
-        ax.set_xlabel("正解式数 X (DAE)"); ax.set_ylabel("集合F1 / 完全一致率")
-        ax.set_title("(b) DAE X別：集合予測の質"); ax.set_xticks(range(1, 11))
+        ax.plot(xs, [r["set_f1_oracleK"] for r in rows], "o-", color="#9e9e9e", lw=2, label="集合F1（Kを教えた場合）")
+        ax.plot(xs, [r["set_f1_dof"] for r in rows], "o-", color="#d62728", lw=2, label="集合F1（自由度ゼロ停止）")
+        ax.plot(xs, [r["set_exact_dof"] for r in rows], "s--", color="#1f77b4", lw=1.6, label="完全一致率（自由度ゼロ停止）")
+        ax.set_xlabel("正解式数"); ax.set_ylabel("集合F1 / 完全一致率")
+        ax.set_title("(b) DAEの正解式数別"); ax.set_xticks(range(1, 11))
         ax.grid(alpha=0.25); ax.legend(fontsize=9)
-    fig.suptitle("DoF=0 停止：K を与えずに『閉じた式集合』を予測", fontsize=13, y=1.02)
+    fig.suptitle("自由度ゼロ停止と、正解式数Kを教えた場合の比較", fontsize=13, y=1.02)
     fig.tight_layout()
     fig.savefig(ROOT / "docs" / "figures" / "fig_dof_stop.png", dpi=150, bbox_inches="tight")
 

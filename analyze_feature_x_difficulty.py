@@ -27,11 +27,11 @@ METRIC = "Recall@K_correct"
 
 # モード表示名・色
 MODES = {
-    "reranker-7":      ("base (7特徴)",        "#9e9e9e"),
-    "reranker-7+Comp": ("+補完性 gComp",        "#1f77b4"),
-    "reranker-7+Coh":  ("+一貫性 gCoh",         "#2ca02c"),
-    "reranker-7+Dom":  ("+ドメイン一致 gDom",   "#d62728"),
-    "reranker-10S":    ("10S (3特徴すべて)",     "#000000"),
+    "reranker-7":      ("基本7特徴量のみ",        "#9e9e9e"),
+    "reranker-7+Comp": ("＋補完性",              "#1f77b4"),
+    "reranker-7+Coh":  ("＋一貫性",              "#2ca02c"),
+    "reranker-7+Dom":  ("＋ドメイン一致",         "#d62728"),
+    "reranker-10S":    ("＋3つすべて（reranker-10S）", "#000000"),
 }
 SET_FEATS = ["reranker-7+Comp", "reranker-7+Coh", "reranker-7+Dom"]
 
@@ -185,15 +185,11 @@ def main():
         labels = [r[0] for r in ref if r[2] is not None and r[1] >= 5]
         ax.set_xticks(range(len(labels))); ax.set_xticklabels(labels)
         ax.set_title(title); ax.set_xlabel(xlabel)
-        ax.set_ylabel("Recall@K の上乗せ（base=reranker-7 からの差）")
+        ax.set_ylabel("Recall@K の上乗せ（基本7特徴量のみとの差）")
         ax.grid(alpha=0.25); ax.legend(fontsize=9, loc="upper left")
 
-    plot_panel(axes[0], out["lift_by_n_correct"],
-               "(a) 正解式数で層別：単一式=無効、複数式で発現", "正解式数 (n_correct)")
-    plot_panel(axes[1], out["lift_by_n_input"],
-               "(b) 入力変数数で層別：変数結合とともに発現・15超で飽和", "入力変数数 (n_input)")
-    fig.suptitle("機構の指紋：構造特徴（補完性 gComp・一貫性 gCoh）だけが効き、話題一致（gDom）は終始ゼロ",
-                 fontsize=13, y=1.02)
+    plot_panel(axes[0], out["lift_by_n_correct"], "(a) 正解式数別", "正解式数")
+    plot_panel(axes[1], out["lift_by_n_input"], "(b) 入力変数数別", "入力変数数")
     fig.tight_layout()
     Path(ROOT / args.out_fig).parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(ROOT / args.out_fig, dpi=150, bbox_inches="tight")
