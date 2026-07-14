@@ -104,9 +104,38 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
   \end{itemize}
 \end{itemize}
 
+\section{The Null Result for Topic Agreement}
+\begin{itemize}
+  \item \textbf{P7.} The domain feature does not improve retrieval in either
+        form, because it matches free-text topic labels rather than the 32
+        collection domains, and the text and variable features already carry
+        any topic signal.
+  \begin{itemize}
+    % source: experiments/xd/reranker-2{,_Dom}__*.json（10 seeds, paired）: base 0.6010→0.6034, +0.0024, t p=0.063, wilcoxon p=0.123
+    % source: experiments/feature_x_difficulty_stats.json overall_tests.reranker-7+Dom: -0.0001, p_ttest 0.982
+    \item Adding the base domain feature to the two-feature base moves
+          Recall@K by only $+0.002$ ($p = 0.06$), and adding its set-level form
+          to the seven-feature reranker moves it by $-0.0001$ ($p = 0.98$, the
+          mechanism ablation P4).
+    % source: unified_equations.json domain field: 11,146 eqs, 1,998 distinct labels, 27.9% singletons, 6.36 labels/source paper
+    \item The matched label is not the 32-domain collection scheme
+          (Section~4.1) but a free-text label the extraction LLM
+          (Gemini 2.5 Pro) emits for each equation, so the 11,146 equations
+          carry 1,998 distinct labels, 27.9\% of them occurring once and a
+          single source paper averaging 6.36.
+    \item Near-duplicates such as ``Transport Phenomena'' and ``Transport
+          phenomena'' count as distinct, so both the substring test (base
+          feature) and the exact-match test (set feature) fire sparsely and
+          unreliably.
+    \item Refining the taxonomy would only deepen this sparsity. The task
+          rewards equations that share variables, not equations that share a
+          topic.
+  \end{itemize}
+\end{itemize}
+
 \section{Limitations}
 \begin{itemize}
-  \item \textbf{P7.} Four limitations qualify the results.
+  \item \textbf{P8.} Four limitations qualify the results.
   \begin{itemize}
     \item DAE case descriptions are LLM-generated and contain stylistic variation.
     \item Source count is confounded with equation count, so its effect is not causal.
