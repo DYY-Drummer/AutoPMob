@@ -120,10 +120,10 @@ This study addresses one of its core tasks: given a description of the desired m
 
 We propose a two-stage retrieval method.
 The first stage narrows candidates with seven query--equation features such as text similarity, and the second stage reranks them with three set-aware features that evaluate each candidate against the already selected set: complementarity, coherence, and domain agreement.
-We further introduce a learned greedy selection trained with teacher forcing and a self-terminating criterion that stops retrieval when the selected equations form a closed system with zero degrees of freedom.
+A self-terminating criterion further lets the method stop when the selected equations form a closed system with zero degrees of freedom, returning a solvable set without knowing the number of equations in advance.
 % source: experiments/strat_A.json results.*.Recall@K_correct
 On a database of 11,146 equations from 361 sources, the proposed method improves Recall@K from 0.521 to 0.743 against a classical information-retrieval baseline and also outperforms direct generation by a large language model.
-Analyses show that the structural set-aware features cause the improvement, that the improvement grows on harder cases, and that the self-terminating criterion returns solvable systems without knowing the answer size.
+Analyses show that the improvement comes from the set-aware features that capture how equations share variables across documents.
 
 \newpage
 %%%%% 目次 %%%%%
