@@ -70,6 +70,29 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
     \item The lift has a threshold-and-hump shape: none for single-equation cases ($-0.01$ at $X=1$), peak at $X=3$ (+0.12), and saturation at the hardest end (input variables $\ge 16$).
     \item (wrap) The saturation at the hardest end predicts that a sequential method should help there — tested next. (Figure: fig\_mechanism)
   \end{itemize}
+  \item \textbf{P4$'$.} Permutation importance on the single best model
+        (reranker-10S), computed without retraining, confirms the same
+        mechanism from an independent angle.
+  \begin{itemize}
+    % source: experiments/pfi_results.json results.case GROUP_var / GROUP_topic（10 seeds, 20 permutations, within-case, one-sample t-test）
+    \item Permuting the six variable-overlap features jointly collapses
+          Recall@K from 0.743 to 0.065 (importance $+0.678$, $p < 10^{-4}$),
+          whereas permuting the four topic features (text, SVD, and the base
+          and set-level domain) changes it by only $+0.006$ ($p = 0.10$, n.s.).
+    % source: experiments/pfi_results.json results.case per-feature（specificity +0.617; global scope +0.581/group +0.675）
+    \item The fixed model relies overwhelmingly on the specificity feature
+          ($+0.617$); every topic feature is individually non-significant or
+          slightly negative, and the group result is unchanged under global
+          rather than within-case permutation ($+0.675$ vs.\ $+0.678$).
+    \item Ablation and permutation answer different questions and agree where
+          it matters: ablation (retrained) measures necessity, permutation
+          (fixed weights) measures reliance. Specificity's large reliance
+          ($+0.617$) but small ablation contribution ($+0.090$, P4) shows that
+          the variable-overlap \emph{signal} is necessary while the particular
+          feature carrying it is substitutable across the variable-overlap group.
+    \item (wrap) Two methods with different assumptions converge: variable
+          overlap carries the signal, topic carries none. (Figure: fig\_pfi)
+  \end{itemize}
 \end{itemize}
 
 \section{Intervention: Learned Greedy Selection}
@@ -136,17 +159,24 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
           does not help either. The obstacle is redundancy, not sparsity: the
           task rewards equations that share variables, not equations that
           share a topic.
+    % source: experiments/pfi_results.json results.case GROUP_topic (+0.006, p=0.10)
+    \item Permutation importance corroborates this from the model side: in the
+          trained reranker, permuting all four topic features leaves Recall@K
+          essentially unchanged ($+0.006$, n.s.), whereas permuting the
+          variable-overlap features collapses it (Section~6.3, P4$'$).
   \end{itemize}
 \end{itemize}
 
 \section{Limitations}
 \begin{itemize}
-  \item \textbf{P8.} Four limitations qualify the results.
+  \item \textbf{P8.} Five limitations qualify the results.
   \begin{itemize}
     \item DAE case descriptions are LLM-generated and contain stylistic variation.
     \item Source count is confounded with equation count, so its effect is not causal.
     \item The stratified split is one scheme chosen from 400 candidates; 10 seeds mitigate but do not remove this choice.
     \item Evaluation is database-internal: retrieval cannot find equations absent from the database, and the LLM comparison covers about 50 cases per setting.
+    % source: experiments/pfi_results.json results.case GROUP_var (+0.678)
+    \item Variable containment alone is highly predictive: permuting it drops Recall@K by about 0.68, so part of the advantage reflects the benchmark's variable-sharing structure rather than subtle learned distinctions.
   \end{itemize}
 \end{itemize}
 
@@ -187,4 +217,10 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
 \includegraphics[width=0.6\linewidth]{figures/fig_dof_stop.pdf}
 \caption{Self-terminating retrieval: (a) set F1 of oracle-K vs.\ DoF-stop (10 seeds); (b) set quality by number of equations in Setting B.}
 \label{fig:dof}
+\end{figure}
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.9\linewidth]{figures/fig_pfi.pdf}
+\caption{Permutation feature importance of the best model (reranker-10S; mean $\pm$ SD over 10 seeds, 20 permutations each; importance is the drop in Recall@K when a feature's values are permuted within each case). (a) Individual features, coloured by group; (b) permuting the whole variable-overlap group vs.\ the whole topic group against the baseline Recall@K $=0.743$. The model relies on variable overlap and essentially ignores topic, corroborating the ablation of Section~6.3 by an independent, retraining-free method.}
+\label{fig:pfi}
 \end{figure}
