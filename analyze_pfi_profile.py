@@ -60,3 +60,112 @@ def spearman_drop_sep(records, feature):
         return {"rho": float("nan"), "p": float("nan"), "n": len(recs)}
     rho, p = stats.spearmanr([r["sep"] for r in recs], [r["drop"] for r in recs])
     return {"rho": float(rho), "p": float(p), "n": len(recs)}
+
+
+def sep_profile(records, feature, n_bins=5):
+    """sep の分位ビンごとの平均 drop ±SEM（全ケース対象）."""
+    recs = [r for r in records if r["feature"] == feature and r.get("sep") is not None]
+    if len(recs) < n_bins:
+        return [], [], []
+    seps = np.array([r["sep"] for r in recs])
+    drops = np.array([r["drop"] for r in recs])
+    edges = np.quantile(seps, np.linspace(0, 1, n_bins + 1))
+    edges[-1] += 1e-9
+    xs, ys, es = [], [], []
+    for b in range(n_bins):
+        m = (seps >= edges[b]) & (seps < edges[b + 1])
+        if m.sum() == 0:
+            continue
+        xs.append(float(0.5 * (edges[b] + edges[b + 1])))
+        ys.append(float(drops[m].mean()))
+        es.append(float(drops[m].std(ddof=1) / np.sqrt(m.sum())) if m.sum() > 1 else 0.0)
+    return xs, ys, es
+
+
+def build_stats(records):
+    feats = {}
+    all_feats = sorted(set(r["feature"] for r in records))
+    for name in all_feats:
+        dep, rob = split_dependent_robust(records, name)
+        solved = len(dep) + len(rob)
+        entry = {"n_dependent": len(dep), "n_robust": len(rob),
+                 "flip_fraction_of_solved": (len(dep) / solved) if solved else 0.0,
+                 "spearman_drop_sep": spearman_drop_sep(records, name), "attrs": {}}
+        for attr in ATTRS:
+            entry["attrs"][attr] = mannwhitney_effect(attr_array(dep, attr), attr_array(rob, attr))
+        feats[name] = entry
+    return {"metric": "Recall@K_correct", "n_features": len(all_feats), "features": feats}
+
+
+def _make_figure(records, out_png):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    try:
+        import japanize_matplotlib  # noqa
+    except Exception:
+        for fam in ["Hiragino Sans", "Hiragino Maru Gothic Pro", "Yu Gothic", "AppleGothic"]:
+            try:
+                plt.rcParams["font.family"] = fam; break
+            except Exception:
+                pass
+    plt.rcParams["axes.unicode_minus"] = False
+    plt.rcParams["pdf.fonttype"] = 42
+
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.2))
+    # (a) 分離度ビン × 平均drop
+    for name, label, col in SETAWARE:
+        xs, ys, es = sep_profile(records, name, n_bins=5)
+        if xs:
+            axes[0].errorbar(xs, ys, yerr=es, marker="o", lw=2.2, capsize=3, color=col, label=label)
+    axes[0].axhline(0, color="#bbbbbb", lw=1, zorder=0)
+    axes[0].set_title("(a) 分離度別の期待Recall低下")
+    axes[0].set_xlabel("分離度 sep（正解式−不正解式の特徴値差）")
+    axes[0].set_ylabel("置換によるRecall@K_correctの期待低下")
+    axes[0].grid(alpha=0.25); axes[0].legend(fontsize=9, loc="upper left")
+
+    # (b) gComp/gCoh の 依存−頑健 標準化平均差（属性別・横棒）
+    bar_feats = [("gComp", "#1f77b4"), ("gCoh", "#2ca02c")]
+    y = np.arange(len(ATTRS)); h = 0.38
+    for bi, (name, col) in enumerate(bar_feats):
+        dep, rob = split_dependent_robust(records, name)
+        smds = [standardized_mean_diff(attr_array(dep, a), attr_array(rob, a)) for a in ATTRS]
+        smds = [0.0 if (s != s) else s for s in smds]  # nan→0
+        axes[1].barh(y + (bi - 0.5) * h, smds, height=h, color=col, label=name)
+    axes[1].axvline(0, color="#888888", lw=1)
+    axes[1].set_yticks(y); axes[1].set_yticklabels(ATTRS)
+    axes[1].set_title("(b) 依存ケースを特徴づける属性")
+    axes[1].set_xlabel("標準化平均差（依存−頑健）")
+    axes[1].grid(alpha=0.25, axis="x"); axes[1].legend(fontsize=9)
+
+    fig.tight_layout()
+    Path(out_png).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_png, dpi=150, bbox_inches="tight")
+    fig.savefig(str(out_png).rsplit(".", 1)[0] + ".pdf", bbox_inches="tight")
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--input", default="experiments/pfi_per_case.json")
+    ap.add_argument("--out-json", default="experiments/pfi_profile_stats.json")
+    ap.add_argument("--out-fig", default="docs/figures/fig_pfi_dependence_profile.png")
+    a = ap.parse_args()
+    records, config = load_per_case(ROOT / a.input)
+    stats_out = build_stats(records)
+    stats_out["config"] = config
+    json.dump(stats_out, open(ROOT / a.out_json, "w", encoding="utf-8"),
+              ensure_ascii=False, indent=2)
+    print(f"Saved stats: {a.out_json}")
+    _make_figure(records, ROOT / a.out_fig)
+    print(f"Saved figure: {a.out_fig}")
+    # コンソール要約
+    for name, label, _ in SETAWARE:
+        g = stats_out["features"].get(name, {})
+        s = g.get("spearman_drop_sep", {})
+        print(f"{name:6s} 依存={g.get('n_dependent')}/{g.get('n_dependent',0)+g.get('n_robust',0)} "
+              f"Spearman(drop,sep) rho={s.get('rho')} p={s.get('p')}")
+
+
+if __name__ == "__main__":
+    main()

@@ -52,3 +52,27 @@ def test_load_per_case(tmp_path):
     p.write_text(json.dumps(doc))
     recs, cfg = load_per_case(p)
     assert cfg["setting"] == "A" and recs[0]["feature"] == "gComp"
+
+
+from analyze_pfi_profile import sep_profile, build_stats
+
+
+def test_sep_profile_bins_increase():
+    recs = [{"feature": "gComp", "base_R": 1.0, "flip": 1,
+             "sep": s, "drop": s, "n_input": 5, "n_correct": 1,
+             "n_output": 1, "n_sources": 1}
+            for s in np.linspace(0, 1, 40)]
+    xs, ys, es = sep_profile(recs, "gComp", n_bins=4)
+    assert len(xs) == 4
+    assert ys[-1] > ys[0]            # sep が大きいビンほど drop 大
+    assert all(e >= 0 for e in es)
+
+
+def test_build_stats_has_features_and_attrs():
+    recs = _recs()
+    st = build_stats(recs)
+    assert "gComp" in st["features"]
+    g = st["features"]["gComp"]
+    assert "n_input" in g["attrs"] and "sep" in g["attrs"]
+    assert "spearman_drop_sep" in g
+    assert g["n_dependent"] == 4 and g["n_robust"] == 4
