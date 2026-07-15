@@ -195,8 +195,12 @@ def train_and_cache(seed, cases, ek, et, ev, ed, es, cl, cs):
     return model, cache
 
 
-def score_to_RK(model, cache, feat_override=None):
-    """キャッシュした各ケースを（任意で置換後の feats で）採点し、集約 Recall@K_correct を返す."""
+def score_to_RK(model, cache, feat_override=None, return_per_case=False):
+    """キャッシュ各ケースを（任意で置換後 feats で）採点し集約 Recall@K_correct を返す.
+
+    return_per_case=True のとき (aggregate, per_case_list) を返す。
+    per_case_list[i] は cache 順のケース単位 Recall@K_correct。
+    """
     case_results = []
     with torch.no_grad():
         for idx, rec in enumerate(cache):
@@ -209,7 +213,11 @@ def score_to_RK(model, cache, feat_override=None):
             for kf in ("variant", "case_id", "n_input", "n_output", "n_sources"):
                 cm[kf] = rec[kf]
             case_results.append(cm)
-    return aggregate_metrics(case_results).get(METRIC, 0.0)
+    agg = aggregate_metrics(case_results).get(METRIC, 0.0)
+    if return_per_case:
+        per_case = [cm.get(METRIC, 0.0) for cm in case_results]
+        return agg, per_case
+    return agg
 
 
 def permute_feats(cache, cols, perm_seed, scope):
