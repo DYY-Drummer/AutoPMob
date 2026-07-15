@@ -127,9 +127,15 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
           phenomena'' count as distinct, so both the substring test (base
           feature) and the exact-match test (set feature) fire sparsely and
           unreliably.
-    \item Refining the taxonomy would only deepen this sparsity. The task
-          rewards equations that share variables, not equations that share a
-          topic.
+    % source: experiments/domain_merge_stats.json（reranker-2+Dom, 10 seeds, base reranker-2=0.6010）; run_domain_merge_ablation.py
+    \item Merging the labels does not rescue the feature: grouped into 100 or
+          40 topical clusters (the scale of the collection taxonomy), the base
+          feature adds at most $+0.0006$ (paired $t$-test, all $p > 0.6$), and
+          even the $+0.002$ of the original labels then vanishes.
+    \item A finer taxonomy would only deepen the sparsity, and a coarser one
+          does not help either. The obstacle is redundancy, not sparsity: the
+          task rewards equations that share variables, not equations that
+          share a topic.
   \end{itemize}
 \end{itemize}
 
