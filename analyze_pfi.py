@@ -75,6 +75,35 @@ PERM_TARGETS["GROUP_topic"] = TOPIC_COLS
 PERM_TARGETS["PAIR_Comp_Coh"] = [7, 8]  # 冗長ペア：joint vs 個別和
 
 
+def per_case_signal(base_R: float, perm_Rs: list) -> dict:
+    """置換前 Recall と N_PERM 回の置換後 Recall から per-case 信号を計算.
+
+    flip: base_R==1.0（baseline 解済み）かつ過半の置換で Recall<1.0 になったら 1。
+    drop: 期待低下 base_R - mean(perm_Rs)（全ケース対象、連続の主信号）。
+    """
+    perm = np.asarray(perm_Rs, dtype=float)
+    perm_mean = float(perm.mean()) if perm.size else float("nan")
+    n_below = int(np.sum(perm < 1.0))
+    flip_rate = n_below / perm.size if perm.size else 0.0
+    flip = 1 if (base_R == 1.0 and flip_rate >= 0.5) else 0
+    return {"perm_R_mean": perm_mean, "drop": float(base_R - perm_mean),
+            "flip": flip, "flip_rate": float(flip_rate)}
+
+
+def sep_for_feature(feats, cands, corr, col: int) -> float:
+    """そのケースで特徴 col が正解を不正解からどれだけ分離しているか.
+
+    sep = mean(正解候補行の col) - mean(不正解候補行の col)。
+    正解/不正解いずれかの行が無ければ nan。feats 行は cands と同順。
+    """
+    corr_mask = np.array([c in corr for c in cands], dtype=bool)
+    pos = feats[corr_mask, col]
+    neg = feats[~corr_mask, col]
+    if pos.size == 0 or neg.size == 0:
+        return float("nan")
+    return float(pos.mean() - neg.mean())
+
+
 def keep_setting_A(v: str) -> bool:
     return v == "original" or v.startswith("multisource_") or v.startswith("dae_")
 
