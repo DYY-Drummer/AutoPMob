@@ -246,8 +246,10 @@ def permute_feats(cache, cols, perm_seed, scope):
     return out
 
 
-def run():
+def run(n_seeds=None, n_perm=None):
     from scipy import stats
+    seeds = DATA_SEEDS[:n_seeds] if n_seeds else DATA_SEEDS
+    n_perm = n_perm or N_PERM
     eqs = load_equations(); cases_all = load_cases()
     cases = [c for c in cases_all if keep_setting_A(str(c.get("variant_type", "")))]
     ek, et, ev, ed, es = [], [], [], [], []
@@ -263,26 +265,58 @@ def run():
     print(f"設定A ケース {len(cases)} 件 / 式 {len(ek)} 件")
 
     scopes = ["case", "global"]
-    # 収集：drops[scope][label] = list over data seeds of mean drop (over N_PERM)
     drops = {sc: {lab: [] for lab in PERM_TARGETS} for sc in scopes}
     baselines = []
 
-    for si, seed in enumerate(DATA_SEEDS):
+    # per-case（scope="case" のみ、単独10特徴＋GROUP_var）
+    PC_LABELS = [name for _, name, _ in FEATURES] + ["GROUP_var"]
+    COL_OF = {name: c for c, name, _ in FEATURES}
+    percase_records = []
+
+    for si, seed in enumerate(seeds):
         model, cache = train_and_cache(seed, cases, ek, et, ev, ed, es, cl, cs)
-        base = score_to_RK(model, cache)
+        base, base_pc = score_to_RK(model, cache, return_per_case=True)
         baselines.append(base)
         print(f"[seed={seed}] baseline {METRIC} = {base:.4f}  (test {len(cache)} ケース)")
+
+        # sep を seed 内で1回（単独特徴のみ）
+        seps = {name: [sep_for_feature(rec["feats"], rec["cands"], rec["corr"], COL_OF[name])
+                       for rec in cache]
+                for name in COL_OF}
+        # per-case 置換後 Recall の蓄積器
+        pc_perm = {lab: [[] for _ in cache] for lab in PC_LABELS}
+
         for sc in scopes:
             for lab, cols in PERM_TARGETS.items():
                 ds = []
-                for pi in range(N_PERM):
+                collect_pc = (sc == "case" and lab in PC_LABELS)
+                for pi in range(n_perm):
                     pf = permute_feats(cache, cols, perm_seed=seed * 1000 + pi, scope=sc)
-                    rk = score_to_RK(model, cache, feat_override=pf)
+                    if collect_pc:
+                        rk, rk_pc = score_to_RK(model, cache, feat_override=pf, return_per_case=True)
+                        for i, v in enumerate(rk_pc):
+                            pc_perm[lab][i].append(v)
+                    else:
+                        rk = score_to_RK(model, cache, feat_override=pf)
                     ds.append(base - rk)
                 drops[sc][lab].append(float(np.mean(ds)))
 
+        # per-case レコード生成
+        for lab in PC_LABELS:
+            for i, rec in enumerate(cache):
+                sig = per_case_signal(base_pc[i], pc_perm[lab][i])
+                percase_records.append({
+                    "seed": seed, "case_id": rec["case_id"], "feature": lab,
+                    "base_R": float(base_pc[i]), "perm_R_mean": sig["perm_R_mean"],
+                    "drop": sig["drop"], "flip": sig["flip"], "flip_rate": sig["flip_rate"],
+                    "sep": (seps[lab][i] if lab in seps else None),
+                    "n_correct": len(rec["corr"]), "n_input": rec["n_input"],
+                    "n_output": rec["n_output"], "n_sources": rec["n_sources"],
+                    "variant": rec["variant"],
+                })
+
     # --- 集約・出力 ---
-    out = {"metric": METRIC, "n_seeds": len(DATA_SEEDS), "n_perm": N_PERM,
+    out = {"metric": METRIC, "n_seeds": len(seeds), "n_perm": n_perm,
            "baseline_mean": float(np.mean(baselines)),
            "baseline_std": float(np.std(baselines, ddof=1)),
            "results": {}}
@@ -312,6 +346,15 @@ def run():
     outp.parent.mkdir(parents=True, exist_ok=True)
     json.dump(out, open(outp, "w"), ensure_ascii=False, indent=2)
 
+    pc_out = {
+        "config": {"setting": "A", "set_mask": list(SET_MASK), "top_k": TOP_K, "epochs": EPOCHS},
+        "metric": METRIC, "n_seeds": len(seeds), "n_perm": n_perm, "scope": "case",
+        "features": PC_LABELS, "records": percase_records,
+    }
+    pc_path = ROOT / "experiments" / "pfi_per_case.json"
+    json.dump(pc_out, open(pc_path, "w"), ensure_ascii=False, indent=2)
+    print(f"Saved per-case: {pc_path}  ({len(percase_records)} records)")
+
     # --- 見やすい表示 ---
     print(f"\n{'='*72}")
     print(f"baseline {METRIC} = {out['baseline_mean']:.4f} ± {out['baseline_std']:.4f}  "
@@ -339,4 +382,9 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--seeds", type=int, default=None, help="先頭N seedのみ使用（smoke）")
+    ap.add_argument("--n-perm", type=int, default=None, help="置換回数（smoke）")
+    a = ap.parse_args()
+    run(n_seeds=a.seeds, n_perm=a.n_perm)
