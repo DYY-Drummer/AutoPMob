@@ -317,6 +317,9 @@ def build(out_path: str) -> None:
 
         RENDERERS[c["kind"]](slide, c)
         set_notes(slide, c["notes"])
+    # テンプレ由来の文書メタデータを本デッキ用に上書き（作成者はそのまま）
+    prs.core_properties.title = "論文紹介 P-77: LLM＋MCPによるAspen Plus操作自動化"
+    prs.core_properties.subject = "研究室ゼミ（2026-07）"
     prs.save(str(out))
 
 

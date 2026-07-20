@@ -128,3 +128,8 @@ def test_figure_labels_rendered(prs):
     assert "共通の差し込み口" in slide_text(slides[2])
     assert "Aspen Plus" in slide_text(slides[3])
     assert "窓口がない" in slide_text(slides[5])
+
+
+def test_core_properties_overwritten(prs):
+    assert prs.core_properties.title == "論文紹介 P-77: LLM＋MCPによるAspen Plus操作自動化"
+    assert prs.core_properties.subject == "研究室ゼミ（2026-07）"
