@@ -104,3 +104,27 @@ def test_package_part_names_unique_and_only_eight_slides(deck_path):
     slide_parts = [n for n in names
                    if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
     assert len(slide_parts) == 8, f"スライドパーツが {len(slide_parts)} 個（8 個のはず）"
+
+
+from pptx.enum.shapes import MSO_SHAPE_TYPE
+
+
+def count_autoshapes(slide):
+    return sum(1 for sh in slide.shapes
+               if sh.shape_type == MSO_SHAPE_TYPE.AUTO_SHAPE)
+
+
+def test_figures_present(prs):
+    slides = list(prs.slides)
+    # S3: 箱3+矢印2 ≥ 5 / S4: 箱5+矢印4+戻り矢印1 ≥ 9（他要素は加算されるだけ）
+    # S6: 箱・矢印・結果箱×2レーン+下部バー ≥ 7
+    assert count_autoshapes(slides[2]) >= 5, "S3 の MCP 概念図がない"
+    assert count_autoshapes(slides[3]) >= 9, "S4 の構成図がない"
+    assert count_autoshapes(slides[5]) >= 7, "S6 の回避ルート図がない"
+
+
+def test_figure_labels_rendered(prs):
+    slides = list(prs.slides)
+    assert "共通の差し込み口" in slide_text(slides[2])
+    assert "Aspen Plus" in slide_text(slides[3])
+    assert "窓口がない" in slide_text(slides[5])

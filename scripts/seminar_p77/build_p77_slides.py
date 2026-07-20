@@ -196,13 +196,30 @@ def _fill_cell(cell, text, bold=False, color=TEXT, fill=None, align=PP_ALIGN.LEF
 def render_mcp_fig(slide, c):
     add_headline(slide, c["headline"])
     add_bullets(slide, 0.55, 1.5, 12.25, 2.4, c["bullets"], size=22)
-    # 図は Task 3 で追加
+    fig = c["fig"]
+    add_box(slide, 0.7, 4.55, 3.4, 1.6, fig["llm"], NAVY, WHITE, size=22,
+            bold=True, font=HEAD_FONT)
+    add_arrow(slide, 4.25, 5.05, 0.75, 0.55)
+    add_box(slide, 5.15, 4.7, 2.7, 1.3, fig["mcp"], BLUE, WHITE, size=20, bold=True)
+    add_arrow(slide, 8.0, 5.05, 0.75, 0.55)
+    add_box(slide, 8.9, 4.3, 3.7, 2.1,
+            [fig["tools_title"]] + fig["tools"].split("\n"),
+            LIGHT, TEXT, size=20)
 
 
 def render_arch_fig(slide, c):
     add_headline(slide, c["headline"])
+    xs = [(0.55, 2.1), (3.0, 1.75), (5.1, 2.55), (8.0, 1.65), (10.0, 2.75)]
+    fills = [LIGHT2, NAVY, BLUE, LIGHT2, GREEN]
+    colors = [TEXT, WHITE, WHITE, TEXT, WHITE]
+    for (x, w), fill, col, label in zip(xs, fills, colors, c["boxes"]):
+        add_box(slide, x, 1.85, w, 1.35, label, fill, col, size=20, bold=True)
+    for gap_x in (2.68, 4.78, 7.68, 9.68):
+        add_arrow(slide, gap_x, 2.32, 0.3, 0.42)
+    add_arrow(slide, 3.0, 3.5, 8.5, 0.5, left=True)
+    add_text(slide, 3.0, 4.02, 8.5, 0.45, c["arrow_back"], size=20, color=GRAY,
+             align=PP_ALIGN.CENTER)
     add_bullets(slide, 0.55, 4.55, 12.25, 2.5, c["bullets"], size=20)
-    # 図は Task 3 で追加
 
 
 def render_two_col(slide, c):
@@ -222,11 +239,20 @@ def render_two_col(slide, c):
 
 def render_route_fig(slide, c):
     add_headline(slide, c["headline"])
+    for lane, y in ((c["lane1"], 1.6), (c["lane2"], 3.35)):
+        ok = lane["ok"]
+        add_box(slide, 0.7, y, 1.7, 1.15, lane["from"], NAVY, WHITE, size=22,
+                bold=True, font=HEAD_FONT)
+        add_arrow(slide, 2.55, y + 0.35, 3.9, 0.45, label=lane["via"],
+                  fill=GREEN if ok else GRAY)
+        mark = "○ " if ok else "✗ "
+        add_box(slide, 6.7, y, 5.9, 1.15, mark + lane["to"],
+                LIGHT if ok else WHITE, GREEN if ok else RED, size=22,
+                bold=True, outline=GREEN if ok else RED)
     add_text(slide, 0.55, 5.30, 12.25, 1.1,
              ["・" + line for line in c["note_lines"]], size=20, color=TEXT)
     add_box(slide, 0.55, 6.45, 12.25, 0.6, c["bottom"], NAVY, WHITE,
             size=20, bold=True, font=HEAD_FONT)
-    # レーン図は Task 3 で追加
 
 
 def render_bullets_box(slide, c):
