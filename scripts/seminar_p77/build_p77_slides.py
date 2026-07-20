@@ -269,6 +269,9 @@ def build(out_path: str) -> None:
 
     sld_list = prs.slides._sldIdLst      # 既存14枚を全削除
     for sld in list(sld_list):
+        # rel も切断しないと旧スライドパーツがパッケージ内に残り、
+        # 保存時に slide1..8 のパート名衝突（Duplicate name 警告）を起こす。
+        prs.part.drop_rel(sld.get(qn("r:id")))
         sld_list.remove(sld)
 
     for c in C.SLIDES:

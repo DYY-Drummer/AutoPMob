@@ -1,5 +1,6 @@
 """生成された pptx が仕様を満たすことの検証（生成物を開き直して確認）。"""
 import sys
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -13,10 +14,15 @@ from build_p77_slides import build
 
 
 @pytest.fixture(scope="module")
-def prs(tmp_path_factory):
+def deck_path(tmp_path_factory):
     out = tmp_path_factory.mktemp("deck") / "p77_test.pptx"
     build(str(out))
-    return Presentation(str(out))
+    return out
+
+
+@pytest.fixture(scope="module")
+def prs(deck_path):
+    return Presentation(str(deck_path))
 
 
 def iter_runs(slide):
@@ -90,3 +96,11 @@ def test_notes_attached_verbatim(prs):
     for i, slide in enumerate(prs.slides):
         notes = slide.notes_slide.notes_text_frame.text
         assert notes == C.SLIDES[i]["notes"], f"slide {i+1}: 台本がノート欄と不一致"
+
+
+def test_package_part_names_unique_and_only_eight_slides(deck_path):
+    names = zipfile.ZipFile(deck_path).namelist()
+    assert len(names) == len(set(names)), "zip 内に同名パーツが重複している"
+    slide_parts = [n for n in names
+                   if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
+    assert len(slide_parts) == 8, f"スライドパーツが {len(slide_parts)} 個（8 個のはず）"
