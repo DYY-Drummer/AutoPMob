@@ -808,7 +808,7 @@ if __name__ == "__main__":
 - [ ] **Step 4: テストが通ることを確認**
 
 Run: `python3 -m pytest tests/test_p77_slides.py tests/test_p77_content.py -v`
-Expected: 17 passed（生成物テスト8＋内容テスト9）
+Expected: 16 passed（生成物テスト7＋内容テスト9）
 
 よくある失敗と対処:
 - `size is None`: run を作らず `tf.text = ...` で書いた箇所がある → 必ず `add_run()`＋`_style()` を通す
@@ -924,7 +924,7 @@ def render_route_fig(slide, c):
 - [ ] **Step 4: 全テストが通ることを確認**
 
 Run: `python3 -m pytest tests/test_p77_content.py tests/test_p77_slides.py -v`
-Expected: 19 passed（矢印ラベル・図中文字も 20pt テストの対象に自動的に含まれる）
+Expected: 18 passed（矢印ラベル・図中文字も 20pt テストの対象に自動的に含まれる）
 
 - [ ] **Step 5: コミット**
 
@@ -949,7 +949,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - [ ] **Step 1: 全テストを最終確認**
 
 Run: `python3 -m pytest tests/test_p77_content.py tests/test_p77_slides.py -v`
-Expected: 19 passed
+Expected: 18 passed
 
 - [ ] **Step 2: 本番パスへ生成して開く**
 
