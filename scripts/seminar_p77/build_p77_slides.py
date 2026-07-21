@@ -211,13 +211,14 @@ def render_mcp_fig(slide, c):
 
 def render_arch_fig(slide, c):
     add_headline(slide, c["headline"])
-    # 幅は 20pt 太字 Hiragino/IBM Plex の実測折り返し幅から逆算（レビュー指摘対応）
-    xs = [(0.55, 1.95), (2.68, 2.50), (5.36, 2.80), (8.34, 1.95), (10.47, 2.31)]
+    # 幅は 20pt 太字（Hiragino W6/IBM Plex SemiBold）の実測折り返し幅から逆算。
+    # 必要 usable 幅: b2"Claude Desktop"2.38 / b3 2.15 / b4"Python API"1.65 / b5"AVEVA Process"2.33
+    xs = [(0.55, 1.95), (2.68, 2.62), (5.48, 2.44), (8.10, 1.95), (10.23, 2.55)]
     fills = [LIGHT2, NAVY, BLUE, LIGHT2, GREEN]
     colors = [TEXT, WHITE, WHITE, TEXT, WHITE]
     for (x, w), fill, col, label in zip(xs, fills, colors, c["boxes"]):
         add_box(slide, x, 1.85, w, 1.35, label, fill, col, size=20, bold=True)
-    for gap_x in (2.50, 5.18, 8.16, 10.29):
+    for gap_x in (2.50, 5.30, 7.92, 10.05):
         add_arrow(slide, gap_x, 2.32, 0.18, 0.42)
     add_arrow(slide, 3.0, 3.5, 8.5, 0.5, left=True)
     add_text(slide, 3.0, 4.02, 8.5, 0.45, c["arrow_back"], size=20, color=GRAY,
