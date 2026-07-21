@@ -67,6 +67,7 @@ def test_paper_numbers_consistent():
     s6 = C.slide_all_text(5)
     assert "84.2" in s6 and "95.1" in s6, "S6: 純度 84.2→95.1 がない"
     assert "11 個" in s6, "S6: 改善案 11 個がない"
+    assert "1.5 → 1.3 → 1.4 → 1.45" in s6, "S6: 還流比の試行列（論文の4段）がない"
     s7 = C.slide_all_text(6)
     assert "+10.9%" in s7 and "+12.9%" in s7, "S7: 算数ミスの実例がない"
     assert "20〜40%" in s7 and "2〜5%" in s7, "S7: 経済効果の実例がない"

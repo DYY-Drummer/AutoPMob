@@ -29,7 +29,6 @@ GREEN = RGBColor(0x2E, 0x88, 0x51)
 GRAY = RGBColor(0x8C, 0x8C, 0x8C)
 LIGHT = RGBColor(0xEA, 0xF3, 0xFB)
 LIGHT2 = RGBColor(0xDC, 0xEA, 0xF6)
-RED = RGBColor(0xC0, 0x39, 0x2B)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 
 BODY_FONT = "IBM Plex Sans"
@@ -151,7 +150,7 @@ def add_headline(slide, text, sub=None):
 def render_title(slide, c):
     add_text(slide, 0.8, 0.9, 11.7, 1.5, c["headline"], size=36, color=NAVY,
              bold=True, font=HEAD_FONT)
-    add_text(slide, 0.8, 2.25, 11.7, 0.7, c["sub"], size=24, color=BLUE,
+    add_text(slide, 0.8, 2.25, 11.7, 0.85, c["sub"], size=24, color=BLUE,
              bold=True, font=HEAD_FONT)
     add_text(slide, 0.8, 3.2, 11.7, 2.3, c["body"], size=22, color=TEXT, spacing=1.3)
     add_text(slide, 0.8, 5.6, 11.7, 0.6, c["explain"], size=20, color=GRAY)
@@ -176,8 +175,10 @@ def render_table(slide, c):
         for j, val in enumerate(row):
             _fill_cell(table.cell(i, j), val, fill=fill,
                        align=PP_ALIGN.CENTER if j == 1 else PP_ALIGN.LEFT)
-    add_text(slide, 0.55, 6.30, 12.25, 0.5, c["note"], size=20, color=BLUE, bold=True)
-    add_text(slide, 0.55, 6.85, 12.25, 0.45, c["source"], size=20, color=GRAY)
+    # 表の高さが小さいスライドでは注記を表の直下に寄せる（間延び防止）
+    note_y = min(6.30, 2.0 + c.get("table_h", 4.15) + 0.2)
+    add_text(slide, 0.55, note_y, 12.25, 0.5, c["note"], size=20, color=BLUE, bold=True)
+    add_text(slide, 0.55, note_y + 0.55, 12.25, 0.45, c["source"], size=20, color=GRAY)
 
 
 def _fill_cell(cell, text, bold=False, color=TEXT, fill=None, align=PP_ALIGN.LEFT):
@@ -210,13 +211,14 @@ def render_mcp_fig(slide, c):
 
 def render_arch_fig(slide, c):
     add_headline(slide, c["headline"])
-    xs = [(0.55, 2.0), (2.83, 2.25), (5.36, 2.6), (8.24, 1.5), (10.02, 2.6)]
+    # 幅は 20pt 太字 Hiragino/IBM Plex の実測折り返し幅から逆算（レビュー指摘対応）
+    xs = [(0.55, 1.95), (2.68, 2.50), (5.36, 2.80), (8.34, 1.95), (10.47, 2.31)]
     fills = [LIGHT2, NAVY, BLUE, LIGHT2, GREEN]
     colors = [TEXT, WHITE, WHITE, TEXT, WHITE]
     for (x, w), fill, col, label in zip(xs, fills, colors, c["boxes"]):
         add_box(slide, x, 1.85, w, 1.35, label, fill, col, size=20, bold=True)
-    for gap_x in (2.55, 5.08, 7.96, 9.74):
-        add_arrow(slide, gap_x, 2.32, 0.28, 0.42)
+    for gap_x in (2.50, 5.18, 8.16, 10.29):
+        add_arrow(slide, gap_x, 2.32, 0.18, 0.42)
     add_arrow(slide, 3.0, 3.5, 8.5, 0.5, left=True)
     add_text(slide, 3.0, 4.02, 8.5, 0.45, c["arrow_back"], size=20, color=GRAY,
              align=PP_ALIGN.CENTER)
