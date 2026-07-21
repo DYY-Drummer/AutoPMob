@@ -33,8 +33,8 @@ SLIDES = [
     {
         "kind": "title",
         "headline": "LLM（大規模言語モデル）にシミュレータを操作させる研究の構造",
-        "sub": "向くこと・やるべきこと・任せてはいけないこと — "
-        "MCP（Model Context Protocol）活用研究の紹介",
+        # 2026-07-21 本人が正本 pptx 上で手動変更した文言に同期
+        "sub": "PSE ASIA 2026で見た LLM 研究の潮流",
         "body": [
             "中心例: Large Language Model Agent for User-friendly Chemical "
             "Process Simulations",

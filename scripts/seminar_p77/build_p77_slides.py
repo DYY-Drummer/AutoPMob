@@ -352,6 +352,12 @@ def build(out_path: str) -> None:
 
 
 if __name__ == "__main__":
-    target = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_OUT
+    args = [a for a in sys.argv[1:] if a != "--force"]
+    force = "--force" in sys.argv[1:]
+    target = args[0] if args else DEFAULT_OUT
+    # 2026-07-21 以降、既定出力先は本人の手動編集を含む「正本」。
+    # 誤って再生成で上書きしないよう、明示の --force がない限り中止する。
+    if target == DEFAULT_OUT and Path(target).exists() and not force:
+        sys.exit("中止: 出力先は手動編集済みの正本です。上書きするには --force を付けてください。")
     build(target)
     print(f"wrote {target}")
