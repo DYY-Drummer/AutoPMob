@@ -1,10 +1,11 @@
-"""生成された pptx が仕様を満たすことの検証（生成物を開き直して確認）。"""
+"""生成された pptx が仕様（v2・10枚）を満たすことの検証（生成物を開き直して確認）。"""
 import sys
 import zipfile
 from pathlib import Path
 
 import pytest
 from pptx import Presentation
+from pptx.enum.shapes import MSO_SHAPE_TYPE
 from pptx.util import Pt
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "seminar_p77"))
@@ -51,7 +52,7 @@ def slide_text(slide):
 
 
 def test_slide_count(prs):
-    assert len(prs.slides._sldIdLst) == 8
+    assert len(prs.slides._sldIdLst) == 10
 
 
 def test_canvas_is_16_9(prs):
@@ -87,9 +88,10 @@ def test_slide_texts_match_content_module(prs):
 def test_key_strings_rendered(prs):
     slides = list(prs.slides)
     assert "Model Context Protocol" in slide_text(slides[2])
-    assert "60" in slide_text(slides[4])
-    assert "backup ファイル" in slide_text(slides[5])
-    assert "抄録のみ" in slide_text(slides[7])
+    assert "AVEVA" in slide_text(slides[3])
+    assert "16" in slide_text(slides[4])
+    assert "+12.9%" in slide_text(slides[6])
+    assert "arXiv:2601.11650" in slide_text(slides[9])
 
 
 def test_notes_attached_verbatim(prs):
@@ -98,15 +100,12 @@ def test_notes_attached_verbatim(prs):
         assert notes == C.SLIDES[i]["notes"], f"slide {i+1}: 台本がノート欄と不一致"
 
 
-def test_package_part_names_unique_and_only_eight_slides(deck_path):
+def test_package_part_names_unique_and_only_ten_slides(deck_path):
     names = zipfile.ZipFile(deck_path).namelist()
     assert len(names) == len(set(names)), "zip 内に同名パーツが重複している"
     slide_parts = [n for n in names
                    if n.startswith("ppt/slides/slide") and n.endswith(".xml")]
-    assert len(slide_parts) == 8, f"スライドパーツが {len(slide_parts)} 個（8 個のはず）"
-
-
-from pptx.enum.shapes import MSO_SHAPE_TYPE
+    assert len(slide_parts) == 10, f"スライドパーツが {len(slide_parts)} 個（10 個のはず）"
 
 
 def count_autoshapes(slide):
@@ -116,20 +115,17 @@ def count_autoshapes(slide):
 
 def test_figures_present(prs):
     slides = list(prs.slides)
-    # S3: 箱3+矢印2 ≥ 5 / S4: 箱5+矢印4+戻り矢印1 ≥ 9（他要素は加算されるだけ）
-    # S6: 箱・矢印・結果箱×2レーン+下部バー ≥ 7
+    # S3: 箱3+矢印2 ≥ 5 / S4: 箱5+矢印4+戻り矢印1 ≥ 10（下部バー等は加算されるだけ）
     assert count_autoshapes(slides[2]) >= 5, "S3 の MCP 概念図がない"
-    assert count_autoshapes(slides[3]) >= 9, "S4 の構成図がない"
-    assert count_autoshapes(slides[5]) >= 7, "S6 の回避ルート図がない"
+    assert count_autoshapes(slides[3]) >= 10, "S4 の構成図がない"
 
 
 def test_figure_labels_rendered(prs):
     slides = list(prs.slides)
     assert "共通の差し込み口" in slide_text(slides[2])
-    assert "Aspen Plus" in slide_text(slides[3])
-    assert "窓口がない" in slide_text(slides[5])
+    assert "Claude Desktop" in slide_text(slides[3])
 
 
 def test_core_properties_overwritten(prs):
-    assert prs.core_properties.title == "論文紹介 P-77: LLM＋MCPによるAspen Plus操作自動化"
+    assert prs.core_properties.title == "論文紹介: LLMにシミュレータを操作させる研究の構造（DTU論文中心）"
     assert prs.core_properties.subject == "研究室ゼミ（2026-07）"

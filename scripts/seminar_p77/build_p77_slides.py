@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""P-77 紹介スライドのビルダー。
+"""MCP 活用研究 紹介スライド（v2・10 枚）のビルダー。
 
 テンプレ（PSE Asia 2026 発表スライド）を複製し、既存スライドを全削除して
-content_p77.SLIDES の 8 枚を描画する。
+content_p77.SLIDES の 10 枚を描画する。
 使い方: python3 scripts/seminar_p77/build_p77_slides.py [出力パス]
 """
 import shutil
@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import content_p77 as C
 
 TEMPLATE = "/Users/kazuhiromiyamura/Desktop/学会/PSE ASIAN2026/PSEAsia2026_slide_v2.pptx"
-DEFAULT_OUT = "/Users/kazuhiromiyamura/Desktop/ゼミ/論文紹介_P77_LLM_Aspen_かずひろ.pptx"
+DEFAULT_OUT = "/Users/kazuhiromiyamura/Desktop/ゼミ/論文紹介_LLM_MCP_シミュレータ操作_かずひろ.pptx"
 
 NAVY = RGBColor(0x16, 0x30, 0x4F)
 TEXT = RGBColor(0x22, 0x22, 0x22)
@@ -162,12 +162,13 @@ def render_table(slide, c):
     add_headline(slide, c["headline"])
     add_text(slide, 0.55, 1.35, 12.25, 0.55, c["lead"], size=22, color=TEXT, bold=True)
     n_rows = len(c["rows"]) + 1
+    widths = c.get("col_widths", [4.9, 1.1, 6.25])
     table_shape = slide.shapes.add_table(
-        n_rows, 3, Inches(0.55), Inches(2.0), Inches(12.25), Inches(4.15))
+        n_rows, len(widths), Inches(0.55), Inches(2.0), Inches(12.25),
+        Inches(c.get("table_h", 4.15)))
     table = table_shape.table
-    table.columns[0].width = Inches(4.9)
-    table.columns[1].width = Inches(1.1)
-    table.columns[2].width = Inches(6.25)
+    for j, w in enumerate(widths):
+        table.columns[j].width = Inches(w)
     for j, head in enumerate(c["header"]):
         _fill_cell(table.cell(0, j), head, bold=True, color=WHITE, fill=NAVY)
     for i, row in enumerate(c["rows"], start=1):
@@ -209,13 +210,13 @@ def render_mcp_fig(slide, c):
 
 def render_arch_fig(slide, c):
     add_headline(slide, c["headline"])
-    xs = [(0.55, 2.1), (3.0, 1.75), (5.1, 2.55), (8.0, 1.65), (10.0, 2.75)]
+    xs = [(0.55, 2.0), (2.83, 2.25), (5.36, 2.6), (8.24, 1.5), (10.02, 2.6)]
     fills = [LIGHT2, NAVY, BLUE, LIGHT2, GREEN]
     colors = [TEXT, WHITE, WHITE, TEXT, WHITE]
     for (x, w), fill, col, label in zip(xs, fills, colors, c["boxes"]):
         add_box(slide, x, 1.85, w, 1.35, label, fill, col, size=20, bold=True)
-    for gap_x in (2.68, 4.78, 7.68, 9.68):
-        add_arrow(slide, gap_x, 2.32, 0.3, 0.42)
+    for gap_x in (2.55, 5.08, 7.96, 9.74):
+        add_arrow(slide, gap_x, 2.32, 0.28, 0.42)
     add_arrow(slide, 3.0, 3.5, 8.5, 0.5, left=True)
     add_text(slide, 3.0, 4.02, 8.5, 0.45, c["arrow_back"], size=20, color=GRAY,
              align=PP_ALIGN.CENTER)
@@ -235,24 +236,6 @@ def render_two_col(slide, c):
     bar = add_box(slide, 0.55, 6.4, 12.25, 0.65, c["bottom"], NAVY, WHITE,
                   size=22, bold=True, font=HEAD_FONT)
     return bar
-
-
-def render_route_fig(slide, c):
-    add_headline(slide, c["headline"])
-    for lane, y in ((c["lane1"], 1.6), (c["lane2"], 3.35)):
-        ok = lane["ok"]
-        add_box(slide, 0.7, y, 1.7, 1.15, lane["from"], NAVY, WHITE, size=22,
-                bold=True, font=HEAD_FONT)
-        add_arrow(slide, 2.55, y + 0.35, 3.9, 0.45, label=lane["via"],
-                  fill=GREEN if ok else GRAY)
-        mark = "○ " if ok else "✗ "
-        add_box(slide, 6.7, y, 5.9, 1.15, mark + lane["to"],
-                LIGHT if ok else WHITE, GREEN if ok else RED, size=22,
-                bold=True, outline=GREEN if ok else RED)
-    add_text(slide, 0.55, 5.30, 12.25, 1.1,
-             ["・" + line for line in c["note_lines"]], size=20, color=TEXT)
-    add_box(slide, 0.55, 6.45, 12.25, 0.6, c["bottom"], NAVY, WHITE,
-            size=20, bold=True, font=HEAD_FONT)
 
 
 def render_bullets_box(slide, c):
@@ -275,7 +258,6 @@ RENDERERS = {
     "mcp_fig": render_mcp_fig,
     "arch_fig": render_arch_fig,
     "two_col": render_two_col,
-    "route_fig": render_route_fig,
     "bullets_box": render_bullets_box,
     "summary": render_summary,
 }
@@ -318,7 +300,7 @@ def build(out_path: str) -> None:
         RENDERERS[c["kind"]](slide, c)
         set_notes(slide, c["notes"])
     # テンプレ由来の文書メタデータを本デッキ用に上書き（作成者はそのまま）
-    prs.core_properties.title = "論文紹介 P-77: LLM＋MCPによるAspen Plus操作自動化"
+    prs.core_properties.title = "論文紹介: LLMにシミュレータを操作させる研究の構造（DTU論文中心）"
     prs.core_properties.subject = "研究室ゼミ（2026-07）"
     prs.save(str(out))
 
