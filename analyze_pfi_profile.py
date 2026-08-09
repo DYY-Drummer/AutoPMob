@@ -54,6 +54,21 @@ def standardized_mean_diff(dep, rob):
     return float((dep.mean() - rob.mean()) / sp) if sp > 0 else 0.0
 
 
+def smd_stderr(dep, rob):
+    """標準化平均差（Cohen's d）の閉形式標準誤差.
+
+    SE(d) = sqrt((n1+n2)/(n1*n2) + d^2 / (2*(n1+n2)))
+    いずれかの群が 2 未満なら nan。
+    """
+    n1, n2 = dep.size, rob.size
+    if n1 < 2 or n2 < 2:
+        return float("nan")
+    d = standardized_mean_diff(dep, rob)
+    if d != d:  # nan
+        return float("nan")
+    return float(np.sqrt((n1 + n2) / (n1 * n2) + d ** 2 / (2.0 * (n1 + n2))))
+
+
 def spearman_drop_sep(records, feature):
     recs = [r for r in records if r["feature"] == feature and r.get("sep") is not None]
     if len(recs) < 3:
@@ -130,8 +145,11 @@ def _make_figure(records, out_png):
     for bi, (name, col) in enumerate(bar_feats):
         dep, rob = split_dependent_robust(records, name)
         smds = [standardized_mean_diff(attr_array(dep, a), attr_array(rob, a)) for a in ATTRS]
+        ses = [smd_stderr(attr_array(dep, a), attr_array(rob, a)) for a in ATTRS]
         smds = [0.0 if (s != s) else s for s in smds]  # nan→0
-        axes[1].barh(y + (bi - 0.5) * h, smds, height=h, color=col, label=name)
+        ses = [0.0 if (e != e) else e for e in ses]    # nan→0
+        axes[1].barh(y + (bi - 0.5) * h, smds, height=h, xerr=ses,
+                     error_kw=dict(capsize=3, lw=1), color=col, label=name)
     axes[1].axvline(0, color="#888888", lw=1)
     axes[1].set_yticks(y); axes[1].set_yticklabels(ATTRS)
     axes[1].set_title("(b) 依存ケースを特徴づける属性")

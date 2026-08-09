@@ -3,6 +3,7 @@ import numpy as np
 from analyze_pfi_profile import (
     load_per_case, split_dependent_robust, attr_array,
     mannwhitney_effect, standardized_mean_diff, spearman_drop_sep,
+    smd_stderr,
 )
 
 
@@ -76,3 +77,19 @@ def test_build_stats_has_features_and_attrs():
     assert "n_input" in g["attrs"] and "sep" in g["attrs"]
     assert "spearman_drop_sep" in g
     assert g["n_dependent"] == 4 and g["n_robust"] == 4
+
+
+def test_smd_stderr_matches_closed_form():
+    dep, rob = split_dependent_robust(_recs(), "gComp")
+    a, b = attr_array(dep, "n_input"), attr_array(rob, "n_input")
+    d = standardized_mean_diff(a, b)
+    n1, n2 = a.size, b.size
+    expected = np.sqrt((n1 + n2) / (n1 * n2) + d ** 2 / (2 * (n1 + n2)))
+    assert abs(smd_stderr(a, b) - expected) < 1e-12
+    assert smd_stderr(a, b) > 0
+
+
+def test_smd_stderr_nan_when_group_too_small():
+    import math
+    one = np.array([1.0])
+    assert math.isnan(smd_stderr(one, np.array([2.0, 3.0])))
