@@ -78,7 +78,7 @@ PERM_TARGETS["PAIR_Comp_Coh"] = [7, 8]  # 冗長ペア：joint vs 個別和
 def per_case_signal(base_R: float, perm_Rs: list) -> dict:
     """置換前 Recall と N_PERM 回の置換後 Recall から per-case 信号を計算.
 
-    flip: base_R==1.0（baseline 解済み）かつ過半の置換で Recall<1.0 になったら 1。
+    flip: base_R==1.0（baseline 解済み）かつ半数以上の置換で Recall<1.0 になったら 1。
     drop: 期待低下 base_R - mean(perm_Rs)（全ケース対象、連続の主信号）。
     """
     perm = np.asarray(perm_Rs, dtype=float)
@@ -246,9 +246,12 @@ def permute_feats(cache, cols, perm_seed, scope):
     return out
 
 
-def run(n_seeds=None, n_perm=None):
+def run(n_seeds=None, n_perm=None, force=False):
     from scipy import stats
-    seeds = DATA_SEEDS[:n_seeds] if n_seeds else DATA_SEEDS
+    # --seeds/--n-perm を指定した smoke 実行は正本を破壊しないよう別ファイルに退避する
+    # （--force 指定時のみ正本パスへ縮小スケールで上書きすることを許す）。
+    smoke = (n_seeds is not None or n_perm is not None) and not force
+    seeds = DATA_SEEDS[:n_seeds] if n_seeds is not None else DATA_SEEDS
     n_perm = n_perm or N_PERM
     eqs = load_equations(); cases_all = load_cases()
     cases = [c for c in cases_all if keep_setting_A(str(c.get("variant_type", "")))]
@@ -342,7 +345,7 @@ def run(n_seeds=None, n_perm=None):
         }
         out["results"][sc] = res
 
-    outp = ROOT / "experiments" / "pfi_results.json"
+    outp = ROOT / "experiments" / ("pfi_results_smoke.json" if smoke else "pfi_results.json")
     outp.parent.mkdir(parents=True, exist_ok=True)
     json.dump(out, open(outp, "w"), ensure_ascii=False, indent=2)
 
@@ -351,14 +354,18 @@ def run(n_seeds=None, n_perm=None):
         "metric": METRIC, "n_seeds": len(seeds), "n_perm": n_perm, "scope": "case",
         "features": PC_LABELS, "records": percase_records,
     }
-    pc_path = ROOT / "experiments" / "pfi_per_case.json"
+    pc_path = ROOT / "experiments" / ("pfi_per_case_smoke.json" if smoke else "pfi_per_case.json")
     json.dump(pc_out, open(pc_path, "w"), ensure_ascii=False, indent=2)
     print(f"Saved per-case: {pc_path}  ({len(percase_records)} records)")
+    if smoke:
+        print(f"[smoke] --seeds/--n-perm 指定のため正本を保護し {outp.name} / {pc_path.name} に退避出力した。"
+              f"正本 experiments/pfi_results.json ・ experiments/pfi_per_case.json は変更していない。"
+              f"正本を縮小スケールで上書きするには --force を指定すること。")
 
     # --- 見やすい表示 ---
     print(f"\n{'='*72}")
     print(f"baseline {METRIC} = {out['baseline_mean']:.4f} ± {out['baseline_std']:.4f}  "
-          f"(10 seeds, N_perm={N_PERM})")
+          f"({len(seeds)} seeds, N_perm={n_perm})")
     for sc in scopes:
         print(f"\n=== 置換範囲: {sc} ===")
         res = out["results"][sc]
@@ -386,5 +393,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--seeds", type=int, default=None, help="先頭N seedのみ使用（smoke）")
     ap.add_argument("--n-perm", type=int, default=None, help="置換回数（smoke）")
+    ap.add_argument("--force", action="store_true",
+                    help="--seeds/--n-perm 指定時でも正本パス（pfi_results.json 等）に書き込む")
     a = ap.parse_args()
-    run(n_seeds=a.seeds, n_perm=a.n_perm)
+    run(n_seeds=a.seeds, n_perm=a.n_perm, force=a.force)
