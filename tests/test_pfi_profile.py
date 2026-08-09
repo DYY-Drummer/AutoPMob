@@ -266,6 +266,44 @@ def test_cancellation_check_nan_p_when_one_side_empty():
     assert math.isnan(res["mean_drop_sep_neg"])
 
 
+def _cancellation_populations_recs():
+    # solved_only=True と False とで sep<0 群の平均 drop が変わることを示す最小構成。
+    # s1: 解決済み(base_R=1.0)・逆分離(sep<0)。実データ同様、drop は非負（ここでは 0.02）。
+    # u1: 未解決(base_R<1.0)・逆分離(sep<0)。perm が baseline を上回りうるため drop は
+    #     負になれる（ここでは直接 -0.5 を与える）。solved_only=True では除外される。
+    # p1: sep>0 側の最小限のダミー（本テストの主眼は neg 側の母集団差）。
+    return [
+        {"feature": "gDom", "case_id": "s1", "base_R": 1.0, "flip": 0,
+         "sep": -0.3, "drop": 0.02, "n_correct": 1, "n_input": 5,
+         "n_output": 1, "n_sources": 1, "variant": "original"},
+        {"feature": "gDom", "case_id": "u1", "base_R": 0.4, "flip": 0,
+         "sep": -0.2, "drop": -0.5, "n_correct": 1, "n_input": 5,
+         "n_output": 1, "n_sources": 1, "variant": "original"},
+        {"feature": "gDom", "case_id": "p1", "base_R": 1.0, "flip": 1,
+         "sep": 0.3, "drop": 0.10, "n_correct": 1, "n_input": 5,
+         "n_output": 1, "n_sources": 1, "variant": "original"},
+    ]
+
+
+def test_cancellation_check_solved_only_excludes_negative_drop_that_all_cases_includes():
+    recs = _cancellation_populations_recs()
+    solved = cancellation_check(recs, "gDom", solved_only=True)
+    allc = cancellation_check(recs, "gDom", solved_only=False)
+
+    # solved_only=True: u1（未解決）は除外される → sep<0 群は s1 のみ、drop は非負のまま。
+    assert solved["n_sep_neg"] == 1
+    assert solved["mean_drop_sep_neg"] == 0.02
+    assert solved["mean_drop_sep_neg"] >= 0
+
+    # solved_only=False: u1 も含まれる → sep<0 群は s1+u1 の平均になり、負に振れる。
+    assert allc["n_sep_neg"] == 2
+    assert allc["mean_drop_sep_neg"] == (0.02 + (-0.5)) / 2
+    assert allc["mean_drop_sep_neg"] < 0
+
+    # 母集団の選択（solved_only）そのものが結果を変えることを直接示す。
+    assert solved["mean_drop_sep_neg"] != allc["mean_drop_sep_neg"]
+
+
 # --- build_stats ---------------------------------------------------------------
 
 def test_build_stats_has_features_and_attrs():
@@ -278,4 +316,5 @@ def test_build_stats_has_features_and_attrs():
     assert g["n_dependent"] == 4 and g["n_robust"] == 4
     assert g["n_cases"] == 8
     assert "cancellation" in g
+    assert "cancellation_all_cases" in g
     assert st["n_seeds"] == 7

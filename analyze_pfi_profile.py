@@ -174,13 +174,20 @@ def sep_profile(records, feature, n_bins=5):
     return xs, ys, es
 
 
-def cancellation_check(records, feature):
-    """集約 PFI ≈ 0 が「寄与なし」か「相殺」かを判別する.
+def cancellation_check(records, feature, solved_only=True):
+    """集約 PFI ≈ 0 が「寄与なし」か「相殺/希釈」かを判別する.
 
     sep>0（正解式で値が高い）と sep<0（逆分離）に分けて平均 drop を出す。
     寄与なしなら両方 0 付近。相殺なら符号が逆に割れる。
+
+    solved_only=True（既定）では collapse_to_cases が base_R==1.0 の記録に
+    限定するため、perm_R<=1.0 から drop>=0 が構造的に保証される（FIX I1）。
+    この母集団では符号反転（真の相殺）は原理的に観測できず、測れるのは
+    大きさの非対称（希釈）のみ。真の符号反転を検出するには
+    solved_only=False を指定し、base_R<1.0 の記録（drop が負になりうる）
+    も含める必要がある。
     """
-    cases = [c for c in collapse_to_cases(records, feature, solved_only=True)
+    cases = [c for c in collapse_to_cases(records, feature, solved_only=solved_only)
              if c["sep"] is not None]
     pos = np.array([c["drop"] for c in cases if c["sep"] > 0])
     neg = np.array([c["drop"] for c in cases if c["sep"] < 0])
@@ -206,7 +213,8 @@ def build_stats(records, n_seeds=None):
                  "n_cases": solved,
                  "flip_fraction_of_solved": (len(dep) / solved) if solved else 0.0,
                  "spearman_drop_sep": spearman_drop_sep(records, name),
-                 "cancellation": cancellation_check(records, name),
+                 "cancellation": cancellation_check(records, name, solved_only=True),
+                 "cancellation_all_cases": cancellation_check(records, name, solved_only=False),
                  "attrs": {}}
         for attr in ATTRS:
             entry["attrs"][attr] = mannwhitney_effect(attr_array(dep, attr), attr_array(rob, attr))
