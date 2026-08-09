@@ -70,7 +70,14 @@ def smd_stderr(dep, rob):
 
 
 def spearman_drop_sep(records, feature):
-    recs = [r for r in records if r["feature"] == feature and r.get("sep") is not None]
+    """drop と sep の Spearman 順位相関.
+
+    仕様に従い baseline 解済み（base_R == 1.0）の記録のみを対象とする。
+    base_R < 1.0 のケースは drop が床効果で頭打ちになり相関を歪めるため除外する。
+    """
+    recs = [r for r in records
+            if r["feature"] == feature and r.get("sep") is not None
+            and r["base_R"] == 1.0]
     if len(recs) < 3:
         return {"rho": float("nan"), "p": float("nan"), "n": len(recs)}
     rho, p = stats.spearmanr([r["sep"] for r in recs], [r["drop"] for r in recs])

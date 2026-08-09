@@ -47,6 +47,12 @@ def test_spearman_drop_sep_positive():
     assert s["rho"] > 0.5
 
 
+def test_spearman_drop_sep_excludes_unsolved_cases():
+    # _recs() は base_R==1.0 が8件 + base_R==0.5 が1件。仕様上、後者は除外される。
+    s = spearman_drop_sep(_recs(), "gComp")
+    assert s["n"] == 8
+
+
 def test_load_per_case(tmp_path):
     doc = {"config": {"setting": "A"}, "records": [{"feature": "gComp", "base_R": 1.0}]}
     p = tmp_path / "pc.json"
