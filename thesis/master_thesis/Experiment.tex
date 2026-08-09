@@ -1,57 +1,99 @@
 % ============================================================
-% Chapter 5: Experiments — OUTLINE (Phase 1)
+% Chapter 5: Experiments — 本文（Phase 2, 2026-08-09）
+% 骨子版（Phase 1）は git 履歴の commit bf41ec4 以前を参照。
+% 用語は §4.2 の改訂に合わせた（as-published / cross-document / synthesized）。
+% 数値の一次ソースは各段落の % source: コメントに記載。
 % ============================================================
 \section{Evaluation Settings}
-\begin{itemize}
-  \item \textbf{P1.} We evaluate on two settings that exclude training-only augmentation, because augmentation inflates the baseline and hides the true difficulty.
-  \begin{itemize}
-    \item Setting A: original + multi-source + DAE cases (1,823). Setting B: DAE only (1,000), the hardest setting.
-    % source: experiments/strat_full.json vs strat_A.json baseline Recall@K_correct（0.6218 vs 0.5206）
-    \item With augmentation included, the baseline rises from 0.521 to 0.622 (+0.101), shrinking the apparent gap of the proposed method from +0.222 to +0.156.
-    \item (wrap) All results use the stratified source-disjoint split with 10 random seeds.
-  \end{itemize}
-\end{itemize}
+
+We evaluate on two settings, and both exclude the augmented family of Section~4.2. Setting~A, the
+mixed setting, holds the 1,823 as-published, cross-document, and synthesized cases. Setting~B holds
+the 1,000 synthesized cases alone, whose answer sets are the largest and whose retrieval is
+therefore the hardest.
+
+Excluding the augmented cases matters enough to justify. When we include them, the baseline rises
+from 0.521 to 0.622 while the proposed method rises from 0.743 to 0.778, so the apparent gap shrinks
+from $+0.222$ to $+0.156$.
+% source: experiments/strat_full.json（baseline 0.6218, reranker-10S 0.7777）vs strat_A.json
+%         （baseline 0.5206, reranker-10S 0.7429）
+Perturbed copies of a case are easy, because a paraphrase leaves the variables untouched and a
+variable swap leaves the description untouched; including them measures the augmentation rather than
+the method. Every result in Chapter~6 uses the stratified source-disjoint split of Section~4.4 with
+the same 10 random seeds.
 
 \section{Compared Methods}
-\begin{itemize}
-  \item \textbf{P2.} We compare the proposed method against one internal and one external baseline.
-  \begin{itemize}
-    \item Baseline (classical IR): Stage-1 ranking with the seven query--equation features.
-    \item Proposed (reranker-10S): Stage-2 set-aware reranking; greedy and DoF-stop variants are examined in Sections 6.4--6.5.
-    \item LLM direct generation (external): the LLM generates the needed equations from the query alone; generated equations are matched to the database with LLM-based equivalence judgment and then ranked.
-    % source: llm_set_*_equiv_results.json（n=48〜50、等価判定モデル claude-opus-4-8）
-    \item (wrap) The LLM comparison uses a uniform sample of about 50 cases per setting because equivalence judgment is expensive.
-  \end{itemize}
-\end{itemize}
+
+We compare the proposed method against one internal and one external baseline. The internal baseline
+is classical information retrieval: it ranks the whole database by the Stage-1 score of
+Eq.~\eqref{eq:stage1}, without a learned model and without a candidate window. The proposed method
+is reranker-10S, which reranks the top $k = 50$ candidates with the ten features of
+Table~\ref{tab:features}; reranker-7, which drops the three set-aware features, isolates their
+contribution. Sections~\ref{sec:greedyresults} and \ref{sec:dofstopresults} add the two sequential variants and the self-terminating variant
+of Sections~\ref{sec:seq} and \ref{sec:dofstop}.
+
+The external baseline asks a large language model to write the equations directly. Given the same
+query, the model generates the equations it judges necessary; a second call then decides which
+generated equation is mathematically equivalent to which ground-truth equation, and we score the
+resulting matches with the same metrics. Equivalence judging is expensive, so this comparison uses a
+uniform sample of 48 cases in Setting~A and 50 cases in Setting~B.
+% source: experiments/llm_set_A_equiv_results.json（n=48）, llm_set_B_equiv_results.json（n=50）;
+%         生成 evaluate_llm_dae.py MODEL="claude-opus-4-8", 判定 evaluate_llm_equiv.py
+%         JUDGE_MODEL="claude-opus-4-8"（同一モデル）
+Generator and judge are the same model, which favors the language model rather than our method: a
+model recognizes its own phrasing more readily than a third party would. We therefore read this
+comparison as a conservative one.
 
 \section{Evaluation Metrics}
-\begin{itemize}
-  \item \textbf{P3.} The primary metric is Recall@$K$ with the window matched to the answer size $K$ of each case.
-  \begin{itemize}
-    \item Recall@$K$ measures whether the needed equations are placed in the top $K$, no more and no less; a fixed window (e.g., Recall@3) over- or under-rewards cases whose $K$ differs from 3.
-    \item Secondary metrics: MAP (mean average precision) and Recall@20 (screening with human review in mind).
-    \item For self-terminating retrieval: exact-match rate of the returned set, set F1, and closure rate (fraction of returned sets with zero degrees of freedom).
-  \end{itemize}
-\end{itemize}
+
+The primary metric matches the evaluation window to the answer size of each case. For a query with
+ground truth $\mathcal{R}_q$ we take the top $|\mathcal{R}_q|$ equations of the ranking and report
+the fraction of $\mathcal{R}_q$ they contain,
+\begin{equation}
+  \mathrm{Recall}@K_{\mathrm{correct}}(q)
+    = \frac{|\mathcal{R}_q \cap \mathrm{Top}_{|\mathcal{R}_q|}(q)|}{|\mathcal{R}_q|} ,
+  \label{eq:rk}
+\end{equation}
+averaged over cases. Because the window equals the answer size, precision and recall coincide, and
+Eq.~\eqref{eq:rk} is the $R$-precision of the information-retrieval literature.
+% source: evaluate_multi_eq.py case_metrics（recall_at_n_correct = precision_at_C, R-Precision）
+A fixed window would distort the comparison across our case families: Recall@3 caps a case with
+eight ground-truth equations at $3/8$ and rewards a case with one ground-truth equation for two
+wrong guesses, and our answer sizes range from 1 to 10. We report mean average precision (MAP) and
+Recall@20 as secondary metrics, the latter because a human reviewing 20 candidates is a realistic
+use of the method.
+
+Self-terminating retrieval returns a set rather than a ranking, so we score it with set-level
+measures: the exact-match rate of the returned set against $\mathcal{R}_q$, the set $F_1$, and the
+closure rate, which is the fraction of returned sets that satisfy the closure test of
+Eq.~\eqref{eq:closed}. We compare DoF-stop against an oracle that is told the answer size and takes
+the top $|\mathcal{R}_q|$ equations.
+
+One asymmetry between the compared methods deserves a note. The baseline ranks the whole database, so
+nothing bounds its recall, whereas every reranker sees only the $k$ candidates of Stage~1 and cannot
+exceed their coverage --- 0.920 at $k = 50$ (Section~\ref{sec:stage1}). The reported gains are
+therefore gains despite a handicap, and Section~\ref{sec:erroranalysis} shows that the candidate window, not
+the reranker, causes most of the residual error.
 
 \section{Implementation and Reproducibility}
-\begin{itemize}
-  \item \textbf{P4.} All experiments run as deterministic scripts against pinned application programming interface (API) models, so that a third party can reproduce them.
-  \begin{itemize}
-    % source: docs/progress_report_2026-06-14_seminar.tex §6（claude-sonnet-4-5-20250929）
-    \item LLM-dependent steps (DAE descriptions, LLM baseline) call date-pinned API models; the proposed method itself uses no LLM.
-    \item Hyperparameters are listed in Appendix A.
-    \item (wrap) Scripts, data, and random seeds are versioned in the repository.
-  \end{itemize}
-\end{itemize}
+
+Every experiment runs as a deterministic script: the random seed fixes the split, the model
+initialization, and the negative sampling, so a rerun reproduces the reported numbers exactly. The
+proposed method itself calls no language model at inference time. Language models appear only in
+building the data and in the external baseline --- extraction (Gemini 2.5 Pro), the descriptions of
+the synthesized cases, and the generation and equivalence judging of the external baseline --- and
+each call pins a model identifier.
+% source: 抽出 Gemini 2.5 Pro; 合成ケース説明 Anthropic Claude; 外部比較 claude-opus-4-8
+Appendix~A lists every hyperparameter, and the repository versions the scripts, the data, and the
+seeds.
 
 \section{Statistical Testing}
-\begin{itemize}
-  \item \textbf{P5.} Paired differences over the 10 seeds are tested with the Wilcoxon signed-rank test (with the paired $t$-test as reference).
-  \begin{itemize}
-    % source: experiments/significance_stats.json（Task 2）
-    \item Baseline vs.\ proposed in Settings A and B; static vs.\ greedy variants in Section 6.4.
-    \item We report effect size (Cohen's $d_z$) together with $p$-values; "significant" is used only after these tests.
-    \item (wrap) With $n = 10$ pairs the smallest two-sided Wilcoxon $p$ is 0.00195.
-  \end{itemize}
-\end{itemize}
+
+We test paired differences over the 10 seeds with the Wilcoxon signed-rank test and report the
+paired $t$-test as a reference. Each seed contributes one pair, because both methods run on the same
+split. We report the effect size (Cohen's $d_z$) beside every $p$-value, and we call a difference
+significant only after such a test. With $n = 10$ pairs the smallest two-sided Wilcoxon $p$-value is
+0.00195, which a method attains when it wins on all 10 seeds; we therefore read 0.00195 as ``every
+seed agreed'' rather than as a precise probability.
+% source: experiments/significance_stats.json（p_wilcoxon 0.00195 = n=10 の理論最小値）
+The tests cover the baseline against the proposed method in both settings, the three selection
+strategies against one another, and DoF-stop against the oracle that knows the answer size.

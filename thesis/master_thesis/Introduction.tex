@@ -33,7 +33,7 @@
   \item \textbf{P5.} To evaluate the method under realistic difficulty, we construct a large equation database and solvable test cases, and split them so that no document leaks between training and testing.
   \begin{itemize}
     % source: docs/progress_report_2026-06-14_seminar.tex §3（11,146式・361ソース・2,838件）
-    \item The database holds 11,146 equations from 361 sources; 2,838 training cases include 1,000 differential--algebraic equation (DAE) cases generated to be solvable by construction.
+    \item The database holds 11,146 equations from 361 sources; the 2,838 cases include 1,000 synthesized cases whose equation sets are closed --- and hence solvable --- by construction.
     \item Sources are assigned wholly to train, validation, or test, and the split is stratified so that four difficulty-related distributions match between train and test.
     \item (wrap) Evaluation uses 10 random splits and reports the mean and spread.
   \end{itemize}
@@ -41,7 +41,7 @@
   \item \textbf{P6.} Experiments show that the proposed method retrieves equation sets far better than a classical information-retrieval baseline and than direct generation by a large language model (LLM), and analyses explain why.
   \begin{itemize}
     % source: experiments/strat_A.json / strat_B.json results.*.Recall@K_correct
-    \item Recall@K improves from 0.521 to 0.743 in Setting A and from 0.466 to 0.689 in the hardest DAE-only setting (both +0.22, Wilcoxon signed-rank test).
+    \item Recall@K improves from 0.521 to 0.743 in the mixed setting and from 0.466 to 0.689 in the hardest synthesized-only setting (both +0.22, Wilcoxon signed-rank test).
     % source: llm_set_A_equiv_results.json / llm_set_B_equiv_results.json
     \item LLM direct generation reaches only 0.23--0.30 even with equivalence-based scoring.
     % source: experiments/feature_x_difficulty_stats.json overall_tests
@@ -52,7 +52,7 @@
 
   \item \textbf{P7.} The contributions of this thesis are threefold.
   \begin{itemize}
-    \item A solvable-by-construction dataset: an 11,146-equation database, DAE case generation with zero degrees of freedom, and a stratified source-disjoint split.
+    \item A solvable-by-construction dataset: an 11,146-equation database, synthesized cases with zero degrees of freedom, and a stratified source-disjoint split.
     \item A set-aware two-stage retrieval method that improves Recall@K by +0.22 over classical information retrieval and outperforms direct generation by an LLM.
     \item An empirical account of the mechanism --- which features cause the improvement and where it saturates --- with causal confirmation by learned greedy selection and a closure guarantee by self-terminating DoF-stop retrieval.
   \end{itemize}

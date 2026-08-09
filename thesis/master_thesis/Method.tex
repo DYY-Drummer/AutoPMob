@@ -1,64 +1,179 @@
 % ============================================================
-% Chapter 3: Set-aware Equation-Set Retrieval — OUTLINE (Phase 1)
-% 特徴量定義の source: two_stage_query_conditioned.py compute_features (L212-236),
-%                     set_aware_reranker.py docstring (gComp/gCoh/gDom) — 実装と一致させること
+% Chapter 3: Set-aware Equation-Set Retrieval — 本文（Phase 2, 2026-08-09）
+% 骨子版（Phase 1）は git 履歴の commit bf41ec4 以前を参照。
+% 実装との対応:
+%   two_stage_query_conditioned.py : stage1() L248-252, class Reranker L197-205,
+%                                    compute_features L212-236
+%   set_aware_reranker.py          : K_REF L95, compute_set_aware_features L98-160,
+%                                    greedy_order L213-243, greedy_close L246-291
+% 骨子からの訂正（実装を一次情報として確認）:
+%   (1) 第1段のスコアは 2 特徴の混合（0.7*text_sim + 0.3*io_jaccard）。7 特徴は第2段 MLP の入力。
+%   (2) MLP の隠れ層は 64 ユニット 2 層（骨子は「1 層」と誤記）。
+%   (3) 集合特徴の参照集合は第1段の上位 K_REF=5 件（候補集合 k=50 とは別）。
+%   (4) 閉包条件は DoF <= 0（未知数 <= 式数）かつ出力被覆。骨子の「DoF=0」は等号のみで狭い。
 % ============================================================
 \section{Problem Formulation}
-\begin{itemize}
-  \item \textbf{P1.} We formulate equation-set retrieval as ranking the equations in a database against a query that specifies the desired model.
-  \begin{itemize}
-    \item Query $q = (c, \mathcal{I}, \mathcal{O})$: a natural-language description $c$, input variables $\mathcal{I}$, and output variables $\mathcal{O}$.
-    \item Database $\mathcal{E} = \{e_j\}$: each equation has its variable set $V(e_j)$, source document, and domain label.
-    \item Ground truth: the equation set $\mathcal{R}_q \subset \mathcal{E}$ that composes the target model.
-    \item Degrees of freedom of a selected set $S$: $\mathrm{DoF}(S) = |\mathrm{unknowns}(S)| - |S|$; the system is closed (solvable given the inputs) when $\mathrm{DoF}(S) = 0$.
-    \item (wrap) The goal is to rank $\mathcal{R}_q$ at the top and, optionally, to return a closed set without knowing $|\mathcal{R}_q|$.
-  \end{itemize}
-\end{itemize}
 
-\section{Stage 1: Candidate Retrieval with Query--Equation Features}
-\begin{itemize}
-  \item \textbf{P2.} The first stage scores each equation independently with seven query--equation features.
-  \begin{itemize}
-    % source: two_stage_query_conditioned.py compute_features L212-236（f0〜f6）
-    \item (1) TF-IDF cosine similarity between the description and the equation text; (2) Jaccard similarity between the query I/O variables and the equation variables; (3) latent text similarity after singular-value decomposition (SVD); (4) input-variable coverage; (5) output-variable coverage; (6) fraction of the equation's variables that appear in the query I/O set; (7) binary domain match.
-    \item The top-$k$ candidates by this score form the reference set for Stage 2.
-    \item (wrap) Stage 1 is a strong classical-IR method on its own and serves as the baseline.
-  \end{itemize}
-\end{itemize}
+We formulate the task as retrieving from an equation database the set of equations that composes a
+requested physical model. A query is a triple $q = (c, \mathcal{I}, \mathcal{O})$, where $c$
+describes the model in natural language, $\mathcal{I}$ holds the input variables the user can
+supply, and $\mathcal{O}$ holds the output variables the model must determine. We write
+$\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ for the query variables. The database
+$\mathcal{E} = \{e_1, \dots, e_N\}$ stores for each equation $e_j$ its variable set $V(e_j)$, the
+text surrounding it in its source document, the source document itself, and a domain label
+$\mathrm{dom}(e_j)$. The ground truth of a query is the equation set
+$\mathcal{R}_q \subset \mathcal{E}$ that composes the requested model, and the method must rank
+$\mathcal{R}_q$ above every other equation.
+
+A physical model is a system of equations, not a list of independent ones, so we also ask whether a
+selected set can be solved. Let $\mathrm{unknowns}(S) = \bigcup_{e \in S} V(e) \setminus
+\mathcal{I}$ denote the variables that $S$ must determine. We define the degrees of freedom of $S$
+as
+\begin{equation}
+  \mathrm{DoF}(S) = |\mathrm{unknowns}(S)| - |S| ,
+  \label{eq:dof}
+\end{equation}
+and we call $S$ \emph{closed} when it covers every output variable and leaves no unknown
+undetermined,
+\begin{equation}
+  \mathcal{O} \subseteq \bigcup_{e \in S} V(e)
+  \quad\text{and}\quad
+  \mathrm{DoF}(S) \le 0 .
+  \label{eq:closed}
+\end{equation}
+A closed set is what a simulator needs, because the equations then suffice to determine every
+unknown. Sections~\ref{sec:seq} and \ref{sec:dofstop} use this criterion first to design the
+selection order and then to let retrieval stop by itself.
+
+\section{Stage 1: Candidate Retrieval}
+\label{sec:stage1}
+
+The first stage scores every equation in the database independently and keeps the top $k$ as
+candidates. The score mixes one topic term and one variable term,
+% source: two_stage_query_conditioned.py stage1() L248-252（0.7*ts + 0.3*vs, argsort 上位 k）
+\begin{equation}
+  s_1(q, e_j) = 0.7 \cdot \cos\!\big(\mathrm{tfidf}(c), \mathrm{tfidf}(t_j)\big)
+              + 0.3 \cdot J\!\big(\mathcal{Q}, V(e_j)\big) ,
+  \label{eq:stage1}
+\end{equation}
+where $t_j$ is the text of equation $e_j$, $J(A, B) = |A \cap B| / |A \cup B|$ is the Jaccard
+similarity, and the term-frequency--inverse-document-frequency (TF-IDF) vectors use word unigrams
+and bigrams. We set $k = 50$ in the main experiments. Ranking the whole database by
+Eq.~\eqref{eq:stage1} is a classical information-retrieval method, and we use it unchanged as the
+baseline of Chapter~5; the second stage reranks only the $k$ candidates it receives.
+
+The window $k$ therefore bounds what the second stage can achieve. Measured over the 1,823
+evaluation cases, the candidates contain 92.0\% of the ground-truth equations at $k = 50$ and
+97.8\% at $k = 200$, and they contain \emph{all} ground-truth equations of a case for 77.2\% and
+90.3\% of the cases respectively.
+% source: 実測（scratch: coverage_by_k.py, 設定A 1,823件）k=50 0.9203/0.772, k=100 0.9569/0.856,
+%         k=200 0.9775/0.903, k=400 0.9895/0.947
+We report this bound because it separates the two error sources that Chapter~6 analyses: equations
+the first stage never proposes, and equations the second stage proposes but ranks too low.
 
 \section{Stage 2: Set-aware Reranking}
-\begin{itemize}
-  \item \textbf{P3.} The second stage evaluates each candidate not in isolation but against a reference set, using three set-aware features.
-  \begin{itemize}
-    % source: set_aware_reranker.py docstring（gComp/gCoh/gDom の定義）
-    \item Complementarity $g_{\mathrm{Comp}} = |V(e) \cap \mathcal{Q} \setminus \bigcup V(\mathrm{ref})| / |\mathcal{Q}|$: how many still-uncovered query variables the candidate supplies.
-    \item Coherence $g_{\mathrm{Coh}} = |V(e) \cap \bigcup V(\mathrm{ref})| / |V(e)|$: how strongly the candidate shares variables with the reference set.
-    \item Domain agreement $g_{\mathrm{Dom}}$: the fraction of the reference set that shares the candidate's domain.
-    \item A multilayer perceptron (one hidden layer of 64 units, ReLU, dropout 0.1) scores the 10 features (7 + 3) and is trained with a pairwise ranking loss (margin 0.1).
-    % source: experiments/strat_A.json config（hidden_dim 64, margin 0.1, loss pairwise）
-    \item (wrap) We call this configuration reranker-10S.
-  \end{itemize}
-\end{itemize}
+\label{sec:stage2}
 
-\section{Sequential Selection Strategies}
-\begin{itemize}
-  \item \textbf{P4.} Because set-aware features depend on what has already been selected, we compare three selection strategies.
-  \begin{itemize}
-    \item Static: set features are computed once against the fixed Stage-1 top-$k$ reference.
-    \item Greedy at inference: after each selection, set features are recomputed against the already selected set; the model itself is trained statically.
-    \item Learned greedy: the model is also \emph{trained} on sequential contexts with teacher forcing — during training the true partial set is given as the reference, so training matches inference.
-    % source: set_aware_reranker.py --train-greedy, --greedy-train-cap 8
-    \item (wrap) The comparison isolates the effect of matching the training condition to the inference condition.
-  \end{itemize}
-\end{itemize}
+The second stage judges each candidate not on its own but against the equations already at hand.
+Table~\ref{tab:features} lists the ten features it uses. Seven of them compare the query with a
+single equation: two measure topical closeness of the description ($f_1$, $f_3$), one matches the
+domain label against the description ($f_7$), and four measure how the equation's variables relate
+to the query variables ($f_2$, $f_4$, $f_5$, $f_6$). The remaining three are the set-aware features
+that this study introduces. They are computed against a reference set $R$, which is the top
+$K_{\mathrm{ref}} = 5$ candidates of Stage 1 during static scoring and the already selected
+equations during sequential selection (Section~\ref{sec:seq}); a candidate that belongs to $R$ is
+excluded from its own reference set.
+% source: set_aware_reranker.py K_REF=5 L95, compute_set_aware_features L119-137（自己除外）
 
-\section{Self-terminating Retrieval with Degrees of Freedom}
-\begin{itemize}
-  \item \textbf{P5.} Retrieval should stop by itself when the selected equations form a solvable system, rather than requiring the answer size $K$.
-  \begin{itemize}
-    \item DoF-stop keeps selecting greedily and stops when $\mathrm{DoF}(S) = 0$, i.e., when every non-input variable is determined by some equation.
-    % source: set_aware_reranker.py --stop-dof（greedy_close）
-    \item The returned set is closed by construction, which is exactly what a downstream simulator needs.
-  \end{itemize}
-\end{itemize}
-% 手法パイプライン図（2段階＋greedy＋DoF停止）は Phase 2 で作成し §3.2 冒頭に挿入する。
+Complementarity $g_{\mathrm{Comp}}$ asks what the candidate adds: it counts the query variables
+that the candidate supplies and the reference set does not. Coherence $g_{\mathrm{Coh}}$ asks
+whether the candidate connects to what is already selected: it is the fraction of the candidate's
+variables shared with the reference set. Domain agreement $g_{\mathrm{Dom}}$ asks whether the
+candidate comes from the same topic as the reference set. The first two encode the structure of a
+system of equations, the third encodes topical consistency, and
+Section~\ref{sec:mechanism} shows that only the first two contribute.
+
+\begin{table}[H]
+\centering
+\caption{Features of the reranker. $\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ is the set of query
+variables, $t_j$ the text of equation $e_j$, $R$ the reference set, and $V(R) = \bigcup_{e \in R}
+V(e)$. The group column marks whether a feature reads variable overlap or topical closeness.}
+\label{tab:features}
+\small
+\begin{tabular}{llll}
+\toprule
+ & Feature & Definition & Group \\
+\midrule
+$f_1$ & Text similarity     & $\cos(\mathrm{tfidf}(c), \mathrm{tfidf}(t_j))$ & topic \\
+$f_2$ & I/O Jaccard         & $J(\mathcal{Q}, V(e_j))$ & variable \\
+$f_3$ & Latent similarity   & $\cos(\mathrm{svd}(c, \mathcal{Q}), \mathrm{svd}(t_j))$ & topic \\
+$f_4$ & Input coverage      & $|\mathcal{I} \cap V(e_j)| / |\mathcal{I}|$ & variable \\
+$f_5$ & Output coverage     & $|\mathcal{O} \cap V(e_j)| / |\mathcal{O}|$ & variable \\
+$f_6$ & Specificity         & $|\mathcal{Q} \cap V(e_j)| / |V(e_j)|$ & variable \\
+$f_7$ & Domain match        & $1$ if $\mathrm{dom}(e_j)$ occurs in $c$, else $0$ & topic \\
+\midrule
+$g_{\mathrm{Comp}}$ & Complementarity  & $|(V(e_j) \cap \mathcal{Q}) \setminus V(R)| / |\mathcal{Q}|$ & variable \\
+$g_{\mathrm{Coh}}$  & Coherence        & $|V(e_j) \cap V(R)| / |V(e_j)|$ & variable \\
+$g_{\mathrm{Dom}}$  & Domain agreement & $|\{e \in R : \mathrm{dom}(e) = \mathrm{dom}(e_j)\}| / |R|$ & topic \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The latent similarity $f_3$ deserves one remark. We factorize the TF-IDF matrix of all equation
+texts with a truncated singular-value decomposition (SVD) into 256 dimensions, project the query
+into the same space, and take the cosine similarity. Unlike $f_1$, the query text here also lists
+the input and output variable names, so $f_3$ sees both the description and the requested
+variables.
+% source: two_stage_query_conditioned.py case_text(c, io=True) → svd クエリ; 256 成分
+
+A multilayer perceptron (MLP) maps the ten features to a score. It has two hidden layers of 64
+units with rectified-linear activation and dropout 0.1.
+% source: two_stage_query_conditioned.py class Reranker L197-205（Linear-ReLU-Dropout ×2 + Linear）
+We train it with a pairwise ranking loss: for each ground-truth equation $e^{+}$ of a training case
+and each of eight sampled non-answer candidates $e^{-}$,
+\begin{equation}
+  \ell(e^{+}, e^{-}) = \max\!\big(0,\; \gamma - \mathrm{MLP}(x(q, e^{+})) + \mathrm{MLP}(x(q, e^{-}))\big),
+  \qquad \gamma = 0.1 ,
+  \label{eq:loss}
+\end{equation}
+where $x(q, e)$ is the feature vector. We optimize with AdamW (learning rate $10^{-3}$, weight
+decay $10^{-4}$) for 15 epochs over batches of 16 cases. Appendix~A lists every hyperparameter. We
+call this configuration reranker-10S, and reranker-7 for the variant that drops the three
+set-aware features.
+
+\section{Sequential Selection}
+\label{sec:seq}
+
+Because the set-aware features depend on what has already been selected, the reference set used
+during training need not match the one used at inference. We therefore compare three strategies and
+isolate the effect of that mismatch.
+
+Static scoring computes the set-aware features once against the Stage-1 top-5 reference and ranks
+all candidates by a single forward pass. Greedy selection at inference builds the answer one
+equation at a time: it takes the highest-scoring candidate first, recomputes the set-aware features
+of the remaining candidates against the equations selected so far, and repeats; the model itself is
+trained statically.
+% source: set_aware_reranker.py greedy_order L213-243（先頭は静的スコア最大、以降は再計算）
+Learned greedy additionally \emph{trains} on the same sequential contexts with teacher forcing: at
+step $t$ the true partial answer serves as the reference set, and the loss pushes the next
+ground-truth equation above the sampled negatives. Training then asks the same question as
+inference, namely which equation closes the system next, given the ones already chosen.
+% source: set_aware_reranker.py run_mode の train_greedy ブロック L440-470（teacher forcing・
+%         t=0 は静的参照で「種」を学習・greedy_train_cap=8）
+Teacher forcing keeps training stable but leaves a train--test gap, because at inference the
+reference set may contain mistakes; Section~\ref{sec:limitations} returns to this point.
+
+\section{Self-terminating Retrieval}
+\label{sec:dofstop}
+
+Ranking assumes the caller knows how many equations to take. A model builder does not: the answer
+size is exactly what the caller wants to learn. We therefore let retrieval stop by itself. DoF-stop
+extends greedy selection with the closure test of Eq.~\eqref{eq:closed}: after each selection it
+checks whether the selected set covers every output variable and satisfies
+$\mathrm{DoF}(S) \le 0$, and it returns the set at the first length where both hold.
+% source: set_aware_reranker.py greedy_close L246-291（closed() = 出力被覆 かつ |未知数| <= |S|）
+When no prefix closes within the selection cap, DoF-stop returns everything it selected.
+
+The returned set is closed by construction, which is the property a downstream simulator needs.
+Evaluating it requires set-level measures rather than ranking measures, so Chapter~5 adds the
+exact-match rate, the set $F_1$, and the closure rate.
