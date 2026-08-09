@@ -301,6 +301,16 @@ def _print_summary(out):
           f"被覆ゼロ = {E['share_zero_coverage_blend']:.1%}")
 
 
+
+# 図の日本語ラベル（作文ルール A6：プログラム変数名は文書・論文で使わない）
+JA_LABEL = {
+    "text_sim": "文章類似度", "io_jaccard": "変数の一致度", "svd_sim": "意味の近さ",
+    "input_cov": "入力変数の被覆", "output_cov": "出力変数の被覆",
+    "specificity": "式の特化度", "domain": "分野の一致",
+    "gComp": "補完性", "gCoh": "一貫性", "gDom": "分野の一致（集合版）",
+}
+
+
 def _make_figure(out, pairs_svd, pairs_raw, out_png):
     import matplotlib
     matplotlib.use("Agg")
@@ -323,12 +333,12 @@ def _make_figure(out, pairs_svd, pairs_raw, out_png):
     axes[0].hist(pairs_raw, bins=bins, alpha=0.55, color="#9467bd",
                  label="生TF-IDF空間", density=True)
     axes[0].hist(pairs_svd, bins=bins, alpha=0.55, color="#d62728",
-                 label="SVD空間（svd_simが使う256次元）", density=True)
+                 label="SVD 空間（意味の近さが使う 256 次元）", density=True)
     med_raw = float(np.median(pairs_raw)); med_svd = float(np.median(pairs_svd))
     axes[0].axvline(med_raw, color="#9467bd", ls="--", lw=1.5)
     axes[0].axvline(med_svd, color="#d62728", ls="--", lw=1.5)
-    axes[0].set_title("(a) ケース間クエリベクトルのコサイン類似の分布")
-    axes[0].set_xlabel("ケースペアのコサイン類似（破線は中央値）")
+    axes[0].set_title("(a) ケースどうしのベクトルのコサイン類似度の分布")
+    axes[0].set_xlabel("ケースの組のコサイン類似度（破線は中央値）")
     axes[0].set_ylabel("確率密度")
     axes[0].legend(fontsize=9)
     axes[0].grid(alpha=0.25)
@@ -344,10 +354,10 @@ def _make_figure(out, pairs_svd, pairs_raw, out_png):
                  error_kw=dict(capsize=3, lw=1))
     axes[1].axvline(0.5, color="#555555", lw=1.2, ls="--")
     axes[1].text(0.502, len(names) - 0.4, "AUC=0.5（識別力なし）", fontsize=8, color="#555555")
-    axes[1].set_yticks(y); axes[1].set_yticklabels(names)
+    axes[1].set_yticks(y); axes[1].set_yticklabels([JA_LABEL.get(n, n) for n in names])
     axes[1].set_xlim(0.3, 1.0)
-    axes[1].set_title("(b) stage1候補50件内での正解式の識別力（特徴単独）")
-    axes[1].set_xlabel("候補内AUC（ケース平均±SEM、青=変数系・赤=話題系）")
+    axes[1].set_title("(b) 第 1 段が選んだ候補 50 件の中での識別力")
+    axes[1].set_xlabel("候補の中での AUC（ケース平均±標準誤差。青＝変数の重なり、赤＝話題の近さ）")
     axes[1].grid(alpha=0.25, axis="x")
 
     fig.tight_layout()
