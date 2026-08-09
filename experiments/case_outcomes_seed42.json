@@ -1,0 +1,738 @@
+{
+  "config": {
+    "seed": 42,
+    "setting": "A",
+    "model": "reranker-10S",
+    "n_test": 423
+  },
+  "baseline_R": 0.7913889827010396,
+  "outcome_counts": {
+    "solved": 212,
+    "partial_or_failed": 211,
+    "solved_share": 0.5011820330969267
+  },
+  "failure_decomposition": {
+    "missed_equations_total": 435,
+    "stage1_miss": 269,
+    "reranker_miss": 166,
+    "stage1_share": 0.6183908045977011
+  },
+  "solved_vs_unsolved_attrs": {
+    "n_correct": {
+      "mean_solved": 2.1320754716981134,
+      "mean_unsolved": 5.341232227488152,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 4.706669206400294e-38
+    },
+    "n_input": {
+      "mean_solved": 10.84433962264151,
+      "mean_unsolved": 17.843601895734597,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 1.4954916045480899e-15
+    },
+    "n_sources": {
+      "mean_solved": 1.6132075471698113,
+      "mean_unsolved": 1.3601895734597156,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 1.837443571335256e-08
+    },
+    "coverage": {
+      "mean_solved": 1.0,
+      "mean_unsolved": 0.8286598209583992,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 4.6269977087018504e-30
+    }
+  },
+  "solved_vs_unsolved_sep": {
+    "specificity": {
+      "mean_solved": 0.6818250454259369,
+      "mean_unsolved": 0.5902572599067507,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 1.546963184371681e-13
+    },
+    "io_jaccard": {
+      "mean_solved": 0.47242862225141163,
+      "mean_unsolved": 0.2335885563662267,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 9.75656331995587e-39
+    },
+    "svd_sim": {
+      "mean_solved": 0.10407191697718962,
+      "mean_unsolved": 0.02273258835218529,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 8.51423549655063e-12
+    },
+    "text_sim": {
+      "mean_solved": 0.018816418155043754,
+      "mean_unsolved": -0.010522483896587697,
+      "n_solved": 212,
+      "n_unsolved": 211,
+      "p": 0.060971186860470164
+    }
+  },
+  "topic_rescue_fraction": {
+    "svd_sim": {
+      "mean": 0.5163273960983884,
+      "sem": 0.040240732023613154,
+      "n": 131
+    },
+    "text_sim": {
+      "mean": 0.3682782018659881,
+      "sem": 0.03819063358982818,
+      "n": 131
+    },
+    "domain": {
+      "mean": 0.49351145038167943,
+      "sem": 0.010820882103525595,
+      "n": 131
+    },
+    "specificity": {
+      "mean": 0.5120865139949109,
+      "sem": 0.005275268164009166,
+      "n": 131
+    },
+    "io_jaccard": {
+      "mean": 0.3748939779474131,
+      "sem": 0.02508002106266882,
+      "n": 131
+    }
+  },
+  "selection_effect_corr": {
+    "corr_ts_vs": {
+      "mean": -0.40433239672621163,
+      "sem": 0.015366744927041962,
+      "n": 423
+    },
+    "corr_ts_spec": {
+      "mean": -0.3922696848236135,
+      "sem": 0.015424056632231987,
+      "n": 423
+    }
+  },
+  "examples": [
+    {
+      "kind": "reranker_miss",
+      "case_id": "dae_X1_040",
+      "variant": "dae_X1",
+      "recall": 0.0,
+      "coverage": 1.0,
+      "n_correct": 1,
+      "context": "This model describes batch ethanol fermentation in a bioreactor where microbial cell growth follows exponential kinetics. Given the fermentation time and specific growth rate, the model computes the evolution of cell concentration over time. The differential equation represents the fundamental mass balance for biomass, where the rate of cell accumulation is proportional to both the existing cell c",
+      "input_variables": [
+        "t",
+        "μ"
+      ],
+      "output_variables": [
+        "X"
+      ],
+      "top_ranked": [
+        {
+          "idx": 1541,
+          "eq_id": "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_1",
+          "equation": "\\frac{1}{X} \\frac{dX}{dt} = \\mu",
+          "domain": "Bioprocess Kinetics",
+          "vars": [
+            "X",
+            "t",
+            "μ"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 1.0,
+            "svd_sim": 0.72,
+            "text_sim": 0.212
+          },
+          "tag": "誤り"
+        },
+        {
+          "idx": 1575,
+          "eq_id": "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_35",
+          "equation": "\\frac{dX}{dt} = \\mu \\cdot X",
+          "domain": "Batch Bioreactor Modeling",
+          "vars": [
+            "X",
+            "t",
+            "μ"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 1.0,
+            "svd_sim": 0.584,
+            "text_sim": 0.116
+          },
+          "tag": "誤り"
+        },
+        {
+          "idx": 1391,
+          "eq_id": "2016_Kinetic_Modeling_and_Optimization_of_a_Batch_Ethanol_Ferment.pdf__eq_1",
+          "equation": "\\frac{dX}{dt} = \\mu X",
+          "domain": "Ethanol Fermentation Kinetics",
+          "vars": [
+            "X",
+            "t",
+            "μ"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 1.0,
+            "svd_sim": 0.369,
+            "text_sim": 0.131
+          },
+          "tag": "正解"
+        }
+      ],
+      "missed": [
+        {
+          "idx": 1391,
+          "eq_id": "2016_Kinetic_Modeling_and_Optimization_of_a_Batch_Ethanol_Ferment.pdf__eq_1",
+          "equation": "\\frac{dX}{dt} = \\mu X",
+          "domain": "Ethanol Fermentation Kinetics",
+          "vars": [
+            "X",
+            "t",
+            "μ"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 1.0,
+            "svd_sim": 0.369,
+            "text_sim": 0.131
+          },
+          "tag": "再ランク見逃し"
+        }
+      ],
+      "rescue": {
+        "svd_sim": 0.0,
+        "text_sim": 0.0,
+        "domain": 0.5,
+        "specificity": 0.5,
+        "io_jaccard": 0.5
+      }
+    },
+    {
+      "kind": "reranker_miss",
+      "case_id": "dae_X1_089",
+      "variant": "dae_X1",
+      "recall": 0.0,
+      "coverage": 1.0,
+      "n_correct": 1,
+      "context": "This scenario models the dynamic concentration response of a nonisothermal continuous stirred-tank reactor (CSTR) where an exothermic or endothermic chemical reaction occurs. Given deviations in feed concentration, feed flow rate, coolant flow rate, reactor temperature, and inlet temperature from their steady-state values, the model computes the time-dependent deviation in reactant A concentration",
+      "input_variables": [
+        "C_{A0}'",
+        "F'",
+        "F_c'",
+        "T'",
+        "T_0'",
+        "a_{ij}",
+        "t"
+      ],
+      "output_variables": [
+        "C_A'"
+      ],
+      "top_ranked": [
+        {
+          "idx": 3095,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0881-0960_C.12",
+          "equation": "\\frac{dT'}{dt} = a_{21}C_A' + a_{22}T' + a_{23}C_{A0}' + a_{24}F_c' + a_{25}T_0' + a_{26}F'",
+          "domain": "Nonisothermal CSTR",
+          "vars": [
+            "C_A'",
+            "C_{A0}'",
+            "F'",
+            "F_c'",
+            "T'",
+            "T_0'",
+            "a_{ij}",
+            "t"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 1.0,
+            "svd_sim": 0.323,
+            "text_sim": 0.051
+          },
+          "tag": "誤り"
+        },
+        {
+          "idx": 3094,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0881-0960_C.11",
+          "equation": "\\frac{dC_A'}{dt} = a_{11}C_A' + a_{12}T' + a_{13}C_{A0}' + a_{14}F' + a_{15}T_0' + a_{16}F_c'",
+          "domain": "Nonisothermal CSTR",
+          "vars": [
+            "C_A'",
+            "C_{A0}'",
+            "F'",
+            "F_c'",
+            "T'",
+            "T_0'",
+            "a_{ij}",
+            "t"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 1.0,
+            "svd_sim": 0.321,
+            "text_sim": 0.05
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 3099,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0881-0960_C.16",
+          "equation": "T'(t) = 1.28 + 2e^{-0.894t}[-0.64 \\cos(5.92t) + 0.42 \\sin(5.92t)]",
+          "domain": "Nonisothermal CSTR",
+          "vars": [
+            "T'(t)",
+            "t"
+          ],
+          "feat": {
+            "specificity": 0.5,
+            "io_jaccard": 0.111,
+            "svd_sim": 0.407,
+            "text_sim": 0.117
+          },
+          "tag": "誤り"
+        }
+      ],
+      "missed": [
+        {
+          "idx": 3094,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0881-0960_C.11",
+          "equation": "\\frac{dC_A'}{dt} = a_{11}C_A' + a_{12}T' + a_{13}C_{A0}' + a_{14}F' + a_{15}T_0' + a_{16}F_c'",
+          "domain": "Nonisothermal CSTR",
+          "vars": [
+            "C_A'",
+            "C_{A0}'",
+            "F'",
+            "F_c'",
+            "T'",
+            "T_0'",
+            "a_{ij}",
+            "t"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 1.0,
+            "svd_sim": 0.321,
+            "text_sim": 0.05
+          },
+          "tag": "再ランク見逃し"
+        }
+      ],
+      "rescue": {
+        "svd_sim": 0.0,
+        "text_sim": 0.0,
+        "domain": 0.5,
+        "specificity": 0.5,
+        "io_jaccard": 0.5
+      }
+    },
+    {
+      "kind": "stage1_miss",
+      "case_id": "dae_X2_034",
+      "variant": "dae_X2",
+      "recall": 0.0,
+      "coverage": 0.5,
+      "n_correct": 2,
+      "context": "This scenario models a nonisothermal continuous stirred tank reactor (CSTR) coupled with a heat exchanger control system, where the reactor temperature T and time t are computed from known feed conditions, coolant flow rates, reaction kinetics parameters, and controller response characteristics. The first equation describes the dynamic energy balance in the CSTR accounting for feed enthalpy, coola",
+      "input_variables": [
+        "C_A",
+        "C_p",
+        "C_{pc}",
+        "E",
+        "F",
+        "F_c",
+        "R",
+        "T'(t)",
+        "T_0",
+        "T_I",
+        "T_{cin}",
+        "V",
+        "\\Delta H_{rxn}",
+        "\\Delta SP",
+        "\\rho",
+        "\\rho_c",
+        "\\tau'_1",
+        "\\tau'_2",
+        "\\xi",
+        "a",
+        "b",
+        "k_0"
+      ],
+      "output_variables": [
+        "T",
+        "t"
+      ],
+      "top_ranked": [
+        {
+          "idx": 2857,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_8.31",
+          "equation": "V\\rho C_p \\frac{dT}{dt} = C_p \\rho F(T_0 - T) - \\frac{a F_c^{b+1}}{F_c + \\frac{a F_c^b}{2\\rho_c C_{pc}}} (T - T_{cin})",
+          "domain": "Heat Exchanger Control",
+          "vars": [
+            "C_p",
+            "C_{pc}",
+            "F",
+            "F_c",
+            "T",
+            "T_0",
+            "T_{cin}",
+            "V",
+            "\\rho",
+            "\\rho_c",
+            "a",
+            "b"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.542,
+            "svd_sim": 0.545,
+            "text_sim": 0.092
+          },
+          "tag": "誤り"
+        },
+        {
+          "idx": 3015,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0481-0560_eq_16.15",
+          "equation": "V\\rho C_p \\frac{dT}{dt} = F\\rho C_p(T_0 - T) - \\frac{aF_c^{b+1}}{F_c + \\frac{aF_c^b}{2\\rho_c C_{pc}}} (T - T_{cin})",
+          "domain": "Heat Exchanger Modeling",
+          "vars": [
+            "C_p",
+            "C_{pc}",
+            "F",
+            "F_c",
+            "T",
+            "T_0",
+            "T_{cin}",
+            "V",
+            "\\rho",
+            "\\rho_c",
+            "a",
+            "b"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.5,
+            "svd_sim": 0.56,
+            "text_sim": 0.156
+          },
+          "tag": "誤り"
+        },
+        {
+          "idx": 3093,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0881-0960_C.10",
+          "equation": "V\\rho C_p \\frac{dT}{dt} = \\rho C_p F(T_0 - T) - \\frac{aF_c^{b+1}}{F_c + \\frac{aF_c^b}{2\\rho_c C_{pc}}}(T - T_{cin}) + (-",
+          "domain": "Nonisothermal CSTR",
+          "vars": [
+            "C_A",
+            "C_p",
+            "C_{pc}",
+            "E",
+            "F",
+            "F_c",
+            "R",
+            "T",
+            "T_0",
+            "T_{cin}",
+            "V",
+            "\\Delta H_{rxn}"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.75,
+            "svd_sim": 0.43,
+            "text_sim": 0.044
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 667,
+          "eq_id": "Process_Control_Chapter3.pdf__eq_3_76",
+          "equation": "V \\rho C_p \\frac{dT}{dt} = F \\rho C_p (T_0 - T) - \\frac{a F_c^{b+1}}{F_c + a F_c^b / (2 \\rho_c C_{pc})} (T - T_c) + (-\\D",
+          "domain": "Nonisothermal CSTR / Energy Balance",
+          "vars": [
+            "C_A",
+            "C_p",
+            "C_{pc}",
+            "E",
+            "F",
+            "F_c",
+            "R",
+            "T",
+            "T_0",
+            "T_c",
+            "V",
+            "\\Delta H_{rxn}"
+          ],
+          "feat": {
+            "specificity": 0.944,
+            "io_jaccard": 0.68,
+            "svd_sim": 0.587,
+            "text_sim": 0.152
+          },
+          "tag": "誤り"
+        }
+      ],
+      "missed": [
+        {
+          "idx": 2868,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_8.42",
+          "equation": "T'(t) = \\Delta SP \\left[T_I \\frac{e^{-t/\\tau'_1} - e^{-t/\\tau'_2}}{\\tau'_1 - \\tau'_2} + 1 + \\frac{\\tau'_1 e^{-t/\\tau'_2}",
+          "domain": "Heat Exchanger Control",
+          "vars": [
+            "T'(t)",
+            "T_I",
+            "\\Delta SP",
+            "\\tau'_1",
+            "\\tau'_2",
+            "\\xi",
+            "t"
+          ],
+          "feat": null,
+          "tag": "stage1見逃し"
+        },
+        {
+          "idx": 3093,
+          "eq_id": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0881-0960_C.10",
+          "equation": "V\\rho C_p \\frac{dT}{dt} = \\rho C_p F(T_0 - T) - \\frac{aF_c^{b+1}}{F_c + \\frac{aF_c^b}{2\\rho_c C_{pc}}}(T - T_{cin}) + (-",
+          "domain": "Nonisothermal CSTR",
+          "vars": [
+            "C_A",
+            "C_p",
+            "C_{pc}",
+            "E",
+            "F",
+            "F_c",
+            "R",
+            "T",
+            "T_0",
+            "T_{cin}",
+            "V",
+            "\\Delta H_{rxn}"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.75,
+            "svd_sim": 0.43,
+            "text_sim": 0.044
+          },
+          "tag": "再ランク見逃し"
+        }
+      ],
+      "rescue": {
+        "svd_sim": 0.0,
+        "text_sim": 0.0,
+        "domain": 0.25,
+        "specificity": 0.5,
+        "io_jaccard": 1.0
+      }
+    },
+    {
+      "kind": "solved",
+      "case_id": "dae_X9_030",
+      "variant": "dae_X9",
+      "recall": 1.0,
+      "coverage": 1.0,
+      "n_correct": 9,
+      "context": "This model simulates the displacement washing process of a packed bed of fibers, where clean solvent removes solute from both the intrapore spaces and fiber surfaces. Given washing parameters (Biot number, initial concentrations, dispersion coefficient) and measured concentration data, the model solves for the spatial and temporal concentration profiles of solute in the liquor (c) and fiber pores ",
+      "input_variables": [
+        "Bi",
+        "C_0",
+        "C_d",
+        "C_i^l",
+        "C_j^l",
+        "DR",
+        "D_L",
+        "K",
+        "N_j^l",
+        "Q_j^l",
+        "R",
+        "h_l",
+        "k^*",
+        "k_f",
+        "r",
+        "u",
+        "w_i",
+        "z",
+        "β",
+        "ε"
+      ],
+      "output_variables": [
+        "C_s",
+        "L",
+        "N_0",
+        "c",
+        "m+1",
+        "n",
+        "q",
+        "t",
+        "τ"
+      ],
+      "top_ranked": [
+        {
+          "idx": 4569,
+          "eq_id": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf__eq_20",
+          "equation": "C_d = C_0 \\sum_{l=1}^{r} h_l \\sum_{i=1}^{m+1} w_i C_i^l; \\quad l=1,2,3,...,r",
+          "domain": "Displacement Washing of Packed Bed",
+          "vars": [
+            "C_0",
+            "C_d",
+            "C_i^l",
+            "h_l",
+            "m+1",
+            "r",
+            "w_i"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.241,
+            "svd_sim": 0.62,
+            "text_sim": 0.22
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 4553,
+          "eq_id": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf__eq_4",
+          "equation": "u \\frac{\\partial c}{\\partial z} + \\frac{\\partial c}{\\partial t} + \\frac{2(1-\\epsilon)k_f}{\\epsilon KR} (c-q) = D_L \\frac",
+          "domain": "Displacement Washing of Packed Bed",
+          "vars": [
+            "D_L",
+            "K",
+            "R",
+            "c",
+            "k_f",
+            "q",
+            "t",
+            "u",
+            "z",
+            "ε"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.345,
+            "svd_sim": 0.434,
+            "text_sim": 0.184
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 4568,
+          "eq_id": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf__eq_19",
+          "equation": "DR = \\frac{C_0 - C_d}{C_0 - C_s}",
+          "domain": "Displacement Washing of Packed Bed",
+          "vars": [
+            "C_0",
+            "C_d",
+            "C_s",
+            "DR"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.138,
+            "svd_sim": 0.601,
+            "text_sim": 0.194
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 4550,
+          "eq_id": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf__eq_1",
+          "equation": "\\frac{\\partial q}{\\partial t} + \\frac{1-\\beta}{\\beta} \\frac{\\partial n}{\\partial t} = \\frac{k_f}{KR} (c-q)",
+          "domain": "Displacement Washing of Packed Bed",
+          "vars": [
+            "K",
+            "R",
+            "c",
+            "k_f",
+            "n",
+            "q",
+            "t",
+            "β"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.276,
+            "svd_sim": 0.464,
+            "text_sim": 0.171
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 4555,
+          "eq_id": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf__eq_6",
+          "equation": "\\frac{\\partial c}{\\partial z} = 0 \\quad \\text{at } z=L",
+          "domain": "Displacement Washing of Packed Bed",
+          "vars": [
+            "L",
+            "c",
+            "z"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.103,
+            "svd_sim": 0.599,
+            "text_sim": 0.213
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 4552,
+          "eq_id": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf__eq_3",
+          "equation": "n = \\frac{q k^* N_0}{q k^* + C_0}",
+          "domain": "Displacement Washing of Packed Bed",
+          "vars": [
+            "C_0",
+            "N_0",
+            "k^*",
+            "n",
+            "q"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.172,
+            "svd_sim": 0.626,
+            "text_sim": 0.17
+          },
+          "tag": "正解"
+        },
+        {
+          "idx": 4563,
+          "eq_id": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf__eq_14",
+          "equation": "\\frac{\\partial Q_j^l}{\\partial \\tau} + \\frac{1-\\beta}{\\beta} \\frac{\\partial N_j^l}{\\partial \\tau} = Bi(C_j^l - Q_j^l)",
+          "domain": "Numerical Simulation (OCFE)",
+          "vars": [
+            "Bi",
+            "C_j^l",
+            "N_j^l",
+            "Q_j^l",
+            "β",
+            "τ"
+          ],
+          "feat": {
+            "specificity": 1.0,
+            "io_jaccard": 0.207,
+            "svd_sim": 0.262,
+            "text_sim": 0.018
+          },
+          "tag": "正解"
+        }
+      ],
+      "missed": [],
+      "rescue": {
+        "svd_sim": NaN,
+        "text_sim": NaN,
+        "domain": NaN,
+        "specificity": NaN,
+        "io_jaccard": NaN
+      }
+    }
+  ]
+}
