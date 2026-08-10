@@ -1,0 +1,78 @@
+{
+  "config": {
+    "svd_components": 256,
+    "svd_seed": 42,
+    "space": "式本文で学習した TF-IDF→SVD 空間にケースを射影"
+  },
+  "groups": {
+    "paraphrase": {
+      "n": 276,
+      "q25": 0.9258444337791621,
+      "median": 0.9439296093816638,
+      "q75": 0.961865940890066,
+      "mean": 0.9395496483774032
+    },
+    "same_core": {
+      "n": 1050,
+      "q25": 0.9815665422535853,
+      "median": 0.999751712399161,
+      "q75": 0.9999999999948714,
+      "mean": 0.9835151990962697
+    },
+    "same_source": {
+      "n": 16123,
+      "q25": 0.30246819889690846,
+      "median": 0.44505621217125446,
+      "q75": 0.5883724238395527,
+      "mean": 0.4657991701522959
+    },
+    "random": {
+      "n": 199882,
+      "q25": 0.14882273119216008,
+      "median": 0.21755984732039216,
+      "q75": 0.3130265865369832,
+      "mean": 0.24674101847122776
+    }
+  },
+  "random_median": 0.21755984732039216,
+  "percentile_of_random_median_within": {
+    "paraphrase": 0.0,
+    "same_core": 0.0,
+    "same_source": 0.12913229547850896,
+    "random": 0.5
+  },
+  "examples": [
+    {
+      "target": 0.05,
+      "cosine": 0.050003564260451105,
+      "case_a": "ms3_0344",
+      "context_a": "A continuously operated reactor with feedback control on key process variables $F$, $V$. The reactor model and the controller transfer function together define the closed-loop behavior.",
+      "case_b": "ms3_0304",
+      "context_b": "Turbulent flame propagation in which combustion kinetics couples with fluid flow dynamics through shared variables $\\rho$, $t$."
+    },
+    {
+      "target": 0.21755984732039216,
+      "cosine": 0.21756087830596638,
+      "case_a": "dae_X2_042",
+      "context_a": "This scenario models a microbial fermentation system where microorganisms consume glucose and produce glycolysis products and ethanol. Given the glucose uptake rate, various metabolic fluxes (respirat",
+      "case_b": "core_106_v1",
+      "context_b": "For a tank level process under PI control, there is a direct relationship between the maximum deviation in level and the maximum step change in flow rate. Given the observed maximum level deviation fo"
+    },
+    {
+      "target": 0.4,
+      "cosine": 0.3999997554860407,
+      "case_a": "dae_X2_007",
+      "context_a": "This model describes a continuous blending process where two inlet streams with different compositions (mass fractions x₁ and x₂) and flow rates (w₁ and w₂) are mixed in a tank of volume V, with densi",
+      "case_b": "dae_X2_006",
+      "context_b": "This system models turbulent fluid flow and scalar transport (e.g., pollutant dispersion) in building environments using Large Eddy Simulation (LES). Given the fluid properties (density, viscosity), p"
+    },
+    {
+      "target": 0.7,
+      "cosine": 0.7000216973556871,
+      "case_a": "dae_X5_074",
+      "context_a": "This system models a continuous stirred-tank reactor (CSTR) with a cooling jacket, where a reversible exothermic chemical reaction A + B ⇌ C + D occurs. Given initial conditions, feed properties, and ",
+      "case_b": "dae_X8_030",
+      "context_b": "This scenario models a coupled system involving multiple chemical process units including stirred-tank reactors (CSTRs), tank draining systems, and room heating, where material and energy balances are"
+    }
+  ]
+}
