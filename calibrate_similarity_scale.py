@@ -27,7 +27,7 @@ ROOT = Path(__file__).parent
 
 GROUPS = [
     ("paraphrase", "言い換え（同じケースの説明文を書き換え）", "#2ca02c"),
-    ("same_core", "同じ核モデル（入出力だけ変えた組）", "#1f77b4"),
+    ("same_core", "同じ物理モデルで入出力だけ変えた組", "#1f77b4"),
     ("same_source", "同じ文献に由来する別ケースの組", "#ff7f0e"),
     ("random", "無作為な 2 ケースの組", "#d62728"),
 ]
@@ -223,7 +223,7 @@ def _figure(vals, med_random, out_png):
     plt.rcParams["axes.unicode_minus"] = False
     plt.rcParams["pdf.fonttype"] = 42
 
-    fig, ax = plt.subplots(figsize=(11, 4.6))
+    fig, ax = plt.subplots(figsize=(11, 3.4))
     data = [vals[k] for k, _, _ in GROUPS][::-1]
     labels = [f"{lab}\n(n={len(vals[k]):,})" for k, lab, _ in GROUPS][::-1]
     cols = [c for _, _, c in GROUPS][::-1]
@@ -233,11 +233,11 @@ def _figure(vals, med_random, out_png):
         patch.set_facecolor(c); patch.set_alpha(0.55)
     ax.set_yticklabels(labels, fontsize=9)
     ax.axvline(med_random, color="#d62728", ls="--", lw=1.4)
-    ax.text(med_random + 0.01, 0.62, f"無作為な組の中央値 {med_random:.3f}",
+    ax.text(med_random + 0.01, 0.5, f"無作為な組の中央値 {med_random:.3f}",
             fontsize=9, color="#d62728")
+    ax.set_ylim(0.3, 4.6)
     ax.set_xlim(-0.02, 1.0)
-    ax.set_xlabel("ケースどうしのベクトルのコサイン類似度（箱＝四分位、縦線＝中央値、ひげ＝1.5 四分位範囲）")
-    ax.set_title("同じ内容の組と無作為な組を並べた物差し")
+    ax.set_xlabel("ケースどうしのベクトルのコサイン類似度")
     ax.grid(alpha=0.25, axis="x")
     fig.tight_layout()
     Path(out_png).parent.mkdir(parents=True, exist_ok=True)
