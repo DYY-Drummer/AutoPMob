@@ -92,14 +92,18 @@ def _mw(a, b) -> dict:
 # 本体
 # ---------------------------------------------------------------------------
 
-def run(seed: int = 42, out_json: str = "experiments/case_outcomes_seed42.json"):
+def run(seed: int = 42, out_json: str = "experiments/case_outcomes_seed42.json",
+        top_k: int | None = None):
     import torch
+    import analyze_pfi
     from two_stage_query_conditioned import (
         load_equations, load_cases, norm, eq_key, eq_text, eq_vars,
         case_text, in_vars, out_vars, case_src,
     )
     from set_aware_reranker import get_src
     from analyze_pfi import train_and_cache, keep_setting_A
+    if top_k is not None:
+        analyze_pfi.TOP_K = top_k   # 第1段の候補件数を上書き（既定 50）
 
     eqs = load_equations()
     cases_all = load_cases()
@@ -240,7 +244,7 @@ def run(seed: int = 42, out_json: str = "experiments/case_outcomes_seed42.json")
 
     out = {
         "config": {"seed": seed, "setting": "A", "model": "reranker-10S",
-                   "n_test": len(recs)},
+                   "n_test": len(recs), "top_k": analyze_pfi.TOP_K},
         "baseline_R": base_R,
         "outcome_counts": {"solved": len(solved), "partial_or_failed": len(unsolved),
                            "solved_share": len(solved) / len(recs)},
@@ -284,5 +288,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out-json", default="experiments/case_outcomes_seed42.json")
+    ap.add_argument("--top-k", type=int, default=None,
+                    help="第1段の候補件数（既定は analyze_pfi.TOP_K=50）")
     a = ap.parse_args()
-    run(seed=a.seed, out_json=a.out_json)
+    run(seed=a.seed, out_json=a.out_json, top_k=a.top_k)

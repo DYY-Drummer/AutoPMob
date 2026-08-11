@@ -112,7 +112,8 @@ def _mean_sem(arr) -> dict:
 
 def run(seed: int = 42, n_pairs: int = 200_000,
         out_json: str = "experiments/topic_feature_diagnosis.json",
-        out_fig: str = "docs/figures/fig_topic_diagnosis.png") -> dict:
+        out_fig: str = "docs/figures/fig_topic_diagnosis.png",
+        top_k: int | None = None) -> dict:
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -123,7 +124,9 @@ def run(seed: int = 42, n_pairs: int = 200_000,
         case_text, io_vars, in_vars, out_vars, jaccard, stage1,
     )
     from set_aware_reranker import compute_features_with_set
-    from analyze_pfi import FEATURES, SET_MASK, TOP_K, keep_setting_A
+    from analyze_pfi import FEATURES, SET_MASK, keep_setting_A
+    import analyze_pfi
+    TOP_K = top_k if top_k is not None else analyze_pfi.TOP_K
 
     eqs = load_equations()
     cases_all = load_cases()
@@ -356,7 +359,7 @@ def _make_figure(out, pairs_svd, pairs_raw, out_png):
     axes[1].text(0.502, len(names) - 0.4, "AUC=0.5（識別力なし）", fontsize=8, color="#555555")
     axes[1].set_yticks(y); axes[1].set_yticklabels([JA_LABEL.get(n, n) for n in names])
     axes[1].set_xlim(0.3, 1.0)
-    axes[1].set_title("(b) 第 1 段が選んだ候補 50 件の中での識別力")
+    axes[1].set_title(f"(b) 第 1 段が選んだ候補 {out['config']['top_k']} 件の中での識別力")
     axes[1].set_xlabel("候補の中での AUC（ケース平均±標準誤差。青＝変数の重なり、赤＝話題の近さ）")
     axes[1].grid(alpha=0.25, axis="x")
 
@@ -373,5 +376,8 @@ if __name__ == "__main__":
     ap.add_argument("--n-pairs", type=int, default=200_000)
     ap.add_argument("--out-json", default="experiments/topic_feature_diagnosis.json")
     ap.add_argument("--out-fig", default="docs/figures/fig_topic_diagnosis.png")
+    ap.add_argument("--top-k", type=int, default=None,
+                    help="第1段の候補件数（既定は analyze_pfi.TOP_K=50）")
     a = ap.parse_args()
-    run(seed=a.seed, n_pairs=a.n_pairs, out_json=a.out_json, out_fig=a.out_fig)
+    run(seed=a.seed, n_pairs=a.n_pairs, out_json=a.out_json, out_fig=a.out_fig,
+        top_k=a.top_k)

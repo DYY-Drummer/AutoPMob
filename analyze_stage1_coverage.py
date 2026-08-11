@@ -137,10 +137,11 @@ def _figure(out, out_png):
         ys = [out["coverage"][m][str(k)]["mean"] for k in KS]
         es = [out["coverage"][m][str(k)]["sem"] for k in KS]
         axes[0].errorbar(KS, ys, yerr=es, marker="o", lw=2.0, capsize=3, color=col, label=lab)
-    axes[0].axvline(50, color="#888888", ls=":", lw=1.2)
-    axes[0].set_ylim(0.16, 1.03)
-    axes[0].text(50, 0.18, "本実験の設定 k=50", fontsize=9, color="#555555",
-                 ha="center", va="bottom")
+    for kk, lab in ((50, "主要比較 k=50"), (200, "逐次選択・停止 k=200")):
+        axes[0].axvline(kk, color="#888888", ls=":", lw=1.2)
+        axes[0].text(kk, 1.05, lab, fontsize=9, color="#555555",
+                     ha="center", va="bottom")
+    axes[0].set_ylim(0.16, 1.13)
     axes[0].set_xscale("log")
     axes[0].set_xticks(KS); axes[0].set_xticklabels([str(k) for k in KS])
     axes[0].set_title("(a) 第1段の被覆率＝第2段の上限")
@@ -148,24 +149,33 @@ def _figure(out, out_png):
     axes[0].set_ylabel("正解式が候補に入る割合（平均±標準誤差）")
     axes[0].grid(alpha=0.25); axes[0].legend(fontsize=9, loc="lower right")
 
-    # (b) 救済可能性
-    pc = json.load(open(ROOT / "experiments/case_outcomes_seed42.json", encoding="utf-8"))
-    r = pc["topic_rescue_fraction"]
+    # (b) 救済可能性（候補 50 件 / 200 件の並列）
+    r50 = json.load(open(ROOT / "experiments/case_outcomes_seed42.json",
+                         encoding="utf-8"))["topic_rescue_fraction"]
+    r200 = json.load(open(ROOT / "experiments/case_outcomes_seed42_k200.json",
+                          encoding="utf-8"))["topic_rescue_fraction"]
     names = [("svd_sim", "意味の近さ"), ("domain", "分野の一致"),
              ("specificity", "式の特化度"), ("io_jaccard", "変数の一致度"),
              ("text_sim", "文章類似度")]
-    y = np.arange(len(names))
-    vals = [r[k]["mean"] for k, _ in names]
-    errs = [r[k]["sem"] for k, _ in names]
-    cols = ["#d62728" if k in ("svd_sim", "domain", "text_sim") else "#1f77b4"
-            for k, _ in names]
-    axes[1].barh(y, vals, xerr=errs, color=cols, error_kw=dict(capsize=3, lw=1))
+    y = np.arange(len(names)); h = 0.38
+    for bi, (r, lab, alpha) in enumerate(((r50, "候補 50 件", 0.55),
+                                          (r200, "候補 200 件", 1.0))):
+        vals = [r[k]["mean"] for k, _ in names]
+        errs = [r[k]["sem"] for k, _ in names]
+        cols = ["#d62728" if k in ("svd_sim", "domain", "text_sim") else "#1f77b4"
+                for k, _ in names]
+        axes[1].barh(y + (0.5 - bi) * h, vals, height=h, xerr=errs, color=cols,
+                     alpha=alpha, error_kw=dict(capsize=2, lw=1), label=lab)
+    from matplotlib.patches import Patch
+    axes[1].legend(handles=[Patch(facecolor="#777777", alpha=0.55, label="候補 50 件"),
+                            Patch(facecolor="#777777", alpha=1.0, label="候補 200 件")],
+                   fontsize=8, loc="lower right")
     axes[1].axvline(0.5, color="#555555", lw=1.2, ls="--")
     axes[1].text(0.508, 0.03, "0.5＝偶然と同じ", fontsize=9, color="#555555",
                  transform=axes[1].get_xaxis_transform())
     axes[1].set_yticks(y); axes[1].set_yticklabels([lab for _, lab in names])
     axes[1].set_xlim(0, 0.8)
-    axes[1].set_title("(b) その特徴量を強めれば取り逃しを救えるか")
+    axes[1].set_title("(b) その特徴量を強めれば順位が戻るか")
     axes[1].set_xlabel("見逃した正解式が誤って上位に来た式を上回る割合（平均±標準誤差）")
     axes[1].grid(alpha=0.25, axis="x")
 
