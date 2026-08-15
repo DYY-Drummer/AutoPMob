@@ -25,6 +25,8 @@ import numpy as np
 
 ROOT = Path(__file__).parent
 
+FS = 1.5  # 図中の文字サイズの倍率（報告書に貼ったとき小さすぎたため拡大）
+
 GROUPS = [
     ("paraphrase", "言い換え（同じケースの説明文を書き換え）", "#2ca02c"),
     ("same_core", "同じ物理モデルで入出力だけ変えた組", "#1f77b4"),
@@ -231,13 +233,14 @@ def _figure(vals, med_random, out_png):
                     medianprops=dict(color="black", lw=1.6))
     for patch, c in zip(bp["boxes"], cols):
         patch.set_facecolor(c); patch.set_alpha(0.55)
-    ax.set_yticklabels(labels, fontsize=9)
+    ax.set_yticklabels(labels, fontsize=9 * FS)
     ax.axvline(med_random, color="#d62728", ls="--", lw=1.4)
     ax.text(med_random + 0.01, 0.5, f"無作為な組の中央値 {med_random:.3f}",
-            fontsize=9, color="#d62728")
+            fontsize=9 * FS, color="#d62728")
     ax.set_ylim(0.3, 4.6)
     ax.set_xlim(-0.02, 1.0)
-    ax.set_xlabel("ケースどうしのベクトルのコサイン類似度")
+    ax.set_xlabel("ケースどうしのベクトルのコサイン類似度", fontsize=10 * FS)
+    ax.tick_params(axis="x", labelsize=10 * FS)
     ax.grid(alpha=0.25, axis="x")
     fig.tight_layout()
     Path(out_png).parent.mkdir(parents=True, exist_ok=True)

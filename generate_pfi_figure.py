@@ -36,6 +36,7 @@ GROUP = {  # 特徴量 -> 群
 }
 C_VAR, C_TOPIC = "#2c7fb8", "#d95f0e"
 SCOPE = "case"
+FS = 1.5  # 図中の文字サイズの倍率（報告書に貼ったとき小さすぎたため拡大）
 
 
 def main():
@@ -52,23 +53,24 @@ def main():
     labels = [JP[f] for f in feats]
 
     fig, (ax1, ax2) = plt.subplots(
-        1, 2, figsize=(12.5, 4.2), gridspec_kw={"width_ratios": [2.3, 1]})
+        1, 2, figsize=(12.5, 4.2), gridspec_kw={"width_ratios": [2.0, 1]})
 
     y = list(range(len(feats)))
     ax1.barh(y, vals, xerr=errs, color=cols, capsize=3, height=0.66,
              error_kw=dict(ecolor="#444", lw=1))
-    ax1.set_yticks(y); ax1.set_yticklabels(labels, fontsize=11); ax1.invert_yaxis()
-    ax1.set_xlabel("シャッフルによる Recall@K の低下（大きいほど重要）", fontsize=11)
+    ax1.set_yticks(y); ax1.set_yticklabels(labels, fontsize=11 * FS); ax1.invert_yaxis()
+    ax1.set_xlabel("シャッフルによる Recall@K の低下（大きいほど重要）", fontsize=11 * FS)
     ax1.axvline(0, color="#bbb", lw=1, zorder=0)
     ax1.grid(axis="x", alpha=0.25)
+    ax1.tick_params(axis="x", labelsize=10 * FS)
     for yi, v, e in zip(y, vals, errs):
         shown = 0.0 if abs(v) < 0.0005 else v  # 「-0.000」という紛らわしい表示を避ける
-        ax1.text(v + e + 0.012, yi, f"{shown:.3f}", va="center", fontsize=9)
-    ax1.set_title("(a) 特徴量を 1 つずつシャッフル", fontsize=12)
+        ax1.text(v + e + 0.012, yi, f"{shown:.3f}", va="center", fontsize=9 * FS)
+    ax1.set_title("(a) 特徴量を 1 つずつシャッフル", fontsize=12 * FS)
     from matplotlib.patches import Patch
     ax1.legend(handles=[Patch(color=C_VAR, label="変数の重なりを測る特徴量"),
                         Patch(color=C_TOPIC, label="話題の近さを測る特徴量")],
-               fontsize=10, loc="lower right")
+               fontsize=10 * FS, loc="lower right")
     ax1.set_xlim(right=max(v + e for v, e in zip(vals, errs)) * 1.15)
 
     # --- 群 PFI ---
@@ -77,15 +79,16 @@ def main():
     ax2.bar([0, 1], [gv, gt], yerr=[gvs, gts], color=[C_VAR, C_TOPIC],
             capsize=5, width=0.6, error_kw=dict(ecolor="#444", lw=1.2))
     ax2.set_xticks([0, 1])
-    ax2.set_xticklabels(["変数の重なり\n(6 特徴量)", "話題の近さ\n(4 特徴量)"], fontsize=11)
-    ax2.set_ylabel("シャッフルによる Recall@K の低下", fontsize=11)
+    ax2.set_xticklabels(["変数の重なり\n(6 特徴量)", "話題の近さ\n(4 特徴量)"], fontsize=11 * FS)
+    ax2.set_ylabel("Recall@K の低下", fontsize=11 * FS)
     ax2.axhline(base, color="#888", ls=":", lw=1.2)
-    ax2.text(1.02, base, f"シャッフル前の\nRecall@K={base:.3f}", fontsize=8.5, va="center", color="#555")
+    ax2.text(1.02, base, f"シャッフル前の\nRecall@K={base:.3f}", fontsize=8.5 * FS, va="center", color="#555")
     for xi, v, e in zip([0, 1], [gv, gt], [gvs, gts]):
-        ax2.text(xi, v + e + 0.015, f"{v:.3f}", ha="center", fontsize=11, fontweight="bold")
+        ax2.text(xi, v + e + 0.015, f"{v:.3f}", ha="center", fontsize=11 * FS, fontweight="bold")
     ax2.set_ylim(0, max(base, gv + gvs) * 1.12)
     ax2.grid(axis="y", alpha=0.25)
-    ax2.set_title("(b) まとめてシャッフル", fontsize=12)
+    ax2.tick_params(axis="y", labelsize=10 * FS)
+    ax2.set_title("(b) まとめてシャッフル", fontsize=12 * FS)
 
     fig.tight_layout()
     (ROOT / "figure").mkdir(exist_ok=True)
