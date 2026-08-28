@@ -26,6 +26,13 @@
       "q75": 0.5883724238395527,
       "mean": 0.4657991701522959
     },
+    "unrelated": {
+      "n": 191722,
+      "q25": 0.14651999836899002,
+      "median": 0.21292294121636524,
+      "q75": 0.30270336618347415,
+      "mean": 0.23697311866583262
+    },
     "random": {
       "n": 199882,
       "q25": 0.14882273119216008,
@@ -34,12 +41,21 @@
       "mean": 0.24674101847122776
     }
   },
+  "unrelated_median": 0.21292294121636524,
   "random_median": 0.21755984732039216,
-  "percentile_of_random_median_within": {
+  "share_gt_0.5": {
+    "paraphrase": 1.0,
+    "same_core": 1.0,
+    "same_source": 0.3950877628232959,
+    "unrelated": 0.03920781131012612,
+    "random": 0.054362073623437826
+  },
+  "percentile_of_unrelated_median_within": {
     "paraphrase": 0.0,
     "same_core": 0.0,
-    "same_source": 0.12913229547850896,
-    "random": 0.5
+    "same_source": 0.12497674130124667,
+    "unrelated": 0.5,
+    "random": 0.4843207492420528
   },
   "examples": [
     {
@@ -51,12 +67,12 @@
       "context_b": "Turbulent flame propagation in which combustion kinetics couples with fluid flow dynamics through shared variables $\\rho$, $t$."
     },
     {
-      "target": 0.21755984732039216,
-      "cosine": 0.21756087830596638,
-      "case_a": "dae_X2_042",
-      "context_a": "This scenario models a microbial fermentation system where microorganisms consume glucose and produce glycolysis products and ethanol. Given the glucose uptake rate, various metabolic fluxes (respirat",
-      "case_b": "core_106_v1",
-      "context_b": "For a tank level process under PI control, there is a direct relationship between the maximum deviation in level and the maximum step change in flow rate. Given the observed maximum level deviation fo"
+      "target": 0.21292294121636524,
+      "cosine": 0.21292260542657307,
+      "case_a": "dae_X9_043",
+      "context_a": "This system models a Dynamical Movement Primitive (DMP), a framework for learning and reproducing complex robotic or biological movements through coupled differential equations. Given kinematic constr",
+      "case_b": "dae_X8_033",
+      "context_b": "This models a multiphase flow system with thermal effects using coupled lattice Boltzmann methods, where phases are tracked using a phase-field approach. Given fundamental physical constants (diffusio"
     },
     {
       "target": 0.4,
@@ -73,6 +89,14 @@
       "context_a": "This system models a continuous stirred-tank reactor (CSTR) with a cooling jacket, where a reversible exothermic chemical reaction A + B ⇌ C + D occurs. Given initial conditions, feed properties, and ",
       "case_b": "dae_X8_030",
       "context_b": "This scenario models a coupled system involving multiple chemical process units including stirred-tank reactors (CSTRs), tank draining systems, and room heating, where material and energy balances are"
+    },
+    {
+      "target": 0.9987560633217569,
+      "cosine": 0.9987560633217569,
+      "case_a": "ms3_0217",
+      "context_a": "A continuously operated reactor with feedback control on key process variables $E$, $t$. The reactor model and the controller transfer function together define the closed-loop behavior.",
+      "case_b": "ms3_0297",
+      "context_b": "A continuously operated reactor with feedback control on key process variables $A$, $B$. The reactor model and the controller transfer function together define the closed-loop behavior."
     }
   ]
 }

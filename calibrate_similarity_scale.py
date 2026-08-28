@@ -6,9 +6,10 @@
 
 比較する組:
   言い換え     : 同じケースの説明文を書き換えただけの組（内容は同一）
-  同じ核モデル : 同じ元モデルから入出力を変えて作った組（内容はほぼ同一）
+  同じ核モデル : 同じ元モデルから入出力を変えて作った組（説明文は同じ）
   同じ文献     : 正解式が同じ文献に由来する別々のケースの組
-  無作為       : 評価対象 1,823 ケースから無作為に選んだ組 ← ここの中央値が 0.218
+  無関係       : 出典文献が重ならず、同じ物理モデルにも由来しない組 ← この中央値が基準
+  （無作為な組も JSON には残す。無関係な組とほぼ同じ分布になる）
 
 ベクトルの作り方は diagnose_topic_features.py と同一（式本文で TF-IDF と SVD を
 学習し、ケースの説明文＋入出力変数名をその空間へ射影して L2 正規化）。
@@ -29,9 +30,9 @@ FS = 1.5  # 図中の文字サイズの倍率（報告書に貼ったとき小�
 
 GROUPS = [
     ("paraphrase", "言い換え（同じケースの説明文を書き換え）", "#2ca02c"),
-    ("same_core", "同じ物理モデルで入出力だけ変えた組", "#1f77b4"),
+    ("same_core", "同じ物理モデルで入出力だけ変えた組（説明文は同じ）", "#1f77b4"),
     ("same_source", "同じ文献に由来する別ケースの組", "#ff7f0e"),
-    ("random", "無作為な 2 ケースの組", "#d62728"),
+    ("unrelated", "無関係な 2 ケースの組（出典文献が重ならない）", "#d62728"),
 ]
 
 
@@ -156,30 +157,41 @@ def run(seed: int = 42, n_random: int = 200_000,
     keep = ii != jj
     random_pairs = list(zip(ii[keep].tolist(), jj[keep].tolist()))
 
+    # 無関係な組＝無作為な組から、出典文献が重なる組と同じ物理モデルに由来する組を除く
+    unrelated_pairs = [
+        (i, j) for i, j in random_pairs
+        if not (core_of[i] and core_of[i] == core_of[j]) and not (srcs[i] & srcs[j])
+    ]
+
     vals = {
         "paraphrase": cos_pairs(Q, para),
         "same_core": cos_pairs(Q, same_core),
         "same_source": cos_pairs(Q, same_source),
+        "unrelated": cos_pairs(Q, unrelated_pairs),
         "random": cos_pairs(Q, random_pairs),
     }
     stats = {k: quantiles(v) for k, v in vals.items()}
-    med_random = stats["random"]["median"]
+    med_random = stats["unrelated"]["median"]
     out = {
         "config": {"svd_components": 256, "svd_seed": seed,
                    "space": "式本文で学習した TF-IDF→SVD 空間にケースを射影"},
         "groups": stats,
-        "random_median": med_random,
-        "percentile_of_random_median_within": {
+        "unrelated_median": med_random,
+        "random_median": stats["random"]["median"],
+        "share_gt_0.5": {k: float(np.mean(np.asarray(v) > 0.5)) if len(v) else 0.0
+                          for k, v in vals.items()},
+        "percentile_of_unrelated_median_within": {
             k: percentile_of(med_random, v) for k, v in vals.items()
         },
     }
 
-    # 具体例：無作為の組から、類似度が各水準に近いものを 1 組ずつ取り出す
+    # 具体例：無関係な組から、類似度が各水準に近いものと最大の組を取り出す
     examples = []
-    rv = vals["random"]
-    for target in (0.05, med_random, 0.40, 0.70):
+    rv = vals["unrelated"]
+    targets = [0.05, med_random, 0.40, 0.70, float(rv.max())]
+    for target in targets:
         k = int(np.argmin(np.abs(rv - target)))
-        i, j = random_pairs[k]
+        i, j = unrelated_pairs[k]
         examples.append({
             "target": float(target), "cosine": float(rv[k]),
             "case_a": cases[i].get("case_id"), "context_a": (cases[i].get("context") or "")[:200],
@@ -198,11 +210,11 @@ def run(seed: int = 42, n_random: int = 200_000,
         s = stats[key]
         print(f"  {label:<34s} 中央値 {s['median']:.3f}  "
               f"（四分位 {s['q25']:.3f}–{s['q75']:.3f}、n={s['n']:,}）")
-    print(f"\n無作為の組の中央値 {med_random:.3f} は、")
+    print(f"\n無関係な組の中央値 {med_random:.3f} は、")
     for key, label, _ in GROUPS[:3]:
-        p = out["percentile_of_random_median_within"][key]
+        p = out["percentile_of_unrelated_median_within"][key]
         print(f"  「{label}」の分布の下から {p:.1%} の位置")
-    print("\n=== 無作為な組の具体例 ===")
+    print("\n=== 無関係な組の具体例 ===")
     for ex in examples:
         print(f"\n  コサイン {ex['cosine']:.3f}")
         print(f"    A: {ex['context_a'][:110]}")
@@ -235,7 +247,7 @@ def _figure(vals, med_random, out_png):
         patch.set_facecolor(c); patch.set_alpha(0.55)
     ax.set_yticklabels(labels, fontsize=9 * FS)
     ax.axvline(med_random, color="#d62728", ls="--", lw=1.4)
-    ax.text(med_random + 0.01, 0.5, f"無作為な組の中央値 {med_random:.3f}",
+    ax.text(med_random + 0.01, 0.5, f"無関係な組の中央値 {med_random:.3f}",
             fontsize=9 * FS, color="#d62728")
     ax.set_ylim(0.3, 4.6)
     ax.set_xlim(-0.02, 1.0)
