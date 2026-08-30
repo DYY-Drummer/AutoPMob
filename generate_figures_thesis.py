@@ -67,12 +67,13 @@ def _per_seed(path, mode, metric="Recall@K_correct"):
 def dataset():
     cases = json.load(open(ROOT / "training_cases.json"))
     vt = Counter(c.get("variant_type", "?") for c in cases)
+    # 表示名は §4.2 の改訂用語（as-published / cross-document / synthesized）に合わせる。
     fam = {
-        "Original": vt["original"],
+        "As-published": vt["original"],
         "Paraphrase (aug.)": vt["context_paraphrased"],
         "Random I/O (aug.)": vt["random_io_from_models"] + vt["swap_io"],
-        "Multi-source": vt["multisource_original"] + vt["multisource_random_io"] + vt["multisource_v3"],
-        "DAE (hard)": sum(v for k, v in vt.items() if k.startswith("dae_")),
+        "Cross-document": vt["multisource_original"] + vt["multisource_random_io"] + vt["multisource_v3"],
+        "Synthesized": sum(v for k, v in vt.items() if k.startswith("dae_")),
     }
     labels, vals = list(fam.keys()), list(fam.values())
     # 青＋緑＝評価の設定 A（original+multisource+DAE）, 灰＝拡張のため設定 A から除外
@@ -88,7 +89,7 @@ def dataset():
     ax1.set_xlim(0, max(vals) * 1.18)
     ax1.set_title(f"(a) Composition of the 2,838 cases", fontsize=12)
     ax1.legend(handles=[Patch(facecolor=C_PROP, edgecolor="black", label="Setting A: evaluation target (1,823 cases)"),
-                        Patch(facecolor=C_DAE, edgecolor="black", label="  of which DAE (1,000 cases)"),
+                        Patch(facecolor=C_DAE, edgecolor="black", label="  of which synthesized (1,000 cases)"),
                         Patch(facecolor=C_BASE, edgecolor="black", label="Augmentation: excluded from Setting A")],
                fontsize=9, loc="upper right")
 
@@ -279,8 +280,8 @@ def method_comparison():
     """3設定（全データ/設定A/設定B）× baseline・本手法の箱ひげ＋LLM点."""
     settings = [
         ("strat_full.json", "llm_set_full_equiv_results.json", "All cases\n(incl. augmentation, 2,838)"),
-        ("strat_A.json", "llm_set_A_equiv_results.json", "Setting A\n(1,823)"),
-        ("strat_B.json", "llm_set_B_equiv_results.json", "Setting B\n(DAE only, 1,000)"),
+        ("strat_A.json", "llm_set_A_equiv_results.json", "Setting A\n(mixed, 1,823)"),
+        ("strat_B.json", "llm_set_B_equiv_results.json", "Setting B\n(synthesized only, 1,000)"),
     ]
     fig, ax = plt.subplots(figsize=(9, 4.6))
     centers = np.arange(len(settings)) * 2.6
@@ -398,7 +399,7 @@ GREEDY_CONFIGS = [("static", "Static", C_BASE), ("infer", "Greedy\n(inference)",
 
 def greedy_3way():
     fig, axes = plt.subplots(1, 3, figsize=(13, 4.2))
-    for ax, dirname, title in [(axes[0], "xg", "(a) Setting B (DAE only)"),
+    for ax, dirname, title in [(axes[0], "xg", "(a) Setting B (synthesized only)"),
                                (axes[1], "xg_A", "(b) Setting A")]:
         data = [_greedy_seed_means(dirname, c) for c, _, _ in GREEDY_CONFIGS]
         _box(ax, data, [0, 1, 2], [c for _, _, c in GREEDY_CONFIGS])
@@ -425,7 +426,7 @@ def greedy_3way():
             sems.append(sm.std(ddof=1) / np.sqrt(len(sm)))
         ax.errorbar(xs, means, yerr=sems, marker="o", ms=4, lw=1.6, capsize=3,
                     label=label.replace("\n", " "), color=color)
-    ax.set_xlabel("Number of equations in the true model (DAE)")
+    ax.set_xlabel("Number of equations in the true model")
     ax.set_title("(c) By difficulty (Setting B)")
     ax.legend(fontsize=8.5)
     ax.grid(alpha=0.3)
@@ -449,7 +450,7 @@ def dof_stop():
     stats_doc = json.load(open(EXP / "dof_stop_stats.json"))
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
     ax = axes[0]
-    groups = [("dae", "Setting B (DAE)"), ("A", "Setting A")]
+    groups = [("dae", "Setting B (synthesized)"), ("A", "Setting A")]
     for i, (setting, glabel) in enumerate(groups):
         oracle = _dof_seed_means(setting, "set_f1_oracleK")
         dof = _dof_seed_means(setting, "set_f1_dof")
@@ -481,11 +482,80 @@ def dof_stop():
         sm = [np.array([np.mean(v) for v in acc[x].values()]) for x in xs]
         ax.errorbar(xs, [m.mean() for m in sm], yerr=[m.std(ddof=1) / np.sqrt(len(m)) for m in sm],
                     marker="o", ms=4, lw=1.6, capsize=3, label=label, color=color)
-    ax.set_xlabel("Number of equations in the true model (DAE)")
+    ax.set_xlabel("Number of equations in the true model")
     ax.set_title("(b) By difficulty (Setting B)")
     ax.legend(fontsize=8.5)
     ax.grid(alpha=0.3)
     save(fig, "fig_dof_stop")
+
+
+# ----------------------------------------------------------------------
+# pfi() — permutation feature importance of reranker-10S (English labels;
+# ported from generate_pfi_figure.py, terms aligned with Method Table 2)
+# ----------------------------------------------------------------------
+EN_FEAT = {
+    "text_sim": "Text similarity", "io_jaccard": "I/O Jaccard", "svd_sim": "Latent similarity",
+    "input_cov": "Input coverage", "output_cov": "Output coverage", "specificity": "Specificity",
+    "domain": "Domain match", "gComp": "Complementarity", "gCoh": "Coherence",
+    "gDom": "Domain agreement",
+}
+FEAT_GROUP = {
+    "text_sim": "topic", "io_jaccard": "var", "svd_sim": "topic", "input_cov": "var",
+    "output_cov": "var", "specificity": "var", "domain": "topic", "gComp": "var",
+    "gCoh": "var", "gDom": "topic",
+}
+C_VARF, C_TOPICF = "#1f77b4", "#d62728"  # fig_topic_diagnosis と同じ色分け
+
+
+def pfi():
+    d = json.load(open(EXP / "pfi_results.json"))
+    res = d["results"]["case"]
+    base = d["baseline_mean"]
+
+    feats = sorted(EN_FEAT, key=lambda f: -res[f]["importance_mean"])
+    vals = [res[f]["importance_mean"] for f in feats]
+    errs = [res[f]["importance_std"] for f in feats]
+    cols = [C_VARF if FEAT_GROUP[f] == "var" else C_TOPICF for f in feats]
+
+    fig, (ax1, ax2) = plt.subplots(
+        1, 2, figsize=(12.5, 4.4), gridspec_kw={"width_ratios": [2.0, 1]})
+
+    y = list(range(len(feats)))
+    ax1.barh(y, vals, xerr=errs, color=cols, capsize=3, height=0.66,
+             error_kw=dict(ecolor="#444", lw=1))
+    ax1.set_yticks(y)
+    ax1.set_yticklabels([EN_FEAT[f] for f in feats], fontsize=10)
+    ax1.invert_yaxis()
+    ax1.set_xlabel("Drop in Recall@K when the feature is permuted")
+    ax1.axvline(0, color="#bbb", lw=1, zorder=0)
+    ax1.grid(axis="x", alpha=0.25)
+    for yi, v, e in zip(y, vals, errs):
+        shown = 0.0 if abs(v) < 0.0005 else v  # avoid a misleading "-0.000"
+        ax1.text(v + e + 0.012, yi, f"{shown:.3f}", va="center", fontsize=8.5)
+    ax1.set_title("(a) Permuting one feature at a time")
+    ax1.legend(handles=[Patch(color=C_VARF, label="Variable-overlap features"),
+                        Patch(color=C_TOPICF, label="Topic features")],
+               fontsize=9, loc="lower right")
+    ax1.set_xlim(right=max(v + e for v, e in zip(vals, errs)) * 1.18)
+
+    gv, gvs = res["GROUP_var"]["importance_mean"], res["GROUP_var"]["importance_std"]
+    gt, gts = res["GROUP_topic"]["importance_mean"], res["GROUP_topic"]["importance_std"]
+    ax2.bar([0, 1], [gv, gt], yerr=[gvs, gts], color=[C_VARF, C_TOPICF],
+            capsize=5, width=0.6, error_kw=dict(ecolor="#444", lw=1.2))
+    ax2.set_xticks([0, 1])
+    ax2.set_xticklabels(["Variable overlap\n(6 features)", "Topic\n(4 features)"], fontsize=10)
+    ax2.set_ylabel("Drop in Recall@K")
+    ax2.axhline(base, color="#888", ls=":", lw=1.2)
+    ax2.text(0.98, base - 0.02, f"Recall@K before\npermutation = {base:.3f}",
+             fontsize=8, va="top", ha="right", color="#555", transform=ax2.get_yaxis_transform())
+    for xi, v, e in zip([0, 1], [gv, gt], [gvs, gts]):
+        ax2.text(xi, v + e + 0.015, f"{v:.3f}", ha="center", fontsize=10, fontweight="bold")
+    ax2.set_ylim(0, max(base, gv + gvs) * 1.14)
+    ax2.grid(axis="y", alpha=0.25)
+    ax2.set_title("(b) Permuting a whole group")
+
+    fig.tight_layout()
+    save(fig, "fig_pfi")
 
 
 if __name__ == "__main__":
@@ -496,3 +566,4 @@ if __name__ == "__main__":
     mechanism()
     greedy_3way()
     dof_stop()
+    pfi()

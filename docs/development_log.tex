@@ -358,6 +358,14 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-08-30（修論 第 6 章 Results and Discussion の本文化・図の英語化・論文化ギャップ分析）：
+    本人指示「いま得られている結果を論文に掲載できるレベルで Methods と Results and Discussion の形に文書化し、発表に欠けている実験・考察を洗い出す」に対応。
+    (1)\,\textbf{第 6 章の本文化}：骨子 P1--P9 を \S6.1--\S6.8 の段落形式に全面書き換え（\texttt{ResultsAndDiscussion.tex}）。執筆時に全記載値を \texttt{experiments/*.json} と再照合し、各段落に \texttt{\% source:} コメントで一次データを残した。
+    (2)\,\textbf{骨子に無かった追加}：\S6.3 に向上 $+0.222$ の 3 段分解（学習のみ $0.521\to0.601$／7 特徴 $\to0.693$（うち特化度単独 $+0.090$、Wilcoxon $p=0.00195$）／集合特徴 $\to0.743$）を \texttt{experiments/xd/} から明記。\S6.6 に\textbf{分野一致（集合版）の相殺分析}を新設：向きが合う 1{,}169 ケースで置換により $-0.012$、逆向き 414 ケースで $+0.034$（Mann--Whitney $p=1.3\times10^{-8}$）、加重和 $-0.0002$ が全体 PFI $\approx 0$ を再現（\texttt{pfi\_profile\_stats.json}、ケース集約済みで疑似反復なし）。\S6.7 に $k=200$ の誤り分解（stage1 由来 61.8\%$\to$28.4\% で主因が並べ替えに逆転、\texttt{case\_outcomes\_seed42\_k200.json}）を追記。\S6.8 に教師強制の限界を追加し \S3.4 の前方参照を回収。
+    (3)\,\textbf{記述の裏取りで得た per-case 検証}：DoF 停止の完全一致は oracle-K と全 7{,}026 レコードで不一致 0（平均の偶然一致でないことを確認）。サイズ誤差は設定 B で 545/545 全件が過大方向（早期停止 0）、設定 A は 4{,}594 件中 1 件のみ早期＝「ほぼ一方向」と正確に記載（当初の「全て過大」は設定 A で誤りと判明し訂正）。
+    (4)\,\textbf{図の英語化と用語統一}：\texttt{fig\_topic\_diagnosis} 英語版を新規生成（\texttt{diagnose\_topic\_features.py} に \texttt{-{}-lang en} を追加。パネル (b) に全 DB AUC の菱形を重畳し「全 DB では強いが候補内で崩れる」を 1 枚で示す。JSON 再計算はバイト一致で決定性を再確認）。\texttt{fig\_pfi} は日本語版の流用だったため \texttt{generate\_figures\_thesis.py} に英語版 \texttt{pfi()} を新設。凡例の旧用語（DAE only／Original／Multi-source）を改訂用語（synthesized only／As-published／Cross-document）へ統一（\texttt{fig\_dataset}・\texttt{fig\_method\_comparison}・\texttt{fig\_greedy\_3way}・\texttt{fig\_dof\_stop}）。表 3 キャプションの誤記（判定器は「別の LLM」でなく生成器と同一モデル）を訂正。
+    (5)\,\textbf{ビルド}：\texttt{latexmk -gg main.tex} exit 0、24 ページ、未解決参照・未定義引用なし。第 3--5 章は曖昧表現の走査（常套句・無根拠の有意）で問題なし。
+    (6)\,\textbf{ギャップ分析}：\texttt{docs/論文化ギャップ分析\_2026-08-30.md} を新規作成。欠けている実験を優先度付きで仕様化（A1: 第 1 段の変数寄り再設計＝\S6.7 の宣言の回収、A2: BM25・密ベクトルの外部ベースライン、B1: LLM 判定の人手検証、B2: K\_REF 感度）、執筆残（第 1・2・7 章、参考文献 4 件$\to$25--40 件、付録転記、圧縮設定復元、D 課程チェック）、投稿判断事項（投稿先・データ公開範囲）を整理し、着手順を提案。
   \item 2026-08-16（加藤先生の 7 コメント対応：進捗報告の分かりにくい箇所を修正）：
     加藤先生が \texttt{progress\_report\_2026-08-09\_SK.pdf} に付けた 7 件の注釈
     （PyMuPDF で抽出，著者 kato）に対応して報告書と較正実験を修正した．

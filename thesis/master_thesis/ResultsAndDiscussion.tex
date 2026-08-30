@@ -1,38 +1,63 @@
 % ============================================================
-% Chapter 6: Results and Discussion — OUTLINE (Phase 1)
-% 弧: 性能 → 機構 → 介入 → 自己停止 → 留意点
+% Chapter 6: Results and Discussion — 本文（Phase 2, 2026-08-30）
+% 骨子版（Phase 1, P1-P9）は git 履歴を参照。
+% 弧: 性能 → どこで効くか → 機構 → 介入 → 自己停止 → 負の結果 → 誤り分析 → 限界。
+% 数値の一次ソースは各段落の % source: コメントに記載（2026-08-30 に全数値を JSON と再照合）。
+% 骨子からの追加（2026-08-30）:
+%   (1) §6.3 に 3 段の分解（reranker-2 経由の ladder）を明記（experiments/xd/ で検証）。
+%   (2) §6.6 に gDom の相殺分析を新設（pfi_profile_stats.json cancellation_all_cases;
+%       ケース集約済みで疑似反復なし。1,169 + 414 + sep=0 の 9 = 1,592 ケース）。
+%   (3) §6.5 の「完全一致がオラクルと厳密同一」「サイズ誤差は過大方向のみ」は
+%       per-case 全 7,026 レコードで不一致 0・k_pred<K 0 を確認済み。
+%   (4) §6.8 に教師強制の限界を追加（§3.4 の前方参照を回収）。
 % ============================================================
 \section{Overall Comparison}
 \label{sec:overall}
-\begin{itemize}
-  \item \textbf{P1.} The proposed method improves Recall@K by +0.22 over the classical-IR baseline in both settings and clearly outperforms LLM direct generation.
-  \begin{itemize}
-    % source: experiments/strat_A.json / strat_B.json results.*.Recall@K_correct
-    \item Setting A (mixed): 0.521 → 0.743 (+0.222); Setting B (synthesized only): 0.466 → 0.689 (+0.223).
-    % source: experiments/significance_stats.json A/B Recall@K_correct p_wilcoxon
-    \item Both improvements are significant (Wilcoxon signed-rank, $p = 0.00195$, all 10 seeds improved).
-    % source: experiments/strat_A.json MAP/Recall@20
-    \item MAP rises from 0.581 to 0.863 (A) and 0.512 to 0.832 (B); Recall@20 reaches 0.909 (A) and 0.838 (B).
-    \item (wrap) The gain is stable across seeds and metrics. (Figure: fig\_method\_comparison, Table 1)
-  \end{itemize}
-  \item \textbf{P2.} LLM direct generation can produce equivalent equations but cannot rank them into the top $K$.
-  \begin{itemize}
-    % source: llm_set_A_equiv_results.json / llm_set_B_equiv_results.json / llm_set_full_equiv_results.json
-    \item Recall@K stays at 0.23--0.30 while rank-free coverage reaches 0.34--0.57; the gap means "can generate, cannot arrange."
-    \item Database answers often contain source-specific empirical equations with fitted coefficients that are hard to generate verbatim.
-    \item (wrap) Neither classical IR nor an LLM alone suffices; set-aware reranking over a database is needed.
-  \end{itemize}
-\end{itemize}
+
+Table~\ref{tab:overall} and Fig.~\ref{fig:comparison} compare the three methods of Section~5.2.
+% source: experiments/strat_A.json / strat_B.json results.*.Recall@K_correct
+The proposed method raises Recall@K from 0.521 to 0.743 in Setting~A and from 0.466 to 0.689 in
+Setting~B, a gain of $+0.222$ and $+0.223$ over the classical information-retrieval baseline. It
+wins on all 10 seeds in both settings (Wilcoxon signed-rank, $p = 0.00195$; Cohen's $d_z = 11.9$
+and 12.9), and the secondary metrics agree: MAP rises from 0.581 to 0.863 in Setting~A and from
+0.512 to 0.832 in Setting~B, and Recall@20 reaches 0.909 and 0.838.
+% source: experiments/significance_stats.json（p_wilcoxon 0.00195, cohen_dz 11.893 / 12.903）
+% source: experiments/strat_A.json / strat_B.json results.*.MAP / Recall@20
+The leftmost group of Fig.~\ref{fig:comparison} adds the full collection with the augmented cases
+for reference; Section~5.1 explains why that setting flatters the baseline and why Settings A
+and~B carry the evaluation.
+
+LLM direct generation stays far below both learned rerankers. With equivalence-based scoring it
+reaches Recall@K of 0.254 in Setting~A ($n = 48$), 0.226 in Setting~B ($n = 50$), and 0.300 on the
+full collection ($n = 49$), while its rank-free coverage --- the fraction of ground-truth
+equations for which \emph{some} generated equation is judged equivalent, ignoring rank --- reaches
+0.419, 0.343, and 0.567.
+% source: llm_set_A_equiv_results.json（0.2545/0.4188, n=48）, llm_set_B_equiv_results.json
+%         （0.2258/0.3427, n=50）, llm_set_full_equiv_results.json（0.3003/0.5667, n=49）
+The distance between the two numbers separates two abilities: the model generates a fair share of
+the required equations but does not assemble them into the right set of size $K$. Part of the
+remaining gap is structural. Many ground-truth equations are empirical correlations whose
+coefficients were fitted in one source document, and a generator that has not read that document
+cannot reproduce them verbatim; retrieval returns them with their provenance. Recall also that the
+equivalence judge is the generator itself (Section~5.2), which favors the language model. Neither
+classical retrieval nor direct generation solves the task alone --- the baseline ranks the right
+equations by query--equation relevance only, and the language model composes plausible equations
+without provenance --- and the rest of this chapter explains where and why the proposed combination
+works.
 
 \begin{table}[h]\centering
-\caption{Recall@K, MAP, and Recall@20 of the three compared methods (baseline and proposed: mean $\pm$ SD over 10 stratified splits). LLM direct generation is a single-run evaluation on a uniform sample ($n=48$ for A, $n=50$ for B) with equivalence judged by another LLM; its rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are not available for it.}
+\caption{Recall@K, MAP, and Recall@20 of the three compared methods (baseline and proposed: mean
+$\pm$ SD over 10 stratified splits). LLM direct generation is a single-run evaluation on a uniform
+sample ($n=48$ for A, $n=50$ for B) with equivalence judged by the same model that generated
+(Section~5.2); its rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are not
+available for it.}
 \label{tab:overall}
 \begin{tabular}{llccc}
 \toprule
 Setting & Method & Recall@K & MAP & Recall@20 \\
 \midrule
 % source: experiments/strat_A.json results.baseline / results.reranker-10S
-\multirow{3}{*}{A (1,823 cases)}
+\multirow{3}{*}{A (mixed, 1,823 cases)}
  & Baseline (classical IR) & $0.521 \pm 0.045$ & 0.581 & 0.836 \\
 % source: llm_set_A_equiv_results.json（Recall@K_correct 0.2545, coverage 0.41875, n=48）
  & LLM direct generation & $0.254$ & --- & --- \\
@@ -48,264 +73,391 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
 \end{tabular}
 \end{table}
 
-\section{Performance by Case Characteristics}
-\label{sec:bycharacteristics}
-\begin{itemize}
-  \item \textbf{P3.} The harder the case, the larger the advantage of the proposed method.
-  \begin{itemize}
-    % source: experiments/strat_A.json per_case（層別は fig_characteristic と同じバケット）
-    \item By number of equations: the baseline falls from 0.85 (single equation) to about 0.28 (ten equations), while the proposed method falls only to about 0.54; the gap widens from +0.03 to +0.21--0.29.
-    \item By number of input variables: the gap widens from +0.05 ($\le$5) to +0.28 ($\ge$21).
-    \item By number of sources: the effect is roughly constant (+0.22--0.26) because source count is confounded with equation count.
-    \item (wrap) The method leaves easy cases intact and helps exactly where selection is combinatorial. (Figure: fig\_characteristic)
-  \end{itemize}
-\end{itemize}
-
-\section{Mechanism Analysis: Which Features Cause the Improvement}
-\label{sec:mechanism}
-\begin{itemize}
-  \item \textbf{P4.} Feature-by-difficulty ablation shows that the structural set-aware features cause the improvement, while the domain feature contributes nothing.
-  \begin{itemize}
-    % source: experiments/feature_x_difficulty_stats.json overall_tests
-    \item Adding complementarity alone: +0.052 (Wilcoxon $p = 0.00195$); coherence alone: +0.050 (Wilcoxon $p = 0.00195$); domain alone: $-0.0001$ ($p = 0.98$).
-    \item All three together add +0.050 over the 7-feature reranker (0.693 → 0.743), so the pure set-feature contribution is about +0.05 of the total +0.22; the rest comes from the MLP learning the 7 base features.
-    % source: experiments/feature_x_difficulty_stats.json lift_by_n_correct / lift_by_n_input
-    \item The lift has a threshold-and-hump shape: none for single-equation cases ($-0.01$ at $X=1$), peak at $X=3$ (+0.12), and saturation at the hardest end (input variables $\ge 16$).
-    \item (wrap) The saturation at the hardest end predicts that a sequential method should help there — tested next. (Figure: fig\_mechanism)
-  \end{itemize}
-  \item \textbf{P4$'$.} Permutation importance on the single best model
-        (reranker-10S), computed without retraining, confirms the same
-        mechanism from an independent angle.
-  \begin{itemize}
-    % source: experiments/pfi_results.json results.case GROUP_var / GROUP_topic（10 seeds, 20 permutations, within-case, one-sample t-test）
-    \item Permuting the six variable-overlap features jointly collapses
-          Recall@K from 0.743 to 0.065 (importance $+0.678$, $p < 10^{-4}$),
-          whereas permuting the four topic features (text, SVD, and the base
-          and set-level domain) changes it by only $+0.006$ ($p = 0.10$, n.s.).
-    % source: experiments/pfi_results.json results.case per-feature（specificity +0.617; global scope +0.581/group +0.675）
-    \item The fixed model relies overwhelmingly on the specificity feature
-          ($+0.617$); every topic feature is individually non-significant or
-          slightly negative, and the group result is unchanged under global
-          rather than within-case permutation ($+0.675$ vs.\ $+0.678$).
-    \item Ablation and permutation answer different questions and agree where
-          it matters: ablation (retrained) measures necessity, permutation
-          (fixed weights) measures reliance. Specificity's large reliance
-          ($+0.617$) but small ablation contribution ($+0.090$, P4) shows that
-          the variable-overlap \emph{signal} is necessary while the particular
-          feature carrying it is substitutable across the variable-overlap group.
-    \item (wrap) Two methods with different assumptions converge: variable
-          overlap carries the signal, topic carries none. (Figure: fig\_pfi)
-  \end{itemize}
-\end{itemize}
-
-\section{Intervention: Learned Greedy Selection}
-\label{sec:greedyresults}
-\begin{itemize}
-  \item \textbf{P5.} Making both inference and training sequential recovers the saturation, confirming the mechanism causally.
-  \begin{itemize}
-    % top-k: run_greedy_3way.sh TOPK=200 / strat_B.json config top_k=50
-    % source: experiments/greedy_3way_stats.json overall
-    \item Setting B (synthesized only): static 0.724 $<$ greedy at inference 0.756 $<$ learned greedy 0.765 (10 seeds) (the greedy experiments use a Stage-1 window of top-$k = 200$, so the static value is not directly comparable to the top-$k = 50$ result 0.689 in Table~\ref{tab:overall}).
-    % source: experiments/greedy_3way_stats.json tests.train_vs_infer
-    \item Learned greedy beats inference-only greedy by +0.009 (Wilcoxon $p = 0.037$) — training must match inference.
-    % source: experiments/greedy_3way_stats.json tests_hard_X8plus.train_vs_static
-    \item The gain concentrates at the predicted saturation: at $X \ge 8$, learned greedy beats static by +0.056 (Wilcoxon $p = 0.00195$).
-    % source: experiments/greedy_3way_A_stats.json overall / tests
-    \item Setting A: static 0.757 $<$ inference greedy 0.787 $<$ learned greedy 0.797; both greedy variants beat static significantly (Wilcoxon $p = 0.00195$), while the learned-vs-inference increment (+0.010) is directionally consistent but not significant in this setting ($p = 0.13$).
-    \item (wrap) Predict saturation → intervene → recover: the arc establishes causality, not mere correlation. (Figure: fig\_greedy\_3way)
-  \end{itemize}
-\end{itemize}
-
-\section{Self-terminating Retrieval}
-\label{sec:dofstopresults}
-\begin{itemize}
-  \item \textbf{P6.} DoF-stop returns closed, solvable equation sets without knowing the answer size, at almost no cost in accuracy.
-  \begin{itemize}
-    % source: experiments/dof_stop_stats.json set_exact_*
-    \item Exact-match rate is identical to the oracle that knows $K$: 0.368 (Setting B) and 0.526 (Setting A).
-    % source: experiments/dof_stop_stats.json closed_*
-    \item Closure rate exceeds the oracle: 0.883 vs.\ 0.781 (Setting B) and 0.936 vs.\ 0.865 (Setting A) — DoF-stop returns solvable systems by design.
-    % source: experiments/dof_stop_stats.json dof_vs_oracle_f1
-    \item The set-F1 cost is small: $-0.008$ (Setting A, $p = 0.006$) and $-0.023$ (Setting B).
-    \item Caveat, stated honestly: in this dataset $K$ nearly equals the number of output variables, so predicting $K$ itself is easy; the claim is self-termination with a closure guarantee, not $K$ prediction.
-    \item (wrap) The ranker becomes a self-contained builder: retrieve, close the system, stop. (Figure: fig\_dof\_stop)
-  \end{itemize}
-\end{itemize}
-
-\section{The Null Result for Topic Similarity}
-\label{sec:nullresult}
-\begin{itemize}
-  \item \textbf{P7.} No topic feature improves reranking --- neither the domain
-        labels nor the latent text similarity --- and the cause is not a weak
-        text representation but redundancy after candidate retrieval.
-  \begin{itemize}
-    % source: experiments/xd/reranker-2{,_Dom}__*.json（10 seeds, paired）: base 0.6010→0.6034, +0.0024, t p=0.063, wilcoxon p=0.123
-    % source: experiments/feature_x_difficulty_stats.json overall_tests.reranker-7+Dom: -0.0001, p_ttest 0.982
-    \item Adding the base domain feature to the two-feature base moves
-          Recall@K by only $+0.002$ ($p = 0.06$), and adding its set-level form
-          to the seven-feature reranker moves it by $-0.0001$ ($p = 0.98$, the
-          mechanism ablation P4).
-    % source: unified_equations.json domain field: 11,146 eqs, 1,998 distinct labels, 27.9% singletons, 6.36 labels/source paper
-    \item The matched label is not the 32-domain collection scheme
-          (Section~4.1) but a free-text label the extraction LLM
-          (Gemini 2.5 Pro) emits for each equation, so the 11,146 equations
-          carry 1,998 distinct labels, 27.9\% of them occurring once and a
-          single source paper averaging 6.36.
-    \item Near-duplicates such as ``Transport Phenomena'' and ``Transport
-          phenomena'' count as distinct, so both the substring test (base
-          feature) and the exact-match test (set feature) fire sparsely and
-          unreliably.
-    % source: experiments/domain_merge_stats.json（reranker-2+Dom, 10 seeds, base reranker-2=0.6010）; run_domain_merge_ablation.py
-    \item Merging the labels does not rescue the feature: grouped into 100 or
-          40 topical clusters (the scale of the collection taxonomy), the base
-          feature adds at most $+0.0006$ (paired $t$-test, all $p > 0.6$), and
-          even the $+0.002$ of the original labels then vanishes.
-    \item A finer taxonomy would only deepen the sparsity, and a coarser one
-          does not help either. The obstacle is redundancy, not sparsity: the
-          task rewards equations that share variables, not equations that
-          share a topic.
-    % source: experiments/pfi_results.json results.case GROUP_topic (+0.006, p=0.10)
-    \item Permutation importance corroborates this from the model side: in the
-          trained reranker, permuting all four topic features leaves Recall@K
-          essentially unchanged ($+0.006$, n.s.), whereas permuting the
-          variable-overlap features collapses it (Section~\ref{sec:mechanism}, P4$'$).
-  \end{itemize}
-  \item \textbf{P7$'$.} The latent text similarity fails for the same reason,
-        and a diagnosis that needs no trained model locates where its signal is
-        spent.
-  \begin{itemize}
-    % source: experiments/topic_feature_diagnosis.json A_case_vector_similarity（SVD 空間: mean
-    %         0.247 / median 0.218 / >0.5 は 5.4%、生 TF-IDF: mean 0.088 / median 0.070）
-    \item The queries are not crowded into one direction, as one might suspect
-          of a 256-dimensional projection: the cosine similarity between two
-          case vectors has median 0.218 in the SVD space and 0.070 in the raw
-          TF-IDF space, and it exceeds 0.5 for 5.4\% of the pairs.
-    % source: experiments/topic_feature_diagnosis.json D_full_db_auc（svd_sim 0.950±0.003,
-    %         text_sim 0.913±0.003, io_jaccard 0.999）; C_within_candidate_auc（svd_sim 0.594±0.006,
-    %         text_sim 0.437±0.007, specificity 0.965±0.001）
-    \item The latent similarity is in fact a strong retriever on its own: it
-          separates the ground-truth equations from the other 11,146 with an
-          area under the receiver-operating-characteristic curve (AUC) of
-          0.950. Inside the top-50 candidates, however, its AUC falls to 0.594,
-          while the specificity feature holds 0.965. The topic signal is spent
-          on the coarse screening that Stage~1 already performs.
-    % source: experiments/case_outcomes_seed42.json selection_effect_corr（corr(text_sim,io_jaccard)
-    %         = -0.404, corr(text_sim,specificity) = -0.392, seed=42 の 423 ケース平均）
-    \item Candidate selection also reverses the surface text similarity: because
-          Stage~1 admits an equation for a weighted sum of text similarity and
-          variable overlap, the two correlate at $-0.404$ within the candidate
-          set, and the text feature therefore points slightly away from the
-          answer (candidate-internal AUC 0.437).
-    \item (wrap) Topic similarity screens the database well and discriminates
-          within a screened set poorly, so a two-stage design spends it once and
-          gains nothing by spending it twice. (Figure: fig\_topic\_diagnosis)
-  \end{itemize}
-\end{itemize}
-
-\section{Error Analysis: Where the Remaining Errors Come From}
-\label{sec:erroranalysis}
-\begin{itemize}
-  \item \textbf{P8.} Most of the residual error arises before reranking, in the
-        candidate window, and the errors that survive reranking are of two
-        identifiable kinds that no present feature can fix.
-  \begin{itemize}
-    % source: 実測（scratch coverage_by_k.py, 設定A 1,823件）: k=50 被覆 0.9203・全被覆 0.772,
-    %         k=100 0.9569/0.856, k=200 0.9775/0.903, k=400 0.9895/0.947
-    \item The candidate window bounds what the reranker can reach: the top
-          $k = 50$ candidates contain 92.0\% of the ground-truth equations and
-          all of them for only 77.2\% of the cases; at $k = 200$ the bound rises
-          to 97.8\% and 90.3\%.
-    % source: experiments/case_outcomes_seed42.json failure_decomposition（seed=42, 423 test cases,
-    %         missed 435 = stage1 269 (61.8%) + reranker 166）
-    \item Decomposing the 435 missed equations of one split accordingly,
-          61.8\% never entered the candidate set and 38.2\% entered it but
-          ranked below the cutoff, so the first stage causes the larger share.
-    % source: experiments/topic_feature_diagnosis.json E_stage1_coverage（blend 0.9203 vs
-    %         io_jaccard_only 0.9614）
-    \item The Stage-1 blend of Eq.~\eqref{eq:stage1} is itself the constraint:
-          ranking candidates by variable overlap alone covers 96.1\% of the
-          ground-truth equations against 92.0\% for the blend, which predicts
-          that a variable-weighted first stage would raise the ceiling.
-    % source: experiments/case_outcomes_seed42.json solved_vs_unsolved_attrs（Mann-Whitney）
-    \item Cases that fail differ from cases that succeed in size, not in kind:
-          5.34 versus 2.13 ground-truth equations and 17.8 versus 10.8 input
-          variables (both $p < 10^{-14}$), and their candidate coverage is 0.83
-          against 1.00.
-    % source: experiments/case_outcomes_seed42.json topic_rescue_fraction（svd_sim 0.516±0.040,
-    %         domain 0.494, text_sim 0.368, io_jaccard 0.375; n=131 cases）
-    \item Strengthening a topic feature would not recover the reranking
-          failures: among the pairs of a missed equation and the wrong equation
-          above it, the missed one has the higher latent similarity in only
-          0.516 of the pairs --- indistinguishable from chance --- and the
-          higher variable overlap in 0.375, meaning the wrong equation often
-          looks better on every present feature.
-    \item Two error types explain that residue. First, standard equations recur
-          across documents, so the model selects a mathematically identical
-          equation from the wrong document; topic similarity then favors the
-          wrong choice. Second, the features read only variable sets, so a pair
-          of equations that determine different variables from the same
-          variables --- $\mathrm{d}C_A/\mathrm{d}t$ and $\mathrm{d}T/\mathrm{d}t$
-          of one linearized reactor --- are indistinguishable.
-    \item (wrap) The next gain lies in the first stage and in a feature that
-          encodes which variable an equation determines.
-  \end{itemize}
-\end{itemize}
-
-\section{Limitations}
-\label{sec:limitations}
-\begin{itemize}
-  \item \textbf{P9.} Five limitations qualify the results.
-  \begin{itemize}
-    \item The descriptions of the synthesized cases are LLM-generated and contain stylistic variation.
-    \item Source count is confounded with equation count, so its effect is not causal.
-    \item The stratified split is one scheme chosen from 400 candidates; 10 seeds mitigate but do not remove this choice.
-    \item Evaluation is database-internal: retrieval cannot find equations absent from the database, and the LLM comparison covers about 50 cases per setting.
-    % source: experiments/pfi_results.json results.case GROUP_var (+0.678)
-    \item Variable containment alone is highly predictive: permuting it drops Recall@K by about 0.68, so part of the advantage reflects the benchmark's variable-sharing structure rather than subtle learned distinctions.
-  \end{itemize}
-\end{itemize}
-
 \begin{figure}[h]\centering
-\includegraphics[width=0.6\linewidth]{figures/fig_method_comparison.pdf}
-\caption{Recall@K of the three methods in the three settings. Boxes show 10 seeds (baseline and proposed); diamonds show the single-run LLM direct generation (n$\approx$50, equivalence-judged), with dashed lines for its rank-free coverage.}
+\includegraphics[width=0.75\linewidth]{figures/fig_method_comparison.pdf}
+\caption{Recall@K of the three methods on the full collection (with augmented cases), Setting A,
+and Setting B. Boxes show the 10 stratified splits (baseline and proposed); diamonds show the
+single-run LLM direct generation ($n \approx 50$ per setting, equivalence-judged), with dashed
+lines for its rank-free coverage.}
 \label{fig:comparison}
 \end{figure}
 
-% 骨子段階は非表示（本文化時に comment 環境を外す）
-\begin{comment}
+\section{Performance by Case Characteristics}
+\label{sec:bycharacteristics}
+
+Fig.~\ref{fig:characteristic} stratifies the Setting-A results by three case characteristics, and
+the first two panels show the same pattern: the harder the case, the larger the advantage.
+% source: experiments/strat_A.json per_case（バケットは fig_characteristic と同一。
+%         式数: base 0.849→0.281 / 10S 0.878→0.543, 差 +0.029 → +0.21〜+0.29;
+%         入力変数: 差 +0.048(≤5) → +0.283(≥21); 出典数: +0.219/+0.225/+0.259）
+By the number of ground-truth equations, the baseline falls from 0.849 on single-equation cases to
+0.281 on ten-equation cases, while the proposed method falls only from 0.878 to 0.543; the gap
+grows from $+0.03$ at one equation to between $+0.21$ and $+0.29$ at two equations and beyond. By
+the number of input variables, the gap widens from $+0.05$ (five or fewer) to $+0.28$ (21 or
+more). Both slices say the same thing: retrieving a single equation was nearly solved already, and
+the advantage concentrates where the answer is a set and selection is combinatorial.
+
+The number of source documents shows no such trend: the gap stays between $+0.22$ and $+0.26$
+whether the ground truth spans one, two, or three or more documents. In our data the source count
+is confounded with the equation count --- the synthesized cases have the largest answers but stay
+within one document in 95.9\% of cases, while the cross-document cases span two documents but need
+only about two equations (Table~\ref{tab:families}) --- so this slice mixes the case families
+rather than isolating a third difficulty axis, and we do not interpret it causally.
+
 \begin{figure}[h]\centering
-\includegraphics[width=0.6\linewidth]{figures/fig_characteristic.pdf}
-\caption{Recall@K stratified by case characteristics (Setting A): (a) number of equations, (b) number of sources, (c) number of input variables.}
+\includegraphics[width=0.95\linewidth]{figures/fig_characteristic.pdf}
+\caption{Recall@K in Setting A stratified by case characteristics: (a) number of ground-truth
+equations, (b) number of source documents, (c) number of input variables. Each point pools the
+per-case values of all 10 splits and carries no error bar; the seed-to-seed spread of the overall
+scores appears in Fig.~\ref{fig:comparison}.}
 \label{fig:characteristic}
 \end{figure}
-\end{comment}
 
-% 骨子段階は非表示（本文化時に comment 環境を外す）
-\begin{comment}
+\section{Mechanism: Which Features Cause the Improvement}
+\label{sec:mechanism}
+
+The gain of $+0.222$ in Setting~A decomposes into three steps, which we measure by growing the
+feature set of the reranker and retraining at each step.
+% source: experiments/xd/（10 seeds; reranker-2 0.6010, reranker-2+Spec 0.6908（+0.0898,
+%         p_wilcoxon=0.00195）, reranker-2+InCov 0.6203, reranker-2+OutCov 0.6071,
+%         reranker-2+Dom 0.6034, reranker-2+Svd 0.5989, reranker-7 0.6934, reranker-10S 0.7429）
+First, learning alone: a reranker that sees only the two Stage-1 features but learns their
+weighting (reranker-2) moves Recall@K from 0.521 to 0.601 ($+0.080$). Second, per-equation
+features: growing the input to the seven features of Table~\ref{tab:features} adds another
+$+0.092$ (0.601 to 0.693), and one feature carries almost all of it --- adding specificity alone
+reaches 0.691 ($+0.090$, Wilcoxon $p = 0.00195$), while adding the domain match or the latent
+similarity alone changes the score by $+0.002$ and $-0.002$ (Section~\ref{sec:nullresult}).
+Third, the set-aware features: the step from reranker-7 to reranker-10S adds the remaining
+$+0.050$ (Wilcoxon $p = 0.00195$, $d_z = 4.7$).
+% source: experiments/feature_x_difficulty_stats.json overall_tests.reranker-10S
+The set-aware contribution is therefore real but modest, and most of the improvement comes from
+the reranker learning one lesson: an equation whose variables are specific to the requested
+model probably belongs to it.
+
+Which of the three set-aware features carries the $+0.050$? Adding each alone to reranker-7
+answers directly: complementarity adds $+0.052$ and coherence $+0.050$ (each Wilcoxon
+$p = 0.00195$), while domain agreement adds $-0.0001$ ($p = 0.98$).
+% source: experiments/feature_x_difficulty_stats.json overall_tests（+Comp 0.0518 / +Coh 0.0497 /
+%         +Dom -0.0001）
+The two structural features are individually sufficient and largely redundant with each other ---
+all three together add no more than one of them alone --- and the topical one contributes nothing,
+a null result that Section~\ref{sec:nullresult} traces to its cause.
+
+Fig.~\ref{fig:mechanism} shows where the set-aware lift lives. Across the number of ground-truth
+equations it has a threshold-and-hump shape: nothing on single-equation cases ($+0.002$, where no
+reference set can add information), a peak at three equations ($+0.102$), and a settled $+0.02$
+beyond. Across the number of input variables the lift climbs to $+0.078$ at 11--15 variables and
+then drops to $+0.035$ at 16 or more.
+% source: experiments/feature_x_difficulty_stats.json lift_by_n_correct / lift_by_n_input
+%         （reranker-10S; X=1 +0.0022, X=3 +0.1018; 11-15 +0.0782, 16+ +0.0348）
+The very hardest cases thus profit only half as much as the moderately hard ones. We attribute
+this saturation to the static reference set: during static scoring the set-aware features are
+computed once against the Stage-1 top five (Section~\ref{sec:stage2}), and in a long answer that fixed
+reference resembles the true partial answer less and less as selection proceeds. The attribution
+is testable --- a method that rebuilds the reference set during selection should recover the loss
+at the hard end --- and Section~\ref{sec:greedyresults} runs exactly that intervention.
+
+Ablation retrains the model for every feature set, so it measures \emph{necessity}: whether the
+performance is recoverable without a feature. Permutation feature importance (PFI) asks the
+complementary question --- how much the single trained model \emph{relies} on each feature --- by
+permuting one feature's values across the candidates of each case and measuring the drop in
+Recall@K, with no retraining.
+% source: experiments/pfi_results.json results.case（10 seeds × 20 permutations; one-sample
+%         t-test over seeds; GROUP_var +0.678 p<1e-4, GROUP_topic +0.0064 p=0.10,
+%         specificity +0.617; global 置換 GROUP_var +0.675）
+Fig.~\ref{fig:pfi} shows the result for the best model, reranker-10S. Permuting the six
+variable-overlap features together collapses Recall@K from 0.743 to 0.065 (importance $+0.678$,
+$p < 10^{-4}$); permuting the four topic features together changes it by $+0.006$ ($p = 0.10$).
+The trained model relies most heavily on specificity ($+0.617$), every topic feature is
+individually indistinguishable from zero, and permuting across the whole test set instead of
+within each case gives the same group importance ($+0.675$ against $+0.678$), so the finding does
+not depend on the permutation scope.
+
+The two analyses disagree in one instructive place, and the disagreement is informative rather
+than troubling. Specificity's reliance under PFI ($+0.617$) far exceeds its ablation gain over
+reranker-2 ($+0.090$), because the two numbers answer different questions: ablation retrains, and
+a retrained model recovers the variable-overlap signal from the remaining features of the group;
+PFI freezes the weights, and the frozen model cannot re-route around a corrupted input. Read
+together, they say that the variable-overlap \emph{signal} is necessary while the particular
+feature carrying it is substitutable within the group. Where it matters, the two methods agree:
+variable overlap carries the improvement, and topic carries none.
+
 \begin{figure}[h]\centering
-\includegraphics[width=0.6\linewidth]{figures/fig_mechanism.pdf}
-\caption{Recall@K lift of each set-aware feature over the 7-feature reranker, stratified by difficulty (mean $\pm$ SEM over 10 seeds). Structural features (complementarity, coherence) carry the lift; the domain feature stays at zero.}
+\includegraphics[width=0.85\linewidth]{figures/fig_mechanism.pdf}
+\caption{Recall@K lift of each set-aware feature over reranker-7, stratified by difficulty
+(mean $\pm$ SEM over 10 seeds): (a) by number of ground-truth equations, (b) by number of input
+variables. The structural features (complementarity, coherence) carry the lift; the domain
+agreement stays at zero everywhere.}
 \label{fig:mechanism}
-\end{figure}
-\end{comment}
-
-% 骨子段階は非表示（本文化時に comment 環境を外す）
-\begin{comment}
-\begin{figure}[h]\centering
-\includegraphics[width=0.6\linewidth]{figures/fig_greedy_3way.pdf}
-\caption{Three selection strategies (static, greedy at inference, learned greedy): (a) Setting B (synthesized only) and (b) Setting A (mixed) over 10 seeds; (c) by number of equations in Setting B.}
-\label{fig:greedy}
-\end{figure}
-\end{comment}
-
-\begin{figure}[h]\centering
-\includegraphics[width=0.6\linewidth]{figures/fig_dof_stop.pdf}
-\caption{Self-terminating retrieval: (a) set F1 of oracle-K vs.\ DoF-stop (10 seeds); (b) set quality by number of equations in Setting B (synthesized only).}
-\label{fig:dof}
 \end{figure}
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.9\linewidth]{figures/fig_pfi.pdf}
-\caption{Permutation feature importance of the best model (reranker-10S; mean $\pm$ SD over 10 seeds, 20 permutations each; importance is the drop in Recall@K when a feature's values are permuted within each case). (a) Individual features, coloured by group; (b) permuting the whole variable-overlap group vs.\ the whole topic group against the baseline Recall@K $=0.743$. The model relies on variable overlap and essentially ignores topic, corroborating the ablation of Section~6.3 by an independent, retraining-free method.}
+\caption{Permutation feature importance of the best model (reranker-10S; mean $\pm$ SD over 10
+seeds, 20 permutations each; importance is the drop in Recall@K when the feature's values are
+permuted within each case). (a) Individual features, colored by group; (b) permuting the whole
+variable-overlap group and the whole topic group against the baseline Recall@K $= 0.743$. The
+model relies on variable overlap and ignores topic, corroborating the ablation of
+Section~\ref{sec:mechanism} with an independent, retraining-free method.}
 \label{fig:pfi}
 \end{figure}
+
+\section{Intervention: Learned Greedy Selection}
+\label{sec:greedyresults}
+
+Section~\ref{sec:mechanism} predicted that rebuilding the reference set during selection should
+recover the saturation on the hardest cases. We test the prediction with the three selection
+strategies of Section~\ref{sec:seq}, in Setting~B because its answers are the largest. These experiments
+widen the Stage-1 window to $k = 200$, which lifts the candidate-coverage bound from 92.0\% to
+97.8\% (Section~\ref{sec:stage1}); their static values therefore exceed the $k = 50$ values of
+Table~\ref{tab:overall} and are comparable only within this section.
+% top-k: run_greedy_3way.sh / run_greedy_3way_A.sh / run_dof_stop.sh いずれも TOPK=200
+% source: experiments/greedy_3way_stats.json overall / tests（static 0.7237 < infer 0.7556 <
+%         train 0.7649; infer_vs_static +0.0319 p_w=0.00195 dz=3.28;
+%         train_vs_infer +0.0093 p_w=0.0371 dz=0.78）
+The ordering comes out as predicted (Fig.~\ref{fig:greedy}): static 0.724 $<$ greedy at inference
+0.756 $<$ learned greedy 0.765 over the same 10 seeds. Greedy selection at inference alone
+recovers $+0.032$ (Wilcoxon $p = 0.00195$, $d_z = 3.3$), and training on the sequential contexts
+adds a further $+0.009$ ($p = 0.037$, $d_z = 0.78$): a small increment with a clear reading ---
+training must ask the same question as inference, namely which equation closes the system next,
+given the ones already chosen.
+
+The gain concentrates exactly where Section~\ref{sec:mechanism} located the saturation. On cases
+with eight or more ground-truth equations, learned greedy beats static selection by $+0.056$
+($p = 0.00195$, $d_z = 3.7$) and beats inference-only greedy by $+0.013$ ($p = 0.020$), its
+largest margins of any stratum.
+% source: greedy_3way_stats.json tests_hard_X8plus（train_vs_static +0.056; train_vs_infer
+%         +0.0132 p_w=0.0195）
+Setting~A repeats the pattern at smaller scale: static 0.757 $<$ inference greedy 0.787 $<$
+learned greedy 0.797, with both greedy variants winning on all 10 seeds ($p = 0.00195$), while
+the learned-versus-inference increment ($+0.010$) points the same way without reaching
+significance ($p = 0.13$).
+% source: experiments/greedy_3way_A_stats.json（0.7568/0.7865/0.7968; train_vs_infer p_w=0.131）
+Setting~A dilutes the effect with the many small cases that sequential selection cannot help,
+which is what the lift shape of Fig.~\ref{fig:mechanism} predicts.
+
+The sequence matters more than the sizes. The mechanism analysis predicted a specific failure ---
+the static reference set misrepresents long answers --- the intervention changed only that part of
+the method, and the recovery appeared in the predicted stratum. This predict--intervene--recover
+arc is what separates ``the set-aware features correlate with the improvement'' from ``the
+set-aware features cause it.''
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_greedy_3way.pdf}
+\caption{The three selection strategies (static, greedy at inference, learned greedy), all with
+$k = 200$: (a) Setting B and (b) Setting A over 10 seeds (boxes); (c) by number of ground-truth
+equations in Setting B (mean $\pm$ SEM over seeds).}
+\label{fig:greedy}
+\end{figure}
+
+\section{Self-terminating Retrieval}
+\label{sec:dofstopresults}
+
+Every experiment so far told the method how many equations to return. DoF-stop removes that help:
+it runs the same learned greedy selector and stops at the first prefix that covers every output
+variable with no remaining degree of freedom (Section~\ref{sec:dofstop}). We compare it against
+the oracle that cuts the same ranking at the true answer size.
+% source: experiments/dof_stop_stats.json（learned greedy + stop-dof, top_k=200, 10 seeds）
+Withholding the answer size costs almost nothing (Fig.~\ref{fig:dof}). The exact-match rate of
+DoF-stop equals the oracle's not only on average but case by case --- 0.526 in Setting~A and
+0.368 in Setting~B, with zero disagreements among the 7,026 per-case records --- because a
+completely correct selection is itself a closed system, so the closure test fires at exactly the
+point where the oracle would have cut.
+% source: experiments/xd_dof/ per_case 全レコードで set_exact_dof == set_exact_oracleK（不一致 0）
+The set-$F_1$ cost is $-0.008$ in Setting~A and $-0.023$ in Setting~B (paired $t$-test,
+$p = 0.006$ and $p = 0.0001$): measurable and small.
+% source: dof_stop_stats.json dof_vs_oracle_f1
+
+On the property a model builder actually needs, DoF-stop beats the oracle instead of
+approximating it: 93.6\% of its returned sets are closed in Setting~A against the oracle's
+86.5\%, and 88.3\% against 78.1\% in Setting~B.
+% source: dof_stop_stats.json closed_dof / closed_oracleK
+The oracle returns exactly $K$ equations whether or not they form a solvable system; DoF-stop
+keeps selecting until the system closes, so every set it terminates on is solvable by
+construction, and the unclosed remainder (11.7\% in Setting~B) consists of the cases where no
+prefix closed within the selection cap. Its size errors are one-sided in practice: the median
+size error is zero, every erring record in Setting~B overshoots (545 of 2,432), and all but one
+of the 4,594 records in Setting~A do. When DoF-stop misses the size, it has kept selecting past
+the answer rather than stopped short of it (mean size error $+1.7$ equations in Setting~B).
+% source: dof_stop_stats.json（K_median_abs_err 0.0; K_bias 1.7212 = K_MAE（B）, 0.9293 vs
+%         0.9297（A）; per_case 実測: B は k_pred_dof < n_correct が 0/2,432、A は 1/4,594）
+
+One property of the dataset keeps this claim honest. In our cases the answer size nearly equals
+the number of output variables (Section~4.2), so predicting the size itself would be easy, and we
+claim no difficulty there. What DoF-stop demonstrates is self-termination with a closure
+guarantee: the retriever decides by itself when the model is complete, and what it returns can be
+handed to a solver.
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.85\linewidth]{figures/fig_dof_stop.pdf}
+\caption{Self-terminating retrieval, both selectors running the same learned greedy model with
+$k = 200$: (a) set $F_1$ of the oracle that knows the answer size and of DoF-stop (boxes over 10
+seeds; the annotated closure rates show the fraction of returned sets that are closed);
+(b) set quality by number of ground-truth equations in Setting B (mean $\pm$ SEM over seeds).}
+\label{fig:dof}
+\end{figure}
+
+\section{The Null Result for Topic Similarity}
+\label{sec:nullresult}
+
+Four of the ten features read topical closeness: the text similarity $f_1$, the latent similarity
+$f_3$, the domain match $f_7$, and the set-level domain agreement $g_{\mathrm{Dom}}$
+(Table~\ref{tab:features}). None of them improves reranking in any form we tried. The result
+deserves this section because the features rest on a reasonable expectation --- the equations of
+one model should share a topic --- and because finding where the expectation breaks tells us what
+signal the task actually rewards.
+
+The failure spans every encoding of topic. Adding the domain match to reranker-2 moves Recall@K
+by $+0.002$ (paired $t$-test $p = 0.063$, Wilcoxon $p = 0.123$); adding the latent similarity
+instead moves it by $-0.002$ ($p = 0.48$); adding the set-level domain agreement to reranker-7
+moves it by $-0.0001$ ($p = 0.98$; Section~\ref{sec:mechanism}); and in the trained ten-feature
+model, permuting all four topic features together leaves Recall@K essentially unchanged
+($+0.006$, $p = 0.10$), whereas permuting the variable-overlap group collapses it.
+% source: experiments/xd/（reranker-2 0.6010 → +Dom 0.6034 p_t=0.063 / +Svd 0.5989 p_t=0.48）,
+%         feature_x_difficulty_stats.json overall_tests.reranker-7+Dom,
+%         pfi_results.json results.case GROUP_topic
+
+An obvious suspect is the label vocabulary. The domain labels are free text written by the
+extraction model, and Section~4.1 measured the consequence: 1,998 distinct labels over the 11,146
+equations, 27.9\% occurring exactly once, 6.36 labels within an average source document, and
+near-duplicates such as ``Transport Phenomena'' and ``Transport phenomena'' counted as distinct.
+Both domain features therefore fire sparsely. Merging the labels tests this suspicion directly:
+normalized to 1,958 groups, or clustered into 100 or 40 topical groups --- the scale of the
+collection taxonomy --- the domain match adds at most $+0.0006$ (paired $t$-test, all $p > 0.6$),
+and even the $+0.002$ of the raw labels disappears.
+% source: experiments/domain_merge_stats.json（L1 +0.0006 p_t=0.68; K100 -0.0001 p_t=0.84;
+%         K40 +0.0004 p_t=0.63; run_domain_merge_ablation.py）
+A finer taxonomy would deepen the sparsity, and a coarser one does not help either, so sparsity is
+not the obstacle.
+
+The aggregate zero of the domain agreement is, moreover, a balance rather than an absence. We
+split the evaluation cases by whether the feature happens to separate toward the answer within
+that case's candidates, counting each case once (its permutation drop averaged over the seeds in
+which it appears, which avoids treating the same case as ten observations). Where the feature
+separates toward the answer (1,169 cases), permuting it costs 0.012 of Recall@K; where it
+separates away (414 cases), permuting it \emph{gains} 0.034; the two groups differ (Mann--Whitney
+$p = 1.3 \times 10^{-8}$), and their weighted sum reproduces the observed zero ($-0.0002$).
+% source: experiments/pfi_profile_stats.json features.gDom.cancellation_all_cases
+%         （+0.0119 (n=1,169) / -0.0342 (n=414); 加重和 (1169*0.0119-414*0.0342)/1583 = -0.0002;
+%         残る 9 ケースは sep=0。analyze_pfi_profile.py collapse_to_cases でケース集約済み）
+The trained model does listen to the label case by case; the label misleads it often enough to
+cancel the cases where it helps. Any future use of this feature must first make the label point
+the right way more often --- and the merging experiment shows that vocabulary cleanup alone does
+not.
+
+The latent similarity fails for a different and more instructive reason, which a diagnosis
+requiring no trained model locates (Fig.~\ref{fig:topicdiag}). A natural hypothesis says the
+TF-IDF--SVD projection crowds the query vectors together until cases become indistinguishable.
+Panel~(a) rejects it: the cosine similarity between the query vectors of two cases has median
+0.218 in the SVD space and 0.070 in the raw TF-IDF space, and it exceeds 0.5 for only 5.4\% of
+pairs.
+% source: experiments/topic_feature_diagnosis.json A_case_vector_similarity（SVD median 0.2178,
+%         raw 0.0702, share>0.5 5.4%; 200,000 sampled pairs）
+Decisively, the latent similarity alone separates the ground-truth equations from the rest of the
+11,146-equation database with an area under the receiver-operating-characteristic curve (AUC) of
+0.950 (case mean; standard error 0.003) --- impossible if the vectors had collapsed. The signal
+exists; it is spent in the wrong place. Panel~(b) compares each feature's AUC against the whole
+database with its AUC inside the top-50 candidates: the latent similarity falls from 0.950 to
+0.594 and the text similarity from 0.913 to 0.437, while specificity holds 0.965 and the I/O
+Jaccard 0.947.
+% source: topic_feature_diagnosis.json D_full_db_auc（svd 0.950±0.003, text 0.913±0.003,
+%         io_jaccard 0.999）/ C_within_candidate_auc（svd 0.594±0.006, text 0.437±0.007,
+%         specificity 0.965±0.001, io_jaccard 0.947±0.002）
+Stage~1 has already done the coarse screening that topical similarity is good at, so the
+surviving candidates agree on topic and differ on variables; what remains to be discriminated,
+topic does not discriminate.
+
+Candidate selection even reverses the surface text similarity. Stage~1 admits an equation for a
+weighted sum of text similarity and variable overlap (Eq.~\eqref{eq:stage1}), so inside the
+admitted set the two ingredients correlate at $-0.404$: an admitted equation with high text
+similarity tends to be one that needed the text term to get in, that is, one whose variables
+match poorly.
+% source: experiments/case_outcomes_seed42.json selection_effect_corr（corr(text_sim,io_jaccard)
+%         = -0.404, corr(text_sim,specificity) = -0.392; seed 42, 423 cases）
+Because the answers are decided on the variable side, the text similarity points slightly away
+from them within the candidates (AUC 0.437). A two-stage design therefore spends topical
+similarity exactly once, in Stage~1, and gains nothing by spending it twice.
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_topic_diagnosis.pdf}
+\caption{Why topical features stop working after candidate retrieval (Setting A, no trained model
+involved). (a) Distribution of the cosine similarity between the query vectors of two cases
+(200,000 sampled pairs; dashed lines mark medians): the vectors are far apart, so vector collapse
+does not explain the null result. (b) AUC of each feature within the top-50 candidate set (case
+mean $\pm$ SEM, $n = 1{,}823$ cases; blue: variable-overlap features, red: topic features);
+diamonds mark the AUC of the same feature against the whole database. The topic features are
+strong against the whole database and weak inside the candidate set, while the variable features
+keep their discrimination.}
+\label{fig:topicdiag}
+\end{figure}
+
+\section{Error Analysis: Where the Remaining Errors Come From}
+\label{sec:erroranalysis}
+
+The proposed method still misses about a quarter of the ground-truth equations in Setting~A, and
+this section locates the misses. The candidate window bounds the reranker from above: the top
+$k = 50$ candidates contain 92.0\% of the ground-truth equations, and all of them for only 77.2\%
+of the cases; at $k = 200$ the two numbers rise to 97.8\% and 90.3\% (Section~\ref{sec:stage1}).
+Decomposing the misses of one split accordingly (seed 42; 435 missed equations across 211
+partially or fully failed cases), 61.8\% never entered the candidate set, and 38.2\% entered it
+and ranked below the cutoff. At $k = 50$, the first stage, not the reranker, causes the larger
+share of the residual error.
+% source: experiments/case_outcomes_seed42.json failure_decomposition（435 = 269 + 166）
+Widening the window moves this balance without removing the errors: at $k = 200$ the same split
+misses 373 equations, the Stage-1 share falls to 28.4\%, and ranking errors dominate (71.6\%).
+The first stage therefore bounds the $k = 50$ configuration of Table~\ref{tab:overall}, while the
+sequential experiments of Sections \ref{sec:greedyresults} and \ref{sec:dofstopresults}, which
+already run at $k = 200$, are bounded by the reranker.
+% source: experiments/case_outcomes_seed42_k200.json failure_decomposition（373 = 106 + 267,
+%         stage1_share 0.284; Recall@K 0.791→0.807）
+
+The Stage-1 blend itself sets part of the bound. Ranking the database by variable overlap alone
+covers 96.1\% of the ground-truth equations within 50 candidates, against 92.0\% for the blend of
+Eq.~\eqref{eq:stage1}: at the margin, the text term costs coverage for the same reason it fails
+inside the window (Section~\ref{sec:nullresult}).
+% source: topic_feature_diagnosis.json E_stage1_coverage（io_jaccard_only 0.961±0.002 vs
+%         blend 0.920±0.004）
+This measurement predicts that a variable-weighted first stage would raise the ceiling, and we
+designate that redesign as the next intervention experiment.
+
+Failed cases differ from solved cases in size, not in kind. They average 5.34 ground-truth
+equations against 2.13 and 17.8 input variables against 10.8 (Mann--Whitney, both
+$p < 10^{-14}$), and their candidate coverage is 0.83 against 1.00.
+% source: case_outcomes_seed42.json solved_vs_unsolved_attrs（212 solved / 211 unsolved）
+For the misses that do survive into the candidate set, no present feature would repair the
+ranking: pairing each missed equation with each wrong equation ranked above it, the missed one
+has the higher latent similarity in 0.516 of the pairs (chance level), the higher domain
+agreement in 0.494, and the higher variable overlap in only 0.375 --- the wrong equation usually
+looks at least as good on every feature the model has.
+% source: case_outcomes_seed42.json topic_rescue_fraction（131 cases with reranker misses）
+
+Two concrete error types make up that residue. First, standard physical equations recur across
+documents, so the model picks a mathematically identical equation from the wrong document: in one
+batch-fermentation case the answer $\mathrm{d}X/\mathrm{d}t = \mu X$ lost to the same growth
+equation printed in another document, which the topic features scored \emph{higher}. Strengthening
+topical similarity would make this error worse. Second, the features read only variable sets, so
+two equations that determine different variables from the same variables are indistinguishable:
+the paired equations for $\mathrm{d}C_A'/\mathrm{d}t$ and $\mathrm{d}T'/\mathrm{d}t$ of one
+linearized reactor tie on every feature, and the wrong one can rank first. The natural repair is a
+feature that encodes which variable an equation determines; neither error type yields to more
+topical information.
+% source: docs/考察_特徴量の期待と結果_2026-08-09.md §5.5（dae_X1_040, dae_X1_089）
+
+\section{Limitations}
+\label{sec:limitations}
+
+Six limitations qualify these results. First, the descriptions of the synthesized cases are
+written by a language model, so their style may differ from human modeling requests; the
+equations, inputs, and outputs of every case follow from the rule-based construction
+(Section~4.3). Second, the number of source documents is confounded with the number of equations,
+so Section~\ref{sec:bycharacteristics} draws no causal conclusion from it. Third, the stratified
+split is one scheme selected from 400 candidates; the 10 seeds average over the randomness within
+the scheme, not over schemes. Fourth, the evaluation is database-internal --- retrieval cannot
+find an equation absent from the database --- and the language-model comparison rests on about 50
+cases per setting with generator and judge being the same model. Fifth, the variable-overlap
+group alone is highly predictive in this benchmark: permuting it costs 0.68 of Recall@K
+(Section~\ref{sec:mechanism}), so part of the advantage reflects how the cases were constructed
+from variable-sharing equations, and transfer to queries whose variable notation differs from the
+database remains untested. Sixth, learned greedy trains with teacher forcing: during training the
+reference set is the true partial answer, while at inference it contains the model's own
+mistakes; scheduled sampling is the standard remedy, and we leave it to future work.

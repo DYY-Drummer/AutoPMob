@@ -113,7 +113,7 @@ def _mean_sem(arr) -> dict:
 def run(seed: int = 42, n_pairs: int = 200_000,
         out_json: str = "experiments/topic_feature_diagnosis.json",
         out_fig: str = "docs/figures/fig_topic_diagnosis.png",
-        top_k: int | None = None) -> dict:
+        top_k: int | None = None, lang: str = "ja") -> dict:
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -266,7 +266,7 @@ def run(seed: int = 42, n_pairs: int = 200_000,
     json.dump(out, open(ROOT / out_json, "w", encoding="utf-8"),
               ensure_ascii=False, indent=2)
     print(f"Saved: {out_json}")
-    _make_figure(out, pairs_svd, pairs_raw, ROOT / out_fig)
+    _make_figure(out, pairs_svd, pairs_raw, ROOT / out_fig, lang=lang)
     print(f"Saved figure: {out_fig}")
     _print_summary(out)
     return out
@@ -313,19 +313,28 @@ JA_LABEL = {
     "gComp": "補完性", "gCoh": "一貫性", "gDom": "分野の一致（集合版）",
 }
 
+# 修士論文の英語版ラベル（Method 章 Table 2 の特徴名と一致させる）
+EN_LABEL = {
+    "text_sim": "Text similarity", "io_jaccard": "I/O Jaccard", "svd_sim": "Latent similarity",
+    "input_cov": "Input coverage", "output_cov": "Output coverage",
+    "specificity": "Specificity", "domain": "Domain match",
+    "gComp": "Complementarity", "gCoh": "Coherence", "gDom": "Domain agreement",
+}
 
-def _make_figure(out, pairs_svd, pairs_raw, out_png):
+
+def _make_figure(out, pairs_svd, pairs_raw, out_png, lang="ja"):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    try:
-        import japanize_matplotlib  # noqa
-    except Exception:
-        for fam in ["Hiragino Sans", "Hiragino Maru Gothic Pro", "Yu Gothic", "AppleGothic"]:
-            try:
-                plt.rcParams["font.family"] = fam; break
-            except Exception:
-                pass
+    if lang == "ja":
+        try:
+            import japanize_matplotlib  # noqa
+        except Exception:
+            for fam in ["Hiragino Sans", "Hiragino Maru Gothic Pro", "Yu Gothic", "AppleGothic"]:
+                try:
+                    plt.rcParams["font.family"] = fam; break
+                except Exception:
+                    pass
     plt.rcParams["axes.unicode_minus"] = False
     plt.rcParams["pdf.fonttype"] = 42
 
@@ -333,34 +342,57 @@ def _make_figure(out, pairs_svd, pairs_raw, out_png):
 
     # (a) ケース間クエリベクトルのコサイン類似分布
     bins = np.linspace(-0.1, 1.0, 56)
+    lab_raw = "生TF-IDF空間" if lang == "ja" else "Raw TF-IDF space"
+    lab_svd = ("SVD 空間（意味の近さが使う 256 次元）" if lang == "ja"
+               else "SVD space (256 dimensions, used by latent similarity)")
     axes[0].hist(pairs_raw, bins=bins, alpha=0.55, color="#9467bd",
-                 label="生TF-IDF空間", density=True)
+                 label=lab_raw, density=True)
     axes[0].hist(pairs_svd, bins=bins, alpha=0.55, color="#d62728",
-                 label="SVD 空間（意味の近さが使う 256 次元）", density=True)
+                 label=lab_svd, density=True)
     med_raw = float(np.median(pairs_raw)); med_svd = float(np.median(pairs_svd))
     axes[0].axvline(med_raw, color="#9467bd", ls="--", lw=1.5)
     axes[0].axvline(med_svd, color="#d62728", ls="--", lw=1.5)
-    axes[0].set_title("(a) ケースどうしのベクトルのコサイン類似度の分布")
-    axes[0].set_xlabel("ケースの組のコサイン類似度（破線は中央値）")
-    axes[0].set_ylabel("確率密度")
+    if lang == "ja":
+        axes[0].set_title("(a) ケースどうしのベクトルのコサイン類似度の分布")
+        axes[0].set_xlabel("ケースの組のコサイン類似度（破線は中央値）")
+        axes[0].set_ylabel("確率密度")
+    else:
+        axes[0].set_title("(a) Cosine similarity between query vectors of two cases")
+        axes[0].set_xlabel("Cosine similarity of a case pair (dashed lines: medians)")
+        axes[0].set_ylabel("Probability density")
     axes[0].legend(fontsize=9)
     axes[0].grid(alpha=0.25)
 
-    # (b) 候補内AUC（mean±SEM）
+    # (b) 候補内AUC（mean±SEM）。英語版は全DB AUC（D節）を菱形で重ねる。
     C = out["C_within_candidate_auc"]
     names = sorted(C.keys(), key=lambda n: C[n]["auc"]["mean"])
     y = np.arange(len(names))
     vals = [C[n]["auc"]["mean"] for n in names]
     errs = [C[n]["auc"]["sem"] for n in names]
     cols = ["#1f77b4" if C[n]["group"] == "var" else "#d62728" for n in names]
+    label_map = JA_LABEL if lang == "ja" else EN_LABEL
     axes[1].barh(y, vals, xerr=errs, color=cols,
                  error_kw=dict(capsize=3, lw=1))
+    if lang == "en":
+        D = out.get("D_full_db_auc", {})
+        dy = [i for i, n in enumerate(names) if n in D]
+        dx = [D[n]["mean"] for n in names if n in D]
+        axes[1].scatter(dx, dy, marker="D", s=45, facecolor="white",
+                        edgecolor="black", zorder=4,
+                        label="AUC against the whole database (11,146 equations)")
+        axes[1].legend(fontsize=8, loc="lower right")
     axes[1].axvline(0.5, color="#555555", lw=1.2, ls="--")
-    axes[1].text(0.502, len(names) - 0.4, "AUC=0.5（識別力なし）", fontsize=8, color="#555555")
-    axes[1].set_yticks(y); axes[1].set_yticklabels([JA_LABEL.get(n, n) for n in names])
-    axes[1].set_xlim(0.3, 1.0)
-    axes[1].set_title(f"(b) 第 1 段が選んだ候補 {out['config']['top_k']} 件の中での識別力")
-    axes[1].set_xlabel("候補の中での AUC（ケース平均±標準誤差。青＝変数の重なり、赤＝話題の近さ）")
+    txt_05 = "AUC=0.5（識別力なし）" if lang == "ja" else "AUC = 0.5 (no discrimination)"
+    axes[1].text(0.502, len(names) - 0.4, txt_05, fontsize=8, color="#555555")
+    axes[1].set_yticks(y); axes[1].set_yticklabels([label_map.get(n, n) for n in names])
+    if lang == "ja":
+        axes[1].set_xlim(0.3, 1.0)
+        axes[1].set_title(f"(b) 第 1 段が選んだ候補 {out['config']['top_k']} 件の中での識別力")
+        axes[1].set_xlabel("候補の中での AUC（ケース平均±標準誤差。青＝変数の重なり、赤＝話題の近さ）")
+    else:
+        axes[1].set_xlim(0.3, 1.02)
+        axes[1].set_title(f"(b) Discrimination inside the top-{out['config']['top_k']} candidates")
+        axes[1].set_xlabel("AUC within the candidate set (case mean ± SEM)")
     axes[1].grid(alpha=0.25, axis="x")
 
     fig.tight_layout()
@@ -378,6 +410,8 @@ if __name__ == "__main__":
     ap.add_argument("--out-fig", default="docs/figures/fig_topic_diagnosis.png")
     ap.add_argument("--top-k", type=int, default=None,
                     help="第1段の候補件数（既定は analyze_pfi.TOP_K=50）")
+    ap.add_argument("--lang", choices=["ja", "en"], default="ja",
+                    help="図のラベル言語（en は修士論文用。全DB AUC の菱形を重ねる）")
     a = ap.parse_args()
     run(seed=a.seed, n_pairs=a.n_pairs, out_json=a.out_json, out_fig=a.out_fig,
-        top_k=a.top_k)
+        top_k=a.top_k, lang=a.lang)
