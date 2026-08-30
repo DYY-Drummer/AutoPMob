@@ -153,6 +153,20 @@ def test_weight_orders_ranks_each_blend():
     assert orders["w00-100"] == [1, 2, 0]  # vs のみ
 
 
+def test_sweep_overall_entry_includes_per_seed():
+    from analyze_stage1_sweep import overall_entry
+    recs = [
+        {"seed": 42, "Recall@K_correct": 1.0},
+        {"seed": 42, "Recall@K_correct": 0.0},
+        {"seed": 123, "Recall@K_correct": 1.0},
+    ]
+    e = overall_entry(recs)
+    assert e["per_seed"] == {"42": 0.5, "123": 1.0}
+    assert e["mean"] == 0.75
+    assert e["n_seeds"] == 2
+    assert e["n_records"] == 3
+
+
 def test_sweep_parse_name():
     from analyze_stage1_sweep import parse_name
     assert parse_name("reranker-10S_w30-70__42.json") == ("reranker-10S", "w30-70", 42)

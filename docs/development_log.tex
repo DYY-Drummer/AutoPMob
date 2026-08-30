@@ -358,6 +358,14 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-08-30(2)（A1 実験：第 1 段の変数寄り再設計で \S6.7 の予測を検証、修論 \S6.8 を新設）：
+    ギャップ分析の最優先項目 A1 を実装・実行・本文化まで完了した。
+    (1)\,\textbf{実装（TDD、11 テスト）}：\texttt{stage1()} に混合重み引数 \texttt{w\_text}/\texttt{w\_var}（既定 0.7/0.3＝完全後方互換）を追加し、\texttt{set\_aware\_reranker.py} に \texttt{-{}-stage1-w-text}/\texttt{-{}-stage1-w-var} を新設して\textbf{訓練時候補生成・評価時候補生成・baseline 全 DB 順位付けの 3 箇所}へ配線（重み変更が訓練の負例分布にも一貫して効く）。既定重みでの再実行が正典 \texttt{experiments/xd/reranker-10S\_\_42.json} を per-case 423 件まで完全再現することを確認してから、w70-30 参照には既存正典（\texttt{xd/}・\texttt{strat\_A.json}・\texttt{xg\_A/train}）を再利用した。
+    (2)\,\textbf{被覆率スイープ（\texttt{analyze\_stage1\_weights.py}）}：$k=50$ で w70-30 0.9203 → w50-50 0.9608／\textbf{w30-70 0.9671（全 $k$ で最良）}／w00-100 0.9610。端点 2 つは既存実測（blend 0.9203・jaccard 単独 0.9610）と一致（検算）。\textbf{最良は予測した「変数のみ」でなく中間重み}＝文章項は低重みなら限界的に有効。
+    (3)\,\textbf{再訓練実験（\texttt{run\_stage1\_weights.sh}, 3 重み×baseline/reranker-10S×10 seed・設定 A・$k=50$・層化）}：reranker-10S は 0.7429 → w50-50 0.7664／\textbf{w30-70 0.7799（$+0.037$, Wilcoxon $p=0.00195$, $d_z=2.4$, 全 10 seed 改善）}／w00-100 0.7762。\textbf{4 重みの被覆率順序と最終指標順序が完全一致}。最難端 X$\ge$8 で $+0.094$＝\S6.7 が特定したボトルネック（落ちるケースは被覆 0.83）で回復が最大。baseline 自体も 0.521→約 0.60（学習なしの取り分）で、再ランカーの上乗せ $+0.18$ は同重みでも維持。上限増分 $+0.047$ の約 8 割が最終指標に到達。
+    (4)\,\textbf{最強構成でも検証（\texttt{run\_stage1\_weights\_k200.sh}, 学習版 greedy・$k=200$・w30-70・10 seed）}：0.7968 → \textbf{0.8098（$+0.013$, Wilcoxon $p=0.0098$, $d_z=1.1$, 9/10 seed）}、X$\ge$8 で $+0.035$（$p=0.00195$）。$k=200$ では被覆率差が $+0.015$ に縮むが、その 88\% が最終指標に変換＝再ランカーは第 1 段が入れた正解候補をほぼ使い切る。
+    (5)\,\textbf{修論への反映}：\S6.8「Second Intervention: A Variable-weighted First Stage」を新設（Limitations は \S6.9 へ）。\S6.7 末尾の「次の介入実験に指定する」を「\S6.8 が実行し確認した」に差し替え、\textbf{予測→介入→回復の第 2 の弧}（第 1 の弧＝逐次選択 \S6.4）として記述。重み選択への多重比較批判に対し「3 つの変数寄り重みすべてが全 seed で有意＝結論は最良重みの選択に依存しない」を明記。図 \texttt{fig\_stage1\_redesign}（(a) 重み別被覆率曲線・(b) $k=50$ の箱ひげ、英語）を新規生成。ビルド 25 ページ・未解決参照なし。
+    統計は \texttt{experiments/stage1\_weight\_coverage.json}・\texttt{stage1\_weight\_stats.json}（per-seed 付き、集計 \texttt{analyze\_stage1\_sweep.py}）、per-seed 生データは \texttt{experiments/xs1/}・\texttt{xs1\_k200/}（非追跡）。ギャップ分析の A1 を完了打ち消しにし、次の最優先を W1（Related Work＋文献収集）に更新。
   \item 2026-08-30（修論 第 6 章 Results and Discussion の本文化・図の英語化・論文化ギャップ分析）：
     本人指示「いま得られている結果を論文に掲載できるレベルで Methods と Results and Discussion の形に文書化し、発表に欠けている実験・考察を洗い出す」に対応。
     (1)\,\textbf{第 6 章の本文化}：骨子 P1--P9 を \S6.1--\S6.8 の段落形式に全面書き換え（\texttt{ResultsAndDiscussion.tex}）。執筆時に全記載値を \texttt{experiments/*.json} と再照合し、各段落に \texttt{\% source:} コメントで一次データを残した。

@@ -558,6 +558,67 @@ def pfi():
     save(fig, "fig_pfi")
 
 
+# ----------------------------------------------------------------------
+# stage1_redesign() — A1: variable-weighted first stage (coverage + end metric)
+# ----------------------------------------------------------------------
+W_ORDER = ["w70-30", "w50-50", "w30-70", "w00-100"]
+W_TICK = {"w70-30": "0.7 / 0.3\n(default)", "w50-50": "0.5 / 0.5",
+          "w30-70": "0.3 / 0.7", "w00-100": "0.0 / 1.0"}
+W_COLOR = {"w70-30": "#9aa0a6", "w50-50": "#f9ab00",
+           "w30-70": "#1a73e8", "w00-100": "#188038"}
+W_LABEL = {"w70-30": "0.7 text + 0.3 variable (default)",
+           "w50-50": "0.5 text + 0.5 variable",
+           "w30-70": "0.3 text + 0.7 variable",
+           "w00-100": "variable only"}
+
+
+def stage1_redesign():
+    cov = json.load(open(EXP / "stage1_weight_coverage.json"))
+    st = json.load(open(EXP / "stage1_weight_stats.json"))
+    ks = cov["config"]["ks"]
+
+    fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.6),
+                             gridspec_kw={"width_ratios": [1.0, 1.15]})
+
+    # (a) coverage vs k
+    ax = axes[0]
+    for wl in W_ORDER:
+        ys = [cov["coverage"][wl][str(k)]["mean"] for k in ks]
+        es = [cov["coverage"][wl][str(k)]["sem"] for k in ks]
+        ax.errorbar(ks, ys, yerr=es, marker="o", ms=4.5, lw=2.0, capsize=3,
+                    color=W_COLOR[wl], label=W_LABEL[wl])
+    for kk in (50, 200):  # 実験で使う 2 つの窓（説明はキャプションに置く）
+        ax.axvline(kk, color="#888888", ls=":", lw=1.1)
+    ax.set_xscale("log")
+    ax.set_xticks(ks); ax.set_xticklabels([str(k) for k in ks])
+    ax.set_xlabel("Candidate window k (log axis)")
+    ax.set_ylabel("Stage-1 coverage of ground-truth equations")
+    ax.set_title("(a) Coverage bound by Stage-1 weights")
+    ax.set_ylim(0.70, 1.005)
+    ax.grid(alpha=0.25); ax.legend(fontsize=8, loc="lower right")
+
+    # (b) end metric at k=50: baseline vs reranker-10S, per-seed boxes
+    ax = axes[1]
+    centers = np.arange(len(W_ORDER)) * 2.2
+    for i, wl in enumerate(W_ORDER):
+        base = list(st["overall"]["baseline"][wl]["per_seed"].values())
+        prop = list(st["overall"]["reranker-10S"][wl]["per_seed"].values())
+        _box(ax, [base, prop], [centers[i] - 0.42, centers[i] + 0.42],
+             [C_BASE, C_PROP], widths=0.7)
+    ax.set_xticks(centers)
+    ax.set_xticklabels([W_TICK[wl] for wl in W_ORDER], fontsize=9)
+    ax.set_xlabel("Stage-1 weights (text / variable)")
+    ax.set_ylabel("Recall@K (seed mean)")
+    ax.set_title("(b) End metric at k = 50 under the same weights")
+    handles = [Patch(facecolor=C_BASE, alpha=0.85, label="Baseline (classical IR)"),
+               Patch(facecolor=C_PROP, alpha=0.85, label="Proposed (reranker-10S, retrained)")]
+    ax.legend(handles=handles, fontsize=8.5, loc="center right")
+    ax.grid(axis="y", alpha=0.3)
+
+    fig.tight_layout()
+    save(fig, "fig_stage1_redesign")
+
+
 if __name__ == "__main__":
     dataset()
     split_balance()
@@ -567,3 +628,4 @@ if __name__ == "__main__":
     greedy_3way()
     dof_stop()
     pfi()
+    stage1_redesign()

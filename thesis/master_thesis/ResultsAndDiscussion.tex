@@ -1,7 +1,8 @@
 % ============================================================
 % Chapter 6: Results and Discussion — 本文（Phase 2, 2026-08-30）
 % 骨子版（Phase 1, P1-P9）は git 履歴を参照。
-% 弧: 性能 → どこで効くか → 機構 → 介入 → 自己停止 → 負の結果 → 誤り分析 → 限界。
+% 弧: 性能 → どこで効くか → 機構 → 介入1(逐次選択) → 自己停止 → 負の結果 → 誤り分析
+%     → 介入2(第1段の変数寄り再設計, A1実験 2026-08-30) → 限界。
 % 数値の一次ソースは各段落の % source: コメントに記載（2026-08-30 に全数値を JSON と再照合）。
 % 骨子からの追加（2026-08-30）:
 %   (1) §6.3 に 3 段の分解（reranker-2 経由の ladder）を明記（experiments/xd/ で検証）。
@@ -417,8 +418,8 @@ Eq.~\eqref{eq:stage1}: at the margin, the text term costs coverage for the same 
 inside the window (Section~\ref{sec:nullresult}).
 % source: topic_feature_diagnosis.json E_stage1_coverage（io_jaccard_only 0.961±0.002 vs
 %         blend 0.920±0.004）
-This measurement predicts that a variable-weighted first stage would raise the ceiling, and we
-designate that redesign as the next intervention experiment.
+This measurement predicts that a variable-weighted first stage would raise the ceiling;
+Section~\ref{sec:stage1redesign} runs that intervention and confirms it.
 
 Failed cases differ from solved cases in size, not in kind. They average 5.34 ground-truth
 equations against 2.13 and 17.8 input variables against 10.8 (Mann--Whitney, both
@@ -442,6 +443,87 @@ linearized reactor tie on every feature, and the wrong one can rank first. The n
 feature that encodes which variable an equation determines; neither error type yields to more
 topical information.
 % source: docs/考察_特徴量の期待と結果_2026-08-09.md §5.5（dae_X1_040, dae_X1_089）
+
+\section{Second Intervention: A Variable-weighted First Stage}
+\label{sec:stage1redesign}
+
+Section~\ref{sec:erroranalysis} located the larger share of the residual error before the
+reranker runs and predicted that weighting the first stage toward variables would raise the
+ceiling. This section runs that intervention. We replace the fixed weights $(0.7, 0.3)$ of
+Eq.~\eqref{eq:stage1} with a swept pair $(w_{\mathrm{t}}, w_{\mathrm{v}})$ and repeat the whole
+pipeline --- candidate retrieval, training, and evaluation all under the same weights --- for
+$(0.5, 0.5)$, $(0.3, 0.7)$, and $(0.0, 1.0)$ over the same 10 stratified splits of Setting~A.
+% source: run_stage1_weights.sh（3重み × baseline/reranker-10S × 10 seed, k=50）。実装は
+%         set_aware_reranker.py --stage1-w-text/--stage1-w-var。既定重みの再実行が正典
+%         experiments/xd/reranker-10S__42.json を per-case 423 件まで完全再現することを
+%         確認した上で、w70-30 参照には既存の正典（xd/, strat_A.json）を用いた。
+
+The ceiling moves as predicted, and its best position is more informative than the prediction
+was. Fig.~\ref{fig:stage1redesign}(a) sweeps the coverage bound of Section~\ref{sec:stage1}
+over the mixing weights: at $k = 50$ the coverage rises from 0.920 under the default weights to
+0.961 with the variable term alone --- the value Section~\ref{sec:erroranalysis} anticipated ---
+and to 0.967 at $(0.3, 0.7)$, which is the best mixture at every window size.
+% source: experiments/stage1_weight_coverage.json（k=50: w70-30 0.9203 / w50-50 0.9608 /
+%         w30-70 0.9671 / w00-100 0.9610）
+Pure variable ranking is therefore not the optimum: a text term kept at low weight still pays at
+the margin, so the correct repair keeps both ingredients and inverts their priority.
+
+The raised ceiling converts into an end-metric gain of about the same size
+(Fig.~\ref{fig:stage1redesign}(b)). Retrained on the $(0.3, 0.7)$ candidates, reranker-10S
+reaches Recall@K 0.780 against 0.743 under the default weights ($+0.037$, Wilcoxon $p = 0.00195$,
+$d_z = 2.4$, all 10 seeds improved), and the four weightings order the end metric exactly as they
+order the coverage: 0.743, 0.766, 0.780, and 0.776 for text weights 0.7, 0.5, 0.3, and 0.0.
+% source: experiments/stage1_weight_stats.json overall.reranker-10S / tests（+0.0234 dz=1.37 /
+%         +0.0370 dz=2.37 / +0.0333 dz=1.78, いずれも p_wilcoxon=0.00195）
+Roughly 80\% of the added ceiling ($+0.047$) reaches the final ranking ($+0.037$). The
+conclusion does not hang on picking the best mixture: every variable-leaning weight beats the
+default on all 10 seeds. And the gain concentrates where Section~\ref{sec:erroranalysis} located
+the bottleneck --- on cases with eight or more ground-truth equations, whose depressed candidate
+coverage was the signature of failure, the $(0.3, 0.7)$ first stage adds $+0.094$
+($p = 0.00195$).
+% source: stage1_weight_stats.json tests_hard_X8plus（w50-50 +0.0740 / w30-70 +0.0937 /
+%         w00-100 +0.0854）
+
+Part of the improvement needs no learning at all: the classical-IR baseline itself rises from
+0.521 to about 0.60 under every variable-leaning weight, which quantifies how much the default
+blend under-used the variable signal. The reranker keeps its margin of about $+0.18$ over the
+baseline evaluated with the same weights, so the learned second stage and the redesigned first
+stage improve different parts of the pipeline.
+% source: stage1_weight_stats.json overall.baseline（w50-50 0.6016 / w30-70 0.5998 /
+%         w00-100 0.6032; いずれも vs 0.5206 で p_wilcoxon=0.00195）
+
+The redesign carries into the strongest configuration. Under learned greedy selection at
+$k = 200$ --- the configuration of Sections \ref{sec:greedyresults} and \ref{sec:dofstopresults}
+--- the $(0.3, 0.7)$ first stage lifts Recall@K from 0.797 to 0.810 ($+0.013$, Wilcoxon
+$p = 0.0098$, $d_z = 1.1$, 9 of 10 seeds), and the hard cases again carry the gain: $+0.035$ at
+eight or more ground-truth equations ($p = 0.00195$).
+% source: experiments/stage1_weight_stats.json k200_train_greedy（0.8098±0.0483 vs
+%         0.7968±0.0530; X>=8 +0.0352; 参照は experiments/xg_A/train__*.json）
+The smaller increment matches the smaller headroom: at $k = 200$ the coverage gap between the
+two mixtures narrows to $+0.015$ (Fig.~\ref{fig:stage1redesign}(a)), and $+0.013$ of it reaches
+the final ranking. At both window sizes, then, the reranker converts nearly every additional
+correct candidate the first stage admits. What remains after the redesign are the ranking errors
+of Section~\ref{sec:erroranalysis}, which call for new features rather than a wider or better
+window.
+
+This is the second time the chapter closes a predict--intervene--recover arc: the mechanism
+analysis predicted the saturation of the static reference set and learned greedy selection
+recovered it (Section~\ref{sec:greedyresults}); the error analysis predicted the ceiling of the
+text-heavy first stage, and the variable-weighted first stage recovers it, with the recovery
+sized and placed as predicted. The two interventions repair different components, and their
+effects arrive where their respective analyses said they would.
+
+\begin{figure}[h]\centering
+\includegraphics[width=0.98\linewidth]{figures/fig_stage1_redesign.pdf}
+\caption{The variable-weighted first stage (Setting A). (a) Stage-1 coverage of the ground-truth
+equations for four weight mixtures, as a function of the window size $k$ (mean $\pm$ SEM over
+1,823 cases; dotted lines mark the two windows used in the experiments, $k = 50$ and $k = 200$).
+(b) Recall@K at $k = 50$ when the whole pipeline --- candidates, training, and evaluation ---
+runs under each mixture (boxes over the 10 stratified splits). The baseline is the classical-IR
+ranking with the same mixture. Coverage and end metric order the mixtures identically, and
+$(0.3, 0.7)$ is best on both.}
+\label{fig:stage1redesign}
+\end{figure}
 
 \section{Limitations}
 \label{sec:limitations}

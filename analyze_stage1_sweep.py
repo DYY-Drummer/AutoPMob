@@ -68,6 +68,18 @@ def load_reference_baseline(strat_json: Path):
     return [dict(r) for r in d["results"]["baseline"].get("per_case", [])]
 
 
+def overall_entry(recs) -> dict:
+    """per-case 記録から seed 平均の要約（箱ひげ図用の per_seed を含む）を作る."""
+    sm = seed_means(recs)
+    vals = list(sm.values())
+    return {
+        "mean": round(float(np.mean(vals)), 4) if vals else None,
+        "std": round(float(np.std(vals, ddof=1)), 4) if len(vals) > 1 else None,
+        "n_seeds": len(vals), "n_records": len(recs),
+        "per_seed": {str(s): round(float(v), 4) for s, v in sorted(sm.items())},
+    }
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dir", default="experiments/xs1")
@@ -95,14 +107,7 @@ def main():
     for mode in MODES:
         out["overall"][mode] = {}
         for wl in WLABELS:
-            recs = data.get((mode, wl), [])
-            sm = seed_means(recs)
-            vals = list(sm.values())
-            out["overall"][mode][wl] = {
-                "mean": round(float(np.mean(vals)), 4) if vals else None,
-                "std": round(float(np.std(vals, ddof=1)), 4) if len(vals) > 1 else None,
-                "n_seeds": len(vals), "n_records": len(recs),
-            }
+            out["overall"][mode][wl] = overall_entry(data.get((mode, wl), []))
 
     for mode in MODES:
         ref = data.get((mode, "w70-30"), [])
@@ -129,6 +134,26 @@ def main():
         out["tests_hard_X8plus"][f"{wl}_vs_w70-30"] = paired(
             data.get(("reranker-10S", wl), []), ref10,
             sub=lambda r: r.get("n_correct", 1) >= 8)
+
+    # --- フェーズ2: 最強構成（学習版 greedy・k=200）で w30-70 が効くか ---
+    # 参照 = 現行重み w70-30 の学習版 greedy（experiments/xg_A/train__{seed}.json）
+    k200_dir = ROOT / "experiments" / "xs1_k200"
+    if k200_dir.exists():
+        d200 = load_sweep(k200_dir)
+        new200 = d200.get(("train", "w30-70"), [])
+        ref200 = []
+        for f in sorted(glob.glob(str(ROOT / "experiments" / "xg_A" / "train__*.json"))):
+            dd = json.load(open(f, encoding="utf-8"))
+            for _, r in dd.get("results", {}).items():
+                ref200.extend(dict(rec) for rec in r.get("per_case", []))
+        if new200 and ref200:
+            out["k200_train_greedy"] = {
+                "w30-70": overall_entry(new200),
+                "w70-30_ref": overall_entry(ref200),
+                "test_w30-70_vs_w70-30": paired(new200, ref200),
+                "test_hard_X8plus": paired(new200, ref200,
+                                           sub=lambda r: r.get("n_correct", 1) >= 8),
+            }
 
     out_path = ROOT / args.out_json
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -157,6 +182,19 @@ def main():
         if "mean_delta" in r:
             print(f"  {name:22s} Δ={r['mean_delta']:+.4f} t p={r.get('p_ttest','-')} "
                   f"W p={r.get('p_wilcoxon','-')}")
+    if "k200_train_greedy" in out:
+        g = out["k200_train_greedy"]
+        print("\n=== フェーズ2: 学習版 greedy・k=200 ===")
+        print(f"  w30-70  {g['w30-70']['mean']} ± {g['w30-70']['std']} "
+              f"(n_seeds={g['w30-70']['n_seeds']})")
+        print(f"  w70-30  {g['w70-30_ref']['mean']} ± {g['w70-30_ref']['std']} (参照 xg_A/train)")
+        t = g["test_w30-70_vs_w70-30"]
+        if "mean_delta" in t:
+            print(f"  Δ={t['mean_delta']:+.4f} t p={t.get('p_ttest','-')} "
+                  f"W p={t.get('p_wilcoxon','-')} dz={t.get('cohen_dz','-')}")
+        th = g["test_hard_X8plus"]
+        if "mean_delta" in th:
+            print(f"  X>=8: Δ={th['mean_delta']:+.4f} W p={th.get('p_wilcoxon','-')}")
 
 
 if __name__ == "__main__":
