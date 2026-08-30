@@ -245,11 +245,13 @@ def compute_features(
 # Stage 1
 # ---------------------------------------------------------------------------
 
-def stage1(ci, X_ctx, X_eq, io_set, eq_vars_list, k=50):
+def stage1(ci, X_ctx, X_eq, io_set, eq_vars_list, k=50, w_text=0.7, w_var=0.3):
+    # w_text/w_var: 文章類似度と変数 Jaccard の混合重み（既定は従来の 0.7/0.3）。
+    # A1 実験（第1段の変数寄り再設計）は set_aware_reranker.py --stage1-w-* から変える。
     from sklearn.metrics.pairwise import cosine_similarity
     ts = cosine_similarity(X_ctx[ci], X_eq).ravel()
     vs = np.array([jaccard(io_set, eq_vars_list[j]) for j in range(len(eq_vars_list))], dtype=np.float32)
-    return np.argsort(-(0.7*ts + 0.3*vs))[:k].tolist()
+    return np.argsort(-(w_text*ts + w_var*vs))[:k].tolist()
 
 
 # ---------------------------------------------------------------------------

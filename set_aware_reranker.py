@@ -351,7 +351,7 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
              hidden_dim=64, margin=0.1, batch_size=16, n_neg_samples=8,
              weight_decay=1e-4, loss_type="pairwise", hard_neg=False, greedy=False,
              split_mode="random", train_greedy=False, greedy_train_cap=8,
-             stop_dof=False):
+             stop_dof=False, stage1_w_text=0.7, stage1_w_var=0.3):
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -400,7 +400,7 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                 if not corr: continue
                 ts = cosine_similarity(X_ctx[ci], X_eq).ravel()
                 vs = np.array([jaccard(ios[ci], eq_vars_l[j]) for j in range(n_eq)], dtype=np.float32)
-                order = np.argsort(-(0.7*ts + 0.3*vs))
+                order = np.argsort(-(stage1_w_text*ts + stage1_w_var*vs))
                 ranks = compute_all_ranks(order.tolist(), corr)
                 cm = case_metrics(ranks)
                 cm["variant"] = norm(cases[ci].get("variant_type") or "?")
@@ -422,7 +422,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                     for ci in batch:
                         corr = set(correct_lists[ci])
                         if not corr: continue
-                        cands = stage1(ci, X_ctx, X_eq, ios[ci], eq_vars_l, top_k)
+                        cands = stage1(ci, X_ctx, X_eq, ios[ci], eq_vars_l, top_k,
+                                       w_text=stage1_w_text, w_var=stage1_w_var)
                         pos = [j for j in cands if j in corr]
                         neg = [j for j in cands if j not in corr]
                         if not pos or not neg: continue
@@ -494,7 +495,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                 for ci in te:
                     corr = set(correct_lists[ci])
                     if not corr: continue
-                    cands = stage1(ci, X_ctx, X_eq, ios[ci], eq_vars_l, top_k)
+                    cands = stage1(ci, X_ctx, X_eq, ios[ci], eq_vars_l, top_k,
+                                   w_text=stage1_w_text, w_var=stage1_w_var)
                     ts = cosine_similarity(X_ctx[ci], X_eq).ravel()
                     feats = compute_features_with_set(
                         cands, ts, ios[ci], in_vars(cases[ci]), out_vars(cases[ci]),
@@ -627,6 +629,10 @@ def main():
     parser.add_argument("--split", type=str, default="random",
                         choices=["random", "stratified"],
                         help="train/test 分割：random（source_id ランダム）/ stratified（正解式数分布を均衡）")
+    parser.add_argument("--stage1-w-text", type=float, default=0.7,
+                        help="第1段の文章類似度の重み（既定 0.7。A1: 第1段再設計実験用）")
+    parser.add_argument("--stage1-w-var", type=float, default=0.3,
+                        help="第1段の変数 Jaccard の重み（既定 0.3。訓練・評価・baseline の全てに適用）")
     args = parser.parse_args()
 
     all_seeds = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
@@ -684,6 +690,8 @@ def main():
             train_greedy=args.train_greedy,
             greedy_train_cap=args.greedy_train_cap,
             stop_dof=args.stop_dof,
+            stage1_w_text=args.stage1_w_text,
+            stage1_w_var=args.stage1_w_var,
         )
 
     print(f"\n{'='*100}")
