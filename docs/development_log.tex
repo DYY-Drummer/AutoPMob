@@ -358,6 +358,27 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-08-31（W1: 修論第 2 章 Related Work の本文化と文献 4 件 $\to$ 30 件の拡充）：
+    ギャップ分析（\texttt{docs/論文化ギャップ分析\_2026-08-30.md}）の W1 に対応。骨子 4 節
+    （AutoPMoB 要素技術／IR と再ランク／LLM 直接生成／数式検索）を本文化し、各節末に本研究との
+    相違を明示した。文献は 4 軸の並列ウェブ検証で収集し、\textbf{全 30 件を一次ページ
+    （CrossRef・arXiv・ACL Anthology・出版社・NTCIR proceedings 等）で書誌確認}（作文ルール B3
+    遵守・捏造ゼロ）。収穫の柱は加納研 AutoPMoB 系 6 件：CSTR Case Study (CACE {\bf 49}, 2022)・
+    Prototype (CACE {\bf 53}, 2024)・ProcessBERT (IFAC-PapersOnLine {\bf 55}, 2022；
+    \textbf{金上修論の引用を公刊版に差し替え})・VARAT (J. Chem. Eng. Japan {\bf 58}, 2025)・
+    DAE 等価判定 (Sci. Rep. {\bf 13}, 2023)・\textbf{式結合 (Comput. Chem. Eng. {\bf 200},
+    2025)＝最近接の先行研究}で、\S2.1 に「4 要件による結合＝規則固定」vs「本研究＝選択の学習＋
+    閉包での自己停止」の対比を書いた。\S2.2 は MMR との\textbf{逆符号}の対比（多様性でなく可解性）、
+    \S2.3 は出所（provenance）と推論時 LLM 不使用、\S2.4 は単式検索 vs 連立閉包の集合、で締めた。
+    あわせて第 1 章 P1/P2（digital twin レビュー・AutoPMoB 概念論文）、第 3 章（Hangos \&
+    Cameron・Salton・Manning・Deerwester・Liu）、第 4 章（Gemini 2.5, arXiv:2507.06261）、
+    第 5 章（生成 Claude Sonnet 4.5 の web 引用と判定 Claude Opus 4.8 のモデル名を本文に明記、
+    R-precision に Manning）へ引用を挿入。thebibliography は引用初出順に整列し、\texttt{main.aux}
+    の \verb|\citation| 順と完全一致を確認。ビルド exit 0・28 ページ（25 $\to$ 28）・未定義引用なし
+    （Overfull 5 件は既存の付録目次・表由来）。検証済みだが件数規範（20〜30 件）のため見送った候補
+    11 件（Nougat・Tangent-CFT・MathBERT・AI Feynman・ChemCrow・NTCIR-10・Sentence-BERT・
+    Nagayama et al. NLDB 2024・Zhang et al. CACE 49・Kato \& Kano CACE 52・Gemini 1.0）は
+    ギャップ分析 W1 の完了記録に書誌付きで残した（即追加可能）。
   \item 2026-08-31（進捗報告用の日本語全体版を作成・LLM 直接生成の帰属誤りを訂正）：
     本人指示「進捗報告用に Methods と Results and Discussion の日本語バージョンを」に対応し、\texttt{docs/progress\_report\_2026-08-31\_methods\_results.tex/.pdf}（8 ページ・lualatex/ltjsarticle・である調）を新規作成した。構成＝\S1 位置づけ／\S2 手法（定式化・第 1 段・10 特徴量表（加藤先生確認済みの表を流用）・逐次選択・自由度ゼロ停止）／\S3 データと評価（ケース 3 種の表・新旧呼称の対応「オリジナル→文献掲載、DAE→合成」を 1 文で明記）／\S4 全体比較／\S5 内訳と PFI／\S6 逐次選択／\S7 自由度ゼロ停止／\S8 話題の近さ（\textbf{打ち消し合い＝相殺を初めて報告}）／\S9 誤りの所在（61.8\%$\to$k=200 で逆転・誤りの 2 型）／\S10 第 1 段の作り直し（A1 実験）／\S11 限界／\S12 まとめ。\S6--\S9 はゼミ報告未掲載だった結果、\S10 は新規実験。図は既存の日本語版 \texttt{fig\_pfi\_importance} と、新規生成した \texttt{docs/figures/fig\_stage1\_redesign\_ja}（\texttt{analyze\_stage1\_sweep.py -{}-report-figure} を新設。英語版と同レイアウト・箱ひげ＋被覆率曲線）。
     あわせて\textbf{重大な帰属誤りを発見・訂正}：修論 \S5.2 等の「LLM 直接生成は生成器と判定器が同一モデル（claude-opus-4-8）ゆえ LLM 有利で保守的」という記載は誤りで、\textbf{正しくは生成 claude-sonnet-4-5-20250929・判定 claude-opus-4-8 の別モデル}（commit \texttt{5fbcf65} のコミットメッセージ「生成はSonnet 4.5」で確定。predictions JSON にはモデル欄が無く、\texttt{\% source} コメントが現行のスクリプト定数を写して誤記していた）。修論 4 箇所（\S5.2 の段落・\S5.4 出典コメント・\S6.1・表 3 キャプション・\S6.9 限界）と \texttt{docs/論文の主張\_2026-08-09.md}（過大主張回避の表・想定質問 Q4）を「判定は別の上位モデル／人手検証は未実施」に書き換えた。2026-08-30 に私が表 3 キャプションを「another LLM→同一モデル」へ直した修正は誤りだった（元の記載が正しかった）ため復元に相当する。修論再ビルド 25 ページ・未解決参照なし。日本語版の LLM 記述は訂正後の事実で執筆。

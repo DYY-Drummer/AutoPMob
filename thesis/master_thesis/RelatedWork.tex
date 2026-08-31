@@ -1,44 +1,96 @@
 % ============================================================
-% Chapter 2: Related Work — OUTLINE (Phase 1)
-% 各節末に必ず「本研究との相違」を置く（Kotoba Tech ルール）。
+% Chapter 2: Related Work — 本文（Phase 2, 2026-08-31）
+% 骨子版（Phase 1）は git 履歴を参照。各節末に「本研究との相違」を置く。
+% 文献は 2026-08-31 に一次ページ（出版社・arXiv・ACL Anthology・CrossRef・NTCIR 等）で
+% 実在と書誌情報（著者・巻号・頁・年）を確認済み。作文ルール B3（未確認出典の禁止）遵守。
 % ============================================================
 \section{Component Technologies for Automated Physical Model Building}
-\begin{itemize}
-  \item \textbf{P1.} Automating physical model building requires a chain of component technologies, several of which have been developed in our group.
-  \begin{itemize}
-    \item Document collection, formula extraction, and variable-equivalence judgment (ProcessBERT\cite{ProcessBERT}) precede model assembly.
-    % cite: 数式抽出・文書情報抽出の先行研究（Phase 2で実文献を検証して追加。捏造禁止）
-    \item (difference) These works produce the equation database; this study addresses the downstream step of selecting a solvable equation set from it.
-  \end{itemize}
-\end{itemize}
+\label{sec:rw-autopmob}
+
+Our group proposed AutoPMoB, an automated physical model builder that collects documents about a
+target process, extracts equations, variables, and experimental data from them, judges the
+equivalence of the extracted information across documents, and reorganizes the information into
+the desired model\cite{AutoPMoBCSTR,AutoPMoBProto}. Its component technologies have been developed
+step by step: an extraction algorithm with an annotation tool (VARAT) collects variable symbols
+from engineering documents\cite{VARAT}, ProcessBERT --- a language model pre-trained on a
+chemical-engineering corpus --- judges whether two variable definitions in different documents
+refer to the same quantity\cite{ProcessBERT}, and a computer-algebra algorithm judges whether two
+differential-algebraic equation systems are mathematically equivalent\cite{DAEEquiv}. Closest to
+this study, Kato and Kano build a model by combining extracted equations that satisfy four
+predefined requirements\cite{CombineEq}.
+
+A separate line of work identifies a model from measured data instead of documents: SINDy recovers
+governing equations by sparse regression over a library of candidate terms\cite{SINDy}, and ALAMO
+learns algebraic surrogate models for process systems from simulation or experimental
+data\cite{ALAMO}. These methods need data measured on the target process and search a space of
+functional forms, whereas the literature route reuses equations that experts have already
+published, together with the documents they came from.
+
+The works above either extract and align the information a model builder needs or combine it by
+requirements fixed in advance. This study addresses the step in between as a learning problem: it
+learns to rank the equations of an 11,146-equation database so that the top of the ranking forms
+the requested model, it evaluates each candidate against the equations already selected, and it
+stops when the selected set closes as a system (Chapter~3).
 
 \section{Information Retrieval and Reranking}
-\begin{itemize}
-  \item \textbf{P2.} Classical information retrieval ranks items independently by query--item relevance, and modern systems refine the top candidates with a second-stage reranker.
-  \begin{itemize}
-    % cite: TF-IDF/BM25 と retrieve-then-rerank の代表文献（Phase 2で検証して追加）
-    \item Lexical methods (TF-IDF) and learned rerankers assume that item relevances are independent given the query.
-    \item Diversification methods consider inter-item redundancy but not solvability.
-    \item (difference) Our items are interdependent: a correct answer is a set that closes a system of equations, which motivates set-aware features.
-  \end{itemize}
-\end{itemize}
+\label{sec:rw-ir}
+
+Classical information retrieval ranks the items of a collection by their relevance to a
+query\cite{Manning}. Term-weighting schemes such as term frequency--inverse document frequency
+(TF-IDF) score the lexical overlap between query and item\cite{Salton}, the probabilistic BM25
+family refines such scores\cite{BM25}, and latent semantic analysis projects texts onto a
+low-dimensional space obtained by singular-value decomposition to absorb vocabulary
+mismatch\cite{LSA}. Modern systems add a second stage: a fast first stage narrows the collection
+to a candidate list, and a learned model reranks the candidates, today typically a pretrained
+language model such as BERT\cite{BERT,BERTrerank}; dense retrievers replace the lexical first
+stage with learned embeddings\cite{DPR}. The method of Chapter~3 inherits this retrieve-then-rerank
+design --- its first stage mixes a TF-IDF score with a variable-overlap score, its reranker trains
+with a pairwise ranking loss from the learning-to-rank literature\cite{LTR}, and its
+latent-similarity feature applies latent semantic analysis.
+
+These methods score each item independently of the other retrieved items. The best-known departure
+is maximal marginal relevance (MMR), which penalizes a candidate for resembling the items already
+selected and thereby diversifies the result list\cite{MMR}. Our task departs in the opposite
+direction: a physical model is a system of equations, so a good candidate should \emph{connect} to
+the equations already selected --- share their variables --- and supply the query variables they
+still miss. The set-aware features of Chapter~3 reward exactly this coupling, with the opposite
+sign of MMR's penalty, because equation-set retrieval must achieve solvability rather than
+diversity.
 
 \section{Direct Generation of Domain Knowledge by Large Language Models}
-\begin{itemize}
-  \item \textbf{P3.} Large language models can generate domain equations directly from a description, which makes them a natural alternative to retrieval.
-  \begin{itemize}
-    % cite: LLMの科学知識生成・hallucination に関する代表文献（Phase 2で検証して追加）
-    \item Generated equations may be physically valid yet differ in notation, and empirical equations with fitted coefficients are hard to reproduce verbatim.
-    \item (difference) We use an LLM only as an external baseline (and for generating case descriptions); our method retrieves from a database, which keeps provenance and reproducibility.
-  \end{itemize}
-\end{itemize}
+\label{sec:rw-llm}
+
+Large language models (LLMs) generate domain knowledge directly from a natural-language
+prompt\cite{GPT3}, and recent work applies them to scientific equations: LLM-SR, for example,
+treats equations as programs and searches equation skeletons by combining an LLM's scientific
+prior knowledge with evolutionary refinement\cite{LLMSR}. Asking an LLM to write out the equations
+of the desired model is therefore a natural alternative to retrieving them from a database.
+
+Generation, however, carries no provenance. A generated equation can be hallucinated --- fluent
+but unsupported by any source\cite{Hallucination} --- and even a correct one may arrive in a
+notation that matches no document, while empirical correlations whose coefficients were fitted to
+data are hard to reproduce exactly. This study therefore treats direct generation as an external
+baseline (Chapter~5) and retrieves equations instead: every returned equation exists in a source
+document that an engineer can audit, and inference runs a small multilayer perceptron without
+calling an LLM. LLMs still serve in data construction: one extracts the database equations from
+documents (Chapter~4), and another writes only the natural-language descriptions of the
+synthesized cases, whose answer sets come from the database itself (Section~4.2).
 
 \section{Mathematical Information Retrieval}
-\begin{itemize}
-  \item \textbf{P4.} Mathematical information retrieval searches for single formulas similar to a query formula or text.
-  \begin{itemize}
-    % cite: math IR / formula search の代表文献（Phase 2で検証して追加）
-    \item Existing systems rank individual formulas by structural or textual similarity.
-    \item (difference) Our task returns a set of equations that jointly form a solvable model, a requirement absent from formula search.
-  \end{itemize}
-\end{itemize}
+\label{sec:rw-mathir}
+
+Mathematical information retrieval searches for formulas with queries that contain text, formulas,
+or both, and its recognition and retrieval techniques have been surveyed\cite{MathSurvey}. Shared
+tasks organized the field: the NTCIR-12 MathIR task evaluated formula-and-keyword search over
+arXiv and Wikipedia corpora\cite{NTCIR12}, and the ARQMath lab evaluates the retrieval of answers
+and of formulas for mathematical questions from a community-question-answering
+archive\cite{ARQMath}. Retrieval systems of this field rank individual formulas, for example by
+matching leaf-root paths in the operator subtrees of a formula\cite{Approach0}.
+
+The unit of retrieval separates this study from formula search. A formula-search system returns
+single formulas ranked by similarity to the query; our method returns a set of equations that must
+jointly close a system --- cover the requested outputs and leave zero degrees of freedom --- so
+the value of one equation depends on the equations retrieved with it. No formula-search benchmark
+imposes this joint condition. Chapter~6 shows its consequence empirically: after the first stage
+narrows the candidates, topical similarity becomes redundant, and the improvement comes from
+features that read the variable structure of the selected set.

@@ -31,8 +31,10 @@ Table~\ref{tab:features}; reranker-7, which drops the three set-aware features, 
 contribution. Sections~\ref{sec:greedyresults} and \ref{sec:dofstopresults} add the two sequential variants and the self-terminating variant
 of Sections~\ref{sec:seq} and \ref{sec:dofstop}.
 
-The external baseline asks a large language model to write the equations directly. Given the same
-query, the model generates the equations it judges necessary; a second, more capable model then
+The external baseline asks a large language model (Claude Sonnet 4.5\cite{ClaudeSonnet45}) to write
+the equations directly. Given the same
+query, the model generates the equations it judges necessary; a second, more capable model
+(Claude Opus 4.8) then
 decides which generated equation is mathematically equivalent to which ground-truth equation, and
 we score the resulting matches with the same metrics. Equivalence judging is expensive, so this
 comparison uses a uniform sample of 48 cases in Setting~A and 50 cases in Setting~B.
@@ -56,7 +58,7 @@ the fraction of $\mathcal{R}_q$ they contain,
   \label{eq:rk}
 \end{equation}
 averaged over cases. Because the window equals the answer size, precision and recall coincide, and
-Eq.~\eqref{eq:rk} is the $R$-precision of the information-retrieval literature.
+Eq.~\eqref{eq:rk} is the $R$-precision of the information-retrieval literature\cite{Manning}.
 % source: evaluate_multi_eq.py case_metrics（recall_at_n_correct = precision_at_C, R-Precision）
 A fixed window would distort the comparison across our case families: Recall@3 caps a case with
 eight ground-truth equations at $3/8$ and rewards a case with one ground-truth equation for two

@@ -26,7 +26,7 @@ $\mathcal{R}_q \subset \mathcal{E}$ that composes the requested model, and the m
 $\mathcal{R}_q$ above every other equation.
 
 A physical model is a system of equations, not a list of independent ones, so we also ask whether a
-selected set can be solved. Let $\mathrm{unknowns}(S) = \bigcup_{e \in S} V(e) \setminus
+selected set can be solved\cite{Hangos}. Let $\mathrm{unknowns}(S) = \bigcup_{e \in S} V(e) \setminus
 \mathcal{I}$ denote the variables that $S$ must determine. We define the degrees of freedom of $S$
 as
 \begin{equation}
@@ -57,9 +57,9 @@ candidates. The score mixes one topic term and one variable term,
   \label{eq:stage1}
 \end{equation}
 where $t_j$ is the text of equation $e_j$, $J(A, B) = |A \cap B| / |A \cup B|$ is the Jaccard
-similarity, and the term-frequency--inverse-document-frequency (TF-IDF) vectors use word unigrams
+similarity, and the term-frequency--inverse-document-frequency (TF-IDF) vectors\cite{Salton} use word unigrams
 and bigrams. We set $k = 50$ in the main experiments. Ranking the whole database by
-Eq.~\eqref{eq:stage1} is a classical information-retrieval method, and we use it unchanged as the
+Eq.~\eqref{eq:stage1} is a classical information-retrieval method\cite{Manning}, and we use it unchanged as the
 baseline of Chapter~5; the second stage reranks only the $k$ candidates it receives.
 
 The window $k$ therefore bounds what the second stage can achieve. Measured over the 1,823
@@ -120,7 +120,7 @@ $g_{\mathrm{Dom}}$  & Domain agreement & $|\{e \in R : \mathrm{dom}(e) = \mathrm
 \end{table}
 
 The latent similarity $f_3$ deserves one remark. We factorize the TF-IDF matrix of all equation
-texts with a truncated singular-value decomposition (SVD) into 256 dimensions, project the query
+texts with a truncated singular-value decomposition (SVD)\cite{LSA} into 256 dimensions, project the query
 into the same space, and take the cosine similarity. Unlike $f_1$, the query text here also lists
 the input and output variable names, so $f_3$ sees both the description and the requested
 variables.
@@ -129,7 +129,7 @@ variables.
 A multilayer perceptron (MLP) maps the ten features to a score. It has two hidden layers of 64
 units with rectified-linear activation and dropout 0.1.
 % source: two_stage_query_conditioned.py class Reranker L197-205（Linear-ReLU-Dropout ×2 + Linear）
-We train it with a pairwise ranking loss: for each ground-truth equation $e^{+}$ of a training case
+We train it with a pairwise ranking loss\cite{LTR}: for each ground-truth equation $e^{+}$ of a training case
 and each of eight sampled non-answer candidates $e^{-}$,
 \begin{equation}
   \ell(e^{+}, e^{-}) = \max\!\big(0,\; \gamma - \mathrm{MLP}(x(q, e^{+})) + \mathrm{MLP}(x(q, e^{-}))\big),
