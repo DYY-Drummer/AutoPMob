@@ -32,16 +32,18 @@ contribution. Sections~\ref{sec:greedyresults} and \ref{sec:dofstopresults} add 
 of Sections~\ref{sec:seq} and \ref{sec:dofstop}.
 
 The external baseline asks a large language model to write the equations directly. Given the same
-query, the model generates the equations it judges necessary; a second call then decides which
-generated equation is mathematically equivalent to which ground-truth equation, and we score the
-resulting matches with the same metrics. Equivalence judging is expensive, so this comparison uses a
-uniform sample of 48 cases in Setting~A and 50 cases in Setting~B.
+query, the model generates the equations it judges necessary; a second, more capable model then
+decides which generated equation is mathematically equivalent to which ground-truth equation, and
+we score the resulting matches with the same metrics. Equivalence judging is expensive, so this
+comparison uses a uniform sample of 48 cases in Setting~A and 50 cases in Setting~B.
 % source: experiments/llm_set_A_equiv_results.json（n=48）, llm_set_B_equiv_results.json（n=50）;
-%         生成 evaluate_llm_dae.py MODEL="claude-opus-4-8", 判定 evaluate_llm_equiv.py
-%         JUDGE_MODEL="claude-opus-4-8"（同一モデル）
-Generator and judge are the same model, which favors the language model rather than our method: a
-model recognizes its own phrasing more readily than a third party would. We therefore read this
-comparison as a conservative one.
+%         生成 claude-sonnet-4-5-20250929（evaluate_llm_dae.py --model 指定。commit 5fbcf65 の
+%         メッセージ「生成はSonnet 4.5」で確認）, 判定 claude-opus-4-8（evaluate_llm_equiv.py）。
+%         旧記載「生成と判定が同一モデル」は誤りのため 2026-08-31 に訂正。
+Because the judge is a different model from the generator, the equivalence decision does not
+depend on the generator recognizing its own phrasing. The comparison still has limits --- about
+50 cases per setting, machine-judged equivalence, and prompts we did not tune --- and
+Section~\ref{sec:limitations} records them.
 
 \section{Evaluation Metrics}
 
@@ -82,7 +84,8 @@ proposed method itself calls no language model at inference time. Language model
 building the data and in the external baseline --- extraction (Gemini 2.5 Pro), the descriptions of
 the synthesized cases, and the generation and equivalence judging of the external baseline --- and
 each call pins a model identifier.
-% source: 抽出 Gemini 2.5 Pro; 合成ケース説明 Anthropic Claude; 外部比較 claude-opus-4-8
+% source: 抽出 Gemini 2.5 Pro; 合成ケース説明 Anthropic Claude; 外部比較は生成
+%         claude-sonnet-4-5-20250929・判定 claude-opus-4-8（別モデル）
 Appendix~A lists every hyperparameter, and the repository versions the scripts, the data, and the
 seeds.
 

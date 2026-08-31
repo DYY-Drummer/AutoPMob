@@ -39,8 +39,9 @@ The distance between the two numbers separates two abilities: the model generate
 the required equations but does not assemble them into the right set of size $K$. Part of the
 remaining gap is structural. Many ground-truth equations are empirical correlations whose
 coefficients were fitted in one source document, and a generator that has not read that document
-cannot reproduce them verbatim; retrieval returns them with their provenance. Recall also that the
-equivalence judge is the generator itself (Section~5.2), which favors the language model. Neither
+cannot reproduce them verbatim; retrieval returns them with their provenance. A separate, more
+capable model judges the equivalence (Section~5.2), so the scoring does not depend on the
+generator recognizing its own output. Neither
 classical retrieval nor direct generation solves the task alone --- the baseline ranks the right
 equations by query--equation relevance only, and the language model composes plausible equations
 without provenance --- and the rest of this chapter explains where and why the proposed combination
@@ -49,9 +50,9 @@ works.
 \begin{table}[h]\centering
 \caption{Recall@K, MAP, and Recall@20 of the three compared methods (baseline and proposed: mean
 $\pm$ SD over 10 stratified splits). LLM direct generation is a single-run evaluation on a uniform
-sample ($n=48$ for A, $n=50$ for B) with equivalence judged by the same model that generated
-(Section~5.2); its rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are not
-available for it.}
+sample ($n=48$ for A, $n=50$ for B) with equivalence judged by a second, more capable language
+model (Section~5.2); its rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are
+not available for it.}
 \label{tab:overall}
 \begin{tabular}{llccc}
 \toprule
@@ -536,7 +537,8 @@ so Section~\ref{sec:bycharacteristics} draws no causal conclusion from it. Third
 split is one scheme selected from 400 candidates; the 10 seeds average over the randomness within
 the scheme, not over schemes. Fourth, the evaluation is database-internal --- retrieval cannot
 find an equation absent from the database --- and the language-model comparison rests on about 50
-cases per setting with generator and judge being the same model. Fifth, the variable-overlap
+cases per setting, scored by a second language model whose equivalence judgments we did not verify
+by hand. Fifth, the variable-overlap
 group alone is highly predictive in this benchmark: permuting it costs 0.68 of Recall@K
 (Section~\ref{sec:mechanism}), so part of the advantage reflects how the cases were constructed
 from variable-sharing equations, and transfer to queries whose variable notation differs from the
