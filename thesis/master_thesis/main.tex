@@ -105,7 +105,7 @@
 \end{center}
 
 \newpage
-%%%%% Abstract（初稿。全章完成後に書き直す） %%%%%
+%%%%% Abstract（2026-09-07 全章本文化後に書き直し。数値は第 6 章と同じ一次データ） %%%%%
 \thispagestyle{empty}
 {\huge \bf Abstract}
 \\
@@ -113,17 +113,24 @@
 \\
 \\
 \\
-Physical models are essential for digital twins and play an important role in process design and operation in the process industry.
-Building a physical model requires engineers to survey a vast number of documents and to assemble the equations scattered across them into a solvable system.
-To automate this work, we aim to develop an automated physical model builder (AutoPMoB).
-This study addresses one of its core tasks: given a description of the desired model and its input and output variables, retrieve the set of equations that composes the model from an equation database built from multiple documents.
+Physical models underpin process design, control, and digital twins, but building one for a process outside the libraries of modeling tools requires an engineer to collect the equations scattered across many documents and to assemble them into a solvable system.
+Our group aims to automate this work with an automated physical model builder (AutoPMoB).
+This thesis addresses one of its steps: given a description of the desired model and its input and output variables, retrieve the set of equations that composes the model from an equation database built from multiple documents.
+The answer is a set rather than a list --- a physical model is a system of equations that share variables and close with zero degrees of freedom --- so a candidate must be judged by its relation to the equations already selected, not by its relevance to the query alone.
 
 We propose a two-stage retrieval method.
-The first stage narrows candidates with seven query--equation features such as text similarity, and the second stage reranks them with three set-aware features that evaluate each candidate against the already selected set: complementarity, coherence, and domain agreement.
-A self-terminating criterion further lets the method stop when the selected equations form a closed system with zero degrees of freedom, returning a solvable set without knowing the number of equations in advance.
-% source: experiments/strat_A.json results.*.Recall@K_correct
-On a database of 11,146 equations from 361 sources, the proposed method improves Recall@K from 0.521 to 0.743 against a classical information-retrieval baseline and also outperforms direct generation by a large language model.
-Analyses show that the improvement comes from the set-aware features that capture how equations share variables across documents.
+The first stage narrows the database by text similarity and variable overlap, and the second stage reranks the candidates with a multilayer perceptron that reads, beside seven query--equation features, three set-aware features that compare each candidate with the equations already selected: complementarity, coherence, and domain agreement.
+A learned greedy variant builds the set one equation at a time, and a self-terminating criterion (DoF-stop) halts retrieval when the selected set closes as a system, so the method returns a solvable set without knowing the number of equations in advance.
+To evaluate the method, we built a database of 11,146 equations from 361 sources and 2,838 test cases, 1,000 of which are synthesized closed systems whose answers are solvable by construction, and we split the sources so that no document leaks between training and testing.
+
+% source: experiments/strat_A.json / strat_B.json（0.5206→0.7429, 0.4661→0.6890）;
+%         external_baselines_stats.json（A ≤ 0.6020, B ≤ 0.5548）; llm_set_*_equiv_results.json
+%         （0.2258–0.3003）; greedy_3way_stats.json; stage1_weight_stats.json（0.7799）;
+%         dof_stop_stats.json（closed_dof 0.9363 / 0.8826 vs oracle 0.8651 / 0.7806）
+The method raises Recall@K from 0.521 to 0.743 in the mixed setting and from 0.466 to 0.689 in the synthesized-only setting, on all 10 stratified splits; BM25 and dense retrieval with E5 stay at or below 0.602 and 0.555 even at their best mixing weights, and direct generation by a large language model reaches 0.23--0.30.
+Analyses attribute the gain to the variables that equations share, whereas topical similarity becomes redundant once the first stage has screened the candidates.
+Two interventions predicted by the analyses confirmed the mechanism: learned greedy selection recovered the saturation on the hardest cases, and a variable-weighted first stage raised Recall@K to 0.780.
+DoF-stop returned closed systems for 94\% of the cases in the mixed setting and 88\% in the synthesized-only setting, more often than an oracle told the answer size.
 
 \newpage
 %%%%% 目次 %%%%%
@@ -196,15 +203,15 @@ S. Kato, M. Kano.
 \ Prototype of Automated Physical Model Builder: Challenges and Opportunities.
 \ {\it Computer Aided Chemical Engineering}, {\bf 53}, pp.2839-2844, 2024.
 
-\bibitem{ProcessBERT}
-S. Kato, K. Kanegami, M. Kano.
-\ ProcessBERT: A Pre-trained Language Model for Judging Equivalence of Variable Definitions in Process Models.
-\ {\it IFAC-PapersOnLine}, {\bf 55}, pp.957-962, 2022.
-
 \bibitem{VARAT}
 S. Kato, M. Kano.
 \ VARAT: Variable Annotation Tool for Documents on Manufacturing Processes.
 \ {\it Journal of Chemical Engineering of Japan}, {\bf 58}, 2454461, 2025.
+
+\bibitem{ProcessBERT}
+S. Kato, K. Kanegami, M. Kano.
+\ ProcessBERT: A Pre-trained Language Model for Judging Equivalence of Variable Definitions in Process Models.
+\ {\it IFAC-PapersOnLine}, {\bf 55}, pp.957-962, 2022.
 
 \bibitem{DAEEquiv}
 S. Kato, C. Zhang, M. Kano.
@@ -321,6 +328,18 @@ Anthropic.
 \ Introducing Claude Sonnet 4.5.
 \ \url{https://www.anthropic.com/news/claude-sonnet-4-5}.
 \ (Accessed on 2026/08/31).
+
+\bibitem{ClaudeOpus48}
+Anthropic.
+\ Introducing Claude Opus 4.8.
+\ \url{https://www.anthropic.com/news/claude-opus-4-8}.
+\ (Accessed on 2026/09/07).
+
+\bibitem{ClaudeFable51}
+Anthropic.
+\ Claude Fable 5.1.
+\ \url{https://www.anthropic.com/claude/fable}.
+\ (Accessed on 2026/09/07).
 
 \bibitem{E5}
 L. Wang, N. Yang, X. Huang, et al.

@@ -58,10 +58,15 @@ Output ONLY a JSON object, no prose, no code fences:
 with exactly {k} integers (each is a generated equation number, or 0)."""
 
 
-def judge(client, model, inp, out, correct, gen, k, verbose=False):
+def build_prompt(inp, out, correct, gen, k):
+    """判定プロンプトを組み立てる（第 2 判定器 judge_second_opinion.py と共有。B1, 2026-09-07）."""
     cstr = "\n".join(f"  C{i+1}: {e}" for i, e in enumerate(correct))
     gstr = "\n".join(f"  G{i+1}: {e}" for i, e in enumerate(gen)) or "  (none)"
-    prompt = JUDGE.format(inp=inp, out=out, correct=cstr, gen=gstr, k=k)
+    return JUDGE.format(inp=inp, out=out, correct=cstr, gen=gstr, k=k)
+
+
+def judge(client, model, inp, out, correct, gen, k, verbose=False):
+    prompt = build_prompt(inp, out, correct, gen, k)
     for attempt in range(4):
         try:
             resp = client.messages.create(

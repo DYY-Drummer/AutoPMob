@@ -1,0 +1,182 @@
+{
+ "tag": "fable51",
+ "labels": {
+  "set_A": {
+   "n_cases": 48,
+   "n_missing": 0,
+   "n_pairs": 183,
+   "matched": {
+    "agree_rate": 0.8797814207650273,
+    "kappa": 0.720881863560732,
+    "ref_positive_rate": 0.36065573770491804,
+    "new_positive_rate": 0.25136612021857924,
+    "table": {
+     "both": 45,
+     "ref_only": 21,
+     "new_only": 1,
+     "neither": 116
+    }
+   },
+   "topk": {
+    "agree_rate": 0.907103825136612,
+    "kappa": 0.7231960138802385,
+    "ref_positive_rate": 0.25136612021857924,
+    "new_positive_rate": 0.16939890710382513,
+    "table": {
+     "both": 30,
+     "ref_only": 16,
+     "new_only": 1,
+     "neither": 136
+    }
+   },
+   "index_agree_rate": 0.8688524590163934,
+   "ref": {
+    "Recall@K_correct": 0.25446428571428575,
+    "coverage": 0.41875
+   },
+   "new": {
+    "Recall@K_correct": 0.19796626984126986,
+    "coverage": 0.337921626984127
+   },
+   "delta_new_minus_ref": {
+    "Recall@K_correct": -0.056498015873015894,
+    "coverage": -0.08082837301587303
+   },
+   "judge_ref": "claude-opus-4-8",
+   "judge_new": "claude-fable-5-1",
+   "setting": "A"
+  },
+  "set_B": {
+   "n_cases": 50,
+   "n_missing": 0,
+   "n_pairs": 279,
+   "matched": {
+    "agree_rate": 0.8853046594982079,
+    "kappa": 0.7081208316987054,
+    "ref_positive_rate": 0.31899641577060933,
+    "new_positive_rate": 0.20430107526881722,
+    "table": {
+     "both": 57,
+     "ref_only": 32,
+     "new_only": 0,
+     "neither": 190
+    }
+   },
+   "topk": {
+    "agree_rate": 0.910394265232975,
+    "kappa": 0.7146188781146436,
+    "ref_positive_rate": 0.23655913978494625,
+    "new_positive_rate": 0.14695340501792115,
+    "table": {
+     "both": 41,
+     "ref_only": 25,
+     "new_only": 0,
+     "neither": 213
+    }
+   },
+   "index_agree_rate": 0.8853046594982079,
+   "ref": {
+    "Recall@K_correct": 0.22577777777777774,
+    "coverage": 0.3427063492063492
+   },
+   "new": {
+    "Recall@K_correct": 0.15005555555555555,
+    "coverage": 0.23376984126984127
+   },
+   "delta_new_minus_ref": {
+    "Recall@K_correct": -0.07572222222222219,
+    "coverage": -0.10893650793650791
+   },
+   "judge_ref": "claude-opus-4-8",
+   "judge_new": "claude-fable-5-1",
+   "setting": "B"
+  },
+  "set_full": {
+   "n_cases": 49,
+   "n_missing": 0,
+   "n_pairs": 146,
+   "matched": {
+    "agree_rate": 0.8698630136986302,
+    "kappa": 0.7295769155780855,
+    "ref_positive_rate": 0.4452054794520548,
+    "new_positive_rate": 0.3287671232876712,
+    "table": {
+     "both": 47,
+     "ref_only": 18,
+     "new_only": 1,
+     "neither": 80
+    }
+   },
+   "topk": {
+    "agree_rate": 0.9178082191780822,
+    "kappa": 0.7567342404887532,
+    "ref_positive_rate": 0.2534246575342466,
+    "new_positive_rate": 0.17123287671232876,
+    "table": {
+     "both": 25,
+     "ref_only": 12,
+     "new_only": 0,
+     "neither": 109
+    }
+   },
+   "index_agree_rate": 0.8698630136986302,
+   "ref": {
+    "Recall@K_correct": 0.30030774214447686,
+    "coverage": 0.5667476514415289
+   },
+   "new": {
+    "Recall@K_correct": 0.25085034013605445,
+    "coverage": 0.4628684807256236
+   },
+   "delta_new_minus_ref": {
+    "Recall@K_correct": -0.04945740200842241,
+    "coverage": -0.10387917071590536
+   },
+   "judge_ref": "claude-opus-4-8",
+   "judge_new": "claude-fable-5-1",
+   "setting": "full"
+  }
+ },
+ "pooled": {
+  "n_cases": 147,
+  "n_missing": 0,
+  "n_pairs": 608,
+  "matched": {
+   "agree_rate": 0.8799342105263158,
+   "kappa": 0.7210798853752954,
+   "ref_positive_rate": 0.3618421052631579,
+   "new_positive_rate": 0.24835526315789475,
+   "table": {
+    "both": 149,
+    "ref_only": 71,
+    "new_only": 2,
+    "neither": 386
+   }
+  },
+  "topk": {
+   "agree_rate": 0.9095394736842105,
+   "kappa": 0.7221483647965966,
+   "ref_positive_rate": 0.2450657894736842,
+   "new_positive_rate": 0.15789473684210525,
+   "table": {
+    "both": 95,
+    "ref_only": 54,
+    "new_only": 1,
+    "neither": 458
+   }
+  },
+  "index_agree_rate": 0.875,
+  "ref": {
+   "Recall@K_correct": 0.2599881222330202,
+   "coverage": 0.44221736313573046
+  },
+  "new": {
+   "Recall@K_correct": 0.1958967714069755,
+   "coverage": 0.34414480077745385
+  },
+  "delta_new_minus_ref": {
+   "Recall@K_correct": -0.0640913508260447,
+   "coverage": -0.0980725623582766
+  }
+ }
+}

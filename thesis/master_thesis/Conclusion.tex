@@ -1,15 +1,58 @@
 % ============================================================
-% Chapter 7: Conclusion — OUTLINE (Phase 1)
+% Chapter 7: Conclusion — 本文（Phase 2, 2026-09-07）
+% 骨子版（Phase 1, P1-P2）は git 履歴を参照。
+% 構成: 何をしたか → 何が分かったか（貢献 3 点に対応）→ 限界と今後の課題 3 方向。
+% 数値は第 6 章と同じ一次データ（% source: を参照）。第 1 段の再設計は A1 で実施済みのため
+% 将来課題から外し、第 2 段落の介入として記した（ギャップ分析 W3）。
+% 設計書: docs/superpowers/specs/2026-09-07-w3-conclusion-abstract-design.md
 % ============================================================
-\begin{itemize}
-  \item \textbf{P1.} This thesis proposed and validated set-aware retrieval of equation sets for automated physical model building.
-  \begin{itemize}
-    \item Contributions: (1) a solvable-by-construction dataset (11,146 equations, synthesized closed-system cases, stratified source-disjoint split); (2) a set-aware two-stage retrieval method (+0.22 Recall@K over classical IR, superior to BM25, dense (E5) retrieval, and LLM direct generation); (3) a mechanism analysis with causal confirmation via learned greedy selection and a closure guarantee via self-terminating DoF-stop.
-  \end{itemize}
-  \item \textbf{P2.} Future work follows three directions.
-  \begin{itemize}
-    \item Scheduled sampling to close the remaining gap between teacher forcing and inference-time behavior.
-    \item Validation on real modeling tasks beyond the database, including equations absent from it.
-    \item Integration into the AutoPMoB pipeline together with formula extraction and variable-equivalence judgment.
-  \end{itemize}
-\end{itemize}
+
+This thesis formulated one step of automated physical model building as a retrieval problem and
+solved it with a method that treats the answer as a set. Given a description of the desired model
+and its input and output variables, the method retrieves, from a database of 11,146 equations
+drawn from 361 sources, the equations that compose the model. Because a physical model is a
+system of equations that share variables and close with zero degrees of freedom, the method
+scores each candidate not only by its relevance to the query but by its relation to the equations
+already selected: a first stage narrows the database by text similarity and variable overlap, and
+a second stage reranks the candidates with a multilayer perceptron that reads three set-aware
+features --- complementarity, coherence, and domain agreement --- beside seven query--equation
+features. A learned greedy variant builds the set one equation at a time, and a self-terminating
+criterion, DoF-stop, halts retrieval when the selected set closes as a system.
+
+The thesis makes three contributions. First, it provides a benchmark on which a failure can be
+attributed to the method: 1,000 of the 2,838 cases are synthesized by a rule that grows a closed
+system from an ordinary differential equation, so a solvable answer exists by construction, and a
+stratified source-disjoint split with 10 seeds measures generalization to unseen documents.
+Second, the set-aware two-stage method raises Recall@K from 0.521 to 0.743 in the mixed setting
+and from 0.466 to 0.689 in the synthesized-only setting, on all 10 splits; BM25 and dense
+retrieval with E5 stay at or below 0.602 and 0.555 even at their best mixing weights, and direct
+generation by a large language model reaches 0.23--0.30. Third, the thesis explains the gain
+rather than only reporting it. Ablation and permutation importance agree that the variable
+overlap between an equation and the query --- and, among the set-aware features, the two that
+read shared variables --- carries the improvement, whereas topical similarity, informative over
+the whole database, becomes redundant once the first stage has screened the candidates. Two
+predictions drawn from this analysis were tested by intervention and confirmed: learned greedy
+selection recovered the saturation of the static reference set on the hardest cases ($+0.056$
+at eight or more ground-truth equations), and a variable-weighted first stage raised the
+candidate coverage and, with it, the end metric to 0.780. DoF-stop returned closed systems for
+94\% of the cases in the mixed setting and 88\% in the synthesized-only setting, more often than
+an oracle told the answer size (87\% and 78\%), at the same exact-match rate.
+% source: experiments/strat_A.json / strat_B.json（0.5206→0.7429, 0.4661→0.6890）;
+%         external_baselines_stats.json best_per_scorer（A ≤ 0.6020, B ≤ 0.5548）;
+%         llm_set_A/B/full_equiv_results.json（0.2258–0.3003）; feature_x_difficulty_stats.json /
+%         pfi_results.json（変数系 +0.678 / 話題系 +0.006）; greedy_3way_stats.json
+%         tests_hard_X8plus（+0.056）; stage1_weight_stats.json（0.7799）; dof_stop_stats.json
+%         closed_dof 0.9363 (A) / 0.8826 (B) vs closed_oracleK 0.8651 / 0.7806, set_exact 同一
+
+Three directions follow from the limitations of Section~\ref{sec:limitations}. First, learned
+greedy selection still trains with teacher forcing, and the ranking errors that remain after the
+two interventions --- equivalent equations from different documents and equations that determine
+the wrong variable --- lie outside every current feature; scheduled sampling addresses the former,
+and a feature that encodes which variable an equation determines addresses the latter. Second,
+the evaluation is database-internal and the variable notation of the queries matches the
+database; validation on real modeling tasks, including requests whose equations are absent from
+the database or written in a different notation, will show how far the results carry. Third, the
+method should be integrated into the AutoPMoB pipeline, downstream of equation extraction and
+variable-equivalence judgment and upstream of a simulator, so that a retrieved closed set can be
+solved and compared with plant data --- the test that automated model building must finally
+pass.

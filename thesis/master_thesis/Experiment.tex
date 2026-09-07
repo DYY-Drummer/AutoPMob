@@ -34,7 +34,7 @@ of Sections~\ref{sec:seq} and \ref{sec:dofstop}.
 The external baseline asks a large language model (Claude Sonnet 4.5\cite{ClaudeSonnet45}) to write
 the equations directly. Given the same
 query, the model generates the equations it judges necessary; a second, more capable model
-(Claude Opus 4.8) then
+(Claude Opus 4.8\cite{ClaudeOpus48}) then
 decides which generated equation is mathematically equivalent to which ground-truth equation, and
 we score the resulting matches with the same metrics. Equivalence judging is expensive, so this
 comparison uses a uniform sample of 48 cases in Setting~A and 50 cases in Setting~B.
@@ -43,9 +43,18 @@ comparison uses a uniform sample of 48 cases in Setting~A and 50 cases in Settin
 %         メッセージ「生成はSonnet 4.5」で確認）, 判定 claude-opus-4-8（evaluate_llm_equiv.py）。
 %         旧記載「生成と判定が同一モデル」は誤りのため 2026-08-31 に訂正。
 Because the judge is a different model from the generator, the equivalence decision does not
-depend on the generator recognizing its own phrasing. The comparison still has limits --- about
-50 cases per setting, machine-judged equivalence, and prompts we did not tune --- and
-Section~\ref{sec:limitations} records them.
+depend on the generator recognizing its own phrasing. To check the judge itself, a second judge
+of a later generation, Claude Fable 5.1\cite{ClaudeFable51}, re-judged all 608 equation pairs of
+the three samples (Settings A and B and the full collection) with the identical prompt. The two
+judges agree on 88.0\% of the pairs (Cohen's $\kappa = 0.72$), and the disagreements run one
+way: of the 73 pairs they decide differently, the first judge accepts 71 that the second rejects.
+Section~\ref{sec:overall} therefore reports the language-model scores under both judges, and
+Table~\ref{tab:overall} carries the more generous first-judge values. The comparison still has
+limits --- about 50 cases per setting, machine-judged equivalence, and prompts we did not tune
+--- and Section~\ref{sec:limitations} records them.
+% source: experiments/judge_agreement_stats.json pooled（n_pairs 608, matched agree_rate 0.880,
+%         kappa 0.721, table ref_only 71 / new_only 2）; 第 2 判定器 judge_second_opinion.py
+%         （claude-fable-5-1, adaptive thinking, fallbacks なし, 拒否 0, 欠測 0）
 
 Two more external baselines test whether a stronger text scorer alone would close the gap. The
 first replaces the TF-IDF cosine of Eq.~\eqref{eq:stage1} with BM25\cite{BM25} ($k_1 = 1.5$,

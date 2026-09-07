@@ -23,6 +23,7 @@ BM25 IDF & $\ln\{1 + (N - n + 0.5)/(n + 0.5)\}$ \\
 E5 baseline & \texttt{intfloat/e5-base-v2}, mean pooling, $\ell_2$ norm \\
 E5 maximum input length & 512 tokens \\
 Text-score normalization (BM25, E5) & per-query min--max over the database \\
+Equivalence judges (LLM baseline) & \texttt{claude-opus-4-8} (Table 3); \texttt{claude-fable-5-1} (check) \\
 Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
 \bottomrule
 \end{tabular}

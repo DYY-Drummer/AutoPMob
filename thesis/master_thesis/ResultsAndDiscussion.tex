@@ -33,9 +33,13 @@ LLM direct generation stays far below both learned rerankers. With equivalence-b
 reaches Recall@K of 0.254 in Setting~A ($n = 48$), 0.226 in Setting~B ($n = 50$), and 0.300 on the
 full collection ($n = 49$), while its rank-free coverage --- the fraction of ground-truth
 equations for which \emph{some} generated equation is judged equivalent, ignoring rank --- reaches
-0.419, 0.343, and 0.567.
+0.419, 0.343, and 0.567. Under the stricter second judge of Section~5.2 the same generations
+score 0.198, 0.150, and 0.251 (coverage 0.338, 0.234, and 0.463), so the choice of judge moves
+the level but not the conclusion.
 % source: llm_set_A_equiv_results.json（0.2545/0.4188, n=48）, llm_set_B_equiv_results.json
-%         （0.2258/0.3427, n=50）, llm_set_full_equiv_results.json（0.3003/0.5667, n=49）
+%         （0.2258/0.3427, n=50）, llm_set_full_equiv_results.json（0.3003/0.5667, n=49）;
+%         第 2 判定器 llm_set_*_equiv_results_fable51.json（A 0.1980/0.3379, B 0.1501/0.2338,
+%         full 0.2509/0.4629）
 The distance between the two numbers separates two abilities: the model generates a fair share of
 the required equations but does not assemble them into the right set of size $K$. Part of the
 remaining gap is structural. Many ground-truth equations are empirical correlations whose
@@ -86,9 +90,9 @@ over 10 stratified splits). BM25 and E5 mix their text score with the variable-o
 (``variables'') at the mixing weight that maximizes their mean Recall@K over the 10 splits ($w_{\mathrm{t}} = 0.1$
 in both settings), a choice made on the test splits that favors them; the E5 query appends the
 variable symbols to the description (Section~5.2). LLM direct generation is a single-run evaluation on a uniform
-sample ($n=48$ for A, $n=50$ for B) with equivalence judged by a second, more capable language
-model (Section~5.2); its rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are
-not available for it.}
+sample ($n=48$ for A, $n=50$ for B) with equivalence judged by a language model other than the
+generator (Section~5.2; a stricter second judge lowers the two values to 0.198 and 0.150); its
+rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are not available for it.}
 \label{tab:overall}
 \small
 \begin{tabular}{llccc}
@@ -581,8 +585,8 @@ so Section~\ref{sec:bycharacteristics} draws no causal conclusion from it. Third
 split is one scheme selected from 400 candidates; the 10 seeds average over the randomness within
 the scheme, not over schemes. Fourth, the evaluation is database-internal --- retrieval cannot
 find an equation absent from the database --- and the language-model comparison rests on about 50
-cases per setting, scored by a second language model whose equivalence judgments we did not verify
-by hand. Fifth, the variable-overlap
+cases per setting, scored by a language model's equivalence judgments, which we cross-checked
+with a second judge (88\% agreement, $\kappa = 0.72$; Section~5.2) but did not verify by hand. Fifth, the variable-overlap
 group alone is highly predictive in this benchmark: permuting it costs 0.68 of Recall@K
 (Section~\ref{sec:mechanism}), so part of the advantage reflects how the cases were constructed
 from variable-sharing equations, and transfer to queries whose variable notation differs from the

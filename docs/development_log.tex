@@ -358,6 +358,54 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-09-07(5)（B1: LLM 等価判定の検証——第 2 判定器 Claude Fable 5.1 との一致度）：
+    LLM 直接生成の採点が判定器 claude-opus-4-8 の等価判定に依存する点（\S6.9 第 4 項）を検証するため、
+    本人指定の第 2 判定器 \texttt{claude-fable-5-1} に、第 1 判定器と\textbf{同じ 147 ケース・同じ順序・同じプロンプト}
+    （\texttt{evaluate\_llm\_equiv.py} から \texttt{build\_prompt()} を切り出して共有、生成式は上位 12 件）で
+    608 ペア（設定 A 183・B 279・全体 146）を再判定させた（\texttt{judge\_second\_opinion.py}、adaptive thinking、
+    fallbacks は使わない＝拒否時に第 1 判定器へ落ちるのを防ぐ、拒否 0・欠測 0、全呼び出し \texttt{claude-fable-5-1} で応答、
+    入力 206,296・出力 50,033 トークン、約 4.6 USD、3 ラベル並列で 7.5 分）。
+    一致度は \texttt{analyze\_judge\_agreement.py}（pytest 4 本、Cohen's $\kappa$ は sklearn と照合）で算出し
+    \texttt{experiments/judge\_agreement\_stats.json} に保存した。
+    \textbf{結果（608 ペア）}：「等価な生成式あり」ラベルの一致率 0.880・$\kappa=0.721$、
+    「上位 K 件内に等価式あり」（Recall@K の判定単位）の一致率 0.910・$\kappa=0.722$、番号まで同じ 0.875。
+    不一致 73 ペアのうち 71 は「Opus 4.8 は等価と認め Fable 5.1 は認めない」で\textbf{第 2 判定器のほうが厳しい}。
+    第 2 判定器のもとでの LLM 直接生成は Recall@K 設定 A 0.198（第 1 判定器 0.254）・B 0.150（0.226）・全体 0.251（0.300）、
+    coverage 0.338 / 0.234 / 0.463（0.419 / 0.343 / 0.567）。判定器で水準は動くが、提案手法 0.743 / 0.689 との差の結論は変わらない
+    （むしろ広がる＝表 3 の第 1 判定器の値は LLM 側に寛大な値）。
+    判断規則（$\kappa \ge 0.6$ だが Recall@K の差 $> 0.03$）に従い、修論に両判定器の値を併記した：
+    \S5.2 に検証の段落（608 ペア・一致率・$\kappa$・不一致の向き）、\S6.1 の LLM 段落に第 2 判定器の値、
+    表 3 キャプションに「第 2 判定器では 0.198 / 0.150」、\S6.9 第 4 項を「第 2 判定器で照合したが人手検証はなし」に、
+    付録 A.1 に判定器 2 種の行、参考文献に Claude Opus 4.8（発表ページ）と Claude Fable 5.1（製品ページ、いずれも実在を確認）を追加し
+    初出順（Sonnet 4.5 $\to$ Opus 4.8 $\to$ Fable 5.1 $\to$ E5）を維持。第 1 章 P6 の「a second model judges」は「a separate model」に修正。
+    あわせて、第 1 章の本文化（W2）で VARAT が ProcessBERT より先に初出するようになっていたため参考文献の 6・7 番を入れ替え、
+    全 33 件が aux の \texttt{\textbackslash citation} 順と完全一致することを機械的に再確認した。
+    \texttt{latexmk -gg} exit 0・30 ページ・未定義参照なし。人手検証（本人が 20--30 ペアを判定）は未実施＝残す。
+    設計書 \texttt{docs/superpowers/specs/2026-09-07-b1-second-judge-design.md}。
+  \item 2026-09-07(4)（W3: 修論第 7 章 Conclusion の本文化と Abstract の書き直し）：
+    第 7 章を骨子（貢献 3 点＋将来 3 方向）から 3 段落に本文化した：(1) 何をしたか（課題の定式化・2 段階＋集合特徴・学習版逐次選択・DoF-stop）、
+    (2) 何が分かったか＝貢献 3 点（可解性を保証したベンチマーク／Recall@K 0.521$\to$0.743・0.466$\to$0.689、BM25・E5 の最良混合 $\le 0.602/0.555$、LLM 0.23--0.30／
+    機構＝変数の重なり・話題は第 1 段の後で冗長、介入 2 回＝学習版逐次 $+0.056$（X$\ge$8）・第 1 段再設計 0.780、DoF-stop 閉包率 94\%/88\% vs oracle 87\%/78\%）、
+    (3) 限界からの今後の課題 3 方向（scheduled sampling と「式がどの変数を決めるか」の新特徴／DB 外の式・異なる記法を含む実タスクでの検証／AutoPMoB パイプラインへの統合＝抽出・等価判定の下流、シミュレータの上流）。
+    「第 1 段の再設計」は A1 で実施済みのため将来課題から外し介入として記載（ギャップ分析 W3 の指示）。
+    \textbf{Abstract} を初稿から全面書き直し（3 段落・約 300 語: 問題と課題／手法とデータ／結果・機構・介入・自己停止）。
+    閉包率の表記は第 1 章・第 7 章・Abstract で「94\% in the mixed setting and 88\% in the synthesized-only setting（oracle 87\% / 78\%）」に統一
+    （第 1 章 P6 の「0.88 and 0.94」は設定 B$\to$A 順で紛らわしかったため設定名付きに修正）。数値は第 6 章と同じ一次データ（\texttt{\% source:} 付き）。
+    \texttt{latexmk -gg} exit 0・30 ページ・未定義参照なし・Overfull は既存 1 件のみ。これで第 1--7 章と Abstract の全てが本文化された。
+    設計書 \texttt{docs/superpowers/specs/2026-09-07-w3-conclusion-abstract-design.md}。残: B1（LLM 判定の検証）・B2（K\_REF 感度）・W4（付録転記）・W5（圧縮設定復元）・W6（D チェック）。
+  \item 2026-09-07(3)（W2: 修論第 1 章 Introduction の本文化と図 1 の新規作成）：
+    骨子 P1--P8 を 8 段落に本文化した（P1 物理モデルの役割と構築の負担／P2 AutoPMoB の 4 段階と要素技術／
+    P3 本研究の課題と「集合として評価しなければならない理由」を CSTR の 3 式（物質収支 ODE・反応速度式 $r_A = kC_A$・アレニウスの式 $k = A\exp(-E/RT)$、未知数 $C_A, r_A, k$ の 3 つ＝自由度ゼロ）で具体化／
+    P4 手法（第 1 段の混合スコア・第 2 段の 10 特徴 MLP と集合特徴 3 つの言葉での定義・学習版逐次選択・DoF-stop）／
+    P5 データと層化分割／P6 結果（古典 IR $+0.22$、BM25・E5 の最良混合 $\le 0.602 / 0.555$、LLM 0.23--0.30、機構＝変数の重なり、介入 2 回、DoF-stop の閉包率）／
+    P7 貢献 3 点／P8 章構成）。骨子の常套句 "play an important role" は具体（設計・制御・デジタルツイン）に置換し、
+    略語は初出で展開（CSTR・ODE・MLP・LLM・DoF）、数値は全て \texttt{experiments/*.json} と照合して \texttt{\% source:} を付けた。
+    \textbf{図 1}（\texttt{figures/fig\_autopmob\_overview.pdf/.png}）を \texttt{generate\_figures\_thesis.py} の \texttt{overview()} で新規作成：
+    (a) AutoPMoB の 4 段階（Documents $\to$ Extraction $\to$ Equivalence judgment $\to$ \textbf{Equation-set retrieval (this study)} $\to$ Physical model）、
+    (b) 本研究の入出力（Query＝説明文＋入出力変数 $\to$ 11,146 式・361 source の DB $\to$ 文献別に色分けした CSTR の 3 式を共有変数 $r_A$・$k$ の辺で結び「3 equations, 3 unknowns: DoF 0」）。
+    辺は共有変数に厳密対応（加藤ルール B1/B3）、$\tau$ は持ち込まない。pytest 2 本（生成物とラベル・辺ラベルの検証）。
+    \texttt{latexmk -gg} exit 0・30 ページ（28 $\to$ 30）・未定義参照なし・Overfull は既存 1 件のみ。図は章 2 ページ目の上部に配置された（圧縮設定解除後に再確認）。
+    設計書 \texttt{docs/superpowers/specs/2026-09-07-w2-introduction-design.md}。残: W3（第 7 章と Abstract）。
   \item 2026-09-07(2)（A2: 外部ベースラインの補強——BM25・密ベクトル検索 E5 を修論の評価枠で測定）：
     ギャップ分析 A2 に対応し、古典 IR（TF-IDF 0.7＋変数 Jaccard 0.3、全 DB 順位付け、学習なし）の文章スコアを
     BM25（自前実装、$k_1=1.5$, $b=0.75$, 単語ユニグラム, Lucene 形式の非負 IDF）と

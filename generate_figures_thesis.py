@@ -619,6 +619,159 @@ def stage1_redesign():
     save(fig, "fig_stage1_redesign")
 
 
+# ---------------------------------------------------------------------------
+# Fig. 1: AutoPMoB overview and the position of this study (schematic, no data)
+# 仕様: docs/superpowers/specs/2026-09-07-w2-introduction-design.md §3
+# ---------------------------------------------------------------------------
+C_DOC = ["#1a73e8", "#e37400", "#188038"]   # document colors for the retrieved set
+OVERVIEW_EDGE_LABELS = [r"$r_A$", r"$k$"]   # shared variables: ODE–rate law, rate law–Arrhenius
+
+
+def _rbox(ax, x0, y0, w, h, text, fc="#f1f3f4", ec="#5f6368", lw=1.0, color="#202124",
+          fontsize=7.5, weight="normal", aspect=1.0, rounding=1.5, ha="center", va="center",
+          zorder=2):
+    """角丸ボックス＋中央テキスト（データ座標）."""
+    from matplotlib.patches import FancyBboxPatch
+    box = FancyBboxPatch((x0, y0), w, h, boxstyle=f"round,pad=0,rounding_size={rounding}",
+                         fc=fc, ec=ec, lw=lw, mutation_aspect=aspect, zorder=zorder)
+    ax.add_patch(box)
+    if text:
+        tx = x0 + w / 2 if ha == "center" else x0 + 1.5
+        ax.text(tx, y0 + h / 2, text, ha=ha, va=va, fontsize=fontsize, color=color,
+                weight=weight, zorder=zorder + 1, linespacing=1.25)
+    return box
+
+
+def _arrow(ax, p, q, color="#5f6368", lw=1.0, scale=9, style="-|>", zorder=3):
+    from matplotlib.patches import FancyArrowPatch
+    a = FancyArrowPatch(p, q, arrowstyle=style, mutation_scale=scale, color=color, lw=lw,
+                        zorder=zorder, shrinkA=0, shrinkB=0)
+    ax.add_patch(a)
+    return a
+
+
+def _aspect(fig, ax):
+    """データ単位 1 の縦横比（mutation_aspect 用）: y 単位のインチ長 / x 単位のインチ長."""
+    bb = ax.get_position()
+    w_in = bb.width * fig.get_figwidth(); h_in = bb.height * fig.get_figheight()
+    (x0, x1), (y0, y1) = ax.get_xlim(), ax.get_ylim()
+    return (h_in / (y1 - y0)) / (w_in / (x1 - x0))
+
+
+def overview():
+    """Fig. 1: (a) AutoPMoB の 4 段階と本研究の段階、(b) 本研究の入出力（CSTR の閉じた 3 式）."""
+    fig = plt.figure(figsize=(7.2, 4.9))
+    ax_a = fig.add_axes([0.01, 0.715, 0.98, 0.275])
+    ax_b = fig.add_axes([0.01, 0.01, 0.98, 0.665])
+    for ax in (ax_a, ax_b):
+        ax.set_xlim(0, 100); ax.set_ylim(0, 100); ax.axis("off")
+    asp_a, asp_b = _aspect(fig, ax_a), _aspect(fig, ax_b)
+
+    # ---------- (a) AutoPMoB pipeline ----------
+    ax_a.text(0.5, 97, "(a) AutoPMoB pipeline", fontsize=8.5, weight="bold", va="top", ha="left")
+    stages = [
+        ("Documents", "papers, textbooks"),
+        ("Extraction", "equations, variables, data"),
+        ("Equivalence\njudgment", "variables, equations"),
+        ("Equation-set\nretrieval", "this study"),
+        ("Physical\nmodel", "closed system"),
+    ]
+    bw, bh, y0 = 17.5, 58, 12
+    centers = [10.5, 30.25, 50, 69.75, 89.5]
+    for i, (cx, (title, sub)) in enumerate(zip(centers, stages)):
+        this = (i == 3)
+        _rbox(ax_a, cx - bw / 2, y0, bw, bh, "",
+              fc=C_PROP if this else "#f1f3f4", ec=C_PROP if this else "#5f6368",
+              lw=1.6 if this else 1.0, aspect=asp_a, rounding=2.5)
+        col = "white" if this else "#202124"
+        ax_a.text(cx, y0 + bh * 0.66, title, ha="center", va="center", fontsize=7.4,
+                  weight="bold" if this else "normal", color=col, zorder=4, linespacing=1.15)
+        ax_a.text(cx, y0 + bh * 0.22, sub, ha="center", va="center", fontsize=6.8,
+                  color=col, style="italic" if this else "normal", zorder=4)
+    for cx0, cx1 in zip(centers[:-1], centers[1:]):
+        _arrow(ax_a, (cx0 + bw / 2 + 0.3, y0 + bh / 2), (cx1 - bw / 2 - 0.3, y0 + bh / 2))
+
+    # ---------- (b) This study ----------
+    ax_b.text(0.5, 98.5, "(b) This study: retrieving a closed equation set", fontsize=8.5,
+              weight="bold", va="top", ha="left")
+
+    # Query card
+    qx0, qy0, qw, qh = 1.5, 30, 24.5, 56
+    _rbox(ax_b, qx0, qy0, qw, qh, "", fc="#ffffff", ec="#5f6368", aspect=asp_b, rounding=2)
+    ax_b.text(qx0 + qw / 2, qy0 + qh - 6, "Query", ha="center", va="center", fontsize=8,
+              weight="bold", zorder=4)
+    qlines = [
+        ("Description:", "bold"),
+        ("concentration dynamics of a", "normal"),
+        ("CSTR with a first-order reaction", "normal"),
+        (r"Inputs: $F,\,V,\,C_{A0},\,A,\,E,\,R,\,T$", "normal"),
+        (r"Output: $C_A$", "normal"),
+    ]
+    for j, (line, wt) in enumerate(qlines):
+        ax_b.text(qx0 + 2.0, qy0 + qh - 15.5 - 8.4 * j, line, ha="left", va="center",
+                  fontsize=6.6, weight=wt, zorder=4)
+
+    # Equation database (stacked cards)
+    dx0, dy0, dw, dh = 32.5, 33, 23.5, 50
+    for off in (3.0, 1.5, 0.0):
+        _rbox(ax_b, dx0 + off, dy0 - off * 1.6, dw, dh, "", fc="#f8f9fa", ec="#5f6368",
+              aspect=asp_b, rounding=2, zorder=2 - off / 10)
+    ax_b.text(dx0 + dw / 2, dy0 + dh - 6, "Equation database", ha="center", va="center",
+              fontsize=8, weight="bold", zorder=5)
+    ax_b.text(dx0 + dw / 2, dy0 + dh - 15, "11,146 equations", ha="center", va="center",
+              fontsize=7.0, zorder=5)
+    ax_b.text(dx0 + dw / 2, dy0 + dh - 22.5, "from 361 sources", ha="center", va="center",
+              fontsize=7.0, zorder=5)
+    ax_b.text(dx0 + dw / 2, dy0 + dh - 33, r"$Q = U A\,\Delta T$,  $P V = n R T$,",
+              ha="center", va="center", fontsize=6.8, color="#80868b", zorder=5)
+    ax_b.text(dx0 + dw / 2, dy0 + dh - 41, r"$\frac{\mathrm{d}h}{\mathrm{d}t} = \frac{F_{in} - F_{out}}{A_t}$,  ...",
+              ha="center", va="center", fontsize=6.8, color="#80868b", zorder=5)
+
+    # Retrieved set: three cards linked by shared variables
+    sx0, sw, sh = 71, 27.5, 15.5
+    ys = [77, 55, 33]
+    eqs = [
+        r"$\frac{\mathrm{d}C_A}{\mathrm{d}t} = \frac{F}{V}\,(C_{A0} - C_A) - r_A$",
+        r"$r_A = k\,C_A$",
+        r"$k = A\,\exp(-E/RT)$",
+    ]
+    names = ["mass balance", "reaction rate", "Arrhenius"]
+    for i, (yc, eq, nm) in enumerate(zip(ys, eqs, names)):
+        _rbox(ax_b, sx0, yc - sh / 2, sw, sh, "", fc="#ffffff", ec=C_DOC[i], lw=1.4,
+              aspect=asp_b, rounding=2)
+        ax_b.text(sx0 + 1.6, yc + sh / 2 - 3.2, f"Doc {i + 1}: {nm}", ha="left", va="center",
+                  fontsize=6.4, color=C_DOC[i], zorder=4)
+        ax_b.text(sx0 + sw / 2, yc - 2.2, eq, ha="center", va="center", fontsize=7.4, zorder=4)
+    # shared-variable edges (ODE–rate law: r_A, rate law–Arrhenius: k)
+    for (ya, yb), lab in zip(zip(ys[:-1], ys[1:]), OVERVIEW_EDGE_LABELS):
+        xe = sx0 + sw / 2
+        ax_b.plot([xe, xe], [ya - sh / 2, yb + sh / 2], color="#5f6368", lw=1.2, zorder=1)
+        ax_b.text(xe + 1.8, (ya - sh / 2 + yb + sh / 2) / 2, lab, ha="left", va="center",
+                  fontsize=7.2, zorder=4)
+        ax_b.text(xe - 1.8, (ya - sh / 2 + yb + sh / 2) / 2, "shared", ha="right", va="center",
+                  fontsize=6.2, color="#5f6368", zorder=4)
+    ax_b.text(sx0 + sw / 2, 88.5, "Retrieved equation set", ha="center", va="center",
+              fontsize=8, weight="bold", zorder=4)
+    ax_b.text(sx0 + sw / 2, 18.5, r"3 equations, 3 unknowns ($C_A$, $r_A$, $k$):",
+              ha="center", va="center", fontsize=6.8, zorder=4)
+    ax_b.text(sx0 + sw / 2, 11.5, "degrees of freedom 0, so the set is solvable",
+              ha="center", va="center", fontsize=6.8, zorder=4)
+
+    # arrows between the three columns
+    ym = 58
+    _arrow(ax_b, (qx0 + qw + 0.5, ym), (dx0 - 0.5, ym))
+    ax_b.text((qx0 + qw + dx0) / 2, ym + 4.5, "retrieve", ha="center", va="bottom",
+              fontsize=6.8, color="#5f6368")
+    _arrow(ax_b, (dx0 + dw + 3.5, ym), (sx0 - 0.5, ym))
+    ax_b.text((dx0 + dw + 3.5 + sx0) / 2, ym + 4.5, "rank and select\nas a set", ha="center",
+              va="bottom", fontsize=6.8, color="#5f6368", linespacing=1.1)
+
+    for ext in ("png", "pdf"):
+        fig.savefig(FIG / f"fig_autopmob_overview.{ext}", dpi=200, bbox_inches="tight")
+    print(f"saved {FIG / 'fig_autopmob_overview'}.png/.pdf")
+    return fig
+
+
 if __name__ == "__main__":
     dataset()
     split_balance()
@@ -629,3 +782,4 @@ if __name__ == "__main__":
     dof_stop()
     pfi()
     stage1_redesign()
+    plt.close(overview())
