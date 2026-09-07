@@ -1,0 +1,103 @@
+\documentclass[a4j,dvipdfmx,12pt]{jresume}
+
+\usepackage{graphicx} % delete xcolor 2024/08/01
+\usepackage[top=25truemm,bottom=25truemm,left=25truemm,right=25truemm]{geometry}
+\usepackage{amsmath, amsfonts, amssymb, array, bm}
+\usepackage{algorithmic,algorithm}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{xcolor, ulem} % コメント用
+\usepackage[numbers,square,sort&compress]{natbib}
+\usepackage{hyperref}
+\usepackage{doi}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+% プロンプト表示用の設定
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  breaklines=true,
+  backgroundcolor=\color{gray!10},
+  captionpos=b,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{purple},
+  showstringspaces=false,
+  keepspaces=true,
+  columns=flexible,
+  escapeinside={(*@}{@*)}
+}\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+% プロンプト表示用の設定
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  breaklines=true,
+  backgroundcolor=\color{gray!10},
+  captionpos=b,
+  keywordstyle=\color{blue},
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{purple},
+  showstringspaces=false,
+  keepspaces=true,
+  columns=flexible,
+  escapeinside={(*@}{@*)}
+}
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%  User-defined commands  %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\argmax}{\mathop{\rm arg~max}\limits}
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+
+\usepackage{theorem}
+\newtheorem{theo}{Theorem}[section]
+\newtheorem{defi}[theo]{Definition}
+\newtheorem{lemm}[theo]{Lemma}
+
+\renewcommand{\refname}{References}
+\renewcommand{\abstractname}{Abstract}
+
+%% コメント用
+% 添削時，変更部分の色を変えるのに使うと便利。
+% 使用例：本手法を適用することにより，\katoerase{XX\%（変更前テキスト）}\kato{YY\%（変更後テキスト）}の性能向上を達成した。
+\newcommand{\kato}[1]{\textcolor[rgb]{0。9,0,0}{#1}}
+\DeclareRobustCommand{\katoerase}{\bgroup\markoverwith{\textcolor[rgb]{0。9,0,0}{\rule[。5ex]{2pt}{0。8pt}}}\ULon}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{myresume}
+
+\begin{document}
+%%%%%     DATE     %%%%%
+\西暦 % この行をコメントアウトすると西暦表示になる
+\markright{{\footnotesize 研究進捗報告 \hfill {\today}}}
+
+
+%%%%%     TITLE     %%%%%
+\medskip
+\begin{center}
+  {\Large 物理モデル自動構築\\ 
+  データベース拡大・
+DAE ケース再生成と評価}
+\end{center}
+
+%%%%%     AUTHOR     %%%%%
+\begin{flushright}
+作成者：M2\quad 一洋\\
+\end{flushright}
+
+
+
+\end{document}
+
+%=============================%
+\end{document}

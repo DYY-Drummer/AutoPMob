@@ -358,6 +358,24 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-09-07（リポジトリ整理：未コミット作業の取り込みと .gitignore の成文化）：
+    本人指示「全ての修正を commit して」に対応し 3 コミットに整理した。
+    ①\texttt{chore(repo)}: これまで名前指定ステージで避けてきた除外対象
+    （\texttt{.cursor/} 156 件・experiments のログ／done マーカー／スモーク退避／シード別生データ
+    \texttt{xd*}・\texttt{xg*}・\texttt{xs1*}・ゼミテンプレ配下の図と LaTeX 中間物・参照用の
+    先輩修論ソース \texttt{thesis/TexSource/}・\texttt{unified\_equations.bak.json}）を
+    .gitignore に成文化し、作業ツリーで削除済みだった \texttt{CLAUDE.md} の削除を確定
+    （作文ルール等の内容は Claude memory に移管済み）。
+    ②\texttt{feat(analysis)}: 未コミットだった \texttt{judge\_llm\_equivalence.py}
+    （公平等価採点・判定 Opus 4.8）・\texttt{diagnose\_comp\_coh.py}＋
+    \texttt{run\_comp\_coh\_subsets.sh}（gComp/gCoh 冗長性診断）・
+    \texttt{analyze\_feature\_x\_difficulty.py} のベクター PDF 出力対応・
+    \texttt{experiments/ablation\_x\_difficulty.json}（難易度クロスの統合データ 7.2MB、
+    図の再現に必要）を追跡。
+    ③\texttt{docs(seminar)}: ゼミテンプレのビルド基盤（\texttt{jresume.cls}・\texttt{latexmkrc}・
+    \texttt{main.tex}・\texttt{reference.bib}・\texttt{Fig.eps}・旧報告 tex 2 点）と完成報告 PDF
+    2 点（06-14 jresume 版 7p・08-09 改訂版 4p）を追跡。テンプレ配下 \texttt{figure/} は
+    従来どおり非追跡（Overleaf zip で配布・再生成可能）。
   \item 2026-08-31（W1: 修論第 2 章 Related Work の本文化と文献 4 件 $\to$ 30 件の拡充）：
     ギャップ分析（\texttt{docs/論文化ギャップ分析\_2026-08-30.md}）の W1 に対応。骨子 4 節
     （AutoPMoB 要素技術／IR と再ランク／LLM 直接生成／数式検索）を本文化し、各節末に本研究との
