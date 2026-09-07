@@ -15,7 +15,8 @@
 \section{Overall Comparison}
 \label{sec:overall}
 
-Table~\ref{tab:overall} and Fig.~\ref{fig:comparison} compare the three methods of Section~5.2.
+Table~\ref{tab:overall} compares the methods of Section~5.2, and Fig.~\ref{fig:comparison}
+plots the classical baseline, LLM direct generation, and the proposed method.
 % source: experiments/strat_A.json / strat_B.json results.*.Recall@K_correct
 The proposed method raises Recall@K from 0.521 to 0.743 in Setting~A and from 0.466 to 0.689 in
 Setting~B, a gain of $+0.222$ and $+0.223$ over the classical information-retrieval baseline. It
@@ -41,33 +42,75 @@ remaining gap is structural. Many ground-truth equations are empirical correlati
 coefficients were fitted in one source document, and a generator that has not read that document
 cannot reproduce them verbatim; retrieval returns them with their provenance. A separate, more
 capable model judges the equivalence (Section~5.2), so the scoring does not depend on the
-generator recognizing its own output. Neither
-classical retrieval nor direct generation solves the task alone --- the baseline ranks the right
-equations by query--equation relevance only, and the language model composes plausible equations
-without provenance --- and the rest of this chapter explains where and why the proposed combination
-works.
+generator recognizing its own output.
+
+Stronger text scorers do not close the gap either. Alone, every text scorer ranks poorly:
+Recall@K is 0.120 for TF-IDF, 0.150 for BM25, and 0.146 for E5 in Setting~A, and 0.153, 0.164,
+and 0.178 in Setting~B, so the description alone does not identify the equations of a case,
+whereas the variable-overlap term alone reaches 0.603 and 0.541.
+% source: experiments/external_baselines_{A,B}.json results.*__w100-00（文章のみ）と
+%         tfidf__none__w00-100（変数のみ）。E5 は e5io（クエリ = 説明文＋変数記号）。
+Mixed with that term at the weight that maximizes each scorer's mean Recall@K over the 10 splits
+--- a choice made on the test splits, which favors the baselines --- BM25 reaches 0.601 in
+Setting~A and 0.555 in Setting~B, E5 reaches 0.602 and 0.544 (0.598 and 0.547 when the query
+omits the variable symbols), and the TF-IDF baseline itself reaches 0.607 and 0.559. At the
+baseline's own weights $(0.7, 0.3)$, where a min--max-normalized text score outweighs the raw
+cosine, BM25 and E5 score only 0.247 and 0.428 in Setting~A.
+% source: external_baselines_stats.json best_per_scorer（w_text>0 で最良; いずれも w10-90、
+%         tfidf__none は w40-60）: A bm25 0.6008 / e5io 0.6020 / e5 0.5984 / tfidf 0.6071;
+%         B bm25 0.5548 / e5io 0.5439 / e5 0.5469 / tfidf 0.5585。(0.7,0.3): A bm25 0.2470 /
+%         e5io 0.4275。
+The best mixtures agree to within 0.02 and exceed the variable term alone by at most $+0.004$
+in Setting~A and $+0.018$ in Setting~B, so the scorers are interchangeable inside the mixture:
+once the variables are counted, the text decides little. The proposed method exceeds the best
+BM25 and E5 mixtures by $+0.142$ and $+0.141$ in Setting~A and by $+0.134$ and $+0.145$ in
+Setting~B, on all 10 seeds (Wilcoxon $p = 0.00195$; $d_z = 5.7$ and 6.2 in Setting~A, 9.6 and
+13.4 in Setting~B).
+% source: external_baselines_stats.json labels.*.Recall@K_correct.vs_proposed
+%         （A: bm25 +0.1422 dz 5.715 / e5io +0.1409 dz 6.206; B: bm25 +0.1343 dz 9.572 /
+%         e5io +0.1451 dz 13.398; p_wilcoxon 0.00195 = 全 seed）
+Nor would a dense first stage raise the reranker's ceiling: as a candidate window, no BM25 or E5
+mixture covers more than 0.965 of the ground truth at $k = 50$ in Setting~A, below the 0.967 of
+the variable-weighted TF-IDF window of Section~\ref{sec:stage1redesign}.
+% source: external_baselines_coverage.json A（k=50: bm25 最大 0.9646, e5 最大 0.9610,
+%         tfidf__none__w30-70 0.9671）
+
+Neither classical retrieval, a stronger text scorer, nor direct generation solves the task alone
+--- the retrieval baselines rank equations by query--equation relevance only, and the language
+model composes plausible equations without provenance --- and the rest of this chapter explains
+where and why the proposed combination works.
 
 \begin{table}[h]\centering
-\caption{Recall@K, MAP, and Recall@20 of the three compared methods (baseline and proposed: mean
-$\pm$ SD over 10 stratified splits). LLM direct generation is a single-run evaluation on a uniform
+\caption{Recall@K, MAP, and Recall@20 of the compared methods (retrieval methods: mean $\pm$ SD
+over 10 stratified splits). BM25 and E5 mix their text score with the variable-overlap term
+(``variables'') at the mixing weight that maximizes their mean Recall@K over the 10 splits ($w_{\mathrm{t}} = 0.1$
+in both settings), a choice made on the test splits that favors them; the E5 query appends the
+variable symbols to the description (Section~5.2). LLM direct generation is a single-run evaluation on a uniform
 sample ($n=48$ for A, $n=50$ for B) with equivalence judged by a second, more capable language
 model (Section~5.2); its rank-free coverage is 0.419 (A) and 0.343 (B), and MAP / Recall@20 are
 not available for it.}
 \label{tab:overall}
+\small
 \begin{tabular}{llccc}
 \toprule
 Setting & Method & Recall@K & MAP & Recall@20 \\
 \midrule
 % source: experiments/strat_A.json results.baseline / results.reranker-10S
-\multirow{3}{*}{A (mixed, 1,823 cases)}
+\multirow{5}{*}{A (mixed, 1,823 cases)}
  & Baseline (classical IR) & $0.521 \pm 0.045$ & 0.581 & 0.836 \\
+% source: experiments/external_baselines_A.json results.bm25__minmax__w10-90 / e5io__minmax__w10-90
+ & BM25 + variables & $0.601 \pm 0.037$ & 0.692 & 0.905 \\
+ & E5 (dense) + variables & $0.602 \pm 0.039$ & 0.684 & 0.896 \\
 % source: llm_set_A_equiv_results.json（Recall@K_correct 0.2545, coverage 0.41875, n=48）
  & LLM direct generation & $0.254$ & --- & --- \\
  & \textbf{Proposed (reranker-10S)} & $\mathbf{0.743 \pm 0.054}$ & \textbf{0.863} & \textbf{0.909} \\
 \midrule
 % source: experiments/strat_B.json results.baseline / results.reranker-10S
-\multirow{3}{*}{B (synthesized only, 1,000 cases)}
+\multirow{5}{*}{B (synthesized only, 1,000 cases)}
  & Baseline (classical IR) & $0.466 \pm 0.037$ & 0.512 & 0.721 \\
+% source: experiments/external_baselines_B.json results.bm25__minmax__w10-90 / e5io__minmax__w10-90
+ & BM25 + variables & $0.555 \pm 0.032$ & 0.624 & 0.822 \\
+ & E5 (dense) + variables & $0.544 \pm 0.027$ & 0.611 & 0.806 \\
 % source: llm_set_B_equiv_results.json（Recall@K_correct 0.2258, coverage 0.34271, n=50）
  & LLM direct generation & $0.226$ & --- & --- \\
  & \textbf{Proposed (reranker-10S)} & $\mathbf{0.689 \pm 0.033}$ & \textbf{0.832} & \textbf{0.838} \\
@@ -77,7 +120,8 @@ Setting & Method & Recall@K & MAP & Recall@20 \\
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.75\linewidth]{figures/fig_method_comparison.pdf}
-\caption{Recall@K of the three methods on the full collection (with augmented cases), Setting A,
+\caption{Recall@K of the classical-IR baseline, LLM direct generation, and the proposed method on
+the full collection (with augmented cases), Setting A,
 and Setting B. Boxes show the 10 stratified splits (baseline and proposed); diamonds show the
 single-run LLM direct generation ($n \approx 50$ per setting, equivalence-judged), with dashed
 lines for its rank-free coverage.}
@@ -529,7 +573,7 @@ $(0.3, 0.7)$ is best on both.}
 \section{Limitations}
 \label{sec:limitations}
 
-Six limitations qualify these results. First, the descriptions of the synthesized cases are
+Seven limitations qualify these results. First, the descriptions of the synthesized cases are
 written by a language model, so their style may differ from human modeling requests; the
 equations, inputs, and outputs of every case follow from the rule-based construction
 (Section~4.3). Second, the number of source documents is confounded with the number of equations,
@@ -544,4 +588,9 @@ group alone is highly predictive in this benchmark: permuting it costs 0.68 of R
 from variable-sharing equations, and transfer to queries whose variable notation differs from the
 database remains untested. Sixth, learned greedy trains with teacher forcing: during training the
 reference set is the true partial answer, while at inference it contains the model's own
-mistakes; scheduled sampling is the standard remedy, and we leave it to future work.
+mistakes; scheduled sampling is the standard remedy, and we leave it to future work. Seventh,
+the external retrieval baselines use BM25 with its default parameters and one dense encoder
+(E5-base) without fine-tuning on the training cases; a retriever trained on this database might
+score higher than the off-the-shelf encoder, although every text scorer in
+Section~\ref{sec:overall} adds at most $+0.02$ over the variable-overlap term, which points to
+the task rather than to the encoder.

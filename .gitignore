@@ -117,3 +117,6 @@ unified_equations.bak.json
 # OS
 .DS_Store
 Thumbs.db
+
+# A2 外部ベースライン: E5 埋め込みキャッシュ（external_baselines.py が再生成可能）
+experiments/embeddings/

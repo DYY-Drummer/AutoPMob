@@ -358,6 +358,35 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-09-07(2)（A2: 外部ベースラインの補強——BM25・密ベクトル検索 E5 を修論の評価枠で測定）：
+    ギャップ分析 A2 に対応し、古典 IR（TF-IDF 0.7＋変数 Jaccard 0.3、全 DB 順位付け、学習なし）の文章スコアを
+    BM25（自前実装、$k_1=1.5$, $b=0.75$, 単語ユニグラム, Lucene 形式の非負 IDF）と
+    E5（\texttt{intfloat/e5-base-v2}、平均プーリング＋L2 正規化、接頭辞 query:/passage:、Hugging Face から 438 MB 取得）に差し替え、
+    設定 A・B $\times$ 層化分割 10 seed で Recall@K\_correct / MAP / Recall@20 を測った
+    （\texttt{external\_baselines.py}・\texttt{analyze\_external\_baselines.py}・\texttt{run\_external\_baselines.sh}、pytest 7 本）。
+    分割・指標は \texttt{set\_aware\_reranker.py} / \texttt{evaluate\_multi\_eq.py} の関数を流用し、
+    TF-IDF・重み $(0.7, 0.3)$ が \texttt{strat\_A/B.json} の baseline の per-seed 値を完全に再現することを回帰テストで確認した。
+    BM25 のスコアは非有界、E5 のコサインは狭い帯域に集中するため、クエリごとに min--max 正規化してから変数項と混合し、
+    混合重みは $w_{\mathrm{t}} \in \{1, 0.9, \ldots, 0.1, 0.05, 0\}$ の 12 点を掃引した（テスト分割で最良を選ぶ＝外部側に有利な比較）。
+    \textbf{結果}：文章のみでは全スコアラーが弱く（設定 A: TF-IDF 0.120 / BM25 0.150 / E5 0.146、設定 B: 0.153 / 0.164 / 0.178）、
+    変数 Jaccard 単独の 0.603 / 0.541 が支配的であった。最良混合（いずれも $w_{\mathrm{t}}=0.1$）でも
+    BM25 0.601 / 0.555、E5 0.602 / 0.544（説明文のみのクエリなら 0.598 / 0.547）で、
+    古典 IR の最良混合 0.607 / 0.559 と 0.02 以内に並び、変数単独を上回る幅は最大 $+0.004$（A）／$+0.018$（B）にとどまる。
+    提案手法 0.743 / 0.689 は最良の BM25・E5 混合を設定 A で $+0.142$ / $+0.141$、設定 B で $+0.134$ / $+0.145$ 上回り、全 10 seed で勝つ
+    （Wilcoxon $p=0.00195$、$d_z=5.7$ / 6.2（A）、9.6 / 13.4（B））。
+    第 1 段の候補窓としても BM25・E5 混合の被覆率は $k=50$ で最大 0.965 / 0.961 と w30-70 の 0.967 を超えず、
+    密ベクトルへの第 1 段差し替えは天井を上げない（A1 との統合は不要と判断）。
+    固定重み $(0.7, 0.3)$ では min--max 正規化した文章項の実効重みが生コサインより大きく、BM25 0.247 / E5 0.428（A）に落ちる。
+    「同じ重み」の意味が正規化に依存するため、表では最良混合で比較した。
+    \textbf{修論への反映}：\S5.2 に外部ベースライン 2 種の定義（内部 1・外部 3 に修正）、
+    \S6.1 の表 \texttt{tab:overall} に設定ごと BM25・E5 の 2 行追加と段落 1 本（文章のみ／最良混合／$(0.7,0.3)$／被覆率／検定）、
+    図 \texttt{fig:comparison} のキャプションを 3 手法名で明示、\S6.9 Limitations に第 7 項（既製エンコーダ・未微調整）、
+    付録 A.1 に BM25・E5 の設定 3 行、参考文献に E5（Wang ら, arXiv:2212.03533、31 件目、初出順を維持）。
+    \texttt{latexmk -gg} exit 0・28 ページ・未定義引用なし。第 1・7 章（骨子）には W2/W3 で反映するためのメモを残した。
+    データ：\texttt{experiments/external\_baselines\_A.json / \_B.json}（60 ラベル $\times$ per-seed）、
+    \texttt{external\_baselines\_coverage.json}（被覆率 $k=10$--400）、\texttt{external\_baselines\_stats.json}（対応あり検定）。
+    E5 の埋め込みキャッシュ \texttt{experiments/embeddings/} は再生成可能なので非追跡（.gitignore）。
+    設計書 \texttt{docs/superpowers/specs/2026-09-07-a2-external-baselines-design.md}。
   \item 2026-09-07（リポジトリ整理：未コミット作業の取り込みと .gitignore の成文化）：
     本人指示「全ての修正を commit して」に対応し 3 コミットに整理した。
     ①\texttt{chore(repo)}: これまで名前指定ステージで避けてきた除外対象

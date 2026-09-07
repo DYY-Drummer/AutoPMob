@@ -23,7 +23,7 @@ the same 10 random seeds.
 
 \section{Compared Methods}
 
-We compare the proposed method against one internal and one external baseline. The internal baseline
+We compare the proposed method against one internal and three external baselines. The internal baseline
 is classical information retrieval: it ranks the whole database by the Stage-1 score of
 Eq.~\eqref{eq:stage1}, without a learned model and without a candidate window. The proposed method
 is reranker-10S, which reranks the top $k = 50$ candidates with the ten features of
@@ -46,6 +46,24 @@ Because the judge is a different model from the generator, the equivalence decis
 depend on the generator recognizing its own phrasing. The comparison still has limits --- about
 50 cases per setting, machine-judged equivalence, and prompts we did not tune --- and
 Section~\ref{sec:limitations} records them.
+
+Two more external baselines test whether a stronger text scorer alone would close the gap. The
+first replaces the TF-IDF cosine of Eq.~\eqref{eq:stage1} with BM25\cite{BM25} ($k_1 = 1.5$,
+$b = 0.75$, word unigrams); the second replaces it with the cosine between dense embeddings of
+the query and of each equation text from the sentence encoder E5\cite{E5}
+(\texttt{intfloat/e5-base-v2}: 12 layers, 768-dimensional embeddings, mean pooling), which was
+trained by contrastive learning for retrieval. Because BM25 scores are unbounded and E5 cosines
+crowd into a narrow band, we rescale each text score to $[0, 1]$ over the database for every
+query (min--max normalization) before mixing it with the variable-overlap term at the weights
+$(0.7, 0.3)$ of the baseline. We report each scorer alone and mixed, and also at the
+variable-heavy mixture $(0.3, 0.7)$ that Section~\ref{sec:stage1redesign} finds best for the
+classical baseline. The dense query is the case description with the input and output variable symbols appended; a
+variant uses the description alone. Both baselines rank the whole database and train nothing, so they
+ask the same question as the classical baseline with stronger text evidence.
+% source: external_baselines.py（BM25 は自前実装: Lucene 形式 IDF ln(1+(N-n+0.5)/(n+0.5))、
+%         E5 は transformers で平均プーリング＋L2 正規化、接頭辞 query:/passage:、
+%         最大 512 トークン、層数・次元は HF の config.json）。
+%         結果 experiments/external_baselines_{A,B}.json、検定 external_baselines_stats.json。
 
 \section{Evaluation Metrics}
 
