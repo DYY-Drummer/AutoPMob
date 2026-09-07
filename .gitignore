@@ -76,6 +76,44 @@ docs/*.synctex.gz
 docs/*.fls
 docs/*.fdb_latexmk
 
+# ---- 2026-09-07 リポジトリ整理: 名前指定ステージ運用を成文化 ----
+
+# Cursor IDE のエージェント定義（自動生成 156 件・本研究リポジトリでは未使用）
+.cursor/
+
+# 実験の実行ログ・完了マーカー・スモーク退避（正典 JSON のみコミットする運用）
+experiments/*.log
+experiments/*.done
+experiments/*_smoke.json
+
+# シード別の生データ（サイズ大・スクリプトで再生成可能。統計 JSON のみコミット）
+experiments/xd/
+experiments/xd_cc/
+experiments/xd_dof/
+experiments/xg/
+experiments/xg_A/
+experiments/xs1/
+experiments/xs1_k200/
+
+# ゼミテンプレ配下の生成物（図は Overleaf zip で配布・従来どおり非追跡）と
+# docs 下位ディレクトリの LaTeX 中間物（従来の docs/*.aux 系をサブディレクトリへ拡張）
+docs/ゼミlatexテンプレ/figure/
+docs/ゼミlatexテンプレ/build2/
+docs/**/*.aux
+docs/**/*.log
+docs/**/*.toc
+docs/**/*.out
+docs/**/*.dvi
+docs/**/*.fls
+docs/**/*.fdb_latexmk
+docs/**/*.synctex.gz
+
+# 先輩の修論 TeX ソース（参照用ローカルコピー・他者の著作物のため非コミット）
+thesis/TexSource/
+
+# 旧 DB のバックアップスナップショット（unified_equations.json 本体と同じ扱いで非コミット）
+unified_equations.bak.json
+
 # OS
 .DS_Store
 Thumbs.db
