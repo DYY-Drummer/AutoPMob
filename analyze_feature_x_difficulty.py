@@ -162,6 +162,7 @@ def main():
             except Exception:
                 pass
     plt.rcParams["axes.unicode_minus"] = False
+    plt.rcParams["pdf.fonttype"] = 42  # 和文をTrueType埋込（platex/Overleaf向けPDF用）
 
     fig, axes = plt.subplots(1, 2, figsize=(13, 5.2))
 
@@ -193,7 +194,10 @@ def main():
     fig.tight_layout()
     Path(ROOT / args.out_fig).parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(ROOT / args.out_fig, dpi=150, bbox_inches="tight")
-    print(f"Saved figure: {args.out_fig}")
+    # ベクターPDFも出力（Overleaf/jresume は figure/*.pdf を要求）
+    pdf_path = str(ROOT / args.out_fig).rsplit(".", 1)[0] + ".pdf"
+    fig.savefig(pdf_path, bbox_inches="tight")
+    print(f"Saved figure: {args.out_fig} + {pdf_path}")
 
     # ---- 4. コンソール要約 ----
     print("\n=== 全体（seed単位の対応のある検定, vs reranker-7）===")
