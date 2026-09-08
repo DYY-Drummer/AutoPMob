@@ -578,6 +578,13 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
     図 2 点は \texttt{docs/figures/} から \texttt{ゼミlatexテンプレ/figure/} へコピー済み．
     \texttt{platex} → \texttt{dvipdfmx} でエラー 0・4 ページ・内容は ltjsarticle 版と同一．
     注釈（ハイライト）は入れていない．
+    さらに Overleaf へ直接アップロードできる自己完結 zip を作成した：
+    \texttt{docs/seminar\_overleaf\_20260809.zip}（\texttt{figure/} の PDF 2 点＋
+    \texttt{jresume.cls}＋\texttt{.tex}＋\texttt{latexmkrc} の 6 エントリ。
+    2026-08-31 版 \texttt{seminar\_overleaf\_20260831.zip} と同じ構成）。
+    \textbf{展開し直して単体で検証済み}：\texttt{latexmk} が exit 0・エラー 0・
+    A4 4 ページで通ることを確認した。zip 自体は従来どおり git 非追跡とする。
+    Overleaf 側は Upload Project 後に Compiler を \textbf{LaTeX}（pdfLaTeX 不可）にする．
   \item 2026-08-11（進捗報告の書き直し：報告内容を\textbf{2 点に絞る}）：
     \texttt{docs/progress\_report\_2026-08-09\_topic.tex} を全面的に書き直した．
     報告する内容を(1)\,意味の近さは SVD 空間で十分な区別を作れているが第 2 段では効かない，
