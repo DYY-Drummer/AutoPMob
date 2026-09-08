@@ -568,6 +568,16 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
     付箋の中身も出所や見出し記号を外して\textbf{一言の修正理由のみ}にした
     （本人の見直しによる修正＝重み 0.7・特徴量の表・「訓練し直さない」の書き換えは
     ハイライトもコメントも付けない）。最終形はハイライト 14・付箋 7．
+    最後に\textbf{ゼミ資料テンプレ（jresume）版に移植}した：
+    \texttt{docs/ゼミlatexテンプレ/progress\_report\_2026-08-09\_topic.tex}．
+    ltjsarticle 版から本文をそのまま移し，(1) プリアンブルを
+    \texttt{jresume}（\texttt{a4j,dvipdfmx,11pt}）に差し替え，
+    (2) タイトルを \texttt{\textbackslash markright}＋\texttt{center}＋\texttt{flushright} の
+    テンプレ書式に，(3) 図の参照を \texttt{figures/*.png} から
+    \texttt{figure/*.pdf}（ベクター）に変更した．
+    図 2 点は \texttt{docs/figures/} から \texttt{ゼミlatexテンプレ/figure/} へコピー済み．
+    \texttt{platex} → \texttt{dvipdfmx} でエラー 0・4 ページ・内容は ltjsarticle 版と同一．
+    注釈（ハイライト）は入れていない．
   \item 2026-08-11（進捗報告の書き直し：報告内容を\textbf{2 点に絞る}）：
     \texttt{docs/progress\_report\_2026-08-09\_topic.tex} を全面的に書き直した．
     報告する内容を(1)\,意味の近さは SVD 空間で十分な区別を作れているが第 2 段では効かない，
