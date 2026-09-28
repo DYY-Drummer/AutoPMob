@@ -67,12 +67,13 @@ def _per_seed(path, mode, metric="Recall@K_correct"):
 def dataset():
     cases = json.load(open(ROOT / "training_cases.json"))
     vt = Counter(c.get("variant_type", "?") for c in cases)
-    # 表示名は §4.2 の改訂用語（as-published / cross-document / synthesized）に合わせる。
+    # 表示名は §4.2 の用語（single-source / cross-source / synthesized）に合わせる。
+    # 2026-09-28 訂正: as-published / cross-document は実データの作り方と合わないため改称。
     fam = {
-        "As-published": vt["original"],
+        "Single-source": vt["original"],
         "Paraphrase (aug.)": vt["context_paraphrased"],
         "Random I/O (aug.)": vt["random_io_from_models"] + vt["swap_io"],
-        "Cross-document": vt["multisource_original"] + vt["multisource_random_io"] + vt["multisource_v3"],
+        "Cross-source": vt["multisource_original"] + vt["multisource_random_io"] + vt["multisource_v3"],
         "Synthesized": sum(v for k, v in vt.items() if k.startswith("dae_")),
     }
     labels, vals = list(fam.keys()), list(fam.values())
@@ -200,7 +201,7 @@ def characteristic():
         ax.text(x[i] - w / 2, sc_base[i] + 0.012, f"{sc_base[i]:.2f}", ha="center", fontsize=9)
         ax.text(x[i] + w / 2, sc_ours[i] + 0.012, f"{sc_ours[i]:.2f}", ha="center", fontsize=9, fontweight="bold")
     ax.set_xticks(x); ax.set_xticklabels(["1", "2", "≥3"], fontsize=11)
-    ax.set_xlabel("Number of source documents", fontsize=12)
+    ax.set_xlabel("Number of sources", fontsize=12)
     ax.set_ylabel("Recall@K", fontsize=12)
     ax.set_ylim(0, 1.02)
     ax.set_title("(b) By number of sources", fontsize=12)

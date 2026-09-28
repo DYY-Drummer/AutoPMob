@@ -1,24 +1,34 @@
 % ============================================================
 % Chapter 4: Equation Database and Test Case Construction — 本文（Phase 2, 2026-08-09）
 % 骨子版（Phase 1）は git 履歴の commit bf41ec4 以前を参照。
-% 用語の改訂（2026-08-09）: 旧「original / multi-source / DAE」を、正解集合の作り方という
-%   単一の軸に沿って as-published / cross-document / synthesized に改称。理由は §4.2 本文に記載。
+% 用語の改訂（2026-08-09）: 旧「original / multi-source / DAE」を as-published / cross-document /
+%   synthesized に改称した。
+% 訂正（2026-09-28）: as-published の定義「文献が 1 つのモデルとして掲載する式集合」は生成コードと
+%   矛盾していた。実際は Gemini 2.5 Pro が式 ID・出典・分野名・変数記号だけのカタログから「必要十分かつ
+%   最小」の組を選び、のちに自由度検査で解けないものを除いた（generate_training_cases.py,
+%   filter_solvable_cases.py）。また LLM 生成の基礎式集（handbook_*）は文献でないため、族名・列名・本文の
+%   document を source に改めた: as-published → single-source, cross-document → cross-source,
+%   Documents spanned → Sources spanned。cross-source の「共有変数でつなぐ」も 189 件で成り立たないので訂正。
 % 数値はすべて一次データ（unified_equations.json, training_cases.json）から実測。
 % ============================================================
 \section{Equation Database Construction}
 
 We built an equation database of 11,146 equations drawn from 361 sources.
 % source: unified_equations.json 実測（式 11,146、source_id 361 種）
-Of these sources, 328 are document PDFs and contribute 10,437 equations; the remaining 33 are
-reference equation sets that we generated domain by domain to cover textbook fundamentals and
-contribute 709 equations.
-% source: unified_equations.json 実測（.pdf で終わる source_id 328 種 = 10,437 式、
-%         handbook_* 33 種 = 709 式）; processed_pdfs.json は 339 件処理済み
-A large language model (Gemini 2.5 Pro\cite{Gemini25}) read each document and returned every equation in the text
-together with its symbols, the sentences around it, and a domain label. Each database entry
-therefore holds the \LaTeX{} expression of the equation, its variable set, its surrounding text, its
-source document, and its domain label. The database grew from 3,244 to 11,146 equations during this
-work, and the added documents span engineering fields beyond chemical engineering.
+Of these sources, 329 are documents and contribute 10,476 equations. A large language model
+(Gemini 2.5 Pro\cite{Gemini25}) read each document and returned every equation in the text
+together with its symbols, the sentences around it, and a domain label. The remaining 32 sources
+are reference equation sets that the same model generated domain by domain to cover textbook
+fundamentals; these 670 equations have no source document.
+% source: unified_equations.json 実測（handbook_* 以外 329 種 = 10,476 式：.pdf 328 種 10,437 式
+%         ＋技術報告 ORNL/SPR-2018/864 の 39 式。handbook_* 32 種 = 670 式、Gemini 2.5 Pro が生成：
+%         handbook_chemeng は build_equation_graph.py、他 31 種は expand_dataset.py）;
+%         processed_pdfs.json は 339 件処理済み。2026-09-28 訂正: 旧記載「PDF 328 種・基礎式集 33 種
+%         709 式」は ORNL 報告を基礎式集に数えていた
+Each database entry holds the \LaTeX{} expression of the equation, its variable set, its
+surrounding text, its source, and its domain label. The database grew from 3,244 to 11,146
+equations during this work, and the added documents span engineering fields beyond chemical
+engineering.
 
 Two properties of the database govern the difficulty of retrieval, and we state them here because
 every later result depends on them. First, we match variables across sources by their raw symbols
@@ -29,7 +39,7 @@ treats notational variants of one quantity, such as $C_A$ and $C_A(t)$, as diffe
 Retrieval across documents is therefore harder than a shared notation would make it, and the
 variable-overlap features of Chapter~3 read a conservative signal. Second, the domain labels are
 free text written by the extractor rather than entries of a fixed taxonomy: the 11,146 equations
-carry 1,998 distinct labels, 27.9\% of which occur exactly once, and a single document carries 6.36
+carry 1,998 distinct labels, 27.9\% of which occur exactly once, and a single source carries 6.36
 labels on average.
 % source: unified_equations.json 実測（1,998 ラベル、singleton 27.9\%、source あたり 6.36 種）
 Exact agreement between two labels is consequently rare, which Section~\ref{sec:nullresult} shows to be one reason
@@ -44,31 +54,48 @@ evaluation families and one training-only family, and Table~\ref{tab:families} s
 %         dae_X1..X10 各100 = 1,000; random_io_from_models 738 + context_paraphrased 276 + swap_io 1
 %         = 1,015）。K・文献数は correct_model_ids から実測。
 
-We name the families by how their ground truth was defined, and this naming replaces the earlier
-labels \emph{original}, \emph{multi-source}, and \emph{DAE}. The earlier labels mixed two different
-axes and misled readers on both. ``Original'' described the history of the dataset rather than a
-property of a case, and ``DAE'' named a property that the other families share, since as-published
-and cross-document cases are frequently differential--algebraic as well. What distinguishes the
-third family is not that its systems are differential--algebraic but that we synthesized each ground
-truth to a prescribed size.
+We name the families by where their equations come from and how their ground truth was formed.
+A language model chose the ground truth of the single-source family. We gave Gemini 2.5 Pro a
+catalog that listed, for each database equation, only its identifier, source, domain label, and
+variable symbols --- neither the equation nor its surrounding text --- and asked for cases whose
+equations determine the outputs from the inputs and are ``sufficient and minimal.'' A
+degree-of-freedom check then kept only the cases whose equations, once the inputs are given, have
+exactly as many unknowns as equations. The ground truth is therefore the set that the language
+model judged minimal, not the model that a source presents: 67 of the 92 cases need a single
+equation, and 61 draw on the generated reference sets rather than on documents.
+% source: generate_training_cases.py（カタログは model_id・source_id・eq_id・domain・variable_symbols
+%         のみ、プロンプト "sufficient and minimal (no redundant equations)"、gemini-2.5-pro）;
+%         filter_solvable_cases.py（|unknown| == 式数）; training_cases.json 実測（K=1 が 67 件、
+%         正解式がすべて handbook_* の件が 61 件）。例: core_020_v1 は Marlin の教科書が 5 式
+%         (14.1)-(14.5) で「DOF = 5 - 5 = 0」と書く系から (14.4) の 1 式だけを正解にしている
+The cross-source family combines equations of two or three sources. An algorithm formed 500 of its
+cases by pairing equations that share at least two variables; the other 231 are input--output
+variants of 33 combinations that an LLM coding assistant wrote and a degree-of-freedom check
+verified, and in 189 of them the equations share no variable. The synthesized family grows each
+ground truth by rule to a prescribed size (Section~4.3).
+% source: generate_multisource_v3.py（multisource_v3 500 件、共有変数 2 個以上: 実測 2 個 398・3 個 92・
+%         4 個以上 10）; generate_multisource_cases.py（multisource_original 33 件、docstring「Claude が
+%         手作業で作成し自由度ゼロを機械的に検証」）＋ expand_multisource_variants.py（random_io 198 件）;
+%         変数記号の共有なし 189 件（original 27 + random_io 162）は実測
 
 \begin{table}[H]
 \centering
 \caption{The four case families. ``Equations per case'' gives the mean and maximum size of the
-ground-truth set, and ``documents spanned'' the mean number of source documents it draws on. The
-released data identifies the families as \texttt{original}, \texttt{multisource\_*},
-\texttt{dae\_X1}--\texttt{dae\_X10}, and the augmentation variants respectively.}
+ground-truth set, and ``sources spanned'' the mean number of sources it draws on, where a
+generated reference set counts as one source. The released data identifies the families as
+\texttt{original}, \texttt{multisource\_*}, \texttt{dae\_X1}--\texttt{dae\_X10}, and the
+augmentation variants respectively.}
 \label{tab:families}
 \small
 \begin{tabular}{llccl}
 \toprule
 Family & How the ground truth was defined & \begin{tabular}[c]{@{}c@{}}Cases\end{tabular} &
 \begin{tabular}[c]{@{}c@{}}Equations\\per case\end{tabular} &
-\begin{tabular}[c]{@{}l@{}}Documents\\spanned\end{tabular} \\
+\begin{tabular}[c]{@{}l@{}}Sources\\spanned\end{tabular} \\
 \midrule
-As-published   & The document presents the equations as one model & 92 & 1.34 (4) & 1.01 \\
-Cross-document & We link equations of different documents through & 731 & 2.03 (3) & 2.02 \\
-               & \quad shared variables & & & \\
+Single-source  & A language model picks, from one source, a set & 92 & 1.34 (4) & 1.01 \\
+               & \quad it judges sufficient and minimal & & & \\
+Cross-source   & We combine equations of two or three sources & 731 & 2.03 (3) & 2.02 \\
 Synthesized    & We grow a closed system to a prescribed size $X$ & 1{,}000 & 5.50 (10) & 1.10 \\
 \midrule
 Augmented      & We perturb the I/O variables or paraphrase the & 1{,}015 & 1.57 (4) & 1.02 \\
@@ -77,11 +104,11 @@ Augmented      & We perturb the I/O variables or paraphrase the & 1{,}015 & 1.57
 \end{tabular}
 \end{table}
 
-The families differ in provenance as well as in size. Every cross-document case spans at least two
-documents by construction, and none spans more than three; the as-published and synthesized
-families stay within one document in 98.9\% and 95.9\% of their cases.
-% source: 実測（cross-doc は 100\% が 2 文献以上・最大 3、as-published 1.1\%、synthesized 4.1\%
-%         が 2 文献以上・最大 9）
+The families differ in provenance as well as in size. Every cross-source case spans at least two
+sources by construction, and none spans more than three; the single-source and synthesized
+families stay within one source in 98.9\% and 95.9\% of their cases.
+% source: 実測（source_id 単位。cross-source は 100\% が 2 出典以上・最大 3、single-source 1.1\%
+%         （1 件）、synthesized 4.1\% が 2 出典以上・最大 9）
 The synthesized family is also by far the largest in answer size, and it carries the evaluation of
 set selection: 90.8\% of the 1,823 evaluation cases need two or more equations, and they need 3.90
 on average.
@@ -89,13 +116,17 @@ on average.
 We exclude the augmented family from every evaluation, because perturbed copies of a case inflate
 the baseline and hide the difficulty that motivates the method (Section~5.1).
 
-One property of the construction limits what the self-terminating experiment can claim, and we
-record it here. In the cross-document and synthesized families the number of ground-truth equations
-equals the number of output variables in every case, and in the as-published family it does so in
+Two properties of the construction limit what the experiments can claim, and we record them here.
+First, in the cross-source and synthesized families the number of ground-truth equations equals
+the number of output variables in every case, and in the single-source family it does so in
 92.4\% of the cases.
-% source: 実測（K == |O| の割合: as-published 92.4\%、cross-document 100\%、synthesized 100\%）
+% source: 実測（K == |O| の割合: single-source 92.4\%、cross-source 100\%、synthesized 100\%）
 Predicting the answer size from the query is therefore close to trivial in this dataset, so
 Section~\ref{sec:dofstopresults} evaluates DoF-stop on closure and set quality rather than on size prediction.
+Second, every case takes its input and output variables from the symbols of its ground-truth
+equations, so a query and its answer share one notation by construction.
+% source: 実測（入出力変数 ⊆ 正解式の変数記号の和集合: 4 族とも 100\%）;
+%         generate_training_cases.py の "input/output variables MUST be subsets of variable_symbols"
 
 \section{Synthesized Case Generation}
 
@@ -118,21 +149,21 @@ it is a failure of the method rather than of the dataset.
 
 \section{Stratified Source-disjoint Splitting}
 
-We assign each source document wholly to training, validation, or testing, in roughly a $6{:}2{:}2$
+We assign each source wholly to training, validation, or testing, in roughly a $6{:}2{:}2$
 ratio. A random split of cases would leak answers, because a paraphrased copy of a case could land
 in training while the case itself lands in testing, and both share the same ground-truth equations.
 % source: docs/progress_report_2026-06-14_seminar.tex §4; 実装 set_aware_reranker.py
 %         stratified_src_split
 Source-disjoint assignment removes that leak, but it introduces a new problem: a random assignment
-of documents can put the hard cases on one side and make the score depend on the draw rather than on
+of sources can put the hard cases on one side and make the score depend on the draw rather than on
 the method.
 
 We therefore stratify the assignment. Among 400 random candidate assignments we select the one that
 minimizes the summed $L_1$ distance between the training and test distributions of four
 difficulty-related quantities: the number of equations, the number of input variables, the number of
-output variables, and the number of documents spanned. Every experiment repeats over the same 10
+output variables, and the number of sources spanned. Every experiment repeats over the same 10
 random seeds and reports the mean and the spread across them. Results therefore measure
-generalization to unseen documents rather than memorization of seen ones.
+generalization to unseen sources rather than memorization of seen ones.
 
 \begin{figure}[H]\centering
 \includegraphics[width=0.6\linewidth]{figures/fig_dataset.pdf}

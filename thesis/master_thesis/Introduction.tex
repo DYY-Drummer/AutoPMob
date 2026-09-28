@@ -79,10 +79,11 @@ a ranked, solvable equation set without being told how many equations the answer
 
 To evaluate the method under realistic difficulty, we construct a large equation database and
 test cases whose answers are solvable, and we split them so that no document leaks between
-training and testing. The database holds 11,146 equations from 361 sources, extracted from the
-documents by a large language model (LLM) and normalized in notation. The 2,838 cases fall into
-three families by how their answer sets were formed --- as published in one document, assembled
-across documents, or synthesized --- plus augmented copies used only for training; the 1,000
+training and testing. The database holds 11,146 equations from 361 sources: a large language
+model (LLM) extracted 10,476 of them from 329 documents and generated the other 670 as reference
+sets of textbook fundamentals. The 2,838 cases fall into three families by how their answer sets
+were formed --- picked by an LLM within one source, combined across two or three sources, or
+synthesized by rule --- plus augmented copies used only for training; the 1,000
 synthesized cases grow by a rule that adds variable-sharing equations until the system closes, so
 their answers are solvable by construction. We assign every source wholly to training,
 validation, or testing, and we stratify the assignment so that four difficulty-related

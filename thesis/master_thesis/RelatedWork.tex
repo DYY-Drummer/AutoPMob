@@ -37,7 +37,7 @@ computation; on eight case studies, it built all the desired models\cite{Combine
 This study differs from the combination method in its use of context. The combination method
 builds models from the equations and their variables; this study also reads the context of each
 equation --- the description of the desired model and the text that surrounds the equation in its
-source document. Context lets the method narrow a database of 11,146 equations drawn from 361
+source. Context lets the method narrow a database of 11,146 equations drawn from 361
 sources to the equations that concern the requested model, and the variables that the equations
 share then decide which of them form the model (Section~\ref{sec:nullresult}). Along the way, the
 method evaluates each candidate against the equations already selected and stops when the selected
@@ -62,7 +62,7 @@ data\cite{LLMSR}.
 This study differs from symbolic regression in where its equations come from. Symbolic regression
 derives a model from numerical data; this study builds a model from equations published in the
 literature, so it needs no data measured on the target process, and every equation it returns
-keeps its source document. Unlike conventional symbolic regression, which reads numbers alone, the
+keeps its source. Unlike conventional symbolic regression, which reads numbers alone, the
 method also reads context, the description of the desired model and the text around each
 equation. The two approaches can also work together. The equations that this study retrieves, with
 their coefficients left free, can serve as candidate skeletons for symbolic regression; unlike the
@@ -106,11 +106,17 @@ Generation, however, carries no provenance. A generated equation can be hallucin
 but unsupported by any source\cite{Hallucination} --- and even a correct one may arrive in a
 notation that matches no document, while empirical correlations whose coefficients were fitted to
 data are hard to reproduce exactly. This study therefore treats direct generation as an external
-baseline (Chapter~5) and retrieves equations instead: every returned equation exists in a source
-document that an engineer can audit, and inference runs a small multilayer perceptron without
-calling an LLM. LLMs still serve in data construction: one extracts the database equations from
-documents (Chapter~4), and another writes only the natural-language descriptions of the
-synthesized cases, whose answer sets come from the database itself (Section~4.2).
+baseline (Chapter~5) and retrieves equations instead: every returned equation carries its source,
+94\% of the database equations come from documents that an engineer can audit, and inference runs
+a small multilayer perceptron without calling an LLM. LLMs still serve in data construction
+(Chapter~4): one extracted the equations from documents, generated the remaining 6\% as reference
+sets, and picked the answer sets of the 92 single-source cases; others wrote 33 of the
+cross-source combinations and the natural-language descriptions of the synthesized cases, whose
+answer sets follow from a rule.
+% source: unified_equations.json（文書由来 10,476/11,146 = 94.0\%、handbook_* 670 = 6.0\%）;
+%         generate_training_cases.py（single-source の正解集合）; generate_multisource_cases.py（33 組）;
+%         generate_dae_cases.py（合成ケースの説明文のみ Claude）。2026-09-28 訂正（旧:「全式が監査可能な文献に
+%         ある」「LLM の役割は抽出と合成ケースの説明文のみ」）
 
 \section{Mathematical Information Retrieval}
 \label{sec:rw-mathir}

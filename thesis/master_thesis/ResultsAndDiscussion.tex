@@ -147,17 +147,17 @@ the number of input variables, the gap widens from $+0.05$ (five or fewer) to $+
 more). Both slices say the same thing: retrieving a single equation was nearly solved already, and
 the advantage concentrates where the answer is a set and selection is combinatorial.
 
-The number of source documents shows no such trend: the gap stays between $+0.22$ and $+0.26$
-whether the ground truth spans one, two, or three or more documents. In our data the source count
+The number of sources shows no such trend: the gap stays between $+0.22$ and $+0.26$
+whether the ground truth spans one, two, or three or more sources. In our data the source count
 is confounded with the equation count --- the synthesized cases have the largest answers but stay
-within one document in 95.9\% of cases, while the cross-document cases span two documents but need
+within one source in 95.9\% of cases, while the cross-source cases span two sources but need
 only about two equations (Table~\ref{tab:families}) --- so this slice mixes the case families
 rather than isolating a third difficulty axis, and we do not interpret it causally.
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.95\linewidth]{figures/fig_characteristic.pdf}
 \caption{Recall@K in Setting A stratified by case characteristics: (a) number of ground-truth
-equations, (b) number of source documents, (c) number of input variables. Each point pools the
+equations, (b) number of sources, (c) number of input variables. Each point pools the
 per-case values of all 10 splits and carries no error bar; the seed-to-seed spread of the overall
 scores appears in Fig.~\ref{fig:comparison}.}
 \label{fig:characteristic}
@@ -369,7 +369,7 @@ model, permuting all four topic features together leaves Recall@K essentially un
 
 An obvious suspect is the label vocabulary. The domain labels are free text written by the
 extraction model, and Section~4.1 measured the consequence: 1,998 distinct labels over the 11,146
-equations, 27.9\% occurring exactly once, 6.36 labels within an average source document, and
+equations, 27.9\% occurring exactly once, 6.36 labels within an average source, and
 near-duplicates such as ``Transport Phenomena'' and ``Transport phenomena'' counted as distinct.
 Both domain features therefore fire sparsely. Merging the labels tests this suspicion directly:
 normalized to 1,958 groups, or clustered into 100 or 40 topical groups --- the scale of the
@@ -577,10 +577,11 @@ $(0.3, 0.7)$ is best on both.}
 \section{Limitations}
 \label{sec:limitations}
 
-Seven limitations qualify these results. First, the descriptions of the synthesized cases are
-written by a language model, so their style may differ from human modeling requests; the
-equations, inputs, and outputs of every case follow from the rule-based construction
-(Section~4.3). Second, the number of source documents is confounded with the number of equations,
+Seven limitations qualify these results. First, language models produced parts of the data. One wrote the descriptions of the
+synthesized cases, whose style may differ from human modeling requests, although the equations,
+inputs, and outputs of those cases follow from the rule-based construction (Section~4.3).
+Another picked the answer sets of the 92 single-source cases, which are the sets it judged
+minimal rather than the models their sources present (Section~4.2). Second, the number of sources is confounded with the number of equations,
 so Section~\ref{sec:bycharacteristics} draws no causal conclusion from it. Third, the stratified
 split is one scheme selected from 400 candidates; the 10 seeds average over the randomness within
 the scheme, not over schemes. Fourth, the evaluation is database-internal --- retrieval cannot
@@ -588,9 +589,9 @@ find an equation absent from the database --- and the language-model comparison 
 cases per setting, scored by a language model's equivalence judgments, which we cross-checked
 with a second judge (88\% agreement, $\kappa = 0.72$; Section~5.2) but did not verify by hand. Fifth, the variable-overlap
 group alone is highly predictive in this benchmark: permuting it costs 0.68 of Recall@K
-(Section~\ref{sec:mechanism}), so part of the advantage reflects how the cases were constructed
-from variable-sharing equations, and transfer to queries whose variable notation differs from the
-database remains untested. Sixth, learned greedy trains with teacher forcing: during training the
+(Section~\ref{sec:mechanism}), so part of the advantage reflects how the cases were constructed ---
+every query takes its variables from the symbols of its ground-truth equations (Section~4.2) ---
+and transfer to queries whose variable notation differs from the database remains untested. Sixth, learned greedy trains with teacher forcing: during training the
 reference set is the true partial answer, while at inference it contains the model's own
 mistakes; scheduled sampling is the standard remedy, and we leave it to future work. Seventh,
 the external retrieval baselines use BM25 with its default parameters and one dense encoder
