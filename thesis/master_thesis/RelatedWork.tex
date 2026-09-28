@@ -1,8 +1,15 @@
 % ============================================================
-% Chapter 2: Related Work — 本文（Phase 2, 2026-08-31）
+% Chapter 2: Related Work — 本文（Phase 2, 2026-08-31 / 2026-09-27 改訂）
 % 骨子版（Phase 1）は git 履歴を参照。各節末に「本研究との相違」を置く。
-% 文献は 2026-08-31 に一次ページ（出版社・arXiv・ACL Anthology・CrossRef・NTCIR 等）で
+% 文献は一次ページ（出版社・arXiv・ACL Anthology・CrossRef・NTCIR 等）で
 % 実在と書誌情報（著者・巻号・頁・年）を確認済み。作文ルール B3（未確認出典の禁止）遵守。
+% 2026-09-27 改訂: 加藤先生の指摘 2 点を反映した。
+%   (1) シンボリック回帰との違い（文脈を扱える／数値からの導出でなく文献由来の式に基づくモデリング／
+%       SR の skeleton 候補としても使える）→ §2.2 を新設（旧 §2.1 第 2 段落の SINDy・ALAMO を移設）。
+%   (2) Kato & Kano (Comput. Chem. Eng. 2025) との違い＝文脈を扱える → §2.1 の相違の段落を書き換え。
+%   CombineEq の記述は OpenAlex 収録の原文アブストラクトの範囲に限る（冗長・中間的・矛盾する式／
+%   入出力の完全性・整合性などの要件／perfect recall と無駄な計算の削減／8 事例で全目的モデル）。
+%   SR の記述は各原典のアブストラクトで確認（Schmidt & Lipson 2009、AI Feynman 2020、LLM-SR 2025）。
 % ============================================================
 \section{Component Technologies for Automated Physical Model Building}
 \label{sec:rw-autopmob}
@@ -12,25 +19,54 @@ target process, extracts equations, variables, and experimental data from them, 
 equivalence of the extracted information across documents, and reorganizes the information into
 the desired model\cite{AutoPMoBCSTR,AutoPMoBProto}. Its component technologies have been developed
 step by step: an extraction algorithm with an annotation tool (VARAT) collects variable symbols
-from engineering documents\cite{VARAT}, ProcessBERT --- a language model pre-trained on a
-chemical-engineering corpus --- judges whether two variable definitions in different documents
-refer to the same quantity\cite{ProcessBERT}, and a computer-algebra algorithm judges whether two
-differential-algebraic equation systems are mathematically equivalent\cite{DAEEquiv}. Closest to
-this study, Kato and Kano build a model by combining extracted equations that satisfy four
-predefined requirements\cite{CombineEq}.
+from engineering documents\cite{VARAT}, a data-augmentation method generates training sentences
+from templates to extract variable definitions\cite{Nagayama}, ProcessBERT --- a language model
+pre-trained on a chemical-engineering corpus --- judges whether two variable definitions in
+different documents refer to the same quantity\cite{ProcessBERT}, and computer-algebra algorithms
+judge whether two groups of equations that represent process dynamics, such as
+differential-algebraic equation systems, are mathematically equivalent\cite{ZhangEquiv,DAEEquiv}.
 
-A separate line of work identifies a model from measured data instead of documents: SINDy recovers
-governing equations by sparse regression over a library of candidate terms\cite{SINDy}, and ALAMO
-learns algebraic surrogate models for process systems from simulation or experimental
-data\cite{ALAMO}. These methods need data measured on the target process and search a space of
-functional forms, whereas the literature route reuses equations that experts have already
-published, together with the documents they came from.
+The work closest to this study addresses the model-building step itself. Kato and Kano proposed an
+efficient algorithm that builds a physical model from equations extracted from
+documents\cite{KatoESCAPE}. Because such equations include redundant, intermediate, and
+inconsistent ones, they later formulated model building as the combination of extracted equations
+into models that satisfy four predefined requirements, such as input--output completeness and
+consistency, and proposed an algorithm that finds every desired model while avoiding unnecessary
+computation; on eight case studies, it built all the desired models\cite{CombineEq}.
 
-The works above either extract and align the information a model builder needs or combine it by
-requirements fixed in advance. This study addresses the step in between as a learning problem: it
-learns to rank the equations of an 11,146-equation database so that the top of the ranking forms
-the requested model, it evaluates each candidate against the equations already selected, and it
-stops when the selected set closes as a system (Chapter~3).
+This study differs from the combination method in its use of context. The combination method
+builds models from the equations and their variables; this study also reads the context of each
+equation --- the description of the desired model and the text that surrounds the equation in its
+source document. Context lets the method narrow a database of 11,146 equations drawn from 361
+sources to the equations that concern the requested model, and the variables that the equations
+share then decide which of them form the model (Section~\ref{sec:nullresult}). Along the way, the
+method evaluates each candidate against the equations already selected and stops when the selected
+set closes as a system (Chapter~3).
+
+\section{Equation Discovery from Numerical Data}
+\label{sec:rw-sr}
+
+Symbolic regression finds a symbolic expression that matches data from an unknown
+function\cite{AIFeynman}. Schmidt and Lipson distilled Hamiltonians, Lagrangians, and conservation
+laws from motion-tracking data of physical systems without prior knowledge of
+physics\cite{SchmidtLipson}; SINDy recovers governing equations by sparse regression over a library
+of candidate terms\cite{SINDy}; AI Feynman combines neural-network fitting with physics-inspired
+techniques and rediscovered all 100 equations it was given from the Feynman Lectures on
+Physics\cite{AIFeynman}; and ALAMO learns algebraic surrogate models for process systems from
+simulation or experimental data\cite{ALAMO}. Such methods largely extract equations from data alone
+and often neglect the domain knowledge that scientists rely on\cite{LLMSR}. LLM-SR fills this gap:
+a large language model proposes equation skeletons --- equations whose parameters are left
+undetermined --- from its scientific knowledge, and an optimizer fits the parameters to the
+data\cite{LLMSR}.
+
+This study differs from symbolic regression in where its equations come from. Symbolic regression
+derives a model from numerical data; this study builds a model from equations published in the
+literature, so it needs no data measured on the target process, and every equation it returns
+keeps its source document. Unlike conventional symbolic regression, which reads numbers alone, the
+method also reads context, the description of the desired model and the text around each
+equation. The two approaches can also work together. The equations that this study retrieves, with
+their coefficients left free, can serve as candidate skeletons for symbolic regression; unlike the
+skeletons that a language model proposes in LLM-SR, they carry their sources.
 
 \section{Information Retrieval and Reranking}
 \label{sec:rw-ir}
@@ -50,21 +86,21 @@ latent-similarity feature applies latent semantic analysis.
 
 These methods score each item independently of the other retrieved items. The best-known departure
 is maximal marginal relevance (MMR), which penalizes a candidate for resembling the items already
-selected and thereby diversifies the result list\cite{MMR}. Our task departs in the opposite
-direction: a physical model is a system of equations, so a good candidate should \emph{connect} to
-the equations already selected --- share their variables --- and supply the query variables they
-still miss. The set-aware features of Chapter~3 reward exactly this coupling, with the opposite
-sign of MMR's penalty, because equation-set retrieval must achieve solvability rather than
-diversity.
+selected and thereby diversifies the result list\cite{MMR}. Our task needs a different relation.
+A physical model is a system of equations, so a good candidate should \emph{connect} to the
+equations already selected --- share their variables --- and supply the query variables they still
+miss. Where MMR treats overlap with the selected items as redundancy, equation-set retrieval treats
+shared variables as the links that make the equations a system, because it must achieve
+solvability rather than diversity. The set-aware features of Chapter~3 measure exactly these two
+relations.
 
 \section{Direct Generation of Domain Knowledge by Large Language Models}
 \label{sec:rw-llm}
 
 Large language models (LLMs) generate domain knowledge directly from a natural-language
-prompt\cite{GPT3}, and recent work applies them to scientific equations: LLM-SR, for example,
-treats equations as programs and searches equation skeletons by combining an LLM's scientific
-prior knowledge with evolutionary refinement\cite{LLMSR}. Asking an LLM to write out the equations
-of the desired model is therefore a natural alternative to retrieving them from a database.
+prompt\cite{GPT3}, and they already propose equation skeletons for symbolic regression
+(Section~\ref{sec:rw-sr}). Asking an LLM to write out the equations of the desired model is
+therefore a natural alternative to retrieving them from a database.
 
 Generation, however, carries no provenance. A generated equation can be hallucinated --- fluent
 but unsupported by any source\cite{Hallucination} --- and even a correct one may arrive in a

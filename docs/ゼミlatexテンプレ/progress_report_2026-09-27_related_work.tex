@@ -1,0 +1,324 @@
+% 進捗報告（修士論文の進捗：関連研究と本研究の位置付け）— jresume テンプレ版
+% ビルド: このディレクトリで latexmk（latexmkrc: platex → dvipdfmx）。図は tikz で本文内に描く（外部画像なし）。
+% 2026-09-27 改訂（本人指示）:
+%   (a) §1 を「前回ゼミレビュー」から「研究全貌」（約 300 字）に変更。以後の全報告の形式。
+%       中身は前回までの「前回ゼミレビュー」と同じ構成（研究の目的＋手法＋到達点）。本人指摘により、
+%       対象を化学プロセスに限定しない（対象は物理モデル一般）・本研究を AutoPMoB／加藤先生の研究の「中核」と書かない。
+%   (b) 修論の進捗報告として書く（「修論の話を入れない」は 08-09 報告だけの指示だった）。
+%   (c) 加藤先生の指摘 2 点を反映: シンボリック回帰との違い（文脈／文献由来の式に基づくモデリング／
+%       skeleton 候補にも使える）→ §4 を新設、Kato & Kano (2025) との違い＝文脈を扱える → §3 を書き換え。
+% 文献 29 件＝修論第 2 章の先行研究 29 件と同一。書誌は原典で確認済み。
+% 加藤・加納 (2025) と SR 3 件（Schmidt & Lipson 2009 / AI Feynman 2020 / LLM-SR 2025）の記述は原文アブストラクトの範囲に限る。
+% 数値は前回までのゼミ報告で既報のもののみ（08-09 と 08-31 の報告書の初版に記載）:
+%   文章類似度の全 DB AUC 0.913 / 被覆率 変数のみ 0.961→文章 0.3＋変数 0.7 で 0.967 /
+%   集合特徴 0.693→0.743（補完性 +0.052・一貫性 +0.050）/ LLM 直接生成 0.254（設定 A, n=48）/ 本手法 0.743
+\documentclass[a4j,dvipdfmx,11pt]{jresume}
+
+\usepackage{graphicx}
+\usepackage[top=24truemm,bottom=24truemm,left=24truemm,right=24truemm]{geometry}
+\usepackage{amsmath,array}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,decorations.pathreplacing,calc}
+\usepackage{hyperref}
+
+\hypersetup{colorlinks=true, linkcolor=blue!55!black, urlcolor=blue!55!black, citecolor=blue!55!black}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{0pt}
+\newcommand{\rk}{\textrm{Recall@}K}
+\setlist{nosep}
+
+% 日本語本文に合わせ、図表キャプションの見出しを日本語にする
+\renewcommand{\figurename}{図}
+\renewcommand{\tablename}{表}
+
+\pagestyle{myresume}
+
+\begin{document}
+
+%%%%%     DATE     %%%%%
+\西暦
+\markright{{\footnotesize 研究進捗報告 \hfill 2026 年 9 月 27 日}}
+
+%%%%%     TITLE     %%%%%
+\medskip
+\begin{center}
+  {\Large 物理モデルの自動構築\\ 修士論文の進捗：関連研究と本研究の位置付け}
+\end{center}
+
+%%%%%     AUTHOR     %%%%%
+\begin{flushright}
+作成者：M2\quad 一洋
+\end{flushright}
+\medskip
+
+%======================================================================
+\section{研究全貌}
+%======================================================================
+\textbf{研究の目的}：科学文献から数式を集めておき、作りたい物理モデルの説明文と入出力変数を入力すると、そのモデルを構成するのに必要な\textbf{数式の集合}を提示する。
+\begin{itemize}[leftmargin=1.5em]
+  \item 本手法は 2 段構えである。\textbf{第 1 段}で、文献など 361 件から集めた 11{,}146 式を、説明文と式の周りの文章（\textbf{文脈}）の近さと入出力変数の重なりで採点して 50 件に絞る。\textbf{第 2 段}で、10 個の特徴量で学習した多層パーセプトロン（MLP）で並べ直す。うち 3 個（\textbf{集合の特徴量}）は、候補を上位の式との関係で評価する。
+  \item $\rk$（上位 $K$ 件に入った正解式の割合。$K$ は正解式数）は、古典的情報検索手法の 0.521 から本手法の \textbf{0.743} に上がり、大規模言語モデル（LLM）に式を直接書かせる手法（48 件で 0.254）も上回った。
+\end{itemize}
+
+%======================================================================
+\section{今回の進捗}
+%======================================================================
+\begin{enumerate}[leftmargin=1.8em]
+  \item \textbf{修論第 2 章（関連研究）の執筆}：物理モデルの自動構築・シンボリック回帰・情報検索と再順位付け・LLM による式の生成・数式検索の 5 分野について本文を書き、各節の最後に本研究との違いを置いた。
+  \item \textbf{文献の収集}：第 2 章で取り上げた先行研究 29 件を含め、修論の参考文献を 4 件から 38 件に増やした。書誌情報は、すべて出版社・論文データベースの原典で確認した。
+  \item \textbf{先行研究との違いの整理}：特にシンボリック回帰と研究室の式の組合せ法との違いとして、本研究が数値データではなく文献由来の式に基づいてモデルを組み立て、その際に文脈を扱える点を明確にし、修論にも反映した。
+\end{enumerate}
+
+%======================================================================
+\section{物理モデルの自動構築に関する研究}\label{sec:pmb}
+%======================================================================
+加藤・加納~\cite{KatoCSTR,KatoProto}は、対象プロセスの文献を集め、式・変数・実験データを取り出し、文献の間で同じものを指す情報を見分け、目的のモデルに組み直す自動物理モデル構築器 AutoPMoB（Automated Physical Model Builder）を提案した。研究室ではその要素技術が段階ごとに開発されてきた（図~\ref{fig:autopmob}）。情報の抽出では、文献から変数記号を取り出す手法と注釈ツール VARAT~\cite{VARAT}、変数の定義を抽出するためのデータ拡張手法~\cite{Nagayama}が、等価性の判定では、2 つの変数の定義が同じ量を指すかを判定する言語モデル ProcessBERT~\cite{ProcessBERT}と、2 つの式群（微分代数方程式系など）が数学的に等価かを判定する手法~\cite{ZhangEquiv,DAEEquiv}が開発された。
+
+モデルの構築を扱う加藤・加納~\cite{KatoESCAPE,CombineEq}が、本研究に最も近い。文献から抽出した式には、重複した式・中間的な式・互いに矛盾する式が混じる。加藤・加納~\cite{CombineEq}は、モデルの構築を「入出力がそろうことや整合することなど、あらかじめ定めた 4 つの要件を満たすように式を組み合わせる問題」として定式化し、要件を満たすモデルを漏れなく、無駄な計算を省いて求めるアルゴリズムを提案した。8 つの事例で、目的のモデルをすべて構築できることを示している。
+
+\begin{figure}[h]\centering
+\begin{tikzpicture}[
+  font=\small,
+  stage/.style={draw=black!55, rounded corners=2pt, fill=black!4, minimum width=30mm, minimum height=8mm, align=center},
+  here/.style={stage, minimum width=40mm, draw=blue!65!black, fill=blue!7, line width=0.9pt},
+  work/.style={align=left, font=\footnotesize, text width=31mm, anchor=north, inner sep=1pt},
+  arr/.style={-{Stealth[length=2mm]}, thick, black!55}
+]
+\node[stage] (s1) {文書の収集};
+\node[stage, right=5mm of s1] (s2) {情報の抽出};
+\node[stage, right=5mm of s2] (s3) {等価性の判定};
+\node[here, right=5mm of s3] (s4) {モデルの構築};
+\draw[arr] (s1) -- (s2);
+\draw[arr] (s2) -- (s3);
+\draw[arr] (s3) -- (s4);
+\draw[decorate, decoration={brace, amplitude=5pt}, black!55]
+  ([yshift=2mm]s1.north west) -- ([yshift=2mm]s4.north east)
+  node[midway, above=6pt, font=\footnotesize, black] {AutoPMoB 全体の提案と試作~\cite{KatoCSTR,KatoProto}};
+\node[work] at ([yshift=-2mm]s2.south) {・変数記号の抽出~\cite{VARAT}\\・変数定義の抽出~\cite{Nagayama}};
+\node[work] at ([yshift=-2mm]s3.south) {・変数定義の等価性~\cite{ProcessBERT}\\・式群の等価性~\cite{ZhangEquiv,DAEEquiv}};
+\node[work, text width=40mm] at ([yshift=-2mm]s4.south) {・式の組合せ~\cite{KatoESCAPE,CombineEq}\\{\color{blue!65!black}\textbf{・式の集合の検索（本研究）}}};
+\end{tikzpicture}
+\caption{自動物理モデル構築器 AutoPMoB の 4 段階と、各段階の研究室の先行研究（番号は参考文献）。本研究（青字）は、式の組合せ法と同じ「モデルの構築」段階に位置する。}
+\label{fig:autopmob}
+\end{figure}
+
+\textbf{本研究との違い}：加藤・加納~\cite{CombineEq}の組合せ法は、式とその変数から組合せを求める。本研究は、それに加えて\textbf{文脈}（作りたいモデルの説明文と、各式が載っていた文献中の周りの文章）を扱える点が異なる。文脈は、多数の文献から集めた大規模なデータベースから、目的のモデルに関係する式を絞るのに効く。前回までに、説明文と式の周りの文章の類似度（文章類似度）1 つで全 11{,}146 式を並べても、正解式が不正解式より上に来る割合（AUC）が 0.913 に達すること、第 1 段を変数の重なりだけで行う場合より、文章類似度に 3 割の重みを残した場合のほうが、正解式を多く候補に残せる（正解式のうち候補に入る割合が 0.961 から 0.967 に上がる）ことを示した。候補を絞った後は、変数の重なりが、どの式がモデルを構成するかを決める。
+
+%======================================================================
+\section{シンボリック回帰：数値データからの式の導出}\label{sec:sr}
+%======================================================================
+シンボリック回帰は、未知の関数から得たデータに合う式を探す手法である~\cite{AIFeynman}。Schmidt・Lipson~\cite{SchmidtLipson}は、物理の予備知識を使わずに、単振動子から二重振り子までの運動の計測データから、ハミルトニアン・ラグランジアンや保存則を導いた。SINDy~\cite{SINDy}は候補となる多数の項から疎な回帰で少数の項を選んで支配方程式を求め、AI Feynman~\cite{AIFeynman}はニューラルネットワークによる当てはめと物理に着想を得た手法を組み合わせて、ファインマン物理学講義の 100 式をすべて導いた。ALAMO（Automated Learning of Algebraic Models for Optimization）~\cite{ALAMO}は、少数のシミュレーション・実験データから簡潔な代数式の代理モデルを作る。ただし、これらの手法は主にデータだけから式を取り出し、研究者が頼る分野の知識を顧みないことが多いと指摘されている~\cite{LLMSR}。LLM-SR~\cite{LLMSR}はこれを補うため、LLM に分野の知識から式の\textbf{骨格}（係数を未定にした式の形）を提案させ、係数をデータに当てはめる。
+
+\textbf{本研究との違い}：シンボリック回帰は、数値データから物理モデルを導く。本研究は数値データから導くのではなく、文献に載った式に基づいてモデルを組み立てる。そのため対象プロセスの測定データを必要とせず、返す式にはすべて出典がある。また、数値だけを扱う従来のシンボリック回帰と異なり、本研究は文脈を扱える。両者は組み合わせることもできる。本研究が文献から選んだ式は、係数を未定にすれば、シンボリック回帰の骨格の候補として使える。LLM-SR で LLM が提案する骨格と違い、この骨格には出典がある。
+
+%======================================================================
+\section{情報検索と再順位付け}\label{sec:ir}
+%======================================================================
+情報検索は、問い合わせとの関連度で文書などの項目を並べる技術である~\cite{Manning}。古典的な手法には、単語の出現頻度と珍しさで重みを付ける TF-IDF（Term Frequency--Inverse Document Frequency）~\cite{Salton}、確率モデルに基づく採点式 BM25~\cite{BM25}、特異値分解で文書を低次元の意味の空間に写す潜在意味解析~\cite{LSA}がある。近年は、高速な第 1 段で候補を絞り、BERT~\cite{BERT}などの学習した言語モデルで候補を並べ直す 2 段構えが広く使われ~\cite{BERTrerank}、第 1 段を学習した埋め込みベクトルで行う密ベクトル検索~\cite{DPR}もある。本手法は、この 2 段構えに加え、正解と不正解の組の順位を学ぶ学習方法~\cite{LTR}と、潜在意味解析（第 2 段の特徴量の 1 つに使用）を受け継いでいる。
+
+\textbf{本研究との違い}：これらの手法は、各項目を問い合わせとの関係だけで採点し、他の項目とは無関係に並べる。代表的な例外である MMR（Maximal Marginal Relevance）~\cite{MMR}は、既に選んだ文書に似た候補を減点し、検索結果の重複を減らす。本研究で必要な関係は、これとは異なる。物理モデルは変数を共有して連立する式の集まりなので、良い候補とは、上位の式と変数を共有してつながり（\textbf{一貫性}）、まだ足りない入出力変数を補う（\textbf{補完性}）式である。変数の重なりは重複ではなく、系としてつながっていることを示す。求めるのは結果の多様さではなく、集めた式が連立方程式として解けることである。前回報告したとおり、集合の特徴量を加えると $\rk$ は 0.693 から 0.743 に上がり、その上昇は補完性と一貫性が担っていた。
+
+%======================================================================
+\section{LLM による式の直接生成}\label{sec:llm}
+%======================================================================
+LLM は自然言語の指示から専門知識を直接生成でき~\cite{GPT3}、\ref{sec:sr} 節の LLM-SR のように式の骨格の提案にも使われている。必要な式を LLM に書かせることは、検索の自然な代替である。
+
+\textbf{本研究との違い}：生成した式には出典がない。LLM がもっともらしいが根拠のない内容を生成する現象（ハルシネーション）が知られており~\cite{Hallucination}、正しい式でも文献と記法が違うことがあり、特定の文献で係数を当てはめた経験式は再現しにくい。本研究はデータベースから式を返すので、どの式にも出典の文献があり、技術者が原典で確かめられる。検索のたびに LLM を呼ぶこともない。前回報告したとおり、LLM に同じ入力を与えて式を書かせる手法の $\rk$ は 0.254（一様に抜き出した 48 件での評価）で、本手法の 0.743 を下回った。
+
+%======================================================================
+\section{数式検索}\label{sec:mathir}
+%======================================================================
+数式検索は、文章や式を問い合わせにして式を探す分野であり、式の認識と検索の技術は体系的にまとめられている~\cite{MathSurvey}。国立情報学研究所の評価型会議 NTCIR（NII Testbeds and Community for Information access Research）の数式検索課題~\cite{NTCIR12}は arXiv の論文と Wikipedia を対象に、ARQMath（Answer Retrieval for Questions on Math）~\cite{ARQMath}は数学の質問投稿サイト Math Stack Exchange を対象に、評価の枠組みを整えた。検索手法には、式を演算子の木で表し、葉から根への経路の一致で構造の似かたを測るもの~\cite{Approach0}などがある。
+
+\textbf{本研究との違い}：数式検索が返すのは、問い合わせに似た式 1 つ 1 つである。本研究が返すのは、入力変数を与えれば出力変数が決まる（自由度ゼロの）連立方程式となる式の集合であり、1 つの式の価値は、一緒に選ばれる式によって変わる。調べた範囲では、この条件を課す評価課題は数式検索の分野に見当たらない。
+
+%======================================================================
+\section{まとめと今後の課題}
+%======================================================================
+\textbf{今回}：修論第 2 章として 5 分野の先行研究を調べ、本研究との違いを表~\ref{tab:summary} にまとめた。本研究は、数値データから式を導くのではなく文献由来の式に基づいてモデルを組み立て、その際に文脈を扱える。この点で、数値データだけを扱う従来のシンボリック回帰とも、式とその変数から組合せを求める式の組合せ法~\cite{CombineEq}とも異なる。さらに、情報検索・数式検索と異なり連立方程式として解ける式の集合を返し、LLM による生成と異なり出典のある式を返す。
+
+\begin{table}[h]\centering
+\footnotesize
+\caption{先行研究の分野と本研究との違い（番号は参考文献）}
+\label{tab:summary}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.16\linewidth}>{\raggedright\arraybackslash}p{0.24\linewidth}>{\raggedright\arraybackslash}p{0.21\linewidth}>{\raggedright\arraybackslash}p{0.30\linewidth}@{}}
+\toprule
+分野 & 代表的な先行研究 & 返すもの & 本研究との違い \\
+\midrule
+物理モデルの自動構築（研究室） & AutoPMoB~\cite{KatoCSTR,KatoProto}、式の組合せ法~\cite{KatoESCAPE,CombineEq} & 要件を満たす式の組合せ（漏れなく） & 文脈（説明文と式の周りの文章）も扱い、大規模なデータベースから関係する式を絞る \\
+\addlinespace
+シンボリック回帰 & Schmidt・Lipson~\cite{SchmidtLipson}、SINDy~\cite{SINDy}、AI Feynman~\cite{AIFeynman}、ALAMO~\cite{ALAMO}、LLM-SR~\cite{LLMSR} & 数値データに合う式 & 数値データでなく文献由来の式に基づき、文脈を扱う。選んだ式は骨格の候補にもなる \\
+\addlinespace
+情報検索と再順位付け & TF-IDF~\cite{Salton}、BM25~\cite{BM25}、BERT による再順位付け~\cite{BERTrerank}、MMR~\cite{MMR} & 1 件ずつ採点した文書の順位 & 候補を上位の式との関係（変数の共有・補完）でも評価する \\
+\addlinespace
+LLM による式の生成 & GPT-3~\cite{GPT3} & 生成した式（出典なし） & 出典のある式を返す \\
+\addlinespace
+数式検索 & NTCIR~\cite{NTCIR12}、ARQMath~\cite{ARQMath}、構造の類似検索~\cite{Approach0} & 問い合わせに似た式 1 つずつ & 連立方程式として解ける式の集合を返す \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{今後の課題}：
+\begin{itemize}[leftmargin=1.5em]
+  \item 調査で標準的な比較対象として挙がった BM25 と密ベクトル検索を、本研究と同じ評価で本手法と比べた結果を次回報告する。
+  \item 本研究の出力を、式の組合せ法~\cite{CombineEq}の入力や、シンボリック回帰の骨格の候補として使う方法を検討する。
+  \item 修論の執筆を続ける。まだ骨子の段階の付録（ハイパーパラメータの感度・合成ケースの実例・LLM への指示文）を書き、各章を推敲する。
+\end{itemize}
+
+%======================================================================
+% 参考文献（29 件、本文の初出順）
+%======================================================================
+{\footnotesize
+\begin{thebibliography}{99}
+
+\bibitem{KatoCSTR}
+S. Kato, M. Kano.
+\ Towards An Automated Physical Model Builder: CSTR Case Study.
+\ {\it Computer Aided Chemical Engineering}, {\bf 49}, pp.1669--1674, 2022.
+
+\bibitem{KatoProto}
+S. Kato, M. Kano.
+\ Prototype of Automated Physical Model Builder: Challenges and Opportunities.
+\ {\it Computer Aided Chemical Engineering}, {\bf 53}, pp.2839--2844, 2024.
+
+\bibitem{VARAT}
+S. Kato, M. Kano.
+\ VARAT: Variable Annotation Tool for Documents on Manufacturing Processes.
+\ {\it Journal of Chemical Engineering of Japan}, {\bf 58}, 2454461, 2025.
+
+\bibitem{Nagayama}
+K. Nagayama, S. Kato, M. Kano.
+\ Data Augmentation Method Utilizing Template Sentences for Variable Definition Extraction.
+\ {\it Natural Language Processing and Information Systems (NLDB 2024), Lecture Notes in Computer Science}, pp.151--165, 2024.
+
+\bibitem{ProcessBERT}
+S. Kato, K. Kanegami, M. Kano.
+\ ProcessBERT: A Pre-trained Language Model for Judging Equivalence of Variable Definitions in Process Models.
+\ {\it IFAC-PapersOnLine}, {\bf 55}, pp.957--962, 2022.
+
+\bibitem{ZhangEquiv}
+C. Zhang, S. Kato, M. Kano.
+\ Equivalence Judgment of Equation Groups Representing Process Dynamics.
+\ {\it Computer Aided Chemical Engineering}, {\bf 49}, pp.1513--1518, 2022.
+
+\bibitem{DAEEquiv}
+S. Kato, C. Zhang, M. Kano.
+\ Simple algorithm for judging equivalence of differential-algebraic equation systems.
+\ {\it Scientific Reports}, {\bf 13}, 11534, 2023.
+
+\bibitem{KatoESCAPE}
+S. Kato, M. Kano.
+\ Efficient physical model building algorithm using equations extracted from documents.
+\ {\it Computer Aided Chemical Engineering}, {\bf 52}, pp.151--156, 2023.
+
+\bibitem{CombineEq}
+S. Kato, M. Kano.
+\ Automated physical model building from literature sources: Combining equations based on four predefined requirements.
+\ {\it Computers \& Chemical Engineering}, {\bf 200}, 109147, 2025.
+
+\bibitem{AIFeynman}
+S.-M. Udrescu, M. Tegmark.
+\ AI Feynman: A physics-inspired method for symbolic regression.
+\ {\it Science Advances}, {\bf 6}, eaay2631, 2020.
+
+\bibitem{SchmidtLipson}
+M. Schmidt, H. Lipson.
+\ Distilling Free-Form Natural Laws from Experimental Data.
+\ {\it Science}, {\bf 324}, pp.81--85, 2009.
+
+\bibitem{SINDy}
+S. L. Brunton, J. L. Proctor, J. N. Kutz.
+\ Discovering governing equations from data by sparse identification of nonlinear dynamical systems.
+\ {\it Proceedings of the National Academy of Sciences}, {\bf 113}, pp.3932--3937, 2016.
+
+\bibitem{ALAMO}
+A. Cozad, N. V. Sahinidis, D. C. Miller.
+\ Learning surrogate models for simulation-based optimization.
+\ {\it AIChE Journal}, {\bf 60}, pp.2211--2227, 2014.
+
+\bibitem{LLMSR}
+P. Shojaee, K. Meidani, S. Gupta, A. Barati Farimani, C. K. Reddy.
+\ LLM-SR: Scientific Equation Discovery via Programming with Large Language Models.
+\ {\it International Conference on Learning Representations}, 2025.
+
+\bibitem{Manning}
+C. D. Manning, P. Raghavan, H. Sch\"{u}tze.
+\ {\it Introduction to Information Retrieval}.
+\ Cambridge University Press, 2008.
+
+\bibitem{Salton}
+G. Salton, C. Buckley.
+\ Term-weighting approaches in automatic text retrieval.
+\ {\it Information Processing \& Management}, {\bf 24}, pp.513--523, 1988.
+
+\bibitem{BM25}
+S. Robertson, H. Zaragoza.
+\ The Probabilistic Relevance Framework: BM25 and Beyond.
+\ {\it Foundations and Trends in Information Retrieval}, {\bf 3}, pp.333--389, 2009.
+
+\bibitem{LSA}
+S. Deerwester, S. T. Dumais, G. W. Furnas, T. K. Landauer, R. Harshman.
+\ Indexing by latent semantic analysis.
+\ {\it Journal of the American Society for Information Science}, {\bf 41}, pp.391--407, 1990.
+
+\bibitem{BERT}
+J. Devlin, M. Chang, K. Lee, K. Toutanova.
+\ BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.
+\ {\it Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies}, {\bf 1}, pp.4171--4186, 2019.
+
+\bibitem{BERTrerank}
+R. Nogueira, K. Cho.
+\ Passage Re-ranking with BERT.
+\ arXiv:1901.04085, 2019.
+
+\bibitem{DPR}
+V. Karpukhin, B. O\u{g}uz, S. Min, et al.
+\ Dense Passage Retrieval for Open-Domain Question Answering.
+\ {\it Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing}, pp.6769--6781, 2020.
+
+\bibitem{LTR}
+T. Liu.
+\ Learning to Rank for Information Retrieval.
+\ {\it Foundations and Trends in Information Retrieval}, {\bf 3}, pp.225--331, 2009.
+
+\bibitem{MMR}
+J. Carbonell, J. Goldstein.
+\ The use of MMR, diversity-based reranking for reordering documents and producing summaries.
+\ {\it Proceedings of the 21st Annual International ACM SIGIR Conference on Research and Development in Information Retrieval}, pp.335--336, 1998.
+
+\bibitem{GPT3}
+T. Brown, B. Mann, N. Ryder, et al.
+\ Language Models are Few-Shot Learners.
+\ {\it Advances in Neural Information Processing Systems}, {\bf 33}, pp.1877--1901, 2020.
+
+\bibitem{Hallucination}
+Z. Ji, N. Lee, R. Frieske, et al.
+\ Survey of Hallucination in Natural Language Generation.
+\ {\it ACM Computing Surveys}, {\bf 55}, Article 248, 2023.
+
+\bibitem{MathSurvey}
+R. Zanibbi, D. Blostein.
+\ Recognition and retrieval of mathematical expressions.
+\ {\it International Journal on Document Analysis and Recognition}, {\bf 15}, pp.331--357, 2012.
+
+\bibitem{NTCIR12}
+R. Zanibbi, A. Aizawa, M. Kohlhase, I. Ounis, G. Topi\'{c}, K. Davila.
+\ NTCIR-12 MathIR Task Overview.
+\ {\it Proceedings of the 12th NTCIR Conference on Evaluation of Information Access Technologies}, pp.299--308, 2016.
+
+\bibitem{ARQMath}
+R. Zanibbi, D. W. Oard, A. Agarwal, B. Mansouri.
+\ Overview of ARQMath 2020: CLEF Lab on Answer Retrieval for Questions on Math.
+\ {\it Experimental IR Meets Multilinguality, Multimodality, and Interaction (CLEF 2020), Lecture Notes in Computer Science}, {\bf 12260}, pp.169--193, 2020.
+
+\bibitem{Approach0}
+W. Zhong, R. Zanibbi.
+\ Structural Similarity Search for Formulas Using Leaf-Root Paths in Operator Subtrees.
+\ {\it Advances in Information Retrieval (ECIR 2019), Lecture Notes in Computer Science}, {\bf 11437}, pp.116--129, 2019.
+
+\end{thebibliography}}
+
+\end{document}
