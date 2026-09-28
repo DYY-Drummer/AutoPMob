@@ -107,6 +107,8 @@ docs/**/*.dvi
 docs/**/*.fls
 docs/**/*.fdb_latexmk
 docs/**/*.synctex.gz
+docs/**/*.bbl
+docs/**/*.blg
 
 # 先輩の修論 TeX ソース（参照用ローカルコピー・他者の著作物のため非コミット）
 thesis/TexSource/
