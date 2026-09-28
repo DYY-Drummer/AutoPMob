@@ -1,5 +1,5 @@
 % ============================================================
-% Chapter 2: Related Work — 本文（Phase 2, 2026-08-31 / 2026-09-27 改訂）
+% Chapter 2: Related Work — 本文（Phase 2, 2026-08-31 / 2026-09-27 / 2026-09-28 改訂）
 % 骨子版（Phase 1）は git 履歴を参照。各節末に「本研究との相違」を置く。
 % 文献は一次ページ（出版社・arXiv・ACL Anthology・CrossRef・NTCIR 等）で
 % 実在と書誌情報（著者・巻号・頁・年）を確認済み。作文ルール B3（未確認出典の禁止）遵守。
@@ -9,7 +9,25 @@
 %   (2) Kato & Kano (Comput. Chem. Eng. 2025) との違い＝文脈を扱える → §2.1 の相違の段落を書き換え。
 %   CombineEq の記述は OpenAlex 収録の原文アブストラクトの範囲に限る（冗長・中間的・矛盾する式／
 %   入出力の完全性・整合性などの要件／perfect recall と無駄な計算の削減／8 事例で全目的モデル）。
-%   SR の記述は各原典のアブストラクトで確認（Schmidt & Lipson 2009、AI Feynman 2020、LLM-SR 2025）。
+% 2026-09-28 改訂: 09-27 ゼミ報告への加藤先生の PDF 注釈（52 件）のうち、第 2 章に当てはまるものを反映した。
+%   (a) ZhangEquiv・DAEEquiv は "mathematically equivalent" と書いていない（DAEEquiv の要旨は「同じ形に
+%       変形できるとき equivalent とよぶ」、Europe PMC の全文にも mathematically equivalent はない）。
+%       "such as" で対象をぼかさず、2 本の対象（プロセスの動特性を表す式群／微分代数方程式系）を分けて書く。
+%       ZhangEquiv の要旨は出版社が自動取得を拒み未確認のため題目の範囲で書き、computer algebra は DAEEquiv だけに付けた。
+%       → 2026-09-29 本人が ZhangEquiv の要旨・序論・抜粋・結論を提供。mathematically equivalent は使っておらず、
+%         "not by their appearance but by the calculations they perform" で判定し、SymPy（CAS）を使うと確認できたので、
+%         computer algebra を両方に戻し、ZhangEquiv の判定基準（見た目ではなく計算）を書き足した。
+%   (b) CombineEq との違い: 「文脈で DB を絞れる」は差別化にならない（変数だけで被覆率 0.961、文脈を足して 0.967、
+%       並べ直しも変数の重なりが主）。入力と出力の違いで述べ、文脈が要る場面は未実証と明記した。
+%   (c) SR の定義（旧 "data from an unknown function"）と問題（旧「分野の知識を顧みない」だけでは何が問題か不明）を、
+%       LLM-SR の要旨（組合せが膨大な仮説空間の探索、事前知識の不使用 → 知識で探索が効率化し out-of-domain で精度向上）で書き直した。
+%   (d) LLM の問題を「生成した式の正しさを出典で確かめられない。連立すると 1 式の誤りが広がる」に書き直し、
+%       記法・経験式の推測を削除した。「every equation it returns keeps its source」を文献由来の 94% に限定した。
+%   (e) 数式検索を本研究の構成要素（式どうしの比較）と位置づけ、比べ方と検索対象の 2 観点で整理した。
+%       Tangent-CFT（ICTIR 2019, doi:10.1145/3341981.3344235、CrossRef で照合）を追加。高度化は第 7 章の今後の課題へ。
+%   (f) 略語は初出で正式名称を付けた（VARAT・SINDy・ALAMO・LLM・BERT・NTCIR・ARQMath。SINDy は arXiv 版本文、
+%       ALAMO は AIChE J. の要旨で確認）。
+% SR の記述は各原典のアブストラクトで確認（Schmidt & Lipson 2009、SINDy 2016、AI Feynman 2020、ALAMO 2014、LLM-SR 2025）。
 % ============================================================
 \section{Component Technologies for Automated Physical Model Building}
 \label{sec:rw-autopmob}
@@ -18,13 +36,17 @@ Our group proposed AutoPMoB, an automated physical model builder that collects d
 target process, extracts equations, variables, and experimental data from them, judges the
 equivalence of the extracted information across documents, and reorganizes the information into
 the desired model\cite{AutoPMoBCSTR,AutoPMoBProto}. Its component technologies have been developed
-step by step: an extraction algorithm with an annotation tool (VARAT) collects variable symbols
-from engineering documents\cite{VARAT}, a data-augmentation method generates training sentences
-from templates to extract variable definitions\cite{Nagayama}, ProcessBERT --- a language model
-pre-trained on a chemical-engineering corpus --- judges whether two variable definitions in
-different documents refer to the same quantity\cite{ProcessBERT}, and computer-algebra algorithms
-judge whether two groups of equations that represent process dynamics, such as
-differential-algebraic equation systems, are mathematically equivalent\cite{ZhangEquiv,DAEEquiv}.
+step by step. For extraction, an algorithm with an annotation tool, the Variable Annotation Tool
+(VARAT), collects variable symbols from engineering documents\cite{VARAT}, and a data-augmentation
+method generates training sentences from templates to extract variable definitions\cite{Nagayama}.
+For equivalence judgment, ProcessBERT --- a language model pre-trained on a chemical-engineering
+corpus --- judges whether two variable definitions in different documents refer to the same
+quantity\cite{ProcessBERT}, and two algorithms judge whether two groups of equations are
+equivalent: one for groups that represent process dynamics\cite{ZhangEquiv} and one for
+differential-algebraic equation systems\cite{DAEEquiv}. Both manipulate the equations with a
+computer algebra system; the former judges equivalence by the calculations the equations perform
+rather than by their appearance, and the latter calls two equation groups equivalent when they can
+be transformed into the same form.
 
 The work closest to this study addresses the model-building step itself. Kato and Kano proposed an
 efficient algorithm that builds a physical model from equations extracted from
@@ -34,39 +56,52 @@ into models that satisfy four predefined requirements, such as input--output com
 consistency, and proposed an algorithm that finds every desired model while avoiding unnecessary
 computation; on eight case studies, it built all the desired models\cite{CombineEq}.
 
-This study differs from the combination method in its use of context. The combination method
-builds models from the equations and their variables; this study also reads the context of each
-equation --- the description of the desired model and the text that surrounds the equation in its
-source. Context lets the method narrow a database of 11,146 equations drawn from 361
-sources to the equations that concern the requested model, and the variables that the equations
-share then decide which of them form the model (Section~\ref{sec:nullresult}). Along the way, the
-method evaluates each candidate against the equations already selected and stops when the selected
-set closes as a system (Chapter~3).
+This study differs from the combination method in its input and output. The combination method
+takes equations and their variables and returns every combination that meets the requirements.
+This study also takes a description of the desired model, reads the context of each equation ---
+the text that surrounds the equation in its source --- and ranks the equations that the
+description asks for above the rest; it scores each candidate against the equations already
+selected and can stop once the selected set closes as a system (Chapter~3). Narrowing the database
+to the equations that concern the requested model, however, does not by itself require context. In
+our benchmark, a first stage that reads variable overlap alone keeps 96.1\% of the ground-truth
+equations among its 50 candidates, and adding text similarity raises this only to 96.7\%
+(Section~\ref{sec:stage1redesign}); after narrowing, the features that read variable overlap
+carry the ranking (Section~\ref{sec:mechanism}). The benchmark favors variables, because every
+query takes its variables from the symbols of its ground-truth equations. Context should matter
+where variables cannot decide --- when several combinations meet the requirements and only the
+description tells which one the user wants, or when a user writes variables in a notation that
+differs from the literature --- and this study has not yet shown that it helps there
+(Section~\ref{sec:limitations}).
 
 \section{Equation Discovery from Numerical Data}
 \label{sec:rw-sr}
 
-Symbolic regression finds a symbolic expression that matches data from an unknown
-function\cite{AIFeynman}. Schmidt and Lipson distilled Hamiltonians, Lagrangians, and conservation
-laws from motion-tracking data of physical systems without prior knowledge of
-physics\cite{SchmidtLipson}; SINDy recovers governing equations by sparse regression over a library
-of candidate terms\cite{SINDy}; AI Feynman combines neural-network fitting with physics-inspired
-techniques and rediscovered all 100 equations it was given from the Feynman Lectures on
-Physics\cite{AIFeynman}; and ALAMO learns algebraic surrogate models for process systems from
-simulation or experimental data\cite{ALAMO}. Such methods largely extract equations from data alone
-and often neglect the domain knowledge that scientists rely on\cite{LLMSR}. LLM-SR fills this gap:
-a large language model proposes equation skeletons --- equations whose parameters are left
-undetermined --- from its scientific knowledge, and an optimizer fits the parameters to the
-data\cite{LLMSR}.
+Symbolic regression searches for an equation that fits numerical data, determining the form of the
+equation as well as its coefficients\cite{AIFeynman}. Schmidt and Lipson distilled Hamiltonians,
+Lagrangians, and conservation laws from motion-tracking data of physical systems without prior
+knowledge of physics\cite{SchmidtLipson}; sparse identification of nonlinear dynamics (SINDy)
+uses sparse regression to keep the fewest terms of the governing equations that represent the
+data\cite{SINDy}; AI Feynman combines neural-network fitting with physics-inspired techniques and
+rediscovered all 100 equations it was given from the Feynman Lectures on Physics\cite{AIFeynman};
+and automated learning of algebraic models for optimization (ALAMO) learns algebraic surrogate
+models that are as accurate and as simple as possible from a small number of simulations or
+experiments\cite{ALAMO}. The difficulty lies in the search: the candidate forms of an equation
+span an extremely large combinatorial space, and methods that learn from data alone leave unused
+the prior knowledge that scientists rely on\cite{LLMSR}. LLM-SR brings that knowledge in. A large
+language model (LLM) proposes equation skeletons --- equations whose parameters are left
+undetermined --- from its scientific knowledge, and an optimizer fits the parameters to the data;
+with this prior, LLM-SR explored the space more efficiently than symbolic-regression baselines and
+found more accurate equations, particularly on out-of-domain test data\cite{LLMSR}.
 
 This study differs from symbolic regression in where its equations come from. Symbolic regression
-derives a model from numerical data; this study builds a model from equations published in the
-literature, so it needs no data measured on the target process, and every equation it returns
-keeps its source. Unlike conventional symbolic regression, which reads numbers alone, the
-method also reads context, the description of the desired model and the text around each
-equation. The two approaches can also work together. The equations that this study retrieves, with
-their coefficients left free, can serve as candidate skeletons for symbolic regression; unlike the
-skeletons that a language model proposes in LLM-SR, they carry their sources.
+derives a model from numerical data; this study builds a model from equations collected from the
+literature, so it needs no data measured on the target process, and the equations that come from
+documents --- 94\% of the database --- keep their sources. Unlike conventional symbolic regression,
+which reads numbers alone, the method also reads context, the description of the desired model and
+the text around each equation. The two approaches can also work together. The equations that this
+study retrieves, with their coefficients left free, can serve as candidate skeletons for symbolic
+regression; unlike the skeletons that an LLM proposes in LLM-SR, those drawn from documents carry
+their sources.
 
 \section{Information Retrieval and Reranking}
 \label{sec:rw-ir}
@@ -76,13 +111,14 @@ query\cite{Manning}. Term-weighting schemes such as term frequency--inverse docu
 (TF-IDF) score the lexical overlap between query and item\cite{Salton}, the probabilistic BM25
 family refines such scores\cite{BM25}, and latent semantic analysis projects texts onto a
 low-dimensional space obtained by singular-value decomposition to absorb vocabulary
-mismatch\cite{LSA}. Modern systems add a second stage: a fast first stage narrows the collection
-to a candidate list, and a learned model reranks the candidates, today typically a pretrained
-language model such as BERT\cite{BERT,BERTrerank}; dense retrievers replace the lexical first
-stage with learned embeddings\cite{DPR}. The method of Chapter~3 inherits this retrieve-then-rerank
-design --- its first stage mixes a TF-IDF score with a variable-overlap score, its reranker trains
-with a pairwise ranking loss from the learning-to-rank literature\cite{LTR}, and its
-latent-similarity feature applies latent semantic analysis.
+mismatch\cite{LSA}. Modern systems add a second stage: a fast first-stage retriever narrows the
+collection to a candidate list, and a learned model reranks the candidates, today typically a
+pretrained language model such as Bidirectional Encoder Representations from Transformers
+(BERT)\cite{BERT,BERTrerank}; dense retrievers perform the first-stage retrieval with learned
+embeddings in place of lexical scores\cite{DPR}. The method of Chapter~3 inherits this
+retrieve-then-rerank design --- its first stage mixes a TF-IDF score with a variable-overlap score,
+its reranker trains with a pairwise ranking loss from the learning-to-rank literature\cite{LTR},
+and its latent-similarity feature applies latent semantic analysis.
 
 These methods score each item independently of the other retrieved items. The best-known departure
 is maximal marginal relevance (MMR), which penalizes a candidate for resembling the items already
@@ -97,22 +133,23 @@ relations.
 \section{Direct Generation of Domain Knowledge by Large Language Models}
 \label{sec:rw-llm}
 
-Large language models (LLMs) generate domain knowledge directly from a natural-language
-prompt\cite{GPT3}, and they already propose equation skeletons for symbolic regression
-(Section~\ref{sec:rw-sr}). Asking an LLM to write out the equations of the desired model is
-therefore a natural alternative to retrieving them from a database.
+LLMs generate domain knowledge directly from a natural-language prompt\cite{GPT3}, and they already
+propose equation skeletons for symbolic regression (Section~\ref{sec:rw-sr}). Asking an LLM to
+write out the equations of the desired model is therefore a natural alternative to retrieving them
+from a database.
 
-Generation, however, carries no provenance. A generated equation can be hallucinated --- fluent
-but unsupported by any source\cite{Hallucination} --- and even a correct one may arrive in a
-notation that matches no document, while empirical correlations whose coefficients were fitted to
-data are hard to reproduce exactly. This study therefore treats direct generation as an external
-baseline (Chapter~5) and retrieves equations instead: every returned equation carries its source,
-94\% of the database equations come from documents that an engineer can audit, and inference runs
-a small multilayer perceptron without calling an LLM. LLMs still serve in data construction
-(Chapter~4): one extracted the equations from documents, generated the remaining 6\% as reference
-sets, and picked the answer sets of the 92 single-source cases; others wrote 33 of the
-cross-source combinations and the natural-language descriptions of the synthesized cases, whose
-answer sets follow from a rule.
+Generation, however, carries no provenance. LLMs are well known to hallucinate --- to produce
+fluent output that no source supports\cite{Hallucination} --- and a user cannot trace a generated
+equation to a source to check whether it is correct. The check matters for physical models: the
+equations are solved as one system, so a single wrong equation can corrupt every variable connected
+to it. This study therefore treats direct generation as an external baseline (Chapter~5) and
+retrieves equations instead: a user can check each equation drawn from a document --- 94\% of the
+database --- against its source, and inference runs a small multilayer perceptron without calling
+an LLM. LLMs still serve in data construction (Chapter~4): one extracted the equations from
+documents, generated the remaining 6\% as reference sets, which therefore have no source document,
+and picked the answer sets of the 92 single-source cases; others wrote 33 of the cross-source
+combinations and the natural-language descriptions of the synthesized cases, whose answer sets
+follow from a rule.
 % source: unified_equations.json（文書由来 10,476/11,146 = 94.0\%、handbook_* 670 = 6.0\%）;
 %         generate_training_cases.py（single-source の正解集合）; generate_multisource_cases.py（33 組）;
 %         generate_dae_cases.py（合成ケースの説明文のみ Claude）。2026-09-28 訂正（旧:「全式が監査可能な文献に
@@ -122,17 +159,27 @@ answer sets follow from a rule.
 \label{sec:rw-mathir}
 
 Mathematical information retrieval searches for formulas with queries that contain text, formulas,
-or both, and its recognition and retrieval techniques have been surveyed\cite{MathSurvey}. Shared
-tasks organized the field: the NTCIR-12 MathIR task evaluated formula-and-keyword search over
-arXiv and Wikipedia corpora\cite{NTCIR12}, and the ARQMath lab evaluates the retrieval of answers
-and of formulas for mathematical questions from a community-question-answering
-archive\cite{ARQMath}. Retrieval systems of this field rank individual formulas, for example by
-matching leaf-root paths in the operator subtrees of a formula\cite{Approach0}.
+or both, and its recognition and retrieval techniques have been surveyed\cite{MathSurvey}. We relate
+the field to this study from two viewpoints: how it compares formulas and what it retrieves.
 
-The unit of retrieval separates this study from formula search. A formula-search system returns
-single formulas ranked by similarity to the query; our method returns a set of equations that must
-jointly close a system --- cover the requested outputs and leave zero degrees of freedom --- so
-the value of one equation depends on the equations retrieved with it. No formula-search benchmark
-imposes this joint condition. Chapter~6 shows its consequence empirically: after the first stage
-narrows the candidates, topical similarity becomes redundant, and the improvement comes from
-features that read the variable structure of the selected set.
+Formula-search methods compare formulas in several ways. Some treat a formula as a string of
+symbols; others represent it as an operator tree and match the leaf-root paths of its
+subtrees\cite{Approach0}, or embed its trees into vectors\cite{TangentCFT}. For this study, such
+methods are components rather than rivals. Our method also compares equations --- the second stage
+scores each candidate against the equations already selected --- but it reads only the sets of
+variables that the equations contain, a naive comparison. Whether the tree-based or embedding
+representations of formula search improve retrieval is left to future work (Chapter~7).
+
+What the field retrieves separates it from this study. Shared tasks organized the field: the
+NTCIR-12 MathIR task, held at the NII Testbeds and Community for Information access Research
+(NTCIR) conference, evaluated formula-and-keyword search over arXiv and Wikipedia
+corpora\cite{NTCIR12}, and the Answer Retrieval for Questions on Math (ARQMath) lab evaluates the
+retrieval of answers and of formulas for mathematical questions from a
+community-question-answering archive\cite{ARQMath}. These tasks retrieve single formulas ranked by
+similarity to the query. Our method retrieves a set of equations that must jointly close a system
+--- cover the requested outputs and leave zero degrees of freedom --- so the value of one equation
+depends on the equations retrieved with it. We found no formula-search benchmark that imposes this
+joint condition; retrieving several equations as one answer is a different problem from retrieving
+a single formula and calls for its own task definition. Chapter~6 shows a consequence of the joint
+condition: after the first stage narrows the candidates, topical similarity becomes redundant, and
+the improvement comes from features that read the variable structure of the selected set.
