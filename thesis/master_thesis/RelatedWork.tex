@@ -1,5 +1,5 @@
 % ============================================================
-% Chapter 2: Related Work — 本文（Phase 2, 2026-08-31 / 2026-09-27 / 2026-09-28 改訂）
+% Chapter 2: Related Work — 本文（Phase 2, 2026-08-31 / 2026-09-27 / 2026-09-28 / 2026-09-29 改訂）
 % 骨子版（Phase 1）は git 履歴を参照。各節末に「本研究との相違」を置く。
 % 文献は一次ページ（出版社・arXiv・ACL Anthology・CrossRef・NTCIR 等）で
 % 実在と書誌情報（著者・巻号・頁・年）を確認済み。作文ルール B3（未確認出典の禁止）遵守。
@@ -27,6 +27,15 @@
 %       Tangent-CFT（ICTIR 2019, doi:10.1145/3341981.3344235、CrossRef で照合）を追加。高度化は第 7 章の今後の課題へ。
 %   (f) 略語は初出で正式名称を付けた（VARAT・SINDy・ALAMO・LLM・BERT・NTCIR・ARQMath。SINDy は arXiv 版本文、
 %       ALAMO は AIChE J. の要旨で確認）。
+% 2026-09-29(3) 改訂: 改訂版のゼミ報告への加藤先生の 2 回目の注釈（16 件）のうち、第 2 章に当てはまる 3 件を反映した。
+%   (g) 「[7] と [8] は何が違うのか」: 両論文（ZhangEquiv の要旨・序論・結論、DAEEquiv の要旨・本文）を読み直すと手順は同じ
+%       （CAS で片方の式群にだけ現れる変数を消去し、式を 1 つずつ比べる）。DAEEquiv の「同じ形に変形できるとき equivalent と
+%       よぶ」は等価の呼び方で、ZhangEquiv の「見た目ではなく同じ計算か」と別の基準ではない。違いは対象と評価（ZhangEquiv は
+%       MathML の式群を CSTR などの事例で示し Web アプリも作成、DAEEquiv は微分代数方程式系を対象に生成した 50 組で全問正解。
+%       DAEEquiv は ZhangEquiv を引用していない）だけなので、1 つの algorithm として 1 文にまとめた（第 1 章の書き方とそろえた）。
+%   (h) 「文脈が必要になるのは…場合だと考えている」→「である」（先生の朱）に合わせ、"Context should matter" を "Context is needed" に。
+%   (i) §2.5 の "a different problem ... calls for its own task definition" は「断定していいか疑問。それを示すための研究で
+%       1 つ論文が書けそう」との指摘で削除し、調べた範囲の事実（該当する評価課題が見当たらない）で止めた。
 % SR の記述は各原典のアブストラクトで確認（Schmidt & Lipson 2009、SINDy 2016、AI Feynman 2020、ALAMO 2014、LLM-SR 2025）。
 % ============================================================
 \section{Component Technologies for Automated Physical Model Building}
@@ -41,12 +50,10 @@ step by step. For extraction, an algorithm with an annotation tool, the Variable
 method generates training sentences from templates to extract variable definitions\cite{Nagayama}.
 For equivalence judgment, ProcessBERT --- a language model pre-trained on a chemical-engineering
 corpus --- judges whether two variable definitions in different documents refer to the same
-quantity\cite{ProcessBERT}, and two algorithms judge whether two groups of equations are
-equivalent: one for groups that represent process dynamics\cite{ZhangEquiv} and one for
-differential-algebraic equation systems\cite{DAEEquiv}. Both manipulate the equations with a
-computer algebra system; the former judges equivalence by the calculations the equations perform
-rather than by their appearance, and the latter calls two equation groups equivalent when they can
-be transformed into the same form.
+quantity\cite{ProcessBERT}, and a computer-algebra algorithm judges whether two groups of equations
+are equivalent\cite{DAEEquiv,ZhangEquiv}: it eliminates the variables that appear in only one
+group and compares the remaining equations one by one, judging the groups by the calculations they
+perform rather than by their appearance.
 
 The work closest to this study addresses the model-building step itself. Kato and Kano proposed an
 efficient algorithm that builds a physical model from equations extracted from
@@ -67,7 +74,7 @@ our benchmark, a first stage that reads variable overlap alone keeps 96.1\% of t
 equations among its 50 candidates, and adding text similarity raises this only to 96.7\%
 (Section~\ref{sec:stage1redesign}); after narrowing, the features that read variable overlap
 carry the ranking (Section~\ref{sec:mechanism}). The benchmark favors variables, because every
-query takes its variables from the symbols of its ground-truth equations. Context should matter
+query takes its variables from the symbols of its ground-truth equations. Context is needed
 where variables cannot decide --- when several combinations meet the requirements and only the
 description tells which one the user wants, or when a user writes variables in a notation that
 differs from the literature --- and this study has not yet shown that it helps there
@@ -179,7 +186,5 @@ community-question-answering archive\cite{ARQMath}. These tasks retrieve single 
 similarity to the query. Our method retrieves a set of equations that must jointly close a system
 --- cover the requested outputs and leave zero degrees of freedom --- so the value of one equation
 depends on the equations retrieved with it. We found no formula-search benchmark that imposes this
-joint condition; retrieving several equations as one answer is a different problem from retrieving
-a single formula and calls for its own task definition. Chapter~6 shows a consequence of the joint
-condition: after the first stage narrows the candidates, topical similarity becomes redundant, and
+joint condition. Chapter~6 shows a consequence of the joint condition: after the first stage narrows the candidates, topical similarity becomes redundant, and
 the improvement comes from features that read the variable structure of the selected set.
