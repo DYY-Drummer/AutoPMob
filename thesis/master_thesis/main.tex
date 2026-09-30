@@ -120,7 +120,7 @@ The answer is a set rather than a list --- a physical model is a system of equat
 
 We propose a two-stage retrieval method.
 The first stage narrows the database by text similarity and variable overlap, and the second stage reranks the candidates with a multilayer perceptron that reads, beside seven query--equation features, three set-aware features that compare each candidate with the equations already selected: complementarity, coherence, and domain agreement.
-A learned greedy variant builds the set one equation at a time, and a self-terminating criterion (DoF-stop) halts retrieval when the selected set closes as a system, so the method returns a solvable set without knowing the number of equations in advance.
+A learned greedy variant builds the set one equation at a time, and a self-terminating criterion (DoF-stop) halts retrieval once the selected set covers every output variable with no more unknowns than equations, so the method needs no answer size in advance.
 To evaluate the method, we built a database of 11,146 equations from 361 sources and 2,838 test cases, 1,000 of which are synthesized closed systems whose answers are solvable by construction, and we split the sources so that no document leaks between training and testing.
 
 % source: experiments/strat_A.json / strat_B.json（0.5206→0.7429, 0.4661→0.6890）;
@@ -130,7 +130,7 @@ To evaluate the method, we built a database of 11,146 equations from 361 sources
 The method raises Recall@K from 0.521 to 0.743 in the mixed setting and from 0.466 to 0.689 in the synthesized-only setting, on all 10 stratified splits; BM25 and dense retrieval with E5 stay at or below 0.602 and 0.555 even at their best mixing weights, and direct generation by a large language model reaches 0.23--0.30.
 Analyses attribute the gain to the variables that equations share, whereas topical similarity becomes redundant once the first stage has screened the candidates.
 Two interventions predicted by the analyses confirmed the mechanism: learned greedy selection recovered the saturation on the hardest cases, and a variable-weighted first stage raised Recall@K to 0.780.
-DoF-stop returned closed systems for 94\% of the cases in the mixed setting and 88\% in the synthesized-only setting, more often than an oracle told the answer size.
+DoF-stop returned closed sets for 94\% of the cases in the mixed setting and 88\% in the synthesized-only setting, more often than an oracle told the answer size.
 
 \newpage
 %%%%% 目次 %%%%%

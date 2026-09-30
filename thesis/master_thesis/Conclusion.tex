@@ -21,7 +21,8 @@ criterion, DoF-stop, halts retrieval when the selected set closes as a system.
 
 The thesis makes three contributions. First, it provides a benchmark on which a failure can be
 attributed to the method: 1,000 of the 2,838 cases are synthesized by a rule that grows a closed
-system from an ordinary differential equation, so a solvable answer exists by construction, and a
+system from an ordinary differential equation and gives each equation an output of its own, so a
+solvable answer exists by construction, and a
 stratified source-disjoint split with 10 seeds measures generalization to unseen sources.
 Second, the set-aware two-stage method raises Recall@K from 0.521 to 0.743 in the mixed setting
 and from 0.466 to 0.689 in the synthesized-only setting, on all 10 splits; BM25 and dense
@@ -34,7 +35,7 @@ the whole database, becomes redundant once the first stage has screened the cand
 predictions drawn from this analysis were tested by intervention and confirmed: learned greedy
 selection recovered the saturation of the static reference set on the hardest cases ($+0.056$
 at eight or more ground-truth equations), and a variable-weighted first stage raised the
-candidate coverage and, with it, the end metric to 0.780. DoF-stop returned closed systems for
+candidate coverage and, with it, the end metric to 0.780. DoF-stop returned closed sets for
 94\% of the cases in the mixed setting and 88\% in the synthesized-only setting, more often than
 an oracle told the answer size (87\% and 78\%), at the same exact-match rate.
 % source: experiments/strat_A.json / strat_B.json（0.5206→0.7429, 0.4661→0.6890）;
@@ -50,7 +51,10 @@ two interventions --- equivalent equations from different documents and equation
 the wrong variable --- lie outside every current feature; scheduled sampling addresses the former,
 and a feature that encodes which variable an equation determines addresses the latter. The
 comparison between equations, which now reads only their variable sets, could also borrow the
-tree-based and embedding representations of formula search (Section~\ref{sec:rw-mathir}). Second,
+tree-based and embedding representations of formula search (Section~\ref{sec:rw-mathir}).
+DoF-stop, which selects greedily and only counts unknowns against equations, could instead search
+the candidates for combinations that close, as the combination method does\cite{CombineEq}, and
+check that each unknown can be matched to an equation of its own. Second,
 the evaluation is database-internal and the variable notation of the queries matches the
 database; validation on real modeling tasks, including requests whose equations are absent from
 the database or written in a different notation, will show how far the results carry. Third, the

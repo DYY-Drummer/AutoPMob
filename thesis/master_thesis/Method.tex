@@ -13,6 +13,7 @@
 %   (4) 閉包条件は DoF <= 0（未知数 <= 式数）かつ出力被覆。骨子の「DoF=0」は等号のみで狭い。
 % ============================================================
 \section{Problem Formulation}
+\label{sec:formulation}
 
 We formulate the task as retrieving from an equation database the set of equations that composes a
 requested physical model. A query is a triple $q = (c, \mathcal{I}, \mathcal{O})$, where $c$
@@ -25,24 +26,31 @@ $\mathrm{dom}(e_j)$. The ground truth of a query is the equation set
 $\mathcal{R}_q \subset \mathcal{E}$ that composes the requested model, and the method must rank
 $\mathcal{R}_q$ above every other equation.
 
-A physical model is a system of equations, not a list of independent ones, so we also ask whether a
-selected set can be solved\cite{Hangos}. Let $\mathrm{unknowns}(S) = \bigcup_{e \in S} V(e) \setminus
+A physical model is a system of equations, not a list of independent ones, so we also check a
+condition that every solvable set meets\cite{Hangos}. Let $\mathrm{unknowns}(S) = \bigcup_{e \in S} V(e) \setminus
 \mathcal{I}$ denote the variables that $S$ must determine. We define the degrees of freedom of $S$
 as
 \begin{equation}
   \mathrm{DoF}(S) = |\mathrm{unknowns}(S)| - |S| ,
   \label{eq:dof}
 \end{equation}
-and we call $S$ \emph{closed} when it covers every output variable and leaves no unknown
-undetermined,
+and we call $S$ \emph{closed} when it covers every output variable and has no more unknowns than
+equations,
 \begin{equation}
   \mathcal{O} \subseteq \bigcup_{e \in S} V(e)
   \quad\text{and}\quad
   \mathrm{DoF}(S) \le 0 .
   \label{eq:closed}
 \end{equation}
-A closed set is what a simulator needs, because the equations then suffice to determine every
-unknown. Sections~\ref{sec:seq} and \ref{sec:dofstop} use this criterion first to design the
+Closure is necessary for a simulator but not sufficient, because it only counts. It does not check
+that the equations are independent --- the same equation taken from two documents counts twice ---
+that each unknown can be matched to an equation of its own, or that the system has a numerical
+solution: the equations $f_1(x) = 0$, $f_2(x) = 0$, and $f_3(y, z) = 0$, for example, are closed
+over the unknowns $x$, $y$, and $z$ yet determine neither $y$ nor $z$.
+% 2026-09-29 本人の指摘「上位から 1 式ずつ選んで、必ず入出力変数を含む自由度ゼロの数式群になるとは限らない」で
+%   書き直した（旧: "leaves no unknown undetermined" / "the equations then suffice to determine every unknown"）。
+%   closed() は数の条件だけ（出力被覆 かつ |未知数| <= |S|）で、式の独立性・未知数と式の割り当て・数値解は見ない。
+Sections~\ref{sec:seq} and \ref{sec:dofstop} use this criterion first to design the
 selection order and then to let retrieval stop by itself.
 
 \section{Stage 1: Candidate Retrieval}
@@ -172,8 +180,14 @@ extends greedy selection with the closure test of Eq.~\eqref{eq:closed}: after e
 checks whether the selected set covers every output variable and satisfies
 $\mathrm{DoF}(S) \le 0$, and it returns the set at the first length where both hold.
 % source: set_aware_reranker.py greedy_close L246-291（closed() = 出力被覆 かつ |未知数| <= |S|）
-When no prefix closes within the selection cap, DoF-stop returns everything it selected.
+When no prefix closes within the selection cap of 20 equations, DoF-stop returns the 20 it
+selected.
 
-The returned set is closed by construction, which is the property a downstream simulator needs.
+DoF-stop therefore guarantees neither a closed answer nor a solvable one. It selects greedily
+without backtracking and only among the first-stage candidates, so it may never reach a closed
+prefix --- for instance, when the first stage has missed an equation that the answer needs --- and
+a set that it does close meets only the counting condition of Eq.~\eqref{eq:closed}.
+% 旧: "The returned set is closed by construction, which is the property a downstream simulator needs."
+%   （直前の「閉じなければ選んだ全部を返す」と矛盾していた。2026-09-29 訂正）
 Evaluating it requires set-level measures rather than ranking measures, so Chapter~5 adds the
 exact-match rate, the set $F_1$, and the closure rate.

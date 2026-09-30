@@ -73,19 +73,20 @@ set still lacks (complementarity), whether it shares variables with the set (coh
 whether it comes from the same field (domain agreement). We further introduce a learned greedy
 selection that builds the set one equation at a time and trains with teacher forcing so that
 training and inference see the same sequential context, and a self-terminating criterion
-that halts retrieval when the selected set closes as a system (DoF-stop, named after the degrees
-of freedom it monitors). The method thus returns
-a ranked, solvable equation set without being told how many equations the answer has.
+that halts retrieval once the selected set covers every output variable with no more unknowns than
+equations (DoF-stop, named after the degrees of freedom it monitors). The method thus ranks the
+equations and decides by itself where to cut the ranking, without being told how many equations the
+answer has.
 
 To evaluate the method under realistic difficulty, we construct a large equation database and
-test cases whose answers are solvable, and we split them so that no document leaks between
+test cases whose answers close with zero degrees of freedom, and we split them so that no document leaks between
 training and testing. The database holds 11,146 equations from 361 sources: a large language
 model (LLM) extracted 10,476 of them from 329 documents and generated the other 670 as reference
 sets of textbook fundamentals. The 2,838 cases fall into three families by how their answer sets
 were formed --- picked by an LLM within one source, combined across two or three sources, or
 synthesized by rule --- plus augmented copies used only for training; the 1,000
-synthesized cases grow by a rule that adds variable-sharing equations until the system closes, so
-their answers are solvable by construction. We assign every source wholly to training,
+synthesized cases grow by a rule that adds variable-sharing equations until the system closes and
+gives each equation an output variable of its own, so their answers are solvable by construction. We assign every source wholly to training,
 validation, or testing, and we stratify the assignment so that four difficulty-related
 distributions match between training and testing. All experiments repeat over 10 random splits
 and report the mean and the spread.
@@ -118,7 +119,7 @@ Two interventions then confirm the mechanism causally. The mechanism analysis pr
 fixed reference set saturates on the hardest cases, and learned greedy selection recovers exactly
 there ($+0.056$ on cases with eight or more equations); the error analysis predicted that the
 text-heavy first stage caps what the reranker can reach, and a variable-weighted first stage
-raises Recall@K to 0.780. DoF-stop returns closed systems more often than an oracle that is told
+raises Recall@K to 0.780. DoF-stop returns closed sets more often than an oracle that is told
 the answer size (0.94 against 0.87 in the mixed setting and 0.88 against 0.78 in the
 synthesized-only setting) while matching its exact-match rate.
 % source: experiments/greedy_3way_stats.json tests_hard_X8plus train_vs_static（+0.056）;
@@ -133,7 +134,7 @@ The contributions of this thesis are threefold.
     stratified source-disjoint split with 10 seeds.
   \item A set-aware two-stage retrieval method that improves Recall@K by $+0.22$ over classical
     information retrieval, exceeds BM25, dense retrieval, and LLM direct generation, and, with a
-    self-terminating criterion, returns a closed equation set without knowing the answer size.
+    self-terminating criterion, stops by itself without knowing the answer size.
   \item An empirical account of the mechanism --- which features cause the improvement, where
     it saturates, and where the remaining errors arise --- confirmed causally by two
     interventions, learned greedy selection and a variable-weighted first stage.

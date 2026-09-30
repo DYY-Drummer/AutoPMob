@@ -318,25 +318,37 @@ The set-$F_1$ cost is $-0.008$ in Setting~A and $-0.023$ in Setting~B (paired $t
 $p = 0.006$ and $p = 0.0001$): measurable and small.
 % source: dof_stop_stats.json dof_vs_oracle_f1
 
-On the property a model builder actually needs, DoF-stop beats the oracle instead of
-approximating it: 93.6\% of its returned sets are closed in Setting~A against the oracle's
+On closure, DoF-stop beats the oracle instead of approximating it: 93.6\% of its returned sets are closed in Setting~A against the oracle's
 86.5\%, and 88.3\% against 78.1\% in Setting~B.
 % source: dof_stop_stats.json closed_dof / closed_oracleK
-The oracle returns exactly $K$ equations whether or not they form a solvable system; DoF-stop
-keeps selecting until the system closes, so every set it terminates on is solvable by
-construction, and the unclosed remainder (11.7\% in Setting~B) consists of the cases where no
-prefix closed within the selection cap. Its size errors are one-sided in practice: the median
-size error is zero, every erring record in Setting~B overshoots (545 of 2,432), and all but one
-of the 4,594 records in Setting~A do. When DoF-stop misses the size, it has kept selecting past
-the answer rather than stopped short of it (mean size error $+1.7$ equations in Setting~B).
+The oracle returns exactly $K$ equations whether or not they close, whereas DoF-stop keeps
+selecting until the set closes. It does not always get there: 6.4\% of its returned sets in
+Setting~A and 11.7\% in Setting~B never closed within the selection cap of 20 equations. All of
+these records are synthesized cases, nine in ten of them with six or more equations, and in 98\%
+(Setting~A) and 99\% (Setting~B) of them the first stage had left at least one answer equation
+out of the candidates; no selection order can recover an equation that is not among them.
+% source: experiments/xd_dof/ per_case（closed_dof = 0 は A 297/4,594・B 295/2,432 件。すべて k_stop = 20
+%         の合成ケースで、X >= 6 が 93\%（A）・92\%（B）。正解式に候補外（rank 10,000）を含むのは 291 件ずつ
+%         = 98.0\%・98.6\%）。6.4\%・11.7\% は乱数ごとの割合の平均（1 − closed_dof）。
+Even a closed set is not necessarily solvable, because closure only counts
+(Section~\ref{sec:formulation}). The size errors are one-sided in practice: the median size
+error is zero, every erring record in Setting~B overshoots (545 of 2,432), and in Setting~A every
+erring record but one does; the unclosed records that ran to the cap account for 295 and 297 of
+these overshoots. When DoF-stop misses the size, it has kept selecting past the answer rather than
+stopped short of it (mean size error $+1.7$ equations in Setting~B).
 % source: dof_stop_stats.json（K_median_abs_err 0.0; K_bias 1.7212 = K_MAE（B）, 0.9293 vs
 %         0.9297（A）; per_case 実測: B は k_pred_dof < n_correct が 0/2,432、A は 1/4,594）
 
 One property of the dataset keeps this claim honest. In our cases the answer size nearly equals
 the number of output variables (Section~4.2), so predicting the size itself would be easy, and we
-claim no difficulty there. What DoF-stop demonstrates is self-termination with a closure
-guarantee: the retriever decides by itself when the model is complete, and what it returns can be
-handed to a solver.
+claim no difficulty there. What DoF-stop demonstrates is self-termination: the retriever decides
+by itself when to stop, matches the oracle's exact-match rate, and returns closed sets more often.
+It guarantees neither closure nor solvability. Searching the candidates for a combination that
+closes, as the combination method of Kato and Kano does for its four requirements\cite{CombineEq},
+and checking that each unknown can be matched to an equation of its own are left to future work
+(Section~\ref{sec:limitations}).
+% 旧: "self-termination with a closure guarantee: ... what it returns can be handed to a solver"
+%   （閉じない 6.4\%/11.7\% と、閉じても数の条件だけであることから撤回。2026-09-29）
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.85\linewidth]{figures/fig_dof_stop.pdf}
@@ -577,7 +589,7 @@ $(0.3, 0.7)$ is best on both.}
 \section{Limitations}
 \label{sec:limitations}
 
-Seven limitations qualify these results. First, language models produced parts of the data. One wrote the descriptions of the
+Eight limitations qualify these results. First, language models produced parts of the data. One wrote the descriptions of the
 synthesized cases, whose style may differ from human modeling requests, although the equations,
 inputs, and outputs of those cases follow from the rule-based construction (Section~4.3).
 Another picked the answer sets of the 92 single-source cases, which are the sets it judged
@@ -598,4 +610,7 @@ the external retrieval baselines use BM25 with its default parameters and one de
 (E5-base) without fine-tuning on the training cases; a retriever trained on this database might
 score higher than the off-the-shelf encoder, although every text scorer in
 Section~\ref{sec:overall} adds at most $+0.02$ over the variable-overlap term, which points to
-the task rather than to the encoder.
+the task rather than to the encoder. Eighth, DoF-stop selects greedily among the first-stage
+candidates and tests closure by counting: it never backtracks, and it checks neither that the
+selected equations are independent nor that each unknown can be matched to an equation of its
+own, so it guarantees neither a closed nor a solvable answer (Section~\ref{sec:dofstopresults}).

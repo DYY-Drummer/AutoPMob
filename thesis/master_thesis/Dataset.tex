@@ -135,7 +135,10 @@ part of the dataset as differential--algebraic systems that are solvable by cons
 procedure, proposed by Mr.~Kato, starts from an ordinary differential equation and takes its
 differentiated variable as an output. It then repeatedly adds an equation that shares a non-output
 variable with the current set, and it stops at the target size $X$. We accept only square systems,
-in which the number of unknowns equals the number of equations.
+in which the number of unknowns equals the number of equations, and each equation contributes an
+output variable of its own, so every unknown can be matched to its own equation.
+% source: generate_dae_cases.py L302-330（追加式ごとに、その式の変数から出力を 1 つ選ぶ。入力＝残りの変数）;
+%         実測（2026-09-29）: 合成 1,000 件すべてで式と未知変数の完全マッチングが存在（Hopcroft--Karp）
 % source: docs/progress_report_2026-06-14_seminar.tex §5（手順ボックス）; 実装 generate_dae_cases.py
 We generated 100 cases for each $X = 1, \dots, 10$, giving 1,000 cases. A large language model
 (Anthropic Claude) writes only the natural-language description; the equation set, the input
