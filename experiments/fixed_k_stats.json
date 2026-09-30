@@ -1,0 +1,2864 @@
+{
+ "A": {
+  "n_records": 4594,
+  "overall": {
+   "n_records": 4594,
+   "seeds": [
+    42,
+    123,
+    456,
+    789,
+    1024,
+    2024,
+    3141,
+    5926,
+    7777,
+    9999
+   ],
+   "K": {
+    "recall": {
+     "baseline": [
+      0.5206,
+      0.0451
+     ],
+     "proposed": [
+      0.7429,
+      0.0539
+     ],
+     "diff": 0.2223,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.1779,
+      0.0402
+     ],
+     "proposed": [
+      0.4513,
+      0.0726
+     ],
+     "diff": 0.2734,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.5206,
+      0.0451
+     ],
+     "proposed": [
+      0.7429,
+      0.0539
+     ],
+     "diff": 0.2223,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      2.1261,
+      0.1662
+     ],
+     "proposed": [
+      1.1881,
+      0.191
+     ],
+     "diff": -0.938,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "5": {
+    "recall": {
+     "baseline": [
+      0.631,
+      0.0388
+     ],
+     "proposed": [
+      0.8121,
+      0.0249
+     ],
+     "diff": 0.1811,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.3966,
+      0.0566
+     ],
+     "proposed": [
+      0.6198,
+      0.029
+     ],
+     "diff": 0.2232,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.3465,
+      0.0194
+     ],
+     "proposed": [
+      0.4954,
+      0.0193
+     ],
+     "diff": 0.149,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      3.2676,
+      0.097
+     ],
+     "proposed": [
+      2.5229,
+      0.0964
+     ],
+     "diff": -0.7448,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "10": {
+    "recall": {
+     "baseline": [
+      0.746,
+      0.0348
+     ],
+     "proposed": [
+      0.8897,
+      0.0204
+     ],
+     "diff": 0.1437,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.5357,
+      0.0525
+     ],
+     "proposed": [
+      0.7262,
+      0.0322
+     ],
+     "diff": 0.1905,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.2232,
+      0.01
+     ],
+     "proposed": [
+      0.3006,
+      0.0105
+     ],
+     "diff": 0.0773,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      7.7678,
+      0.0996
+     ],
+     "proposed": [
+      6.9945,
+      0.1054
+     ],
+     "diff": -0.7733,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "20": {
+    "recall": {
+     "baseline": [
+      0.8362,
+      0.0227
+     ],
+     "proposed": [
+      0.9095,
+      0.0142
+     ],
+     "diff": 0.0732,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.6438,
+      0.0362
+     ],
+     "proposed": [
+      0.7606,
+      0.0263
+     ],
+     "diff": 0.1168,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.1343,
+      0.0051
+     ],
+     "proposed": [
+      0.1567,
+      0.0052
+     ],
+     "diff": 0.0225,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      17.3145,
+      0.1012
+     ],
+     "proposed": [
+      16.8655,
+      0.1033
+     ],
+     "diff": -0.449,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "50": {
+    "recall": {
+     "baseline": [
+      0.9121,
+      0.0136
+     ],
+     "proposed": [
+      0.9121,
+      0.0136
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    },
+    "full": {
+     "baseline": [
+      0.7619,
+      0.0261
+     ],
+     "proposed": [
+      0.7619,
+      0.0261
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    },
+    "precision": {
+     "baseline": [
+      0.063,
+      0.0021
+     ],
+     "proposed": [
+      0.063,
+      0.0021
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    },
+    "wrong": {
+     "baseline": [
+      46.8488,
+      0.107
+     ],
+     "proposed": [
+      46.8488,
+      0.107
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    }
+   }
+  },
+  "by_K": {
+   "K=1": {
+    "n_records": 418,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.8491,
+       0.0892
+      ],
+      "proposed": [
+       0.8773,
+       0.079
+      ],
+      "diff": 0.0282,
+      "n_seeds_proposed_better": 8,
+      "p_wilcoxon": 0.0078125
+     },
+     "full": {
+      "baseline": [
+       0.8491,
+       0.0892
+      ],
+      "proposed": [
+       0.8773,
+       0.079
+      ],
+      "diff": 0.0282,
+      "n_seeds_proposed_better": 8,
+      "p_wilcoxon": 0.0078125
+     },
+     "precision": {
+      "baseline": [
+       0.8491,
+       0.0892
+      ],
+      "proposed": [
+       0.8773,
+       0.079
+      ],
+      "diff": 0.0282,
+      "n_seeds_proposed_better": 8,
+      "p_wilcoxon": 0.0078125
+     },
+     "wrong": {
+      "baseline": [
+       0.1509,
+       0.0892
+      ],
+      "proposed": [
+       0.1227,
+       0.079
+      ],
+      "diff": -0.0282,
+      "n_seeds_proposed_better": 1,
+      "p_wilcoxon": 0.0078125
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.9874,
+       0.0136
+      ],
+      "proposed": [
+       0.9957,
+       0.0092
+      ],
+      "diff": 0.0083,
+      "n_seeds_proposed_better": 3,
+      "p_wilcoxon": 0.25
+     },
+     "full": {
+      "baseline": [
+       0.9874,
+       0.0136
+      ],
+      "proposed": [
+       0.9957,
+       0.0092
+      ],
+      "diff": 0.0083,
+      "n_seeds_proposed_better": 3,
+      "p_wilcoxon": 0.25
+     },
+     "precision": {
+      "baseline": [
+       0.1975,
+       0.0027
+      ],
+      "proposed": [
+       0.1991,
+       0.0018
+      ],
+      "diff": 0.0017,
+      "n_seeds_proposed_better": 3,
+      "p_wilcoxon": 0.25
+     },
+     "wrong": {
+      "baseline": [
+       4.0126,
+       0.0136
+      ],
+      "proposed": [
+       4.0043,
+       0.0092
+      ],
+      "diff": -0.0083,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.25
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.1,
+       0.0
+      ],
+      "proposed": [
+       0.1,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       9.0,
+       0.0
+      ],
+      "proposed": [
+       9.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.05,
+       0.0
+      ],
+      "proposed": [
+       0.05,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       19.0,
+       0.0
+      ],
+      "proposed": [
+       19.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.02,
+       0.0
+      ],
+      "proposed": [
+       0.02,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       49.0,
+       0.0
+      ],
+      "proposed": [
+       49.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   },
+   "K=2": {
+    "n_records": 2185,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.5639,
+       0.061
+      ],
+      "proposed": [
+       0.7926,
+       0.0768
+      ],
+      "diff": 0.2287,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.1879,
+       0.065
+      ],
+      "proposed": [
+       0.6088,
+       0.1287
+      ],
+      "diff": 0.4209,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.5639,
+       0.061
+      ],
+      "proposed": [
+       0.7926,
+       0.0768
+      ],
+      "diff": 0.2287,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       0.8721,
+       0.122
+      ],
+      "proposed": [
+       0.4147,
+       0.1535
+      ],
+      "diff": -0.4574,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.802,
+       0.0506
+      ],
+      "proposed": [
+       0.975,
+       0.0141
+      ],
+      "diff": 0.1729,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.6088,
+       0.099
+      ],
+      "proposed": [
+       0.9512,
+       0.0272
+      ],
+      "diff": 0.3424,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3208,
+       0.0202
+      ],
+      "proposed": [
+       0.39,
+       0.0057
+      ],
+      "diff": 0.0692,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       3.3959,
+       0.1011
+      ],
+      "proposed": [
+       3.05,
+       0.0283
+      ],
+      "diff": -0.3459,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       0.9079,
+       0.0408
+      ],
+      "proposed": [
+       0.9822,
+       0.014
+      ],
+      "diff": 0.0743,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.8158,
+       0.0816
+      ],
+      "proposed": [
+       0.9643,
+       0.0279
+      ],
+      "diff": 0.1485,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.1816,
+       0.0082
+      ],
+      "proposed": [
+       0.1964,
+       0.0028
+      ],
+      "diff": 0.0149,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       8.1842,
+       0.0816
+      ],
+      "proposed": [
+       8.0357,
+       0.0279
+      ],
+      "diff": -0.1485,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       0.961,
+       0.0205
+      ],
+      "proposed": [
+       0.9894,
+       0.0134
+      ],
+      "diff": 0.0284,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.9221,
+       0.041
+      ],
+      "proposed": [
+       0.9789,
+       0.0268
+      ],
+      "diff": 0.0568,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.0961,
+       0.002
+      ],
+      "proposed": [
+       0.0989,
+       0.0013
+      ],
+      "diff": 0.0028,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       18.0779,
+       0.041
+      ],
+      "proposed": [
+       18.0211,
+       0.0268
+      ],
+      "diff": -0.0568,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       0.9902,
+       0.0125
+      ],
+      "proposed": [
+       0.9902,
+       0.0125
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       0.9803,
+       0.025
+      ],
+      "proposed": [
+       0.9803,
+       0.025
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.0396,
+       0.0005
+      ],
+      "proposed": [
+       0.0396,
+       0.0005
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       48.0197,
+       0.025
+      ],
+      "proposed": [
+       48.0197,
+       0.025
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   },
+   "K=3-5": {
+    "n_records": 805,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.4614,
+       0.0429
+      ],
+      "proposed": [
+       0.7078,
+       0.0473
+      ],
+      "diff": 0.2464,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0467,
+       0.0188
+      ],
+      "proposed": [
+       0.2943,
+       0.0712
+      ],
+      "diff": 0.2476,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.4614,
+       0.0429
+      ],
+      "proposed": [
+       0.7078,
+       0.0473
+      ],
+      "diff": 0.2464,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       2.1156,
+       0.1861
+      ],
+      "proposed": [
+       1.1237,
+       0.1987
+      ],
+      "diff": -0.9919,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.5089,
+       0.0418
+      ],
+      "proposed": [
+       0.7861,
+       0.0489
+      ],
+      "diff": 0.2772,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.092,
+       0.0255
+      ],
+      "proposed": [
+       0.4336,
+       0.0755
+      ],
+      "diff": 0.3416,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3901,
+       0.0308
+      ],
+      "proposed": [
+       0.6091,
+       0.0368
+      ],
+      "diff": 0.219,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       3.0497,
+       0.154
+      ],
+      "proposed": [
+       1.9545,
+       0.1841
+      ],
+      "diff": -1.0952,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       0.6582,
+       0.0403
+      ],
+      "proposed": [
+       0.896,
+       0.0283
+      ],
+      "diff": 0.2378,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.27,
+       0.0526
+      ],
+      "proposed": [
+       0.6883,
+       0.0716
+      ],
+      "diff": 0.4184,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.255,
+       0.0161
+      ],
+      "proposed": [
+       0.348,
+       0.0112
+      ],
+      "diff": 0.093,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       7.4499,
+       0.161
+      ],
+      "proposed": [
+       6.5199,
+       0.1117
+      ],
+      "diff": -0.93,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       0.8237,
+       0.0347
+      ],
+      "proposed": [
+       0.9129,
+       0.025
+      ],
+      "diff": 0.0892,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.5016,
+       0.0766
+      ],
+      "proposed": [
+       0.7236,
+       0.0611
+      ],
+      "diff": 0.222,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.1593,
+       0.0067
+      ],
+      "proposed": [
+       0.1775,
+       0.0055
+      ],
+      "diff": 0.0182,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       16.8147,
+       0.1338
+      ],
+      "proposed": [
+       16.4498,
+       0.1092
+      ],
+      "diff": -0.3649,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       0.9157,
+       0.0257
+      ],
+      "proposed": [
+       0.9157,
+       0.0257
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       0.7236,
+       0.0611
+      ],
+      "proposed": [
+       0.7236,
+       0.0611
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.0713,
+       0.0023
+      ],
+      "proposed": [
+       0.0713,
+       0.0023
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       46.4363,
+       0.1145
+      ],
+      "proposed": [
+       46.4363,
+       0.1145
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   },
+   "K=6-10": {
+    "n_records": 1186,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.3645,
+       0.0249
+      ],
+      "proposed": [
+       0.6274,
+       0.0398
+      ],
+      "diff": 0.2629,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0102,
+       0.0066
+      ],
+      "proposed": [
+       0.1148,
+       0.0374
+      ],
+      "diff": 0.1047,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3645,
+       0.0249
+      ],
+      "proposed": [
+       0.6274,
+       0.0398
+      ],
+      "diff": 0.2629,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       5.1403,
+       0.2102
+      ],
+      "proposed": [
+       3.028,
+       0.2947
+      ],
+      "diff": -2.1123,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.2714,
+       0.0215
+      ],
+      "proposed": [
+       0.4648,
+       0.0308
+      ],
+      "diff": 0.1934,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0,
+       0.0
+      ],
+      "proposed": [
+       0.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.4168,
+       0.0344
+      ],
+      "proposed": [
+       0.7184,
+       0.0508
+      ],
+      "diff": 0.3016,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       2.9159,
+       0.1718
+      ],
+      "proposed": [
+       1.408,
+       0.2542
+      ],
+      "diff": -1.5078,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       0.4167,
+       0.0279
+      ],
+      "proposed": [
+       0.6768,
+       0.0409
+      ],
+      "diff": 0.2601,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0329,
+       0.0186
+      ],
+      "proposed": [
+       0.2154,
+       0.0461
+      ],
+      "diff": 0.1825,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3222,
+       0.0223
+      ],
+      "proposed": [
+       0.5318,
+       0.0342
+      ],
+      "diff": 0.2096,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       6.778,
+       0.2228
+      ],
+      "proposed": [
+       4.6818,
+       0.3421
+      ],
+      "diff": -2.0961,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       0.5572,
+       0.0362
+      ],
+      "proposed": [
+       0.7279,
+       0.035
+      ],
+      "diff": 0.1708,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.1021,
+       0.0261
+      ],
+      "proposed": [
+       0.2988,
+       0.0555
+      ],
+      "diff": 0.1966,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.2176,
+       0.0142
+      ],
+      "proposed": [
+       0.287,
+       0.0143
+      ],
+      "diff": 0.0694,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       15.6477,
+       0.2833
+      ],
+      "proposed": [
+       14.2604,
+       0.2859
+      ],
+      "diff": -1.3873,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       0.7348,
+       0.0352
+      ],
+      "proposed": [
+       0.7348,
+       0.0352
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       0.3011,
+       0.0567
+      ],
+      "proposed": [
+       0.3011,
+       0.0567
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.1158,
+       0.0057
+      ],
+      "proposed": [
+       0.1158,
+       0.0057
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       44.2086,
+       0.2835
+      ],
+      "proposed": [
+       44.2086,
+       0.2835
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   }
+  },
+  "same_hits_at_50": "4594/4594"
+ },
+ "B": {
+  "n_records": 2432,
+  "overall": {
+   "n_records": 2432,
+   "seeds": [
+    42,
+    123,
+    456,
+    789,
+    1024,
+    2024,
+    3141,
+    5926,
+    7777,
+    9999
+   ],
+   "K": {
+    "recall": {
+     "baseline": [
+      0.4661,
+      0.0374
+     ],
+     "proposed": [
+      0.689,
+      0.0331
+     ],
+     "diff": 0.2229,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.1285,
+      0.0182
+     ],
+     "proposed": [
+      0.2765,
+      0.0287
+     ],
+     "diff": 0.1481,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.4661,
+      0.0374
+     ],
+     "proposed": [
+      0.689,
+      0.0331
+     ],
+     "diff": 0.2229,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      3.3008,
+      0.21
+     ],
+     "proposed": [
+      1.922,
+      0.1891
+     ],
+     "diff": -1.3788,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "5": {
+    "recall": {
+     "baseline": [
+      0.4757,
+      0.0295
+     ],
+     "proposed": [
+      0.6591,
+      0.0246
+     ],
+     "diff": 0.1834,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.192,
+      0.0177
+     ],
+     "proposed": [
+      0.3171,
+      0.0221
+     ],
+     "diff": 0.1251,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.3912,
+      0.0316
+     ],
+     "proposed": [
+      0.6035,
+      0.0297
+     ],
+     "diff": 0.2123,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      3.0442,
+      0.1579
+     ],
+     "proposed": [
+      1.9826,
+      0.1487
+     ],
+     "diff": -1.0615,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "10": {
+    "recall": {
+     "baseline": [
+      0.6097,
+      0.0331
+     ],
+     "proposed": [
+      0.8007,
+      0.0256
+     ],
+     "diff": 0.1911,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.2881,
+      0.0194
+     ],
+     "proposed": [
+      0.4942,
+      0.0323
+     ],
+     "diff": 0.2061,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.2758,
+      0.0229
+     ],
+     "proposed": [
+      0.4036,
+      0.0215
+     ],
+     "diff": 0.1278,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      7.2424,
+      0.2291
+     ],
+     "proposed": [
+      5.9641,
+      0.2152
+     ],
+     "diff": -1.2783,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "20": {
+    "recall": {
+     "baseline": [
+      0.7213,
+      0.0322
+     ],
+     "proposed": [
+      0.8384,
+      0.0261
+     ],
+     "diff": 0.1171,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "full": {
+     "baseline": [
+      0.3954,
+      0.0387
+     ],
+     "proposed": [
+      0.5606,
+      0.0488
+     ],
+     "diff": 0.1651,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "precision": {
+     "baseline": [
+      0.1747,
+      0.0122
+     ],
+     "proposed": [
+      0.216,
+      0.0106
+     ],
+     "diff": 0.0414,
+     "n_seeds_proposed_better": 10,
+     "p_wilcoxon": 0.001953125
+    },
+    "wrong": {
+     "baseline": [
+      16.5068,
+      0.2435
+     ],
+     "proposed": [
+      15.6791,
+      0.2125
+     ],
+     "diff": -0.8278,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 0.001953125
+    }
+   },
+   "50": {
+    "recall": {
+     "baseline": [
+      0.8426,
+      0.0271
+     ],
+     "proposed": [
+      0.8426,
+      0.0271
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    },
+    "full": {
+     "baseline": [
+      0.5644,
+      0.0502
+     ],
+     "proposed": [
+      0.5644,
+      0.0502
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    },
+    "precision": {
+     "baseline": [
+      0.087,
+      0.0044
+     ],
+     "proposed": [
+      0.087,
+      0.0044
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    },
+    "wrong": {
+     "baseline": [
+      45.6498,
+      0.2182
+     ],
+     "proposed": [
+      45.6498,
+      0.2182
+     ],
+     "diff": 0.0,
+     "n_seeds_proposed_better": 0,
+     "p_wilcoxon": 1.0
+    }
+   }
+  },
+  "by_K": {
+   "K=1": {
+    "n_records": 240,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.7921,
+       0.116
+      ],
+      "proposed": [
+       0.7711,
+       0.0904
+      ],
+      "diff": -0.021,
+      "n_seeds_proposed_better": 2,
+      "p_wilcoxon": 0.359375
+     },
+     "full": {
+      "baseline": [
+       0.7921,
+       0.116
+      ],
+      "proposed": [
+       0.7711,
+       0.0904
+      ],
+      "diff": -0.021,
+      "n_seeds_proposed_better": 2,
+      "p_wilcoxon": 0.359375
+     },
+     "precision": {
+      "baseline": [
+       0.7921,
+       0.116
+      ],
+      "proposed": [
+       0.7711,
+       0.0904
+      ],
+      "diff": -0.021,
+      "n_seeds_proposed_better": 2,
+      "p_wilcoxon": 0.359375
+     },
+     "wrong": {
+      "baseline": [
+       0.2079,
+       0.116
+      ],
+      "proposed": [
+       0.2289,
+       0.0904
+      ],
+      "diff": 0.021,
+      "n_seeds_proposed_better": 7,
+      "p_wilcoxon": 0.359375
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.9866,
+       0.0219
+      ],
+      "proposed": [
+       0.9947,
+       0.0166
+      ],
+      "diff": 0.0082,
+      "n_seeds_proposed_better": 2,
+      "p_wilcoxon": 0.5
+     },
+     "full": {
+      "baseline": [
+       0.9866,
+       0.0219
+      ],
+      "proposed": [
+       0.9947,
+       0.0166
+      ],
+      "diff": 0.0082,
+      "n_seeds_proposed_better": 2,
+      "p_wilcoxon": 0.5
+     },
+     "precision": {
+      "baseline": [
+       0.1973,
+       0.0044
+      ],
+      "proposed": [
+       0.1989,
+       0.0033
+      ],
+      "diff": 0.0016,
+      "n_seeds_proposed_better": 2,
+      "p_wilcoxon": 0.5
+     },
+     "wrong": {
+      "baseline": [
+       4.0134,
+       0.0219
+      ],
+      "proposed": [
+       4.0053,
+       0.0166
+      ],
+      "diff": -0.0082,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.5
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.1,
+       0.0
+      ],
+      "proposed": [
+       0.1,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       9.0,
+       0.0
+      ],
+      "proposed": [
+       9.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.05,
+       0.0
+      ],
+      "proposed": [
+       0.05,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       19.0,
+       0.0
+      ],
+      "proposed": [
+       19.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       1.0,
+       0.0
+      ],
+      "proposed": [
+       1.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.02,
+       0.0
+      ],
+      "proposed": [
+       0.02,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       49.0,
+       0.0
+      ],
+      "proposed": [
+       49.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   },
+   "K=2": {
+    "n_records": 241,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.6066,
+       0.0507
+      ],
+      "proposed": [
+       0.8225,
+       0.0634
+      ],
+      "diff": 0.2159,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.3045,
+       0.0601
+      ],
+      "proposed": [
+       0.6767,
+       0.1136
+      ],
+      "diff": 0.3722,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.6066,
+       0.0507
+      ],
+      "proposed": [
+       0.8225,
+       0.0634
+      ],
+      "diff": 0.2159,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       0.7868,
+       0.1015
+      ],
+      "proposed": [
+       0.355,
+       0.1268
+      ],
+      "diff": -0.4319,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.831,
+       0.0615
+      ],
+      "proposed": [
+       0.9465,
+       0.0295
+      ],
+      "diff": 0.1155,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.6893,
+       0.0932
+      ],
+      "proposed": [
+       0.9036,
+       0.0465
+      ],
+      "diff": 0.2143,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3324,
+       0.0246
+      ],
+      "proposed": [
+       0.3786,
+       0.0118
+      ],
+      "diff": 0.0462,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       3.338,
+       0.123
+      ],
+      "proposed": [
+       3.107,
+       0.0589
+      ],
+      "diff": -0.2311,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       0.9151,
+       0.0235
+      ],
+      "proposed": [
+       0.9754,
+       0.0127
+      ],
+      "diff": 0.0602,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.8303,
+       0.0471
+      ],
+      "proposed": [
+       0.9507,
+       0.0254
+      ],
+      "diff": 0.1205,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.183,
+       0.0047
+      ],
+      "proposed": [
+       0.1951,
+       0.0025
+      ],
+      "diff": 0.012,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       8.1697,
+       0.0471
+      ],
+      "proposed": [
+       8.0493,
+       0.0254
+      ],
+      "diff": -0.1205,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       0.9556,
+       0.0132
+      ],
+      "proposed": [
+       0.9796,
+       0.0087
+      ],
+      "diff": 0.0239,
+      "n_seeds_proposed_better": 9,
+      "p_wilcoxon": 0.00390625
+     },
+     "full": {
+      "baseline": [
+       0.9113,
+       0.0263
+      ],
+      "proposed": [
+       0.9591,
+       0.0175
+      ],
+      "diff": 0.0479,
+      "n_seeds_proposed_better": 9,
+      "p_wilcoxon": 0.00390625
+     },
+     "precision": {
+      "baseline": [
+       0.0956,
+       0.0013
+      ],
+      "proposed": [
+       0.098,
+       0.0009
+      ],
+      "diff": 0.0024,
+      "n_seeds_proposed_better": 9,
+      "p_wilcoxon": 0.00390625
+     },
+     "wrong": {
+      "baseline": [
+       18.0887,
+       0.0263
+      ],
+      "proposed": [
+       18.0409,
+       0.0175
+      ],
+      "diff": -0.0479,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.00390625
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       0.9822,
+       0.0105
+      ],
+      "proposed": [
+       0.9822,
+       0.0105
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       0.9644,
+       0.0211
+      ],
+      "proposed": [
+       0.9644,
+       0.0211
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.0393,
+       0.0004
+      ],
+      "proposed": [
+       0.0393,
+       0.0004
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       48.0356,
+       0.0211
+      ],
+      "proposed": [
+       48.0356,
+       0.0211
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   },
+   "K=3-5": {
+    "n_records": 723,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.4635,
+       0.0439
+      ],
+      "proposed": [
+       0.7202,
+       0.0372
+      ],
+      "diff": 0.2567,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0479,
+       0.0194
+      ],
+      "proposed": [
+       0.279,
+       0.0407
+      ],
+      "diff": 0.2311,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.4635,
+       0.0439
+      ],
+      "proposed": [
+       0.7202,
+       0.0372
+      ],
+      "diff": 0.2567,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       2.1627,
+       0.1716
+      ],
+      "proposed": [
+       1.1208,
+       0.1557
+      ],
+      "diff": -1.0419,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.5152,
+       0.0448
+      ],
+      "proposed": [
+       0.7841,
+       0.0369
+      ],
+      "diff": 0.2689,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0881,
+       0.0332
+      ],
+      "proposed": [
+       0.435,
+       0.04
+      ],
+      "diff": 0.347,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3967,
+       0.0369
+      ],
+      "proposed": [
+       0.6148,
+       0.0328
+      ],
+      "diff": 0.2181,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       3.0164,
+       0.1846
+      ],
+      "proposed": [
+       1.926,
+       0.1638
+      ],
+      "diff": -1.0905,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       0.6855,
+       0.042
+      ],
+      "proposed": [
+       0.8883,
+       0.0232
+      ],
+      "diff": 0.2028,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.2925,
+       0.0583
+      ],
+      "proposed": [
+       0.6691,
+       0.055
+      ],
+      "diff": 0.3765,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.2674,
+       0.0183
+      ],
+      "proposed": [
+       0.352,
+       0.0123
+      ],
+      "diff": 0.0846,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       7.3257,
+       0.1826
+      ],
+      "proposed": [
+       6.4798,
+       0.123
+      ],
+      "diff": -0.8459,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       0.8091,
+       0.0293
+      ],
+      "proposed": [
+       0.9119,
+       0.018
+      ],
+      "diff": 0.1028,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.4833,
+       0.0757
+      ],
+      "proposed": [
+       0.7183,
+       0.0489
+      ],
+      "diff": 0.235,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.1596,
+       0.0071
+      ],
+      "proposed": [
+       0.1809,
+       0.0053
+      ],
+      "diff": 0.0214,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       16.8084,
+       0.1429
+      ],
+      "proposed": [
+       16.3814,
+       0.1054
+      ],
+      "diff": -0.4271,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       0.9137,
+       0.0169
+      ],
+      "proposed": [
+       0.9137,
+       0.0169
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       0.7183,
+       0.0489
+      ],
+      "proposed": [
+       0.7183,
+       0.0489
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.0725,
+       0.0019
+      ],
+      "proposed": [
+       0.0725,
+       0.0019
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       46.3734,
+       0.097
+      ],
+      "proposed": [
+       46.3734,
+       0.097
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   },
+   "K=6-10": {
+    "n_records": 1228,
+    "seeds": [
+     42,
+     123,
+     456,
+     789,
+     1024,
+     2024,
+     3141,
+     5926,
+     7777,
+     9999
+    ],
+    "K": {
+     "recall": {
+      "baseline": [
+       0.3764,
+       0.0412
+      ],
+      "proposed": [
+       0.6283,
+       0.0401
+      ],
+      "diff": 0.2519,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0111,
+       0.011
+      ],
+      "proposed": [
+       0.1007,
+       0.0353
+      ],
+      "diff": 0.0896,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3764,
+       0.0412
+      ],
+      "proposed": [
+       0.6283,
+       0.0401
+      ],
+      "diff": 0.2519,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       5.069,
+       0.3538
+      ],
+      "proposed": [
+       3.033,
+       0.3314
+      ],
+      "diff": -2.036,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "5": {
+     "recall": {
+      "baseline": [
+       0.2829,
+       0.0302
+      ],
+      "proposed": [
+       0.4633,
+       0.0257
+      ],
+      "diff": 0.1804,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0,
+       0.0
+      ],
+      "proposed": [
+       0.0,
+       0.0
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.4376,
+       0.0455
+      ],
+      "proposed": [
+       0.72,
+       0.0422
+      ],
+      "diff": 0.2824,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       2.8119,
+       0.2274
+      ],
+      "proposed": [
+       1.3998,
+       0.2109
+      ],
+      "diff": -1.412,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "10": {
+     "recall": {
+      "baseline": [
+       0.4286,
+       0.0444
+      ],
+      "proposed": [
+       0.6758,
+       0.0429
+      ],
+      "diff": 0.2472,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.0396,
+       0.0182
+      ],
+      "proposed": [
+       0.2026,
+       0.0478
+      ],
+      "diff": 0.1631,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.3332,
+       0.0345
+      ],
+      "proposed": [
+       0.5343,
+       0.0348
+      ],
+      "diff": 0.201,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       6.6677,
+       0.3447
+      ],
+      "proposed": [
+       4.6575,
+       0.3478
+      ],
+      "diff": -2.0102,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "20": {
+     "recall": {
+      "baseline": [
+       0.5689,
+       0.05
+      ],
+      "proposed": [
+       0.7358,
+       0.0429
+      ],
+      "diff": 0.1669,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "full": {
+      "baseline": [
+       0.1237,
+       0.0468
+      ],
+      "proposed": [
+       0.303,
+       0.0746
+      ],
+      "diff": 0.1793,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "precision": {
+      "baseline": [
+       0.2234,
+       0.0193
+      ],
+      "proposed": [
+       0.2924,
+       0.0175
+      ],
+      "diff": 0.069,
+      "n_seeds_proposed_better": 10,
+      "p_wilcoxon": 0.001953125
+     },
+     "wrong": {
+      "baseline": [
+       15.5312,
+       0.3857
+      ],
+      "proposed": [
+       14.1513,
+       0.3509
+      ],
+      "diff": -1.3799,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 0.001953125
+     }
+    },
+    "50": {
+     "recall": {
+      "baseline": [
+       0.7424,
+       0.0448
+      ],
+      "proposed": [
+       0.7424,
+       0.0448
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "full": {
+      "baseline": [
+       0.3097,
+       0.0755
+      ],
+      "proposed": [
+       0.3097,
+       0.0755
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "precision": {
+      "baseline": [
+       0.118,
+       0.0073
+      ],
+      "proposed": [
+       0.118,
+       0.0073
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     },
+     "wrong": {
+      "baseline": [
+       44.0988,
+       0.3649
+      ],
+      "proposed": [
+       44.0988,
+       0.3649
+      ],
+      "diff": 0.0,
+      "n_seeds_proposed_better": 0,
+      "p_wilcoxon": 1.0
+     }
+    }
+   }
+  },
+  "same_hits_at_50": "2432/2432"
+ }
+}
