@@ -1,0 +1,106 @@
+{
+ "n_cases_setting_A": 1823,
+ "missing": [],
+ "qc_failed": [
+  "dae_X10_010",
+  "dae_X10_015",
+  "dae_X10_035",
+  "dae_X10_041",
+  "dae_X10_045",
+  "dae_X10_049",
+  "dae_X10_063",
+  "dae_X10_064",
+  "dae_X10_065",
+  "dae_X10_067",
+  "dae_X1_088",
+  "dae_X2_058",
+  "dae_X3_020",
+  "dae_X4_005",
+  "dae_X4_070",
+  "dae_X4_095",
+  "dae_X5_033",
+  "dae_X5_070",
+  "dae_X6_002",
+  "dae_X6_036",
+  "dae_X6_048",
+  "dae_X6_056",
+  "dae_X6_062",
+  "dae_X6_074",
+  "dae_X6_096",
+  "dae_X7_023",
+  "dae_X7_057",
+  "dae_X7_060",
+  "dae_X7_067",
+  "dae_X7_088",
+  "dae_X7_093",
+  "dae_X8_003",
+  "dae_X8_057",
+  "dae_X8_061",
+  "dae_X8_086",
+  "dae_X8_093",
+  "dae_X8_098",
+  "dae_X9_008",
+  "dae_X9_011",
+  "dae_X9_018",
+  "dae_X9_025",
+  "dae_X9_027",
+  "dae_X9_046",
+  "dae_X9_071",
+  "dae_X9_085",
+  "dae_X9_096",
+  "ms3_0152",
+  "ms3_0153",
+  "ms3_0181",
+  "ms3_0182",
+  "ms3_0183",
+  "ms3_0184",
+  "ms3_0200",
+  "ms3_0350",
+  "ms3_0352"
+ ],
+ "hard_issue_counts": {
+  "alt-dup": 42,
+  "verbatim": 27,
+  "context-leak": 12,
+  "para-leak": 2,
+  "alt-same": 19,
+  "alt-collides": 6
+ },
+ "review_flag_counts": {
+  "context-single": 101,
+  "para-single": 641
+ },
+ "n_variables": 33360,
+ "meaning_conflict": 955,
+ "meaning_conflict_ratio": 0.028627098321342925,
+ "word_overlap_with_source": {
+  "mean": 0.3148,
+  "p10": 0.1,
+  "p50": 0.2963,
+  "p90": 0.5556
+ },
+ "served_models": {
+  "claude-opus-5-5": 1823
+ },
+ "usage": {
+  "pilot": {
+   "input_tokens": 40334,
+   "output_tokens": 24413,
+   "n": 20,
+   "usd": 0.65
+  },
+  "batch": {
+   "input_tokens": 3811896,
+   "output_tokens": 2526422,
+   "n": 1805,
+   "usd": 32.89
+  },
+  "retry": {
+   "input_tokens": 488521,
+   "output_tokens": 421806,
+   "n": 173,
+   "usd": 10.39
+  }
+ },
+ "usd_total": 43.93
+}

@@ -1,0 +1,51 @@
+case_id,symbol,role,source_descriptions,paraphrase,alt_symbol,meaning_conflict,meaning_preserved,note
+ms_pfr_batch_arrhenius_001_rv5,V,input,Reactor volume (m³) | Total reactor volume required (m³),Volume of the reactor,V_R,False,Y,
+dae_X8_006,D_A,output,turbulent diffusion coefficient,eddy dispersion coefficient for species A in turbulent flow,E_A,False,Y,添字 A から「成分 A の」を補った。eddy dispersion は乱流拡散と同じ量
+ms3_0013,T,input,temperature inside the reactor vessel [K] | dimensionless temperature,temperature of the fluid within the reactor vessel,T_r,True,Y,意味の食い違いの印は正しい（有次元と無次元の温度）。最初の説明に従っている
+dae_X7_052,K_{AMP},input,Michaelis constant of AK for AMP,adenylate kinase Michaelis constant with respect to AMP,"K_{m,AMP}",False,Y,
+ms3_0487,w,input,reaction rate | mass flux of the He stream,rate at which the chemical reaction proceeds,\dot{\omega},True,Y,意味の食い違いの印は正しい（反応速度と He の質量流束）。最初の説明に従っている
+dae_X9_038,\rho_f,input,Density (kg m¯³),mass density of the base fluid,\rho_{bf},False,Y,添字 f と説明文（ナノ流体）から「基液の」を補った。元の説明にない限定だが妥当
+dae_X2_042,\text{Accumulation},input,Accumulation rate of reserves,rate at which reserve compounds are stored,r_{acc},False,Y,
+dae_X9_014,S_8,input,eighth component of the forcing term in moment space,eighth moment-space component of the forcing source,\hat{S}_8,False,Y,
+dae_X7_011,q_1,input,inlet flow rate 1,first incoming feed stream flow rate,F_1,False,Y,
+dae_X2_042,\text{Uptake},input,Glucose uptake rate,rate at which cells take up glucose,r_{G},False,Y,
+dae_X5_016,\bar{p},input,mean pressure,time-averaged pressure of the flow,\bar{P},False,Y,mean を時間平均と特定した（乱流の平均量として妥当）
+dae_X9_071,\rho,input,density of the liquid | density of the liquid (constant) | density (constant),constant density of the liquid,\rho_L,False,Y,
+dae_X3_012,x,input,distance,spatial position or distance within the tissue,z,False,Y,説明文から「組織内の」を補った
+dae_X9_072,U,input,combined input-output transformation functions | combined vector of input-output transformation functions | input-output transformation functions,stacked input-output transformation functions for all modules,\mathcal{U},False,Y,
+dae_X9_018,f(t),input,"A known function of time, defined as b(t)/a(t)",Known time-varying coefficient equal to ratio of two ODE coefficients,p(t),False,Y,
+dae_X7_006,f,input,forcing term,nonlinear phase-dependent forcing input shaping the trajectory,F,False,Y,説明文（DMP）から「非線形・位相依存」を補った。強制項であることは保たれている
+dae_X6_018,SP(t),input,Set point as a function of time,time-varying desired target value for the controller,r(t),False,Y,
+dae_X1_020,w,input,velocity component along z-direction,flow speed component in the z direction,V_z,False,Y,
+dae_X9_036,T,output,temperature,local fluid temperature,\vartheta,False,Y,「局所の流体の」を補った
+ms3_0291,T_\infty,input,temperature of the fluid at the free stream,fluid temperature far from the surface in the ambient stream,\theta_\infty,False,Y,
+dae_X2_061,M_1(s),input,Partial fraction term,First coefficient term in the partial fraction expansion,A_1(s),False,Y,「coefficient」を足した。項そのものか係数かが少しあいまいになった
+dae_X10_095,\bar{\theta},output,mean temperature,time-averaged temperature field,T_m,False,Y,mean を時間平均と特定した
+dae_X9_046,U,input,amplitude of the free stream velocity | free stream velocity,amplitude coefficient of the outer free-stream velocity,U_0,False,Y,
+ms3_0297,s,input,Laplace variable (complex frequency domain),complex frequency variable of the Laplace transform,p,False,Y,
+core_092_v1,T_c(s),input,"Laplace transform of the coolant temperature deviation, T'_c(t)",transformed deviation of coolant temperature from its steady value,\bar{T}_j(s),False,Y,Laplace を「transformed」に一般化した。定常値からの偏差であることは保たれている
+dae_X7_017,m^{eq},output,equilibrium moment vector,vector of moments at equilibrium,\mathbf{m}^{(0)},False,Y,
+dae_X9_051,c_P,input,concentration of inorganic phosphate,inorganic phosphate concentration,[P_i],False,Y,語順の入れ替えだけで、写しに近い（品質の確認の写しの判定は通った）
+dae_X8_006,U,output,total internal energy,overall internal energy content of the system,E,False,Y,
+ms3_0314,y,output,Spatial co-ordinate along the normal to the cone generator m,Distance measured perpendicular to the generating line of the cone,z,False,Y,
+dae_X3_043,\rho,output,density (order parameter) | density,local mass density of the two-fluid mixture,\varrho,False,Y,「秩序変数」の役割が落ちたが、同じ密度を指す（相場法の二流体の説明文と合う）
+dae_X6_049,T,output,temperature in the tank | fluid temperature,temperature of the liquid inside the tank,\Theta,False,Y,
+ms3_0355,u,input,manipulated inputs vector | velocity component in x-direction,vector of manipulated control inputs,v,True,Y,意味の食い違いの印は正しい（操作入力と速度成分）。最初の説明に従っている
+dae_X8_016,u_z(r),output,axial fluid velocity at radial position r,axial flow velocity profile versus radial position,w(\rho),False,Y,
+ms3_0435,\tilde{v},input,Velocity component along y-axis,flow speed component in the vertical coordinate direction,\tilde{w}_2,False,Y,y 軸方向を「鉛直方向」と言い換えた。y 軸が鉛直でない設定では限定しすぎ（要確認）
+dae_X4_022,F,input,force vector,applied force acting on the carriers,\mathbf{F}_{\text{ext}},False,Y,説明文から「キャリアに働く」を補った
+dae_X8_013,μ,output,The specific growth rate | specific growth rate,specific cell growth rate,r_g,False,Y,
+dae_X6_071,F_0,output,flow in,inlet flow rate entering the tank,q_0,False,Y,
+dae_X4_009,\tau_0,input,recombination time,characteristic carrier recombination lifetime,\tau_{\text{rec}},False,Y,
+ms3_0225,B,output,input matrix,matrix mapping control inputs into state dynamics,\Gamma,False,Y,
+dae_X3_091,F_{A0},output,Molar feed rate of reactant A (mol/s),Inlet molar flow rate of reactant A fed to reactor,"N_{A,in}",False,Y,
+ms_pfr_arrhenius_rate_001_rv4,T,input,absolute temperature,Temperature on the absolute scale,\theta,False,Y,
+ms3_0283,\nu,input,kinematic viscosity (η/ρ),"kinematic viscosity, dynamic viscosity divided by density",\nu_k,False,Y,kinematic viscosity をそのまま使い、定義（η/ρ）を言葉にした
+dae_X4_017,e_4,input,"Dimensionless parameter related to heat capacitance, ε₄ = (1-φ₂) [ (1-φ₁) + φ₁ ((ρCp)_s₁/(ρCp)_f) ] + φ₂ ((ρCp)_s₂/(ρCp)_f)",nondimensional heat capacity ratio of hybrid nanofluid to base fluid,\epsilon_4,False,Y,
+ms_pfr_kin_001_rv5,-r_A,input,Rate of reaction of A as a function of conversion (mol/m³·s),Disappearance rate of reactant A expressed as a function of conversion,R_A,False,Y,
+dae_X8_079,M,input,Magnetic parameter,dimensionless magnetic field strength group,Ha,False,Y,
+dae_X2_086,D,input,Dilution rate,volumetric feed flow divided by reactor liquid volume,D_r,False,Y,
+ms3_0029,d,output,disturbance,external disturbance acting on the process,w,False,Y,
+dae_X5_006,f,input,"dimensionless parameter, Dk^I / U^2",nondimensional group of diffusivity times rate constant over velocity squared,\beta,False,Y,
+core_110_v1,X_A,input,Final conversion of reactant A (dimensionless),fraction of reactant A converted at the end of the batch,\xi_A,False,Y,説明文から「回分の終わりの」を補った
+dae_X9_095,W_{\text{hom}},input,homogeneous connectivity function,connectivity kernel for homogeneous local connections,K_{\text{hom}},False,Y,「局所の」を補った

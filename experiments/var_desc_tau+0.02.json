@@ -1,0 +1,151 @@
+{
+ "config": {
+  "setting": "A",
+  "conds": "D1",
+  "seed_list": "42",
+  "renames": "0.5,1.0",
+  "tau_delta": 0.02,
+  "w_text": 0.3,
+  "w_var": 0.7,
+  "coverage": false,
+  "save_per_case": false,
+  "output": "experiments/var_desc_tau+0.02.json",
+  "top_k": 50,
+  "epochs": 15,
+  "lr": 0.001,
+  "hidden_dim": 64,
+  "margin": 0.1,
+  "batch_size": 16,
+  "n_neg_samples": 8,
+  "weight_decay": 0.0001,
+  "spec": "docs/superpowers/specs/2026-10-01-variable-description-matching-design.md",
+  "n_cases": 1823
+ },
+ "tau": {
+  "D1-tau+0.02": {
+   "42": 0.8700639200210571
+  }
+ },
+ "approx_mismatch": {
+  "D1-tau+0.02": {
+   "42": 0.1699543973941368
+  }
+ },
+ "results": {
+  "D1-tau+0.02": {
+   "mode": "D1-tau+0.02",
+   "n_features": 10,
+   "MRR_first": {
+    "mean": 0.7396,
+    "std": 0
+   },
+   "MRR_worst": {
+    "mean": 0.1857,
+    "std": 0
+   },
+   "MRR_avg": {
+    "mean": 0.3978,
+    "std": 0
+   },
+   "MAP": {
+    "mean": 0.6025,
+    "std": 0
+   },
+   "Precision@C": {
+    "mean": 0.4526,
+    "std": 0
+   },
+   "Recall@K_correct": {
+    "mean": 0.4526,
+    "std": 0
+   },
+   "FullRecall@3": {
+    "mean": 0.2506,
+    "std": 0
+   },
+   "FullRecall@10": {
+    "mean": 0.4823,
+    "std": 0
+   },
+   "Recall@3": {
+    "mean": 0.4719,
+    "std": 0
+   },
+   "Recall@5": {
+    "mean": 0.5803,
+    "std": 0
+   },
+   "Recall@10": {
+    "mean": 0.6957,
+    "std": 0
+   },
+   "Recall@20": {
+    "mean": 0.7839,
+    "std": 0
+   },
+   "multi_only__MRR_first": {
+    "mean": 0.7509,
+    "std": 0
+   },
+   "multi_only__MRR_worst": {
+    "mean": 0.1407,
+    "std": 0
+   },
+   "multi_only__MAP": {
+    "mean": 0.5999,
+    "std": 0
+   },
+   "multi_only__FullRecall@3": {
+    "mean": 0.2057,
+    "std": 0
+   },
+   "multi_only__FullRecall@10": {
+    "mean": 0.4453,
+    "std": 0
+   },
+   "multi_only__Recall@3": {
+    "mean": 0.4495,
+    "std": 0
+   },
+   "multi_only__Recall@10": {
+    "mean": 0.6805,
+    "std": 0
+   },
+   "multi_only__Recall@K_correct": {
+    "mean": 0.4465,
+    "std": 0
+   },
+   "per_seed": [
+    {
+     "n_cases": 423,
+     "MRR_first": 0.7395810933547249,
+     "MRR_worst": 0.18569804871395118,
+     "MRR_avg": 0.39782274971976106,
+     "Precision@C": 0.4525985965702278,
+     "Recall@K_correct": 0.4525985965702278,
+     "MAP": 0.6025195802482692,
+     "FullRecall@3": 0.25059101654846333,
+     "Recall@3": 0.47187980787271566,
+     "FullRecall@5": 0.36879432624113473,
+     "Recall@5": 0.5803491688243462,
+     "FullRecall@10": 0.48226950354609927,
+     "Recall@10": 0.6957474952155803,
+     "FullRecall@20": 0.5862884160756501,
+     "Recall@20": 0.7838549288903899,
+     "single_only__MRR_first": 0.6283094510827305,
+     "multi_only__MRR_first": 0.7508821195229741,
+     "multi_only__MRR_worst": 0.14074532816087207,
+     "multi_only__MAP": 0.5999002964916443,
+     "multi_only__FullRecall@3": 0.20572916666666666,
+     "multi_only__FullRecall@10": 0.4453125,
+     "multi_only__Recall@3": 0.44949260085978837,
+     "multi_only__Recall@10": 0.6804718501984127,
+     "multi_only__Recall@K_correct": 0.4464823082010582,
+     "n_single": 39,
+     "n_multi": 384,
+     "seed": 42
+    }
+   ]
+  }
+ }
+}

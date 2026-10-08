@@ -1,0 +1,781 @@
+{
+ "spec": "docs/superpowers/specs/2026-10-01-variable-description-matching-design.md",
+ "n_cases": 1823,
+ "D1": {
+  "n_pos": 46504,
+  "n_neg": 329331,
+  "auc": 0.9,
+  "tau_all_cases": 0.8503,
+  "sim_pos": {
+   "mean": 0.8913,
+   "p5": 0.7882,
+   "p25": 0.8628,
+   "p50": 0.8991,
+   "p75": 0.9287,
+   "p95": 0.9672
+  },
+  "sim_neg": {
+   "mean": 0.7966,
+   "p5": 0.7274,
+   "p25": 0.7637,
+   "p50": 0.7904,
+   "p75": 0.8262,
+   "p95": 0.8824
+  },
+  "hardest_negatives": [
+   {
+    "case_id": "dae_X10_097",
+    "query_symbol": "m",
+    "query_text": "exponent depending on the densification mechanism",
+    "db_symbol": "k",
+    "db_description": "Exponent dependent on the densification mechanism",
+    "eq_key": "FB2_10_Review_liquid_phase_sintering_2008.pdf__eq_28",
+    "sim": 0.9886
+   },
+   {
+    "case_id": "dae_X10_021",
+    "query_symbol": "X_{i+1}",
+    "query_text": "Light-component mole fraction in liquid coming from tray above",
+    "db_symbol": "X_i",
+    "db_description": "Mole fraction of light component in liquid on tray i",
+    "eq_key": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0161-0240_eq_5.57",
+    "sim": 0.9774
+   },
+   {
+    "case_id": "dae_X10_021",
+    "query_symbol": "X_i",
+    "query_text": "Light-component mole fraction in tray liquid",
+    "db_symbol": "X_{i+1}",
+    "db_description": "Mole fraction of light component in liquid from tray i+1",
+    "eq_key": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0161-0240_eq_5.57",
+    "sim": 0.9772
+   },
+   {
+    "case_id": "dae_X10_033",
+    "query_symbol": "X^{L,S}",
+    "query_text": "equilibrium mole fraction of solid component dissolved in the liquid",
+    "db_symbol": "X^{S,L}",
+    "db_description": "Mole fraction of the solid in equilibrium with the liquid",
+    "eq_key": "FB03_Review_liquid_phase_sintering_2008.pdf__eq_38",
+    "sim": 0.9756
+   },
+   {
+    "case_id": "dae_X10_021",
+    "query_symbol": "X_{fi}",
+    "query_text": "Light-component mole fraction in liquid feed to a tray",
+    "db_symbol": "X_i",
+    "db_description": "Mole fraction of light component in liquid on tray i",
+    "eq_key": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0161-0240_eq_5.57",
+    "sim": 0.9754
+   },
+   {
+    "case_id": "dae_X10_033",
+    "query_symbol": "X^{S,L}",
+    "query_text": "mole fraction in the solid phase when equilibrated with the liquid",
+    "db_symbol": "X^{L,S}",
+    "db_description": "Mole fraction of the solid in the liquid at equilibrium",
+    "eq_key": "FB03_Review_liquid_phase_sintering_2008.pdf__eq_38",
+    "sim": 0.9752
+   },
+   {
+    "case_id": "dae_X10_021",
+    "query_symbol": "X_i",
+    "query_text": "Light-component mole fraction in tray liquid",
+    "db_symbol": "X_{fi}",
+    "db_description": "Mole fraction of light component in liquid feed to tray i",
+    "eq_key": "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0161-0240_eq_5.57",
+    "sim": 0.9749
+   },
+   {
+    "case_id": "dae_X10_048",
+    "query_symbol": "x_2",
+    "query_text": "mass fraction of component A in the second inlet stream",
+    "db_symbol": "x_1",
+    "db_description": "mass fraction of component A in inlet stream 1",
+    "eq_key": "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-21",
+    "sim": 0.9739
+   },
+   {
+    "case_id": "ms3_0116",
+    "query_symbol": "C_{A0}",
+    "query_text": "concentration of reactant entering the first tank",
+    "db_symbol": "C_{A1}",
+    "db_description": "concentration of reactant A in the first tank",
+    "eq_key": "Process_Control_Chapter3.pdf__eq_3_24",
+    "sim": 0.9733
+   },
+   {
+    "case_id": "dae_X7_060",
+    "query_symbol": "c_b",
+    "query_text": "concentration of species B",
+    "db_symbol": "c_a",
+    "db_description": "concentration of species a",
+    "eq_key": "ChemicalProcessDynamicsAndControls.pdf__p0081-0160_eq_42",
+    "sim": 0.9729
+   },
+   {
+    "case_id": "ms3_0226",
+    "query_symbol": "T",
+    "query_text": "local temperature of the hybrid nanofluid",
+    "db_symbol": "T_{\\infty}",
+    "db_description": "temperature of the ambient hybrid nanofluid",
+    "eq_key": "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf__eq_4",
+    "sim": 0.9729
+   },
+   {
+    "case_id": "ms3_0229",
+    "query_symbol": "T",
+    "query_text": "local temperature of the hybrid nanofluid",
+    "db_symbol": "T_{\\infty}",
+    "db_description": "temperature of the ambient hybrid nanofluid",
+    "eq_key": "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf__eq_4",
+    "sim": 0.9729
+   },
+   {
+    "case_id": "ms3_0225",
+    "query_symbol": "T",
+    "query_text": "local temperature of the hybrid nanofluid",
+    "db_symbol": "T_{\\infty}",
+    "db_description": "temperature of the ambient hybrid nanofluid",
+    "eq_key": "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf__eq_4",
+    "sim": 0.9729
+   },
+   {
+    "case_id": "dae_X10_048",
+    "query_symbol": "x_1",
+    "query_text": "mass fraction of component A in the first inlet stream",
+    "db_symbol": "x_2",
+    "db_description": "mass fraction of component A in inlet stream 2",
+    "eq_key": "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-21",
+    "sim": 0.9728
+   },
+   {
+    "case_id": "dae_X6_084",
+    "query_symbol": "C_{bw}",
+    "query_text": "concentration of species b at the wall",
+    "db_symbol": "C_{aw}",
+    "db_description": "Wall concentration of species a",
+    "eq_key": "01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__eq_7",
+    "sim": 0.9713
+   },
+   {
+    "case_id": "dae_X10_049",
+    "query_symbol": "C_{bw}",
+    "query_text": "concentration of species b at the wall",
+    "db_symbol": "C_{aw}",
+    "db_description": "Wall concentration of species a",
+    "eq_key": "01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__eq_6",
+    "sim": 0.9713
+   },
+   {
+    "case_id": "dae_X6_046",
+    "query_symbol": "\\frac{d V^{TN}}{dt}|_{(S)}",
+    "query_text": "Time rate of change of thin slick volume caused by spreading",
+    "db_symbol": "\\frac{d A^{TN}}{dt}|_{(S)}",
+    "db_description": "Rate of change of thin slick area due to spreading",
+    "eq_key": "03_MEDSLIK-II_a_Lagrangian_marine_surface_oil_spill_model_for_s_2013.pdf__eq_B17",
+    "sim": 0.9709
+   },
+   {
+    "case_id": "dae_X6_084",
+    "query_symbol": "C_{aw}",
+    "query_text": "concentration of species a at the wall",
+    "db_symbol": "C_{bw}",
+    "db_description": "Wall concentration of species b",
+    "eq_key": "01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__eq_7",
+    "sim": 0.9704
+   },
+   {
+    "case_id": "dae_X10_049",
+    "query_symbol": "C_{aw}",
+    "query_text": "concentration of species a at the wall",
+    "db_symbol": "C_{bw}",
+    "db_description": "Wall concentration of species b",
+    "eq_key": "01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__eq_6",
+    "sim": 0.9704
+   },
+   {
+    "case_id": "dae_X6_093",
+    "query_symbol": "μ",
+    "query_text": "Growth rate per unit biomass",
+    "db_symbol": "r_x",
+    "db_description": "growth rate of the biomass",
+    "eq_key": "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_33",
+    "sim": 0.9703
+   }
+  ],
+  "hardest_positives": [
+   {
+    "case_id": "dae_X3_041",
+    "query_symbol": "f",
+    "query_text": "half the summed squared residuals between simulated and measured data",
+    "db_symbol": "f",
+    "db_description": "the misfit",
+    "eq_key": "FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf__eq_7",
+    "sim": 0.6937
+   },
+   {
+    "case_id": "dae_X3_041",
+    "query_symbol": "f",
+    "query_text": "half the summed squared residuals between simulated and measured data",
+    "db_symbol": "f",
+    "db_description": "the misfit",
+    "eq_key": "FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf__eq_2",
+    "sim": 0.6937
+   },
+   {
+    "case_id": "ms3_0134",
+    "query_symbol": "A",
+    "query_text": "Arrhenius frequency factor multiplying the exponential term in the reaction rate",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.6947
+   },
+   {
+    "case_id": "ms3_0132",
+    "query_symbol": "A",
+    "query_text": "Frequency factor multiplying the Arrhenius exponential in the reaction rate",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.6989
+   },
+   {
+    "case_id": "ms3_0131",
+    "query_symbol": "A",
+    "query_text": "Frequency factor multiplying the Arrhenius exponential in the reaction rate",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.6989
+   },
+   {
+    "case_id": "ms3_0137",
+    "query_symbol": "A",
+    "query_text": "Frequency factor multiplying the Arrhenius exponential in the reaction rate",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.6989
+   },
+   {
+    "case_id": "dae_X10_056",
+    "query_symbol": "\\alpha",
+    "query_text": "Curvature sensitivity factor for phosphatase recruitment",
+    "db_symbol": "\\alpha",
+    "db_description": "Order",
+    "eq_key": "FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf__eq_10",
+    "sim": 0.6992
+   },
+   {
+    "case_id": "ms3_0138",
+    "query_symbol": "A",
+    "query_text": "Arrhenius frequency factor multiplying the exponential rate term",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7006
+   },
+   {
+    "case_id": "dae_X7_045",
+    "query_symbol": "τ",
+    "query_text": "process time in the heat conduction problem",
+    "db_symbol": "τ",
+    "db_description": "время",
+    "eq_key": "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf__eq_4",
+    "sim": 0.7015
+   },
+   {
+    "case_id": "dae_X7_045",
+    "query_symbol": "τ",
+    "query_text": "process time in the heat conduction problem",
+    "db_symbol": "τ",
+    "db_description": "время",
+    "eq_key": "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf__eq_9",
+    "sim": 0.7015
+   },
+   {
+    "case_id": "dae_X10_006",
+    "query_symbol": "G(s)",
+    "query_text": "integrator transfer function in the Laplace domain",
+    "db_symbol": "G(s)",
+    "db_description": "1/s",
+    "eq_key": "FB3_06_Standard_SOGI-FLL_and_Its_Close_Variants_Precise_Modeling_in_2020.pdf__eq_12a",
+    "sim": 0.7022
+   },
+   {
+    "case_id": "ms3_0133",
+    "query_symbol": "A",
+    "query_text": "Frequency factor multiplying the Arrhenius exponential in the rate law",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7023
+   },
+   {
+    "case_id": "dae_X10_057",
+    "query_symbol": "Sh_x",
+    "query_text": "position-dependent dimensionless mass transfer coefficient",
+    "db_symbol": "Sh_x",
+    "db_description": "local Sherwood number",
+    "eq_key": "2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf__eq_8",
+    "sim": 0.7059
+   },
+   {
+    "case_id": "dae_X9_013",
+    "query_symbol": "q_1",
+    "query_text": "constant exponent associated with fluid 1 flow change",
+    "db_symbol": "q_1",
+    "db_description": "べき数で一定値",
+    "eq_key": "1989_A_new_simple_dynamic_model_of_parallel_and_counter_flow_heat.pdf__eq_6",
+    "sim": 0.7061
+   },
+   {
+    "case_id": "ms3_0136",
+    "query_symbol": "A",
+    "query_text": "Frequency factor multiplying the Arrhenius exponential term",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7064
+   },
+   {
+    "case_id": "ms3_0139",
+    "query_symbol": "A",
+    "query_text": "Arrhenius frequency factor in the reaction rate expression",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7065
+   },
+   {
+    "case_id": "ms3_0460",
+    "query_symbol": "τ",
+    "query_text": "separate time variable appearing in the output relation",
+    "db_symbol": "τ",
+    "db_description": "время",
+    "eq_key": "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf__eq_11",
+    "sim": 0.7068
+   },
+   {
+    "case_id": "dae_X9_013",
+    "query_symbol": "q_2",
+    "query_text": "constant exponent associated with fluid 2 flow change",
+    "db_symbol": "q_2",
+    "db_description": "べき数で一定値",
+    "eq_key": "1989_A_new_simple_dynamic_model_of_parallel_and_counter_flow_heat.pdf__eq_6",
+    "sim": 0.7074
+   },
+   {
+    "case_id": "ms3_0130",
+    "query_symbol": "A",
+    "query_text": "Frequency factor in the Arrhenius reaction rate expression",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7076
+   },
+   {
+    "case_id": "ms3_0457",
+    "query_symbol": "τ",
+    "query_text": "time variable of the heat transfer equation",
+    "db_symbol": "τ",
+    "db_description": "время",
+    "eq_key": "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf__eq_11",
+    "sim": 0.7078
+   }
+  ]
+ },
+ "D0": {
+  "n_pos": 46504,
+  "n_neg": 329331,
+  "auc": 0.9758,
+  "tau_all_cases": 0.9596,
+  "sim_pos": {
+   "mean": 0.9874,
+   "p5": 0.8895,
+   "p25": 1.0,
+   "p50": 1.0,
+   "p75": 1.0,
+   "p95": 1.0
+  },
+  "sim_neg": {
+   "mean": 0.8093,
+   "p5": 0.7319,
+   "p25": 0.7689,
+   "p50": 0.7973,
+   "p75": 0.8425,
+   "p95": 0.9238
+  },
+  "hardest_negatives": [
+   {
+    "case_id": "dae_X10_026",
+    "query_symbol": "\\tau_{by}",
+    "query_text": "shear stresses on the bed surface",
+    "db_symbol": "\\tau_{bx}",
+    "db_description": "shear stresses on the bed surface",
+    "eq_key": "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf__eq_2",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X10_026",
+    "query_symbol": "\\tau_{bx}",
+    "query_text": "shear stresses on the bed surface",
+    "db_symbol": "\\tau_{by}",
+    "db_description": "shear stresses on the bed surface",
+    "eq_key": "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf__eq_2",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X5_024",
+    "query_symbol": "\\tau_{by}",
+    "query_text": "shear stresses on the bed surface",
+    "db_symbol": "\\tau_{bx}",
+    "db_description": "shear stresses on the bed surface",
+    "eq_key": "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf__eq_2",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X5_024",
+    "query_symbol": "\\tau_{bx}",
+    "query_text": "shear stresses on the bed surface",
+    "db_symbol": "\\tau_{by}",
+    "db_description": "shear stresses on the bed surface",
+    "eq_key": "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf__eq_2",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X1_098",
+    "query_symbol": "d_2",
+    "query_text": "dimensionless coefficient of linear damping",
+    "db_symbol": "d_1",
+    "db_description": "dimensionless coefficient of linear damping",
+    "eq_key": "FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf__eq_12",
+    "sim": 1.0
+   },
+   {
+    "case_id": "ms3_0019",
+    "query_symbol": "r",
+    "query_text": "Cylindrical coordinate system",
+    "db_symbol": "z",
+    "db_description": "Cylindrical coordinate system",
+    "eq_key": "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf__eq_5",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X9_003",
+    "query_symbol": "\\bar{u}_i",
+    "query_text": "mean velocity component",
+    "db_symbol": "\\bar{u}_j",
+    "db_description": "mean velocity component",
+    "eq_key": "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_3b",
+    "sim": 1.0
+   },
+   {
+    "case_id": "ms3_0018",
+    "query_symbol": "z",
+    "query_text": "Cylindrical coordinate system",
+    "db_symbol": "r",
+    "db_description": "Cylindrical coordinate system",
+    "eq_key": "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf__eq_5",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X9_003",
+    "query_symbol": "\\bar{u}_j",
+    "query_text": "mean velocity component",
+    "db_symbol": "\\bar{u}_i",
+    "db_description": "mean velocity component",
+    "eq_key": "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_3b",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X2_006",
+    "query_symbol": "u_j",
+    "query_text": "instantaneous velocity",
+    "db_symbol": "u_i",
+    "db_description": "instantaneous velocity",
+    "eq_key": "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_1b",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X2_006",
+    "query_symbol": "u_i",
+    "query_text": "instantaneous velocity",
+    "db_symbol": "u_j",
+    "db_description": "instantaneous velocity",
+    "eq_key": "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_1b",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X1_001",
+    "query_symbol": "r",
+    "query_text": "Cylindrical coordinate system",
+    "db_symbol": "z",
+    "db_description": "Cylindrical coordinate system",
+    "eq_key": "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf__eq_2",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X1_001",
+    "query_symbol": "z",
+    "query_text": "Cylindrical coordinate system",
+    "db_symbol": "r",
+    "db_description": "Cylindrical coordinate system",
+    "eq_key": "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf__eq_2",
+    "sim": 1.0
+   },
+   {
+    "case_id": "ms3_0018",
+    "query_symbol": "r",
+    "query_text": "Cylindrical coordinate system",
+    "db_symbol": "z",
+    "db_description": "Cylindrical coordinate system",
+    "eq_key": "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf__eq_5",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X9_024",
+    "query_symbol": "u_j",
+    "query_text": "instantaneous velocity",
+    "db_symbol": "u_i",
+    "db_description": "instantaneous velocity",
+    "eq_key": "FB07_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_1e",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X9_024",
+    "query_symbol": "u_i",
+    "query_text": "instantaneous velocity",
+    "db_symbol": "u_j",
+    "db_description": "instantaneous velocity",
+    "eq_key": "FB07_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_1e",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X1_098",
+    "query_symbol": "d_1",
+    "query_text": "dimensionless coefficient of linear damping",
+    "db_symbol": "d_2",
+    "db_description": "dimensionless coefficient of linear damping",
+    "eq_key": "FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf__eq_12",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X10_095",
+    "query_symbol": "u_j",
+    "query_text": "instantaneous velocity",
+    "db_symbol": "u_i",
+    "db_description": "instantaneous velocity",
+    "eq_key": "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_1b",
+    "sim": 1.0
+   },
+   {
+    "case_id": "ms3_0017",
+    "query_symbol": "z",
+    "query_text": "Cylindrical coordinate system",
+    "db_symbol": "r",
+    "db_description": "Cylindrical coordinate system",
+    "eq_key": "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf__eq_5",
+    "sim": 1.0
+   },
+   {
+    "case_id": "dae_X10_095",
+    "query_symbol": "u_i",
+    "query_text": "instantaneous velocity",
+    "db_symbol": "u_j",
+    "db_description": "instantaneous velocity",
+    "eq_key": "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf__eq_1b",
+    "sim": 1.0
+   }
+  ],
+  "hardest_positives": [
+   {
+    "case_id": "ms3_0134",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor (units vary)",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7039
+   },
+   {
+    "case_id": "ms3_0133",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor (units vary)",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7039
+   },
+   {
+    "case_id": "ms3_0130",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor (units vary)",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7039
+   },
+   {
+    "case_id": "ms3_0131",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor (units vary)",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7039
+   },
+   {
+    "case_id": "ms3_0132",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor (units vary)",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.7039
+   },
+   {
+    "case_id": "dae_X10_056",
+    "query_symbol": "\\alpha",
+    "query_text": "Curvature-dependent factor for phosphatase recruitment",
+    "db_symbol": "\\alpha",
+    "db_description": "Order",
+    "eq_key": "FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf__eq_10",
+    "sim": 0.7056
+   },
+   {
+    "case_id": "dae_X10_096",
+    "query_symbol": "M",
+    "query_text": "mobility",
+    "db_symbol": "M",
+    "db_description": "orthogonal transformation matrix for the D2Q9 model",
+    "eq_key": "04_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf__eq_11",
+    "sim": 0.7074
+   },
+   {
+    "case_id": "dae_X9_095",
+    "query_symbol": "\\gamma",
+    "query_text": "reflects the spatial decay of lateral interactions",
+    "db_symbol": "\\gamma",
+    "db_description": "constant controlling rise time of voltage",
+    "eq_key": "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf__eq_37",
+    "sim": 0.7101
+   },
+   {
+    "case_id": "dae_X9_095",
+    "query_symbol": "\\gamma",
+    "query_text": "reflects the spatial decay of lateral interactions",
+    "db_symbol": "\\gamma",
+    "db_description": "constant controlling rise time of voltage",
+    "eq_key": "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf__eq_38",
+    "sim": 0.7101
+   },
+   {
+    "case_id": "ms3_0137",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor constant",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.712
+   },
+   {
+    "case_id": "ms3_0138",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor constant",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.712
+   },
+   {
+    "case_id": "ms3_0135",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor constant",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.712
+   },
+   {
+    "case_id": "ms3_0139",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor constant",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.712
+   },
+   {
+    "case_id": "ms3_0136",
+    "query_symbol": "A",
+    "query_text": "Pre-exponential factor constant",
+    "db_symbol": "A",
+    "db_description": "Carreau Yasuda number",
+    "eq_key": "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf__2",
+    "sim": 0.712
+   },
+   {
+    "case_id": "dae_X5_008",
+    "query_symbol": "Q",
+    "query_text": "Fokker-Planck operator",
+    "db_symbol": "Q",
+    "db_description": "average firing rate of the population",
+    "eq_key": "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf__eq_25",
+    "sim": 0.7148
+   },
+   {
+    "case_id": "dae_X7_024",
+    "query_symbol": "A",
+    "query_text": "cross-sectional area of the tank",
+    "db_symbol": "A",
+    "db_description": "a random event",
+    "eq_key": "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0481-0560_eq_F-3",
+    "sim": 0.7151
+   },
+   {
+    "case_id": "dae_X7_097",
+    "query_symbol": "X",
+    "query_text": "A subset of the n-dimensional real space R^n",
+    "db_symbol": "X",
+    "db_description": "biomass concentration",
+    "eq_key": "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf__eq_41",
+    "sim": 0.7181
+   },
+   {
+    "case_id": "dae_X10_067",
+    "query_symbol": "L",
+    "query_text": "the maximized value of the likelihood function for the estimated model",
+    "db_symbol": "L",
+    "db_description": "Distance between transceivers.",
+    "eq_key": "ChemicalProcessDynamicsAndControls.pdf__p0241-0320_eq_20",
+    "sim": 0.7196
+   },
+   {
+    "case_id": "dae_X9_071",
+    "query_symbol": "R",
+    "query_text": "coefficient of friction (stem to packing) = 15,000 lbf/ft/s",
+    "db_symbol": "R",
+    "db_description": "reliability",
+    "eq_key": "SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0161-0240_10-7",
+    "sim": 0.7198
+   },
+   {
+    "case_id": "ms3_0080",
+    "query_symbol": "F",
+    "query_text": "volumetric flow rate in the feed stream",
+    "db_symbol": "F",
+    "db_description": "an arbitrary function of the indicated argument",
+    "eq_key": "FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51",
+    "sim": 0.7207
+   }
+  ]
+ },
+ "gate": {
+  "metric": "D1 AUC",
+  "threshold": 0.8,
+  "pass": true
+ }
+}
