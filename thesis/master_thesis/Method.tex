@@ -15,16 +15,17 @@
 \section{Problem Formulation}
 \label{sec:formulation}
 
-We formulate the task as retrieving from an equation database the set of equations that composes a
-requested physical model. A query is a triple $q = (c, \mathcal{I}, \mathcal{O})$, where $c$
+We formulate the task as ranking the equations of a database so that the equations of a requested
+physical model come first; the method presents the top of this ranking to the engineer as
+candidates. A query is a triple $q = (c, \mathcal{I}, \mathcal{O})$, where $c$
 describes the model in natural language, $\mathcal{I}$ holds the input variables the user can
 supply, and $\mathcal{O}$ holds the output variables the model must determine. We write
 $\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ for the query variables. The database
 $\mathcal{E} = \{e_1, \dots, e_N\}$ stores for each equation $e_j$ its variable set $V(e_j)$, the
 text surrounding it in its source, the source itself, and a domain label
 $\mathrm{dom}(e_j)$. The ground truth of a query is the equation set
-$\mathcal{R}_q \subset \mathcal{E}$ that composes the requested model, and the method must rank
-$\mathcal{R}_q$ above every other equation.
+$\mathcal{R}_q \subset \mathcal{E}$ that its test case designates for the requested model
+(Section~4.2), and the method aims to rank $\mathcal{R}_q$ above every other equation.
 
 A physical model is a system of equations, not a list of independent ones, so we also check a
 condition that every solvable set meets\cite{Hangos}. Let $\mathrm{unknowns}(S) = \bigcup_{e \in S} V(e) \setminus

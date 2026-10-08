@@ -115,12 +115,12 @@
 \\
 Physical models underpin process design, control, and digital twins, but building one for a process outside the libraries of modeling tools requires an engineer to collect the equations scattered across many documents and to assemble them into a solvable system.
 Our group aims to automate this work with an automated physical model builder (AutoPMoB).
-This thesis addresses one of its steps: given a description of the desired model and its input and output variables, retrieve the set of equations that composes the model from an equation database built from multiple documents.
-The answer is a set rather than a list --- a physical model is a system of equations that share variables and close with zero degrees of freedom --- so a candidate must be judged by its relation to the equations already selected, not by its relevance to the query alone.
+This thesis addresses one of its steps: given a description of the desired model and its input and output variables, present the equations likely to serve in the model, drawn from an equation database built from multiple documents; the engineer then assembles and checks the model from these candidates.
+Because a physical model is a system of equations that share variables and close with zero degrees of freedom, the value of a candidate depends on the equations presented with it, so the method judges each candidate by its relation to the equations already selected, not by its relevance to the query alone.
 
 We propose a two-stage retrieval method.
 The first stage narrows the database by text similarity and variable overlap, and the second stage reranks the candidates with a multilayer perceptron that reads, beside seven query--equation features, three set-aware features that compare each candidate with the equations already selected: complementarity, coherence, and domain agreement.
-A learned greedy variant builds the set one equation at a time, and a self-terminating criterion (DoF-stop) halts retrieval once the selected set covers every output variable with no more unknowns than equations, so the method needs no answer size in advance.
+A learned greedy variant selects one equation at a time, and a self-terminating criterion (DoF-stop) decides how many equations to present: it halts once the selected equations cover every output variable with no more unknowns than equations, so the method needs no answer size in advance.
 To evaluate the method, we built a database of 11,146 equations from 361 sources and 2,838 test cases, 1,000 of which are synthesized closed systems whose answers are solvable by construction, and we split the sources so that no document leaks between training and testing.
 
 % source: experiments/strat_A.json / strat_B.json（0.5206→0.7429, 0.4661→0.6890）;

@@ -68,7 +68,8 @@ takes equations and their variables and returns every combination that meets the
 This study also takes a description of the desired model, reads the context of each equation ---
 the text that surrounds the equation in its source --- and ranks the equations that the
 description asks for above the rest; it scores each candidate against the equations already
-selected and can stop once the selected set closes as a system (Chapter~3). Narrowing the database
+selected and can stop once the selected equations cover every output variable with no more unknowns than
+equations (Chapter~3). Narrowing the database
 to the equations that concern the requested model, however, does not by itself require context. In
 our benchmark, a first stage that reads variable overlap alone keeps 96.1\% of the ground-truth
 equations among its 50 candidates, and adding text similarity raises this only to 96.7\%
@@ -183,8 +184,8 @@ NTCIR-12 MathIR task, held at the NII Testbeds and Community for Information acc
 corpora\cite{NTCIR12}, and the Answer Retrieval for Questions on Math (ARQMath) lab evaluates the
 retrieval of answers and of formulas for mathematical questions from a
 community-question-answering archive\cite{ARQMath}. These tasks retrieve single formulas ranked by
-similarity to the query. Our method retrieves a set of equations that must jointly close a system
---- cover the requested outputs and leave zero degrees of freedom --- so the value of one equation
-depends on the equations retrieved with it. We found no formula-search benchmark that imposes this
+similarity to the query. Our method presents equations meant to form a system together
+--- to cover the requested outputs and leave zero degrees of freedom --- so the value of one equation
+depends on the equations presented with it. We found no formula-search benchmark that imposes this
 joint condition. Chapter~6 shows a consequence of the joint condition: after the first stage narrows the candidates, topical similarity becomes redundant, and
 the improvement comes from features that read the variable structure of the selected set.

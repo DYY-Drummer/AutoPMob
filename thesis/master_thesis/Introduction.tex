@@ -35,9 +35,9 @@ equivalent\cite{DAEEquiv}.
 AutoPMoB collects documents about a target process, extracts equations, variables, and data,
 judges their equivalence across documents, and reorganizes them into the desired model; this
 study addresses the highlighted stage. (b) The task of this study: a query gives a description of
-the desired model with its input and output variables, and the method retrieves, from a database
-of 11,146 equations drawn from 361 sources, the set of equations that composes the model. The
-three retrieved equations come from different documents and are linked by the variables they
+the desired model with its input and output variables, and the method presents, from a database
+of 11,146 equations drawn from 361 sources, the equations likely to serve in the model. The
+three presented equations come from different documents and are linked by the variables they
 share ($r_A$ and $k$); with three equations and three unknowns ($C_A$, $r_A$, and $k$) the set
 has zero degrees of freedom, so a simulator can solve it.}
 \label{fig:overview}
@@ -45,9 +45,10 @@ has zero degrees of freedom, so a simulator can solve it.}
 
 This study addresses the reorganization step, the highlighted stage of
 Fig.~\ref{fig:overview}(a): given a description of the desired model together with its input and
-output variables, retrieve the set of equations that composes the model from an equation database
-built from many documents (Fig.~\ref{fig:overview}(b)). The step is a retrieval problem with an
-unusual answer. A physical model is not a list of independent equations but a system of equations
+output variables, present the equations likely to serve in the model, drawn from an equation
+database built from many documents (Fig.~\ref{fig:overview}(b)). The aim is to present equations
+that are likely to be usable, not a finished model; the engineer assembles and checks the model
+from them. The step is a retrieval problem whose candidates depend on one another. A physical model is not a list of independent equations but a system of equations
 that share variables and must be solved simultaneously, and the system can be solved only when it
 has as many equations as unknown variables --- when its degrees of freedom are zero --- so that,
 once the inputs are given, every output is determined. The concentration dynamics of a continuous

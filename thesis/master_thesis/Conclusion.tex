@@ -8,16 +8,18 @@
 % ============================================================
 
 This thesis formulated one step of automated physical model building as a retrieval problem and
-solved it with a method that treats the answer as a set. Given a description of the desired model
-and its input and output variables, the method retrieves, from a database of 11,146 equations
-drawn from 361 sources, the equations that compose the model. Because a physical model is a
+addressed it with a method that evaluates candidate equations as a set. Given a description of the
+desired model and its input and output variables, the method presents, from a database of 11,146
+equations drawn from 361 sources, the equations likely to serve in the model, and the engineer
+assembles and checks the model from them. Because a physical model is a
 system of equations that share variables and close with zero degrees of freedom, the method
 scores each candidate not only by its relevance to the query but by its relation to the equations
 already selected: a first stage narrows the database by text similarity and variable overlap, and
 a second stage reranks the candidates with a multilayer perceptron that reads three set-aware
 features --- complementarity, coherence, and domain agreement --- beside seven query--equation
-features. A learned greedy variant builds the set one equation at a time, and a self-terminating
-criterion, DoF-stop, halts retrieval when the selected set closes as a system.
+features. A learned greedy variant selects one equation at a time, and a self-terminating
+criterion, DoF-stop, decides how many equations to present: it halts once the selected equations
+cover every output variable with no more unknowns than equations.
 
 The thesis makes three contributions. First, it provides a benchmark on which a failure can be
 attributed to the method: 1,000 of the 2,838 cases are synthesized by a rule that grows a closed
