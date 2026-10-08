@@ -122,3 +122,9 @@ Thumbs.db
 
 # A2 外部ベースライン: E5 埋め込みキャッシュ（external_baselines.py が再生成可能）
 experiments/embeddings/
+
+# Task 5 生の API 応答（追跡しない、cmd_finalize で集約）
+experiments/var_descriptions_raw/
+
+# 変数の説明による照合の本実験の実行ログ（run_var_description.sh が書く、追跡しない）
+experiments/var_desc_logs/
