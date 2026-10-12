@@ -88,8 +88,9 @@ To evaluate the method on realistic data, we construct a large equation database
 whose evaluation ground truths all meet the input--output and degree-of-freedom requirements that
 Kato and Kano formulated for model building\cite{CombineEq}, and we split them so that no document
 leaks between training and testing.
-% source: experiments/kato_0831_followup_stats.json gt_checks（評価 1,823 件すべて要件 1〜3 を満たす。拡張ケースは未確認） The database holds 11,146 equations from 361 sources: a large language
-model (LLM) extracted 10,476 of them from 329 documents and generated the other 670 as reference
+% source: experiments/kato_0831_followup_stats.json gt_checks（評価 1,823 件すべて要件 1〜3 を満たす。拡張ケースは未確認）
+The database holds 11,146 equations from 361 sources: large language models (LLMs)
+extracted 10,476 of them from 329 documents, and one of them generated the other 670 as reference
 sets of textbook fundamentals. The 2,838 cases fall into three families by how their answer sets
 were formed --- picked by an LLM within one source, combined across two or three sources, or
 synthesized by rule --- plus augmented copies used only for training; the 1,000 synthesized

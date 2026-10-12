@@ -19,20 +19,27 @@
 
 We built an equation database of 11,146 equations drawn from 361 sources.
 % source: unified_equations.json 実測（式 11,146、source_id 361 種）
-Of these sources, 329 are documents and contribute 10,476 equations. A large language model
-(Gemini 2.5 Pro\cite{Gemini25}) read each document and returned every numbered equation of the body
-and the appendices in \LaTeX{}, together with its symbols and their definitions, a short text that
-explains its physical meaning based on the surrounding passage, and a domain label. The remaining
-32 sources are reference equation sets that the same model generated domain by domain to cover
-textbook fundamentals; these 670 equations have no source document.
-% TODO（2026-10-12）: 抽出モデルの記述は、修論改訂の指示（本人確認待ちのため変えない）に従い変更していない。
-%   ただし同日の commit 1016cfc（日本語版報告 §3.1）が本人確認「追加した文献の抽出はClaudeを使った」を記録している:
-%   初期の 39 報は Gemini 2.5 Pro（extract_equations.py）、追加した文献は Claude（extract_equations_claude.py、版の記録なし。
-%   スクリプト既定 claude-opus-4-5-20250805、docstring は Opus 4.7）。反映するときは、次の文の "the same model"（基礎式集を
-%   生成した Gemini 2.5 Pro）と第 5 章「Implementation and Reproducibility」の "extraction (Gemini 2.5 Pro)" も合わせて直す。
+Of these sources, 329 are documents and contribute 10,476 equations. A large language model read
+each document and returned its numbered equations, including those of the appendices, in \LaTeX{},
+together with the symbols as printed and their definitions, a short text that the model wrote from
+the surrounding passage to explain the physical meaning of the equation, and a domain label.
+Gemini 2.5 Pro\cite{Gemini25} extracted the 39 documents collected early in this work, and Claude
+(Anthropic) extracted the documents added later; we kept no record of the Claude version. The
+instructions to Claude also skip purely numerical examples, single-step substitutions, and
+exercise sections. The remaining 32 sources are reference equation sets that Gemini 2.5 Pro
+generated domain by domain to cover textbook fundamentals; these 670 equations have no source
+document.
+% source: 抽出モデルは本人確認（2026-10-12、親セッション経由）「追加した文献の抽出はClaudeを使った」。初期の 39 報は
+%         Gemini 2.5 Pro（extract_equations.py）、追加した文献は Claude（extract_equations_claude.py、process_new_papers.py
+%         から実行）。Claude の版は記録がない（スクリプトの --model 既定 claude-opus-4-5-20250805 と docstring の
+%         「Claude Opus 4.7」が食い違う）ので書かない。日本語版報告 §3.1「研究の初期に集めた 39 報は Gemini 2.5 Pro で、
+%         その後に追加した文献は Claude で抽出した」と同じ。
 % source: 抽出の指示 extract_equations.py EXTRACTION_PROMPT（"all numbered equations and equations found in the
-%         appendices"、context_text は "surrounding text explaining physical meaning"）; extract_equations_claude.py
-%         （"1-3 sentences describing the physical meaning of the equation, based on its surrounding context"）
+%         appendices"、context_text は "surrounding text explaining physical meaning"、記号は印刷どおり）;
+%         extract_equations_claude.py（"numbered equations and equations referenced in the main body and appendices"、
+%         context_text は "1-3 sentences describing the physical meaning of the equation, based on its surrounding
+%         context"、"Skip equations that are purely numerical examples or single-step substitutions"、
+%         "Skip equations from exercise/problem sections"）
 % source: unified_equations.json 実測（handbook_* 以外 329 種 = 10,476 式：.pdf 328 種 10,437 式
 %         ＋技術報告 ORNL/SPR-2018/864 の 39 式。handbook_* 32 種 = 670 式、Gemini 2.5 Pro が生成：
 %         handbook_chemeng は build_equation_graph.py、他 31 種は expand_dataset.py）;

@@ -163,12 +163,11 @@ residual error at $k = 50$.
 Every experiment runs as a deterministic script: the random seed fixes the split, the model
 initialization, and the negative sampling, so a rerun reproduces the reported numbers exactly. The
 proposed method itself calls no language model at inference time. Language models appear only in
-building the data and in the external baseline --- extraction (Gemini 2.5 Pro), the descriptions of
-the synthesized cases, and the generation and equivalence judging of the external baseline --- and
-the scripts specify the model identifiers.
-% TODO（2026-10-12）: 抽出モデルの記述は Dataset.tex §4.1 の TODO と同じ理由で変更していない（commit 1016cfc の
-%   本人確認では、初期の 39 報が Gemini 2.5 Pro、追加した文献が Claude）。
-% source: 抽出 Gemini 2.5 Pro; 合成ケース説明 Anthropic Claude; 外部比較は生成
+building the data and in the external baseline: extraction (Gemini 2.5 Pro for the 39 documents
+collected first and Claude for the documents added later), the descriptions of the synthesized
+cases, and the generation and equivalence judging of the external baseline. The scripts specify
+their models, but we kept no record of the Claude version used for extraction.
+% source: 抽出は Dataset.tex §4.1 と同じ（本人確認 2026-10-12）; 合成ケース説明 Anthropic Claude; 外部比較は生成
 %         claude-sonnet-4-5-20250929・判定 claude-opus-4-8（別モデル）
 Appendix~A lists every hyperparameter, and the repository versions the scripts, the data, and the
 seeds.
