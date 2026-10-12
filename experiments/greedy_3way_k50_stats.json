@@ -4,8 +4,8 @@
  "A": {
   "n_records": {
    "static": 4594,
-   "infer": 0,
-   "train": 0
+   "infer": 4594,
+   "train": 4594
   },
   "overall": {
    "static": {
@@ -14,36 +14,84 @@
     "n_seeds": 10
    },
    "infer": {
-    "mean": null,
-    "std": null,
-    "n_seeds": 0
+    "mean": 0.7622,
+    "std": 0.0493,
+    "n_seeds": 10
    },
    "train": {
-    "mean": null,
-    "std": null,
-    "n_seeds": 0
+    "mean": 0.7646,
+    "std": 0.0512,
+    "n_seeds": 10
    }
   },
   "tests": {
    "infer_vs_static": {
-    "n_seeds": 0
+    "n_seeds": 10,
+    "mean_a": 0.7622,
+    "mean_b": 0.7429,
+    "mean_delta": 0.0193,
+    "std_delta": 0.0128,
+    "t": 4.746,
+    "p_ttest": 0.00105,
+    "cohen_dz": 1.501,
+    "p_wilcoxon": 0.00391
    },
    "train_vs_infer": {
-    "n_seeds": 0
+    "n_seeds": 10,
+    "mean_a": 0.7646,
+    "mean_b": 0.7622,
+    "mean_delta": 0.0024,
+    "std_delta": 0.0098,
+    "t": 0.765,
+    "p_ttest": 0.46402,
+    "cohen_dz": 0.242,
+    "p_wilcoxon": 0.49219
    },
    "train_vs_static": {
-    "n_seeds": 0
+    "n_seeds": 10,
+    "mean_a": 0.7646,
+    "mean_b": 0.7429,
+    "mean_delta": 0.0217,
+    "std_delta": 0.0105,
+    "t": 6.493,
+    "p_ttest": 0.00011,
+    "cohen_dz": 2.053,
+    "p_wilcoxon": 0.00391
    }
   },
   "tests_hard_X8plus": {
    "train_vs_static": {
-    "n_seeds": 0
+    "n_seeds": 10,
+    "mean_a": 0.6266,
+    "mean_b": 0.6134,
+    "mean_delta": 0.0132,
+    "std_delta": 0.0096,
+    "t": 4.362,
+    "p_ttest": 0.00182,
+    "cohen_dz": 1.379,
+    "p_wilcoxon": 0.00195
    },
    "train_vs_infer": {
-    "n_seeds": 0
+    "n_seeds": 10,
+    "mean_a": 0.6266,
+    "mean_b": 0.6272,
+    "mean_delta": -0.0006,
+    "std_delta": 0.0066,
+    "t": -0.281,
+    "p_ttest": 0.78542,
+    "cohen_dz": -0.089,
+    "p_wilcoxon": 1.0
    },
    "infer_vs_static": {
-    "n_seeds": 0
+    "n_seeds": 10,
+    "mean_a": 0.6272,
+    "mean_b": 0.6134,
+    "mean_delta": 0.0138,
+    "std_delta": 0.006,
+    "t": 7.311,
+    "p_ttest": 5e-05,
+    "cohen_dz": 2.312,
+    "p_wilcoxon": 0.00195
    }
   }
  },
