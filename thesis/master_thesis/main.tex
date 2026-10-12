@@ -106,6 +106,8 @@
 
 \newpage
 %%%%% Abstract（2026-09-07 全章本文化後に書き直し。数値は第 6 章と同じ一次データ） %%%%%
+% 2026-10-12 改訂: 結果を最良の重みの baseline との差に。「閉じた系」「閉包率がオラクルより高い」を撤回し、
+%   自由度ゼロ停止は「K を与えずに、K を与えた場合と同じ完全一致率で止まる。止まった集合は解けるとは限らない」と書いた。
 \thispagestyle{empty}
 {\huge \bf Abstract}
 \\
@@ -113,24 +115,25 @@
 \\
 \\
 \\
-Physical models underpin process design, control, and digital twins, but building one for a process outside the libraries of modeling tools requires an engineer to collect the equations scattered across many documents and to assemble them into a solvable system.
+Physical models underpin process design, control, and digital twins, but building one for a process outside the libraries of modeling tools requires an engineer to collect the equations scattered across many documents and to assemble them into a model.
 Our group aims to automate this work with an automated physical model builder (AutoPMoB).
 This thesis addresses one of its steps: given a description of the desired model and its input and output variables, present the equations likely to serve in the model, drawn from an equation database built from multiple documents; the engineer then assembles and checks the model from these candidates.
-Because a physical model is a system of equations that share variables and close with zero degrees of freedom, the value of a candidate depends on the equations presented with it, so the method judges each candidate by its relation to the equations already selected, not by its relevance to the query alone.
+Because an equation that contains a variable other than the inputs and outputs is useful only together with an equation that determines that variable, the value of a candidate depends on the equations presented with it, so the method judges each candidate by its relation to the equations already selected, not by its relevance to the query alone.
 
 We propose a two-stage retrieval method.
 The first stage narrows the database by text similarity and variable overlap, and the second stage reranks the candidates with a multilayer perceptron that reads, beside seven query--equation features, three set-aware features that compare each candidate with the equations already selected: complementarity, coherence, and domain agreement.
 A learned greedy variant selects one equation at a time, and a self-terminating criterion (DoF-stop) decides how many equations to present: it halts once the selected equations cover every output variable with no more unknowns than equations, so the method needs no answer size in advance.
-To evaluate the method, we built a database of 11,146 equations from 361 sources and 2,838 test cases, 1,000 of which are synthesized closed systems whose answers are solvable by construction, and we split the sources so that no document leaks between training and testing.
+To evaluate the method, we built a database of 11,146 equations from 361 sources and 2,838 test cases, 1,000 of which are synthesized by a rule that gives each equation an output variable of its own, and we split the sources so that no document leaks between training and testing.
 
-% source: experiments/strat_A.json / strat_B.json（0.5206→0.7429, 0.4661→0.6890）;
+% source: experiments/external_baselines_{A,B}.json tfidf__none__w40-60（0.6071 / 0.5585）;
+%         strat_A.json / strat_B.json（0.7429 / 0.6890）; kato_0831_followup_stats.json（vs_best_baseline wins 10、
+%         stage1_B_w30-70 0.7401）; stage1_weight_stats.json（0.7799）;
 %         external_baselines_stats.json（A ≤ 0.6020, B ≤ 0.5548）; llm_set_*_equiv_results.json
-%         （0.2258–0.3003）; greedy_3way_stats.json; stage1_weight_stats.json（0.7799）;
-%         dof_stop_stats.json（closed_dof 0.9363 / 0.8826 vs oracle 0.8651 / 0.7806）
-The method raises Recall@K from 0.521 to 0.743 in the mixed setting and from 0.466 to 0.689 in the synthesized-only setting, on all 10 stratified splits; BM25 and dense retrieval with E5 stay at or below 0.602 and 0.555 even at their best mixing weights, and direct generation by a large language model reaches 0.23--0.30.
+%         （0.2258–0.3003）; greedy_3way_stats.json; dof_stop_stats.json（set_exact_dof = set_exact_oracleK）
+Against classical retrieval at its best weights, the method raises Recall@K from 0.607 to 0.743 in the mixed setting and from 0.559 to 0.689 in the synthesized-only setting, on all 10 stratified splits, and a variable-weighted first stage raises it to 0.780 and 0.740; BM25 and dense retrieval with E5 stay at or below 0.602 and 0.555 even at their best mixing weights, and direct generation by a large language model reaches 0.23--0.30.
 Analyses attribute the gain to the variables that equations share, whereas topical similarity becomes redundant once the first stage has screened the candidates.
-Two interventions predicted by the analyses confirmed the mechanism: learned greedy selection recovered the saturation on the hardest cases, and a variable-weighted first stage raised Recall@K to 0.780.
-DoF-stop returned closed sets for 94\% of the cases in the mixed setting and 88\% in the synthesized-only setting, more often than an oracle told the answer size.
+Two interventions predicted by the analyses confirmed the mechanism: learned greedy selection recovered the saturation on the cases with the most equations, and the variable-weighted first stage raised the candidate coverage and, with it, Recall@K.
+Without being told the answer size, DoF-stop stopped at the same exact-match rate as selection that is told it, although the set at which it stops need not be solvable.
 
 \newpage
 %%%%% 目次 %%%%%
@@ -176,6 +179,9 @@ DoF-stop returned closed sets for 94\% of the cases in the mixed setting and 88\
 % \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
 %%%%% References（2026-08-31 拡充、2026-09-27 に SR 2 件・研究室の既往 3 件、2026-09-28 に Tangent-CFT を追加: 39件。全件を一次ページで書誌確認済み・引用順） %%%%%
+% 2026-10-12: Seborg et al. (2010)（自由度の定義、第 3 章）を追加して 40 件。第 1 章で Kato and Kano (2025) を引くようにしたため
+%   CombineEq を引用初出順の位置（DAEEquiv の次）へ移した。第 5 章で BM25/E5 の段落を LLM の段落より前にしたため
+%   E5 を ClaudeSonnet45 の前へ移した（main.aux の \citation 順と一致を確認）。
 \begin{thebibliography}{99}
 
 \bibitem{DigitalTwin}
@@ -218,6 +224,11 @@ S. Kato, C. Zhang, M. Kano.
 \ Simple algorithm for judging equivalence of differential-algebraic equation systems.
 \ {\it Scientific Reports}, {\bf 13}, 11534, 2023.
 
+\bibitem{CombineEq}
+S. Kato, M. Kano.
+\ Automated physical model building from literature sources: Combining equations based on four predefined requirements.
+\ {\it Computers \& Chemical Engineering}, {\bf 200}, 109147, 2025.
+
 \bibitem{Nagayama}
 K. Nagayama, S. Kato, M. Kano.
 \ Data Augmentation Method Utilizing Template Sentences for Variable Definition Extraction.
@@ -232,11 +243,6 @@ C. Zhang, S. Kato, M. Kano.
 S. Kato, M. Kano.
 \ Efficient physical model building algorithm using equations extracted from documents.
 \ {\it Computer Aided Chemical Engineering}, {\bf 52}, pp.151-156, 2023.
-
-\bibitem{CombineEq}
-S. Kato, M. Kano.
-\ Automated physical model building from literature sources: Combining equations based on four predefined requirements.
-\ {\it Computers \& Chemical Engineering}, {\bf 200}, 109147, 2025.
 
 \bibitem{AIFeynman}
 S.-M. Udrescu, M. Tegmark.
@@ -343,6 +349,11 @@ R. Zanibbi, D. W. Oard, A. Agarwal, B. Mansouri.
 \ Overview of ARQMath 2020: CLEF Lab on Answer Retrieval for Questions on Math.
 \ {\it Experimental IR Meets Multilinguality, Multimodality, and Interaction (CLEF 2020), Lecture Notes in Computer Science}, {\bf 12260}, pp.169-193, 2020.
 
+\bibitem{Seborg}
+D. E. Seborg, T. F. Edgar, D. A. Mellichamp, F. J. Doyle III.
+\ {\it Process Dynamics and Control}, 3rd edition.
+\ John Wiley \& Sons, 2010.
+
 \bibitem{Hangos}
 K. M. Hangos, I. T. Cameron.
 \ {\it Process Modelling and Model Analysis}.
@@ -352,6 +363,11 @@ K. M. Hangos, I. T. Cameron.
 G. Comanici, E. Bieber, M. Schaekermann, et al.
 \ Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities.
 \ arXiv:2507.06261, 2025.
+
+\bibitem{E5}
+L. Wang, N. Yang, X. Huang, et al.
+\ Text Embeddings by Weakly-Supervised Contrastive Pre-training.
+\ arXiv:2212.03533, 2022.
 
 \bibitem{ClaudeSonnet45}
 Anthropic.
@@ -370,11 +386,6 @@ Anthropic.
 \ Claude Fable 5.1.
 \ \url{https://www.anthropic.com/claude/fable}.
 \ (Accessed on 2026/09/07).
-
-\bibitem{E5}
-L. Wang, N. Yang, X. Huang, et al.
-\ Text Embeddings by Weakly-Supervised Contrastive Pre-training.
-\ arXiv:2212.03533, 2022.
 
 \end{thebibliography}
 

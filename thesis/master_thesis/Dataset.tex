@@ -10,23 +10,36 @@
 %   document を source に改めた: as-published → single-source, cross-document → cross-source,
 %   Documents spanned → Sources spanned。cross-source の「共有変数でつなぐ」も 189 件で成り立たないので訂正。
 % 数値はすべて一次データ（unified_equations.json, training_cases.json）から実測。
+% 2026-10-12 改訂（8/31 報告への加藤先生の注釈の反映）: §4.2 に正解集合の要件確認（1,823 件すべて要件 1〜3 を
+%   満たす。91 件は完全マッチングなし）と別出典の同一式（386/3,132）を追記。抽出の指示どおり、文脈テキストを
+%   「周辺の文」から「LLM が周辺の本文をもとに書いた物理的意味の説明」に訂正。「難しい部分」「solvable by
+%   construction」「difficulty-related」の語をやめた（注釈 #43, #48）。
 % ============================================================
 \section{Equation Database Construction}
 
 We built an equation database of 11,146 equations drawn from 361 sources.
 % source: unified_equations.json 実測（式 11,146、source_id 361 種）
 Of these sources, 329 are documents and contribute 10,476 equations. A large language model
-(Gemini 2.5 Pro\cite{Gemini25}) read each document and returned every equation in the text
-together with its symbols, the sentences around it, and a domain label. The remaining 32 sources
-are reference equation sets that the same model generated domain by domain to cover textbook
-fundamentals; these 670 equations have no source document.
+(Gemini 2.5 Pro\cite{Gemini25}) read each document and returned every numbered equation of the body
+and the appendices in \LaTeX{}, together with its symbols and their definitions, a short text that
+explains its physical meaning based on the surrounding passage, and a domain label. The remaining
+32 sources are reference equation sets that the same model generated domain by domain to cover
+textbook fundamentals; these 670 equations have no source document.
+% TODO（2026-10-12）: 抽出モデルの記述は、修論改訂の指示（本人確認待ちのため変えない）に従い変更していない。
+%   ただし同日の commit 1016cfc（日本語版報告 §3.1）が本人確認「追加した文献の抽出はClaudeを使った」を記録している:
+%   初期の 39 報は Gemini 2.5 Pro（extract_equations.py）、追加した文献は Claude（extract_equations_claude.py、版の記録なし。
+%   スクリプト既定 claude-opus-4-5-20250805、docstring は Opus 4.7）。反映するときは、次の文の "the same model"（基礎式集を
+%   生成した Gemini 2.5 Pro）と第 5 章「Implementation and Reproducibility」の "extraction (Gemini 2.5 Pro)" も合わせて直す。
+% source: 抽出の指示 extract_equations.py EXTRACTION_PROMPT（"all numbered equations and equations found in the
+%         appendices"、context_text は "surrounding text explaining physical meaning"）; extract_equations_claude.py
+%         （"1-3 sentences describing the physical meaning of the equation, based on its surrounding context"）
 % source: unified_equations.json 実測（handbook_* 以外 329 種 = 10,476 式：.pdf 328 種 10,437 式
 %         ＋技術報告 ORNL/SPR-2018/864 の 39 式。handbook_* 32 種 = 670 式、Gemini 2.5 Pro が生成：
 %         handbook_chemeng は build_equation_graph.py、他 31 種は expand_dataset.py）;
 %         processed_pdfs.json は 339 件処理済み。2026-09-28 訂正: 旧記載「PDF 328 種・基礎式集 33 種
 %         709 式」は ORNL 報告を基礎式集に数えていた
 Each database entry holds the \LaTeX{} expression of the equation, its variable set, its
-surrounding text, its source, and its domain label. The database grew from 3,244 to 11,146
+context text, its source, and its domain label. The database grew from 3,244 to 11,146
 equations during this work, and the added documents span engineering fields beyond chemical
 engineering.
 
@@ -57,7 +70,7 @@ evaluation families and one training-only family, and Table~\ref{tab:families} s
 We name the families by where their equations come from and how their ground truth was formed.
 A language model chose the ground truth of the single-source family. We gave Gemini 2.5 Pro a
 catalog that listed, for each database equation, only its identifier, source, domain label, and
-variable symbols --- neither the equation nor its surrounding text --- and asked for cases whose
+variable symbols --- neither the equation nor its context text --- and asked for cases whose
 equations determine the outputs from the inputs and are ``sufficient and minimal.'' A
 degree-of-freedom check then kept only the cases whose equations, once the inputs are given, have
 exactly as many unknowns as equations. The ground truth is therefore the set that the language
@@ -69,9 +82,10 @@ equation, and 61 draw on the generated reference sets rather than on documents.
 %         正解式がすべて handbook_* の件が 61 件）。例: core_020_v1 は Marlin の教科書が 5 式
 %         (14.1)-(14.5) で「DOF = 5 - 5 = 0」と書く系から (14.4) の 1 式だけを正解にしている
 The cross-source family combines equations of two or three sources. An algorithm formed 500 of its
-cases by pairing equations that share at least two variables; the other 231 are input--output
-variants of 33 combinations that an LLM coding assistant wrote and a degree-of-freedom check
-verified, and in 189 of them the equations share no variable. The synthesized family grows each
+cases by pairing equations that share at least two variables. The other 231 are 33 combinations
+that an LLM coding assistant wrote and a degree-of-freedom check verified, together with 198
+variants of them whose input and output variables were reselected; in 189 of these 231 the
+equations share no variable. The synthesized family grows each
 ground truth by rule to a prescribed size (Section~4.3).
 % source: generate_multisource_v3.py（multisource_v3 500 件、共有変数 2 個以上: 実測 2 個 398・3 個 92・
 %         4 個以上 10）; generate_multisource_cases.py（multisource_original 33 件、docstring「Claude が
@@ -96,7 +110,7 @@ Family & How the ground truth was defined & \begin{tabular}[c]{@{}c@{}}Cases\end
 Single-source  & A language model picks, from one source, a set & 92 & 1.34 (4) & 1.01 \\
                & \quad it judges sufficient and minimal & & & \\
 Cross-source   & We combine equations of two or three sources & 731 & 2.03 (3) & 2.02 \\
-Synthesized    & We grow a closed system to a prescribed size $X$ & 1{,}000 & 5.50 (10) & 1.10 \\
+Synthesized    & We grow a set by rule to a prescribed size $X$ & 1{,}000 & 5.50 (10) & 1.10 \\
 \midrule
 Augmented      & We perturb the I/O variables or paraphrase the & 1{,}015 & 1.57 (4) & 1.02 \\
 (training only)& \quad description of a case above & & & \\
@@ -113,8 +127,24 @@ The synthesized family is also by far the largest in answer size, and it carries
 set selection: 90.8\% of the 1,823 evaluation cases need two or more equations, and they need 3.90
 on average.
 % source: 実測（設定A 1,823件: K>=2 が 90.8\%、平均 K = 3.90。全 2,838 件では K>=2 が 74.6\%）
-We exclude the augmented family from every evaluation, because perturbed copies of a case inflate
-the baseline and hide the difficulty that motivates the method (Section~5.1).
+We exclude the augmented family from every evaluation, because perturbed copies of a case are
+nearly identical to the case and inflate the baseline (Section~5.1).
+
+All 1,823 evaluation ground truths meet requirements 1--3 of Section~\ref{sec:formulation};
+requirement~4 cannot be checked, because the database does not mark which variables are constants.
+Requirements 1--3 only count variables and equations, however. In 91 cross-source ground truths
+(5.0\% of the evaluation cases), one equation contains input variables only, so the unknowns cannot
+be assigned one to one to the equations, and some unknowns stay undetermined once the inputs are
+given; 87 of the 91 are variants with reselected input and output variables. Standard equations
+also recur across documents: 386 of the 3,132 distinct ground-truth equations have an identical
+\LaTeX{} string, ignoring white space and spacing commands, in another source, and
+Section~\ref{sec:metrics} explains how the evaluation counts them.
+% source: experiments/kato_0831_followup_stats.json gt_checks（by_family: single/cross/synth すべてで
+%         req1・req2・req3 = n（92/731/1,000）、perfect_matching は cross 640/731 → 91 件 = 91/1,823 = 5.0%;
+%         gt_equations 3,132、identical_latex_in_other_source 386 = 12.3%）。91 件の内訳（multisource_random_io 87、
+%         multisource_v3 4）と「91 件すべてで、変数がすべて入力変数の正解式を含む」は同じ判定ロジック
+%         （analyze_kato_0831_followup.py gt_checks）で training_cases.json から数え直した（2026-10-12、読み取りのみ）。
+%         同一文字列の判定は \left \right \, \; \! \quad と空白を除いた LaTeX の一致。
 
 Two properties of the construction limit what the experiments can claim, and we record them here.
 First, in the cross-source and synthesized families the number of ground-truth equations equals
@@ -122,7 +152,7 @@ the number of output variables in every case, and in the single-source family it
 92.4\% of the cases.
 % source: 実測（K == |O| の割合: single-source 92.4\%、cross-source 100\%、synthesized 100\%）
 Predicting the answer size from the query is therefore close to trivial in this dataset, so
-Section~\ref{sec:dofstopresults} evaluates DoF-stop on closure and set quality rather than on size prediction.
+Section~\ref{sec:dofstopresults} evaluates DoF-stop on set quality rather than on size prediction.
 Second, every case takes its input and output variables from the symbols of its ground-truth
 equations, so a query and its answer share one notation by construction.
 % source: 実測（入出力変数 ⊆ 正解式の変数記号の和集合: 4 族とも 100\%）;
@@ -130,13 +160,15 @@ equations, so a query and its answer share one notation by construction.
 
 \section{Synthesized Case Generation}
 
-Our earlier cases were biased toward small and purely algebraic systems, so we regenerated the hard
-part of the dataset as differential--algebraic systems that are solvable by construction. The
-procedure, proposed by Mr.~Kato, starts from an ordinary differential equation and takes its
-differentiated variable as an output. It then repeatedly adds an equation that shares a non-output
-variable with the current set, and it stops at the target size $X$. We accept only square systems,
-in which the number of unknowns equals the number of equations, and each equation contributes an
-output variable of its own, so every unknown can be matched to its own equation.
+Our earlier cases were biased toward small and purely algebraic equation sets, so we generated
+cases with more equations, mixing differential and algebraic equations, by a rule. The procedure,
+proposed by Mr.~Kato, starts from an ordinary differential equation and takes its differentiated
+variable as an output. It then repeatedly adds an equation that contains a non-output variable of
+the current set, preferring the same source, and takes a new output variable from the added
+equation; it stops at the target size $X$, the number of equations the ground truth should hold,
+and declares every variable that is not an output an input. The resulting sets have as many
+unknowns as equations once the inputs are given, and each equation contributes an output variable
+of its own, so every unknown can be matched to its own equation.
 % source: generate_dae_cases.py L302-330（追加式ごとに、その式の変数から出力を 1 つ選ぶ。入力＝残りの変数）;
 %         実測（2026-09-29）: 合成 1,000 件すべてで式と未知変数の完全マッチングが存在（Hopcroft--Karp）
 % source: docs/progress_report_2026-06-14_seminar.tex §5（手順ボックス）; 実装 generate_dae_cases.py
@@ -144,29 +176,35 @@ We generated 100 cases for each $X = 1, \dots, 10$, giving 1,000 cases. A large 
 (Anthropic Claude) writes only the natural-language description; the equation set, the input
 variables, and the output variables all follow from the rule-based procedure.
 
-A continuous stirred-tank reactor gives the smallest interesting example: the mass-balance ordinary
-differential equation, the reaction-rate equation $r_A = k C_A$, and the Arrhenius equation
-$k = A \exp(-E / RT)$ form a closed system of three equations. Appendix~A shows one generated case
-in full. Because the construction guarantees that a solvable answer exists, a failure to retrieve
-it is a failure of the method rather than of the dataset.
+A continuous stirred-tank reactor gives the smallest interesting example: once the inputs are
+given, the mass-balance ordinary differential equation, the reaction-rate equation $r_A = k C_A$,
+and the Arrhenius equation $k = A \exp(-E / RT)$ determine the three unknowns $C_A$, $r_A$, and $k$,
+one equation each. Appendix~A shows one generated case in full. Because every synthesized ground
+truth meets requirements 1--3 and admits this one-to-one assignment, a failure to retrieve it is a
+failure of the method rather than of the dataset.
 
 \section{Stratified Source-disjoint Splitting}
 
-We assign each source wholly to training, validation, or testing, in roughly a $6{:}2{:}2$
-ratio. A random split of cases would leak answers, because a paraphrased copy of a case could land
-in training while the case itself lands in testing, and both share the same ground-truth equations.
+We assign each case to the source that contributes most of its ground-truth equations, and we
+assign each source wholly to training, validation, or testing, in roughly a $6{:}2{:}2$ ratio; this
+thesis does not use the validation sources. A random split of cases would leak answers, because a
+paraphrased copy of a case could land in training while the case itself lands in testing, and both
+share the same ground-truth equations.
 % source: docs/progress_report_2026-06-14_seminar.tex §4; 実装 set_aware_reranker.py
-%         stratified_src_split
+%         stratified_src_split; 検証用の出典を使っていないことは日本語版報告 §3.3（2026-10-12）と同じ
 Source-disjoint assignment removes that leak, but it introduces a new problem: a random assignment
-of sources can put the hard cases on one side and make the score depend on the draw rather than on
-the method.
+of sources can put the cases with many equations on one side and make the score depend on the draw
+rather than on the method.
 
-We therefore stratify the assignment. Among 400 random candidate assignments we select the one that
-minimizes the summed $L_1$ distance between the training and test distributions of four
-difficulty-related quantities: the number of equations, the number of input variables, the number of
-output variables, and the number of sources spanned. Every experiment repeats over the same 10
-random seeds and reports the mean and the spread across them. Results therefore measure
-generalization to unseen sources rather than memorization of seen ones.
+We therefore stratify the assignment. Among 400 random assignments of the sources we select the one
+that minimizes the summed $L_1$ distance between the training and test frequency distributions, as
+proportions, of four quantities per case: the number of ground-truth equations, the number of input
+variables, the number of output variables, and the number of sources spanned. Every experiment
+repeats over the same 10 random seeds and reports the mean and the standard deviation across them.
+A seed fixes the 400 candidate assignments, and hence the selected split, as well as the
+initialization of the model and the sampling of negatives, so the 10 seeds yield 10 different
+splits. Results therefore measure generalization to unseen sources rather than memorization of
+seen ones.
 
 \begin{figure}[H]\centering
 \includegraphics[width=0.6\linewidth]{figures/fig_dataset.pdf}
@@ -179,7 +217,7 @@ equations. The evaluation set (1,823 cases) excludes the augmented family.}
 \begin{comment}
 \begin{figure}[H]\centering
 \includegraphics[width=0.6\linewidth]{figures/fig_split_balance.pdf}
-\caption{Stratified source-disjoint split: four difficulty-related distributions match between train
+\caption{Stratified source-disjoint split: the distributions of four case properties match between train
 (blue) and test (orange); one seed shown.}
 \label{fig:split}
 \end{figure}

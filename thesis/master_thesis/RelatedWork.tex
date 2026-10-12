@@ -37,6 +37,9 @@
 %   (i) §2.5 の "a different problem ... calls for its own task definition" は「断定していいか疑問。それを示すための研究で
 %       1 つ論文が書けそう」との指摘で削除し、調べた範囲の事実（該当する評価課題が見当たらない）で止めた。
 % SR の記述は各原典のアブストラクトで確認（Schmidt & Lipson 2009、SINDy 2016、AI Feynman 2020、ALAMO 2014、LLM-SR 2025）。
+% 2026-10-12 改訂（第 3 章の問題設定の書き直しに合わせた最小限の修正）: 式の文脈は「出典で式を囲む文章」ではなく
+%   抽出 LLM が式の前後の本文をもとに書いた説明（抽出の指示どおり）。§2.5 の「自由度ゼロ」を「入力を与えると自由度が残らない」に、
+%   "form a system" を "be used together" に改めた（自由度＝変数の数 − 式の数、第 3 章）。
 % ============================================================
 \section{Component Technologies for Automated Physical Model Building}
 \label{sec:rw-autopmob}
@@ -66,7 +69,8 @@ computation; on eight case studies, it built all the desired models\cite{Combine
 This study differs from the combination method in its input and output. The combination method
 takes equations and their variables and returns every combination that meets the requirements.
 This study also takes a description of the desired model, reads the context of each equation ---
-the text that surrounds the equation in its source --- and ranks the equations that the
+a text that the extracting language model wrote from the passage around the equation --- and ranks
+the equations that the
 description asks for above the rest; it scores each candidate against the equations already
 selected and can stop once the selected equations cover every output variable with no more unknowns than
 equations (Chapter~3). Narrowing the database
@@ -184,8 +188,8 @@ NTCIR-12 MathIR task, held at the NII Testbeds and Community for Information acc
 corpora\cite{NTCIR12}, and the Answer Retrieval for Questions on Math (ARQMath) lab evaluates the
 retrieval of answers and of formulas for mathematical questions from a
 community-question-answering archive\cite{ARQMath}. These tasks retrieve single formulas ranked by
-similarity to the query. Our method presents equations meant to form a system together
---- to cover the requested outputs and leave zero degrees of freedom --- so the value of one equation
-depends on the equations presented with it. We found no formula-search benchmark that imposes this
+similarity to the query. Our method presents equations meant to be used together --- to contain
+the requested outputs and to leave no degree of freedom once the inputs are given --- so the value
+of one equation depends on the equations presented with it. We found no formula-search benchmark that imposes this
 joint condition. Chapter~6 shows a consequence of the joint condition: after the first stage narrows the candidates, topical similarity becomes redundant, and
 the improvement comes from features that read the variable structure of the selected set.

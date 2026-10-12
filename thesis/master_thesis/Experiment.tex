@@ -4,78 +4,106 @@
 % 用語は §4.2 に合わせた（single-source / cross-source / synthesized。2026-09-28 に as-published /
 %   cross-document から訂正）。
 % 数値の一次ソースは各段落の % source: コメントに記載。
+% 2026-10-12 改訂（8/31 報告への加藤先生の注釈の反映）: 比較手法の重みを 12 通り比べ、最良の (0.4, 0.6) を
+%   主比較に（注釈 #52）。提案手法の第 1 段の重み (0.7, 0.3) と (0.3, 0.7) を併記。LLM 直接生成の生成本数・判定の
+%   範囲・n=48 の理由を明記（注釈 #58）。正解の判定（ID と等価判定）を比較手法の段落から分け（注釈 #53）、
+%   指標を式で定義（注釈 #55）。「閉包率」を停止条件の充足率に改めた（注釈 #33）。
 % ============================================================
 \section{Evaluation Settings}
 
 We evaluate on two settings, and both exclude the augmented family of Section~4.2. Setting~A, the
 mixed setting, holds the 1,823 single-source, cross-source, and synthesized cases. Setting~B holds
-the 1,000 synthesized cases alone, whose answer sets are the largest and whose retrieval is
-therefore the hardest.
+the 1,000 synthesized cases alone and thus evaluates only cases with many ground-truth equations:
+5.50 on average, against 3.90 in Setting~A.
+% source: Dataset.tex 表 tab:families と同じ実測（synthesized 平均 5.50、設定 A 平均 3.90）
 
-Excluding the augmented cases matters enough to justify. When we include them, the baseline rises
-from 0.521 to 0.622 while the proposed method rises from 0.743 to 0.778, so the apparent gap shrinks
-from $+0.222$ to $+0.156$.
+Excluding the augmented cases matters enough to justify. When we include them, the baseline with
+the weights $(0.7, 0.3)$ rises from 0.521 to 0.622 while the proposed method rises from 0.743 to
+0.778, so the apparent gap shrinks from $+0.222$ to $+0.156$.
 % source: experiments/strat_full.json（baseline 0.6218, reranker-10S 0.7777）vs strat_A.json
-%         （baseline 0.5206, reranker-10S 0.7429）
+%         （baseline 0.5206, reranker-10S 0.7429）。いずれも第 1 段の重み (0.7, 0.3)
 Perturbed copies of a case are easy, because a paraphrase leaves the variables untouched and a
 variable swap leaves the description untouched; including them measures the augmentation rather than
 the method. Every result in Chapter~6 uses the stratified source-disjoint split of Section~4.4 with
 the same 10 random seeds.
 
 \section{Compared Methods}
+\label{sec:compared}
 
-We compare the proposed method against one internal and three external baselines. The internal baseline
-is classical information retrieval: it ranks the whole database by the Stage-1 score of
-Eq.~\eqref{eq:stage1}, without a learned model and without a candidate window. The proposed method
-is reranker-10S, which reranks the top $k = 50$ candidates with the ten features of
-Table~\ref{tab:features}; reranker-7, which drops the three set-aware features, isolates their
-contribution. Sections~\ref{sec:greedyresults} and \ref{sec:dofstopresults} add the two sequential variants and the self-terminating variant
-of Sections~\ref{sec:seq} and \ref{sec:dofstop}.
+We compare the proposed method against the classical information-retrieval baseline, two retrieval
+baselines with stronger text scorers, and direct generation by a large language model. The classical
+baseline ranks the whole database by the Stage-1 score of Eq.~\eqref{eq:stage1}, without a learned
+model and without a candidate window. Its weights decide how well it ranks, so we compare 12 weight
+pairs $(w_{\mathrm{t}}, w_{\mathrm{v}})$ from $(1.0, 0.0)$ to $(0.0, 1.0)$
+(Table~\ref{tab:weights} in Appendix~A) and use the pair with the highest mean Recall@K over the
+10 splits, $(0.4, 0.6)$ in both settings, for the main comparison; choosing the weights on the test
+splits favors the baseline. We also report the baseline with the weights $(0.7, 0.3)$ of the
+proposed method's first stage, which isolates what the second stage adds to the same first-stage
+score.
+% source: experiments/external_baselines_{A,B}.json results.tfidf__none__w*（12 重み × 10 seed。Recall@K 最大は
+%         両設定とも w40-60: A 0.6071, B 0.5585。日本語版報告 付録 A と同じ）
 
-The external baseline asks a large language model (Claude Sonnet 4.5\cite{ClaudeSonnet45}) to write
-the equations directly. Given the same
-query, the model generates the equations it judges necessary; a second, more capable model
-(Claude Opus 4.8\cite{ClaudeOpus48}) then
-decides which generated equation is mathematically equivalent to which ground-truth equation, and
-we score the resulting matches with the same metrics. Equivalence judging is expensive, so this
-comparison uses a uniform sample of 48 cases in Setting~A and 50 cases in Setting~B.
-% source: experiments/llm_set_A_equiv_results.json（n=48）, llm_set_B_equiv_results.json（n=50）;
-%         生成 claude-sonnet-4-5-20250929（evaluate_llm_dae.py --model 指定。commit 5fbcf65 の
-%         メッセージ「生成はSonnet 4.5」で確認）, 判定 claude-opus-4-8（evaluate_llm_equiv.py）。
-%         旧記載「生成と判定が同一モデル」は誤りのため 2026-08-31 に訂正。
-Because the judge is a different model from the generator, the equivalence decision does not
-depend on the generator recognizing its own phrasing. To check the judge itself, a second judge
-of a later generation, Claude Fable 5.1\cite{ClaudeFable51}, re-judged all 608 equation pairs of
-the three samples (Settings A and B and the full collection) with the identical prompt. The two
-judges agree on 88.0\% of the pairs (Cohen's $\kappa = 0.72$), and the disagreements run one
-way: of the 73 pairs they decide differently, the first judge accepts 71 that the second rejects.
-Section~\ref{sec:overall} therefore reports the language-model scores under both judges, and
-Table~\ref{tab:overall} carries the more generous first-judge values. The comparison still has
-limits --- about 50 cases per setting, machine-judged equivalence, and prompts we did not tune
---- and Section~\ref{sec:limitations} records them.
-% source: experiments/judge_agreement_stats.json pooled（n_pairs 608, matched agree_rate 0.880,
-%         kappa 0.721, table ref_only 71 / new_only 2）; 第 2 判定器 judge_second_opinion.py
-%         （claude-fable-5-1, adaptive thinking, fallbacks なし, 拒否 0, 欠測 0）
+The proposed method is reranker-10S, which reranks the top $k = 50$ candidates of Stage~1 with the
+ten features of Table~\ref{tab:features} and a reference set of $K_{\mathrm{ref}} = 5$ equations;
+reranker-7, which drops the three set-aware features, isolates their contribution. We report two
+first-stage weightings: $(0.7, 0.3)$, which every analysis in
+Sections~\ref{sec:bycharacteristics}--\ref{sec:erroranalysis} uses, and $(0.3, 0.7)$, the best of
+the four weightings that Section~\ref{sec:stage1redesign} compares.
+Sections~\ref{sec:greedyresults} and \ref{sec:dofstopresults} add the two sequential variants and
+DoF-stop of Sections~\ref{sec:seq} and \ref{sec:dofstop}, with the window widened to $k = 200$ for
+the reason given in Section~\ref{sec:greedyresults}.
+% source: set_aware_reranker.py（--top-k 既定 50, K_REF=5 L95）; run_greedy_3way*.sh / run_dof_stop.sh（TOPK=200）
 
-Two more external baselines test whether a stronger text scorer alone would close the gap. The
-first replaces the TF-IDF cosine of Eq.~\eqref{eq:stage1} with BM25\cite{BM25} ($k_1 = 1.5$,
+Two retrieval baselines test whether stronger text evidence alone would close the gap. The first
+replaces the TF-IDF cosine of Eq.~\eqref{eq:stage1} with BM25\cite{BM25} ($k_1 = 1.5$,
 $b = 0.75$, word unigrams); the second replaces it with the cosine between dense embeddings of
 the query and of each equation text from the sentence encoder E5\cite{E5}
 (\texttt{intfloat/e5-base-v2}: 12 layers, 768-dimensional embeddings, mean pooling), which was
 trained by contrastive learning for retrieval. Because BM25 scores are unbounded and E5 cosines
 crowd into a narrow band, we rescale each text score to $[0, 1]$ over the database for every
-query (min--max normalization) before mixing it with the variable-overlap term at the weights
-$(0.7, 0.3)$ of the baseline. We report each scorer alone and mixed, and also at the
-variable-heavy mixture $(0.3, 0.7)$ that Section~\ref{sec:stage1redesign} finds best for the
-classical baseline. The dense query is the case description with the input and output variable symbols appended; a
-variant uses the description alone. Both baselines rank the whole database and train nothing, so they
-ask the same question as the classical baseline with stronger text evidence.
+query (min--max normalization) before mixing it with the variable-overlap term. We sweep the same
+12 weight pairs as for the classical baseline and report each scorer at its best pair. The dense
+query is the case description with the input and output variable symbols appended; a variant uses
+the description alone. Both baselines rank the whole database and train nothing.
 % source: external_baselines.py（BM25 は自前実装: Lucene 形式 IDF ln(1+(N-n+0.5)/(n+0.5))、
 %         E5 は transformers で平均プーリング＋L2 正規化、接頭辞 query:/passage:、
-%         最大 512 トークン、層数・次元は HF の config.json）。
+%         最大 512 トークン、層数・次元は HF の config.json）。重みは config.weights の 12 通り（tfidf と同じ）。
 %         結果 experiments/external_baselines_{A,B}.json、検定 external_baselines_stats.json。
 
+The language-model baseline asks a large language model (Claude Sonnet 4.5\cite{ClaudeSonnet45})
+to write the equations directly. Given the description and the input and output variables, the
+model lists the governing equations needed to determine the outputs in \LaTeX{}, one per line and
+ordered from most to least essential, up to $\max(12, K + 4)$ equations; it wrote 11.6 equations
+per case on average. Judging the generated equations is expensive (Section~\ref{sec:metrics}), so
+this comparison evaluates a uniform sample of 50 cases per setting once.
+% source: evaluate_llm_dae.py（PROMPT "ordered from most to least essential, up to {n} equations"、
+%         n = max(12, X + 4)、X = 正解式の数）; 生成 claude-sonnet-4-5-20250929（--model 指定。commit 5fbcf65 の
+%         メッセージ「生成はSonnet 4.5」で確認）; experiments/llm_set_{A,B}_predictions.json（各 50 件、生成本数の
+%         平均 A 11.58・B 11.68、2 標本を合わせて 11.63）
+
 \section{Evaluation Metrics}
+\label{sec:metrics}
+
+A retrieved equation is correct when its identifier belongs to the ground truth $\mathcal{R}_q$
+(Section~\ref{sec:formulation}). This judgment is strict for the retrieval methods: an equation
+identical to a correct one but taken from another source counts as incorrect, although it would
+serve the engineer equally well, and 386 of the 3,132 ground-truth equations have such a twin
+(Section~4.2). LLM direct generation writes equations that are not in the database, so identifiers
+cannot judge it. A different model, Claude Opus 4.8\cite{ClaudeOpus48}, therefore reads the first
+12 generated equations of a case and decides which of them is mathematically equivalent to which
+ground-truth equation, and a generated equation judged equivalent counts as correct; because the
+judge differs from the generator, the decision does not depend on the generator recognizing its
+own phrasing. The judge returned no decision for 2 of the 50 sampled cases in Setting~A, which
+leaves 48 cases there and 50 in Setting~B. To check the judge, a second judge of a later
+generation, Claude Fable 5.1\cite{ClaudeFable51}, re-judged all 608 equation pairs of the three
+samples (Settings A and B and the full collection) with the identical prompt. The two judges agree
+on 88.0\% of the pairs (Cohen's $\kappa = 0.72$), and the disagreements run one way: of the 73
+pairs they decide differently, the first judge accepts 71 that the second rejects. We have neither
+compared these judgments with human judgments nor measured how they vary across repeated runs.
+% source: evaluate_llm_equiv.py（gen[:12]、judge が None のケースは除外）; llm_set_A_equiv_results.json n_cases 48
+%         （判定なし dae_X10_030・dae_X3_026。両者とも正解式・生成式あり）, llm_set_B_equiv_results.json n_cases 50;
+%         experiments/judge_agreement_stats.json pooled（n_pairs 608, agree_rate 0.880, kappa 0.721,
+%         ref_only 71 / new_only 2）; 第 2 判定器 judge_second_opinion.py（claude-fable-5-1）
 
 The primary metric matches the evaluation window to the answer size of each case. For a query with
 ground truth $\mathcal{R}_q$ we take the top $|\mathcal{R}_q|$ equations of the ranking and report
@@ -85,26 +113,50 @@ the fraction of $\mathcal{R}_q$ they contain,
     = \frac{|\mathcal{R}_q \cap \mathrm{Top}_{|\mathcal{R}_q|}(q)|}{|\mathcal{R}_q|} ,
   \label{eq:rk}
 \end{equation}
-averaged over cases. Because the window equals the answer size, precision and recall coincide, and
-Eq.~\eqref{eq:rk} is the $R$-precision of the information-retrieval literature\cite{Manning}.
+averaged over the test cases of a split. Because the window equals the answer size, precision and
+recall coincide, and Eq.~\eqref{eq:rk} is the $R$-precision of the information-retrieval
+literature\cite{Manning}.
 % source: evaluate_multi_eq.py case_metrics（recall_at_n_correct = precision_at_C, R-Precision）
 A fixed window would distort the comparison across our case families: Recall@3 caps a case with
 eight ground-truth equations at $3/8$ and rewards a case with one ground-truth equation for two
-wrong guesses, and our answer sizes range from 1 to 10. We report mean average precision (MAP) and
-Recall@20 as secondary metrics, the latter because a human reviewing 20 candidates is a realistic
-use of the method.
+wrong guesses, and our answer sizes range from 1 to 10. Two secondary metrics complete the picture.
+Recall@20 $= |\mathcal{R}_q \cap \mathrm{Top}_{20}(q)| / |\mathcal{R}_q|$ reflects an engineer who
+reviews 20 candidates. Mean average precision (MAP) averages over cases
+\begin{equation}
+  \mathrm{AP}(q) = \frac{1}{|\mathcal{R}^{*}_q|} \sum_{e \in \mathcal{R}^{*}_q} P(e) ,
+  \label{eq:ap}
+\end{equation}
+where $\mathcal{R}^{*}_q$ holds the ground-truth equations that appear in the ranking, $P(e)$ is the
+fraction of ground-truth equations among the equations ranked at or above $e$, and
+$\mathrm{AP}(q) = 0$ when $\mathcal{R}^{*}_q$ is empty; MAP shows how closely the correct equations
+crowd at the top. The baselines rank the whole database, so $\mathcal{R}^{*}_q = \mathcal{R}_q$ for
+them, whereas a reranker ranks only its $k$ candidates, so its MAP leaves out the ground-truth
+equations that Stage~1 misses and favors the reranker. Counting each missing equation as zero
+precision, the standard definition, leaves the baselines unchanged and lowers the MAP of the
+proposed method from 0.863 to 0.796 in Setting~A and from 0.832 to 0.715 in Setting~B.
+% source: evaluate_multi_eq.py case_metrics L98-105（ap_values は rank < miss_rank の正解式だけ、np.mean で平均）。
+%         標準定義との比較は保存済みの per-case の ranks から再計算（2026-10-12、読み取りのみ。AP_std = Σ k/r_k / K）:
+%         strat_A.json reranker-10S 0.8629 → 0.7960、strat_B_percase.json reranker-10S 0.8321 → 0.7149;
+%         baseline（strat_A/B_percase baseline、xk50/baseline40_*）は全 DB を並べ rank < 10,000 なので両定義で同じ。
+For LLM direct generation, Recall@K counts the ground-truth equations that have an equivalent among
+the first $K$ generated equations, a rank-free coverage counts those with an equivalent anywhere
+among the first 12, and MAP and Recall@20 are not computed. The candidate coverage of
+Section~\ref{sec:stage1} is $|\mathcal{R}_q \cap C_q| / |\mathcal{R}_q|$ for the candidate set
+$C_q$.
 
-Self-terminating retrieval returns a set rather than a ranking, so we score it with set-level
-measures: the exact-match rate of the returned set against $\mathcal{R}_q$, the set $F_1$, and the
-closure rate, which is the fraction of returned sets that satisfy the closure test of
-Eq.~\eqref{eq:closed}. We compare DoF-stop against an oracle that is told the answer size and takes
-the top $|\mathcal{R}_q|$ equations.
+Self-terminating retrieval returns a set $S$ rather than a ranking, so we score it with set-level
+measures: the exact-match rate, the fraction of cases with $S = \mathcal{R}_q$; the set $F_1$,
+$2|S \cap \mathcal{R}_q| / (|S| + |\mathcal{R}_q|)$ averaged over cases; and the stop-condition
+rate, the fraction of cases whose returned set meets conditions (a) and (b) of
+Eq.~\eqref{eq:stopcond}. We compare DoF-stop against an oracle that is told the answer size and
+takes the top $|\mathcal{R}_q|$ equations of the same greedy selection.
 
 One asymmetry between the compared methods deserves a note. The baseline ranks the whole database, so
 nothing bounds its recall, whereas every reranker sees only the $k$ candidates of Stage~1 and cannot
-exceed their coverage --- 0.920 at $k = 50$ (Section~\ref{sec:stage1}). The reported gains are
-therefore gains despite a handicap, and Section~\ref{sec:erroranalysis} shows that the candidate window, not
-the reranker, causes most of the residual error.
+exceed their coverage --- 0.920 at $k = 50$ under the weights $(0.7, 0.3)$
+(Section~\ref{sec:erroranalysis}). The reported gains are therefore gains despite a handicap, and
+Section~\ref{sec:erroranalysis} shows that the candidate window, not the reranker, causes most of the
+residual error at $k = 50$.
 
 \section{Implementation and Reproducibility}
 
@@ -113,7 +165,9 @@ initialization, and the negative sampling, so a rerun reproduces the reported nu
 proposed method itself calls no language model at inference time. Language models appear only in
 building the data and in the external baseline --- extraction (Gemini 2.5 Pro), the descriptions of
 the synthesized cases, and the generation and equivalence judging of the external baseline --- and
-each call pins a model identifier.
+the scripts specify the model identifiers.
+% TODO（2026-10-12）: 抽出モデルの記述は Dataset.tex §4.1 の TODO と同じ理由で変更していない（commit 1016cfc の
+%   本人確認では、初期の 39 報が Gemini 2.5 Pro、追加した文献が Claude）。
 % source: 抽出 Gemini 2.5 Pro; 合成ケース説明 Anthropic Claude; 外部比較は生成
 %         claude-sonnet-4-5-20250929・判定 claude-opus-4-8（別モデル）
 Appendix~A lists every hyperparameter, and the repository versions the scripts, the data, and the
@@ -123,8 +177,8 @@ seeds.
 
 We test paired differences over the 10 seeds with the Wilcoxon signed-rank test and report the
 paired $t$-test as a reference. Each seed contributes one pair, because both methods run on the same
-split. We report the effect size (Cohen's $d_z$) beside every $p$-value, and we call a difference
-significant only after such a test. With $n = 10$ pairs the smallest two-sided Wilcoxon $p$-value is
+split. We report the effect size (Cohen's $d_z$) beside the $p$-values of the main comparisons, and
+we call a difference significant only after such a test. With $n = 10$ pairs the smallest two-sided Wilcoxon $p$-value is
 0.00195, which a method attains when it wins on all 10 seeds; we therefore read 0.00195 as ``every
 seed agreed'' rather than as a precise probability.
 % source: experiments/significance_stats.json（p_wilcoxon 0.00195 = n=10 の理論最小値）

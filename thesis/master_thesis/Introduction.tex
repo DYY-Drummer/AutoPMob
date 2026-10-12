@@ -6,6 +6,9 @@
 % 数値の一次ソースは各段落の % source: コメントに記載（2026-09-07 に JSON と照合）。
 % 図 1 は generate_figures_thesis.py overview() で生成（figures/fig_autopmob_overview.pdf）。
 % 設計書: docs/superpowers/specs/2026-09-07-w2-introduction-design.md
+% 2026-10-12 改訂（8/31 報告への加藤先生の注釈の反映）: 「物理モデルは変数を共有し連立して解く系」（注釈 #5 で
+%   「すべての式が変数を共有するわけではない」）を、入出力変数による定義と CSTR の例に置き換えた。自由度は
+%   変数の数 − 式の数（第 3 章）に合わせ、「自由度ゼロ」「閉じる」を使わない。結果は最良の重みの baseline との差で書いた。
 % ============================================================
 
 Physical models --- systems of equations that describe how the material, energy, and momentum
@@ -38,8 +41,8 @@ study addresses the highlighted stage. (b) The task of this study: a query gives
 the desired model with its input and output variables, and the method presents, from a database
 of 11,146 equations drawn from 361 sources, the equations likely to serve in the model. The
 three presented equations come from different documents and are linked by the variables they
-share ($r_A$ and $k$); with three equations and three unknowns ($C_A$, $r_A$, and $k$) the set
-has zero degrees of freedom, so a simulator can solve it.}
+share ($r_A$ and $k$); once the inputs are given, they determine the three unknowns $C_A$, $r_A$,
+and $k$, one equation each.}
 \label{fig:overview}
 \end{figure}
 
@@ -48,19 +51,21 @@ Fig.~\ref{fig:overview}(a): given a description of the desired model together wi
 output variables, present the equations likely to serve in the model, drawn from an equation
 database built from many documents (Fig.~\ref{fig:overview}(b)). The aim is to present equations
 that are likely to be usable, not a finished model; the engineer assembles and checks the model
-from them. The step is a retrieval problem whose candidates depend on one another. A physical model is not a list of independent equations but a system of equations
-that share variables and must be solved simultaneously, and the system can be solved only when it
-has as many equations as unknown variables --- when its degrees of freedom are zero --- so that,
-once the inputs are given, every output is determined. The concentration dynamics of a continuous
-stirred-tank reactor (CSTR), for example, need three coupled equations: the mass-balance ordinary
-differential equation (ODE) for the concentration, the reaction-rate equation $r_A = k C_A$, and
-the Arrhenius equation $k = A\exp(-E/RT)$ for the rate constant. The ODE alone leaves the rate
-$r_A$ undetermined, the rate equation alone leaves the rate constant $k$ undetermined, and only
-the three together close the system. A method that scores each equation by its similarity to the
-description cannot see these dependencies: each of the three equations looks only moderately
-relevant on its own, an equation from an unrelated document may look more relevant than any of
-them, and no similarity score tells whether a set of equations closes. Retrieval must therefore
-evaluate candidate equations as a set, not one by one.
+from them. The step is a retrieval problem whose candidates depend on one another. A physical
+model is a set of equations from which the output variables can be computed once the input
+variables are given, so an equation that contains a variable other than the inputs and outputs is
+useful only together with an equation that determines that variable; a set can determine every
+output only if, once the inputs are given, it has at least as many equations as unknown variables.
+The concentration dynamics of a continuous stirred-tank reactor (CSTR), for example, need three
+equations: the mass-balance ordinary differential equation (ODE) for the concentration, the
+reaction-rate equation $r_A = k C_A$, and the Arrhenius equation $k = A\exp(-E/RT)$ for the rate
+constant. The ODE alone leaves the rate $r_A$ undetermined, the rate equation alone leaves the rate
+constant $k$ undetermined, and only the three together determine the concentration from the
+inputs. A method that scores each equation by its similarity to the description cannot see these
+dependencies: each of the three equations looks only moderately relevant on its own, an equation
+from an unrelated document may look more relevant than any of them, and no similarity score tells
+whether a set of equations determines the outputs. Retrieval must therefore evaluate candidate
+equations as a set, not one by one.
 
 We propose a two-stage retrieval method whose second stage evaluates each candidate against the
 equations already selected. The first stage ranks the whole database by a mixture of text
@@ -77,31 +82,36 @@ training and inference see the same sequential context, and a self-terminating c
 that halts retrieval once the selected set covers every output variable with no more unknowns than
 equations (DoF-stop, named after the degrees of freedom it monitors). The method thus ranks the
 equations and decides by itself where to cut the ranking, without being told how many equations the
-answer has.
+answer has; whether the presented equations form a model remains for the engineer to check.
 
-To evaluate the method under realistic difficulty, we construct a large equation database and
-test cases whose answers close with zero degrees of freedom, and we split them so that no document leaks between
-training and testing. The database holds 11,146 equations from 361 sources: a large language
+To evaluate the method on realistic data, we construct a large equation database and test cases
+whose evaluation ground truths all meet the input--output and degree-of-freedom requirements that
+Kato and Kano formulated for model building\cite{CombineEq}, and we split them so that no document
+leaks between training and testing.
+% source: experiments/kato_0831_followup_stats.json gt_checks（評価 1,823 件すべて要件 1〜3 を満たす。拡張ケースは未確認） The database holds 11,146 equations from 361 sources: a large language
 model (LLM) extracted 10,476 of them from 329 documents and generated the other 670 as reference
 sets of textbook fundamentals. The 2,838 cases fall into three families by how their answer sets
 were formed --- picked by an LLM within one source, combined across two or three sources, or
-synthesized by rule --- plus augmented copies used only for training; the 1,000
-synthesized cases grow by a rule that adds variable-sharing equations until the system closes and
-gives each equation an output variable of its own, so their answers are solvable by construction. We assign every source wholly to training,
-validation, or testing, and we stratify the assignment so that four difficulty-related
-distributions match between training and testing. All experiments repeat over 10 random splits
-and report the mean and the spread.
+synthesized by rule --- plus augmented copies used only for training; the 1,000 synthesized
+cases grow by a rule that adds variable-sharing equations up to a target size and gives each
+equation an output variable of its own, so that, once the inputs are given, each unknown has an
+equation of its own. We assign every source wholly to training, validation, or testing, and we
+stratify the assignment so that the distributions of four case properties, such as the number of
+ground-truth equations, match between training and testing. All experiments repeat over 10 random
+splits and report the mean and the standard deviation.
 % source: unified_equations.json（11,146 式・361 source）; training_cases.json（original 92 /
 %         multisource_* 731 / dae_* 1,000 / 拡張 1,015 = 2,838）; 第 4 章 §4.1-4.4
 
 Experiments show that the proposed method outperforms lexical and dense retrieval baselines and
 direct generation by an LLM, and the analyses explain why. Recall@K --- the fraction of the
 ground-truth equations found within the top $K$ of the ranking, where $K$ is the size of the
-ground truth --- rises from 0.521 to 0.743 in the mixed setting and from 0.466 to 0.689 in the
-hardest, synthesized-only setting, a gain of $+0.22$ in both on all 10 splits (Wilcoxon
-signed-rank test, $p = 0.00195$).
-% source: experiments/strat_A.json / strat_B.json results.*.Recall@K_correct（0.5206→0.7429,
-%         0.4661→0.6890）; significance_stats.json（p_wilcoxon 0.00195）
+ground truth --- rises from 0.607 for classical retrieval at its best weights to 0.743 in the
+mixed setting and from 0.559 to 0.689 in the synthesized-only setting, whose cases hold the most
+equations, on all 10 splits (Wilcoxon signed-rank test, $p = 0.00195$); a variable-weighted first
+stage raises it further to 0.780 and 0.740.
+% source: experiments/external_baselines_{A,B}.json tfidf__none__w40-60（0.6071 / 0.5585）; strat_A.json /
+%         strat_B.json reranker-10S（0.7429 / 0.6890）; kato_0831_followup_stats.json vs_best_baseline
+%         （wins 10, p_wilcoxon 0.00195）; stage1_weight_stats.json w30-70（0.7799）; stage1_B_w30-70（0.7401）
 Stronger text scorers do not close the gap: BM25 and a dense sentence encoder (E5), each mixed
 with the variable-overlap term at its best weight, reach at most 0.602 and 0.555 in the two
 settings, and an LLM that writes the equations directly reaches 0.23--0.30 even when a separate
@@ -117,25 +127,26 @@ features leaves it unchanged.
 % source: experiments/feature_x_difficulty_stats.json overall_tests（reranker-7+Dom −0.0001,
 %         p_wilcoxon 0.98）; pfi_results.json（GROUP_var +0.678 / GROUP_topic +0.006, p=0.10）
 Two interventions then confirm the mechanism causally. The mechanism analysis predicted that a
-fixed reference set saturates on the hardest cases, and learned greedy selection recovers exactly
-there ($+0.056$ on cases with eight or more equations); the error analysis predicted that the
+fixed reference set saturates on the cases with the most equations, and learned greedy selection
+recovers exactly there ($+0.056$ on cases with eight or more equations); the error analysis predicted that the
 text-heavy first stage caps what the reranker can reach, and a variable-weighted first stage
-raises Recall@K to 0.780. DoF-stop returns closed sets more often than an oracle that is told
-the answer size (0.94 against 0.87 in the mixed setting and 0.88 against 0.78 in the
-synthesized-only setting) while matching its exact-match rate.
+raises the candidate coverage and, with it, Recall@K. Without being told the answer size, DoF-stop
+stops at the same exact-match rate as selection that is told it (0.526 in the mixed setting and
+0.368 in the synthesized-only setting).
 % source: experiments/greedy_3way_stats.json tests_hard_X8plus train_vs_static（+0.056）;
-%         stage1_weight_stats.json overall.reranker-10S w30-70（0.7799）;
-%         dof_stop_stats.json closed_dof 0.8826 / 0.9363 vs closed_oracleK 0.7806 / 0.8651,
-%         set_exact_dof = set_exact_oracleK（0.3678 / 0.5262）
+%         stage1_weight_stats.json coverage_k50 / overall.reranker-10S w30-70;
+%         dof_stop_stats.json set_exact_dof = set_exact_oracleK（0.5262 / 0.3678）
 
 The contributions of this thesis are threefold.
 \begin{enumerate}
-  \item A solvable-by-construction benchmark: an 11,146-equation database from 361 sources,
-    1,000 synthesized cases whose equation sets close with zero degrees of freedom, and a
-    stratified source-disjoint split with 10 seeds.
-  \item A set-aware two-stage retrieval method that improves Recall@K by $+0.22$ over classical
-    information retrieval, exceeds BM25, dense retrieval, and LLM direct generation, and, with a
-    self-terminating criterion, stops by itself without knowing the answer size.
+  \item A benchmark: an 11,146-equation database from 361 sources, 1,823 evaluation cases whose
+    ground truths all meet the first three requirements of Kato and Kano, including 1,000
+    synthesized cases in which each unknown has an equation of its own, and a stratified
+    source-disjoint split with 10 seeds.
+  \item A set-aware two-stage retrieval method that improves Recall@K by $+0.13$ to $+0.18$ over
+    classical information retrieval at its best weights, exceeds BM25, dense retrieval, and LLM
+    direct generation, and, with a self-terminating criterion, stops by itself without knowing the
+    answer size.
   \item An empirical account of the mechanism --- which features cause the improvement, where
     it saturates, and where the remaining errors arise --- confirmed causally by two
     interventions, learned greedy selection and a variable-weighted first stage.

@@ -135,8 +135,17 @@ def bucket_stats(per_case_by_mode, keyfn, order):
 
 
 def characteristic():
+    """設定 A の正解式数・出典数・入力変数数ごとの Recall@K.
+
+    2026-10-12 改訂（加藤先生の 8/31 報告への注釈 #61）: baseline を最良重み (0.4, 0.6) の per-case
+    （experiments/xk50/baseline40_A__*.json、集計値は external_baselines_A.json と一致）に替えた。
+    """
     d = json.load(open(EXP / "strat_A.json"))
-    pcm = {mode: d["results"][mode]["per_case"] for mode in d["results"]}
+    b46 = []
+    for f in sorted((EXP / "xk50").glob("baseline40_A__*.json")):
+        r = json.load(open(f))["results"]
+        b46 += r[list(r)[0]]["per_case"]
+    pcm = {"baseline": b46, "reranker-10S": d["results"]["reranker-10S"]["per_case"]}
 
     # --- 数式数 n_correct: 1..10 ---
     ncs = list(range(1, 11))
@@ -181,8 +190,8 @@ def characteristic():
 
     # (a) 数式数
     ax = axes[0]
-    ax.plot(ncs, nc_base, "o-", color=C_BASE, lw=2.2, ms=7, label="Baseline (classical IR)")
-    ax.plot(ncs, nc_ours, "s-", color=C_PROP, lw=2.4, ms=7, label="Proposed (reranker-10S)")
+    ax.plot(ncs, nc_base, "o-", color=C_BASE, lw=2.2, ms=7, label="Baseline (classical IR), (0.4, 0.6)")
+    ax.plot(ncs, nc_ours, "s-", color=C_PROP, lw=2.4, ms=7, label="Proposed, (0.7, 0.3)")
     ax.fill_between(ncs, nc_base, nc_ours, color=C_PROP, alpha=0.15)
     ax.set_xlabel("Number of equations in the true model", fontsize=12)
     ax.set_ylabel("Recall@K", fontsize=12)
@@ -195,8 +204,8 @@ def characteristic():
     # (b) ソース数
     ax = axes[1]
     x = np.arange(len(sorder)); w = 0.38
-    ax.bar(x - w / 2, sc_base, w, color=C_BASE, edgecolor="black", linewidth=0.8, label="Baseline (classical IR)")
-    ax.bar(x + w / 2, sc_ours, w, color=C_PROP, edgecolor="black", linewidth=0.8, label="Proposed (reranker-10S)")
+    ax.bar(x - w / 2, sc_base, w, color=C_BASE, edgecolor="black", linewidth=0.8, label="Baseline (classical IR), (0.4, 0.6)")
+    ax.bar(x + w / 2, sc_ours, w, color=C_PROP, edgecolor="black", linewidth=0.8, label="Proposed, (0.7, 0.3)")
     for i in range(len(sorder)):
         ax.text(x[i] - w / 2, sc_base[i] + 0.012, f"{sc_base[i]:.2f}", ha="center", fontsize=9)
         ax.text(x[i] + w / 2, sc_ours[i] + 0.012, f"{sc_ours[i]:.2f}", ha="center", fontsize=9, fontweight="bold")
@@ -211,8 +220,8 @@ def characteristic():
     # (c) 入力変数数
     ax = axes[2]
     x = np.arange(len(iorder))
-    ax.plot(x, ic_base, "o-", color=C_BASE, lw=2.2, ms=7, label="Baseline (classical IR)")
-    ax.plot(x, ic_ours, "s-", color=C_PROP, lw=2.4, ms=7, label="Proposed (reranker-10S)")
+    ax.plot(x, ic_base, "o-", color=C_BASE, lw=2.2, ms=7, label="Baseline (classical IR), (0.4, 0.6)")
+    ax.plot(x, ic_ours, "s-", color=C_PROP, lw=2.4, ms=7, label="Proposed, (0.7, 0.3)")
     ax.fill_between(x, ic_base, ic_ours, color=C_PROP, alpha=0.15)
     ax.set_xticks(x); ax.set_xticklabels(iorder_labels, fontsize=11)
     ax.set_xlabel("Number of input variables", fontsize=12)
@@ -277,36 +286,62 @@ def split_balance(seed=42):
     print(f"split_balance: train/test = {len(tr)}/{len(te)}")
 
 
+C_PROP2 = "#00897b"  # proposed with the variable-weighted first stage (0.3, 0.7): teal (validated vs gray/blue/red)
+SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
+
+
+def _best_baseline_per_seed(setting):
+    """最良重み (0.4, 0.6) の古典的情報検索手法（12 重みで Recall@K 最大。external_baselines_*.json）."""
+    r = json.load(open(EXP / f"external_baselines_{setting}.json"))["results"]["tfidf__none__w40-60"]["per_seed"]
+    return [p["Recall@K_correct"] for p in sorted(r, key=lambda p: p["seed"])]
+
+
+def _w3070_per_seed(setting):
+    """第 1 段の重み (0.3, 0.7) の提案手法（A: stage1_weight_stats.json、B: experiments/xs1_B/）."""
+    if setting == "A":
+        d = json.load(open(EXP / "stage1_weight_stats.json"))["overall"]["reranker-10S"]["w30-70"]["per_seed"]
+        return [float(d[str(s)]) if str(s) in d else float(d[s]) for s in SEEDS]
+    vals = []
+    for s in SEEDS:
+        v = json.load(open(EXP / "xs1_B" / f"reranker-10S_w30-70__{s}.json"))["results"]["reranker-10S"]["Recall@K_correct"]
+        vals.append(v["mean"] if isinstance(v, dict) else v)
+    return vals
+
+
 def method_comparison():
-    """3設定（全データ/設定A/設定B）× baseline・本手法の箱ひげ＋LLM点."""
+    """設定 A・B × 最良重みの baseline・提案手法 (0.7, 0.3)・提案手法 (0.3, 0.7) の箱ひげ＋LLM 点.
+
+    2026-10-12 改訂（加藤先生の 8/31 報告への注釈 #52）: 比較相手を最良重み (0.4, 0.6) の baseline にし、
+    第 1 段の重み (0.3, 0.7) の提案手法を加えた。最良重みの baseline がない「拡張を含む全ケース」は外した。
+    """
     settings = [
-        ("strat_full.json", "llm_set_full_equiv_results.json", "All cases\n(incl. augmentation, 2,838)"),
-        ("strat_A.json", "llm_set_A_equiv_results.json", "Setting A\n(mixed, 1,823)"),
-        ("strat_B.json", "llm_set_B_equiv_results.json", "Setting B\n(synthesized only, 1,000)"),
+        ("A", "strat_A.json", "llm_set_A_equiv_results.json", "Setting A\n(mixed, 1,823 cases)"),
+        ("B", "strat_B.json", "llm_set_B_equiv_results.json", "Setting B\n(synthesized only, 1,000 cases)"),
     ]
-    fig, ax = plt.subplots(figsize=(9, 4.6))
-    centers = np.arange(len(settings)) * 2.6
-    for i, (sf, lf, label) in enumerate(settings):
-        base = _per_seed(EXP / sf, "baseline")
-        prop = _per_seed(EXP / sf, "reranker-10S")
-        _box(ax, [base, prop], [centers[i] - 0.45, centers[i] + 0.45], [C_BASE, C_PROP])
+    fig, ax = plt.subplots(figsize=(8.4, 4.6))
+    centers = np.arange(len(settings)) * 3.6
+    for i, (st_, sf, lf, label) in enumerate(settings):
+        data = [_best_baseline_per_seed(st_), _per_seed(EXP / sf, "reranker-10S"), _w3070_per_seed(st_)]
+        _box(ax, data, [centers[i] - 0.95, centers[i], centers[i] + 0.95], [C_BASE, C_PROP, C_PROP2],
+             widths=0.62)
         llm = json.load(open(EXP / lf))
-        ax.scatter([centers[i] + 1.05], [llm["Recall@K_correct"]], marker="D", s=55,
+        ax.scatter([centers[i] + 1.8], [llm["Recall@K_correct"]], marker="D", s=55,
                    color=C_LLM, zorder=4)
-        ax.hlines(llm["coverage"], centers[i] + 0.85, centers[i] + 1.25,
+        ax.hlines(llm["coverage"], centers[i] + 1.6, centers[i] + 2.0,
                   colors=C_LLM, linestyles="--", lw=1.4)
-    ax.set_xticks(centers)
-    ax.set_xticklabels([s[2] for s in settings])
+    ax.set_xticks(centers + 0.4)
+    ax.set_xticklabels([s[3] for s in settings])
     ax.set_ylabel("Recall@K")
     ax.set_ylim(0, 1.0)
     ax.grid(axis="y", alpha=0.3)
     handles = [
-        plt.Rectangle((0, 0), 1, 1, fc=C_BASE, alpha=0.85, label="Baseline (classical IR)"),
-        plt.Rectangle((0, 0), 1, 1, fc=C_PROP, alpha=0.85, label="Proposed (reranker-10S)"),
-        plt.Line2D([], [], marker="D", ls="", color=C_LLM, label="LLM direct generation (single run, n≈50)"),
+        plt.Rectangle((0, 0), 1, 1, fc=C_BASE, alpha=0.85, label="Baseline (classical IR), weights (0.4, 0.6)"),
+        plt.Rectangle((0, 0), 1, 1, fc=C_PROP, alpha=0.85, label="Proposed, first-stage weights (0.7, 0.3)"),
+        plt.Rectangle((0, 0), 1, 1, fc=C_PROP2, alpha=0.85, label="Proposed, first-stage weights (0.3, 0.7)"),
+        plt.Line2D([], [], marker="D", ls="", color=C_LLM, label="LLM direct generation (single run)"),
         plt.Line2D([], [], ls="--", color=C_LLM, label="LLM coverage (rank-free)"),
     ]
-    ax.legend(handles=handles, loc="upper left", fontsize=8.5, ncol=2)
+    ax.legend(handles=handles, loc="lower left", fontsize=8.2, ncol=2, framealpha=0.95)
     save(fig, "fig_method_comparison")
 
 
@@ -428,7 +463,7 @@ def greedy_3way():
         ax.errorbar(xs, means, yerr=sems, marker="o", ms=4, lw=1.6, capsize=3,
                     label=label.replace("\n", " "), color=color)
     ax.set_xlabel("Number of equations in the true model")
-    ax.set_title("(c) By difficulty (Setting B)")
+    ax.set_title("(c) By number of equations (Setting B)")  # 2026-10-12: 「難しさ」の語をやめた（注釈 #60）
     ax.legend(fontsize=8.5)
     ax.grid(alpha=0.3)
     save(fig, "fig_greedy_3way")
@@ -458,8 +493,9 @@ def dof_stop():
         _box(ax, [oracle, dof], [i * 2.4 - 0.45, i * 2.4 + 0.45], [C_BASE, C_PROP])
         dof_closed = stats_doc[setting]["closed_dof"]["mean"]
         oracle_closed = stats_doc[setting]["closed_oracleK"]["mean"]
-        ax.text(i * 2.4, 1.02, f"closure {dof_closed:.2f} vs {oracle_closed:.2f} (oracle)",
-                ha="center", fontsize=7.5)
+        # 2026-10-12: 「closure」をやめ「停止条件の充足率」に（加藤先生の注釈 #33。条件を満たしても解けるとは限らない）
+        ax.text(i * 2.4, 1.01, f"stop condition met:\n{dof_closed:.2f} vs {oracle_closed:.2f} (oracle-K)",
+                ha="center", fontsize=7.5, linespacing=1.2)
     ax.set_ylim(top=1.10)
     ax.set_xticks([0, 2.4])
     ax.set_xticklabels([g[1] for g in groups])
@@ -484,7 +520,7 @@ def dof_stop():
         ax.errorbar(xs, [m.mean() for m in sm], yerr=[m.std(ddof=1) / np.sqrt(len(m)) for m in sm],
                     marker="o", ms=4, lw=1.6, capsize=3, label=label, color=color)
     ax.set_xlabel("Number of equations in the true model")
-    ax.set_title("(b) By difficulty (Setting B)")
+    ax.set_title("(b) By number of equations (Setting B)")
     ax.legend(fontsize=8.5)
     ax.grid(alpha=0.3)
     save(fig, "fig_dof_stop")
@@ -508,53 +544,71 @@ FEAT_GROUP = {
 C_VARF, C_TOPICF = "#1f77b4", "#d62728"  # fig_topic_diagnosis と同じ色分け
 
 
+C_VAR_G, C_VAR_M = "#1f77b4", "#6baed6"   # variable overlap: whole group / single feature
+C_TOP_G, C_TOP_M = "#d62728", "#ee8a8a"   # topic: whole group / single feature (validated pairs)
+
+
 def pfi():
+    """PFI（2026-10-12 改訂）: シャッフル後の Recall@K を 1 枚にまとめる.
+
+    加藤先生の 8/31 報告への注釈 #67 に沿って、旧 2 枚組（(a) 個別の低下量、(b) 群の低下量）を 1 枚にし、
+    各群の先頭に「群をまとめてシャッフル」した棒（濃い色・枠線）を置き、横軸を低下量でなくシャッフル後の
+    Recall@K に、シャッフル前の値を点線にした。日本語版 generate_pfi_recall_figure.py と同じ構成・同じ数値。
+    棒 = シャッフル前の平均 − 低下量の平均（10 seed、各 20 回）、誤差棒 = 低下量の seed 間の標準偏差。
+    """
     d = json.load(open(EXP / "pfi_results.json"))
     res = d["results"]["case"]
     base = d["baseline_mean"]
 
-    feats = sorted(EN_FEAT, key=lambda f: -res[f]["importance_mean"])
-    vals = [res[f]["importance_mean"] for f in feats]
-    errs = [res[f]["importance_std"] for f in feats]
-    cols = [C_VARF if FEAT_GROUP[f] == "var" else C_TOPICF for f in feats]
+    rows = []  # (label, value, err, color, is_group)
+    for grp, gkey, cg, cm, gname in (
+        ("var", "GROUP_var", C_VAR_G, C_VAR_M, "All 6 variable-overlap features"),
+        ("topic", "GROUP_topic", C_TOP_G, C_TOP_M, "All 4 topic features"),
+    ):
+        g = res[gkey]
+        rows.append((gname, base - g["importance_mean"], g["importance_std"], cg, True))
+        feats = [f for f in EN_FEAT if FEAT_GROUP[f] == grp]
+        for f in sorted(feats, key=lambda f: -res[f]["importance_mean"]):
+            r = res[f]
+            rows.append((EN_FEAT[f], base - r["importance_mean"], r["importance_std"], cm, False))
+        rows.append(None)  # gap between the groups
+    rows = rows[:-1]
 
-    fig, (ax1, ax2) = plt.subplots(
-        1, 2, figsize=(12.5, 4.4), gridspec_kw={"width_ratios": [2.0, 1]})
-
-    y = list(range(len(feats)))
-    ax1.barh(y, vals, xerr=errs, color=cols, capsize=3, height=0.66,
-             error_kw=dict(ecolor="#444", lw=1))
-    ax1.set_yticks(y)
-    ax1.set_yticklabels([EN_FEAT[f] for f in feats], fontsize=10)
-    ax1.invert_yaxis()
-    ax1.set_xlabel("Drop in Recall@K when the feature is permuted")
-    ax1.axvline(0, color="#bbb", lw=1, zorder=0)
-    ax1.grid(axis="x", alpha=0.25)
-    for yi, v, e in zip(y, vals, errs):
-        shown = 0.0 if abs(v) < 0.0005 else v  # avoid a misleading "-0.000"
-        ax1.text(v + e + 0.012, yi, f"{shown:.3f}", va="center", fontsize=8.5)
-    ax1.set_title("(a) Permuting one feature at a time")
-    ax1.legend(handles=[Patch(color=C_VARF, label="Variable-overlap features"),
-                        Patch(color=C_TOPICF, label="Topic features")],
-               fontsize=9, loc="lower right")
-    ax1.set_xlim(right=max(v + e for v, e in zip(vals, errs)) * 1.18)
-
-    gv, gvs = res["GROUP_var"]["importance_mean"], res["GROUP_var"]["importance_std"]
-    gt, gts = res["GROUP_topic"]["importance_mean"], res["GROUP_topic"]["importance_std"]
-    ax2.bar([0, 1], [gv, gt], yerr=[gvs, gts], color=[C_VARF, C_TOPICF],
-            capsize=5, width=0.6, error_kw=dict(ecolor="#444", lw=1.2))
-    ax2.set_xticks([0, 1])
-    ax2.set_xticklabels(["Variable overlap\n(6 features)", "Topic\n(4 features)"], fontsize=10)
-    ax2.set_ylabel("Drop in Recall@K")
-    ax2.axhline(base, color="#888", ls=":", lw=1.2)
-    ax2.text(0.98, base - 0.02, f"Recall@K before\npermutation = {base:.3f}",
-             fontsize=8, va="top", ha="right", color="#555", transform=ax2.get_yaxis_transform())
-    for xi, v, e in zip([0, 1], [gv, gt], [gvs, gts]):
-        ax2.text(xi, v + e + 0.015, f"{v:.3f}", ha="center", fontsize=10, fontweight="bold")
-    ax2.set_ylim(0, max(base, gv + gvs) * 1.14)
-    ax2.grid(axis="y", alpha=0.25)
-    ax2.set_title("(b) Permuting a whole group")
-
+    fig, ax = plt.subplots(figsize=(9.6, 5.6))
+    y, ticks, labels, is_groups = 0, [], [], []
+    for row in rows:
+        if row is None:
+            y += 0.6
+            continue
+        lab, v, e, col, is_g = row
+        ax.barh(y, v, xerr=e, color=col, height=0.72, capsize=3,
+                error_kw=dict(ecolor="#333", lw=1), edgecolor="#222" if is_g else col,
+                linewidth=1.2 if is_g else 0)
+        ax.text(min(v + e, base) + 0.012 if v < base - 0.05 else max(v + e, base) + 0.012, y,
+                f"{v:.3f}", va="center", fontsize=11, fontweight="bold" if is_g else "normal")
+        ticks.append(y)
+        labels.append(lab)
+        is_groups.append(is_g)
+        y += 1
+    ax.set_yticks(ticks)
+    ax.set_yticklabels(labels, fontsize=12)
+    for t, is_g in zip(ax.get_yticklabels(), is_groups):
+        if is_g:
+            t.set_fontweight("bold")
+    ax.invert_yaxis()
+    ax.axvline(base, color="#555", ls=":", lw=1.5)
+    ax.text(base - 0.01, -1.05, f"before permutation {base:.3f}", ha="right", va="center",
+            fontsize=11, color="#333")
+    ax.set_xlim(0, 0.86)
+    ax.set_ylim(y - 0.4, -1.6)
+    ax.set_xlabel("Recall@K after permutation (Setting A, mean over 10 splits)", fontsize=12)
+    ax.tick_params(axis="x", labelsize=11)
+    ax.grid(axis="x", alpha=0.25)
+    ax.legend(handles=[Patch(color=C_VAR_G, label="Variable-overlap features"),
+                       Patch(color=C_TOP_G, label="Topic features"),
+                       Patch(facecolor="white", edgecolor="#222", linewidth=1.2,
+                             label="Whole group permuted")],
+              fontsize=11, loc="upper left", bbox_to_anchor=(0.36, 0.93), framealpha=1.0)
     fig.tight_layout()
     save(fig, "fig_pfi")
 
@@ -660,7 +714,10 @@ def _aspect(fig, ax):
 
 
 def overview():
-    """Fig. 1: (a) AutoPMoB の 4 段階と本研究の段階、(b) 本研究の入出力（CSTR の閉じた 3 式）."""
+    """Fig. 1: (a) AutoPMoB の 4 段階と本研究の段階、(b) 本研究の入出力（CSTR の 3 式）.
+
+    2026-10-12: 「closed」「degrees of freedom 0」をやめた（自由度＝変数の数 − 式の数。この例は 10 − 3 = 7 で入力 7 個に等しい）。
+    """
     fig = plt.figure(figsize=(7.2, 4.9))
     ax_a = fig.add_axes([0.01, 0.715, 0.98, 0.275])
     ax_b = fig.add_axes([0.01, 0.01, 0.98, 0.665])
@@ -675,7 +732,7 @@ def overview():
         ("Extraction", "equations, variables, data"),
         ("Equivalence\njudgment", "variables, equations"),
         ("Equation-set\nretrieval", "this study"),
-        ("Physical\nmodel", "closed system"),
+        ("Physical\nmodel", "for simulation"),
     ]
     bw, bh, y0 = 17.5, 58, 12
     centers = [10.5, 30.25, 50, 69.75, 89.5]
@@ -693,7 +750,7 @@ def overview():
         _arrow(ax_a, (cx0 + bw / 2 + 0.3, y0 + bh / 2), (cx1 - bw / 2 - 0.3, y0 + bh / 2))
 
     # ---------- (b) This study ----------
-    ax_b.text(0.5, 98.5, "(b) This study: retrieving a closed equation set", fontsize=8.5,
+    ax_b.text(0.5, 98.5, "(b) This study: presenting equations for the desired model", fontsize=8.5,
               weight="bold", va="top", ha="left")
 
     # Query card
@@ -751,11 +808,11 @@ def overview():
                   fontsize=7.2, zorder=4)
         ax_b.text(xe - 1.8, (ya - sh / 2 + yb + sh / 2) / 2, "shared", ha="right", va="center",
                   fontsize=6.2, color="#5f6368", zorder=4)
-    ax_b.text(sx0 + sw / 2, 88.5, "Retrieved equation set", ha="center", va="center",
+    ax_b.text(sx0 + sw / 2, 88.5, "Presented equations", ha="center", va="center",
               fontsize=8, weight="bold", zorder=4)
-    ax_b.text(sx0 + sw / 2, 18.5, r"3 equations, 3 unknowns ($C_A$, $r_A$, $k$):",
+    ax_b.text(sx0 + sw / 2, 18.5, "Given the inputs, the 3 equations",
               ha="center", va="center", fontsize=6.8, zorder=4)
-    ax_b.text(sx0 + sw / 2, 11.5, "degrees of freedom 0, so the set is solvable",
+    ax_b.text(sx0 + sw / 2, 11.5, r"determine $C_A$, $r_A$, $k$, one each",
               ha="center", va="center", fontsize=6.8, zorder=4)
 
     # arrows between the three columns

@@ -1,6 +1,7 @@
 % ============================================================
 % Appendix — OUTLINE (Phase 1)
 % 骨子段階は1章に統合（ページ節約）。本文化時に章分割を検討。
+% 2026-10-12: 比較手法の重み 12 通りの表（加藤先生の注釈 #52）と、逐次選択 3 通りの k=50 / 200 の表（注釈 #68）を追加。
 % ============================================================
 \chapter{Supplementary Materials}
 
@@ -17,15 +18,95 @@ Loss / margin & pairwise ranking / 0.1 \\
 Epochs / learning rate / batch size & 15 / 0.001 / 16 \\
 Negative samples / weight decay & 8 / 0.0001 \\
 Stage-1 top-$k$ & 50 (Settings A, B); 200 (greedy and DoF-stop runs) \\
-Greedy training cap & 8 \\
+Stage-1 weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & $(0.7, 0.3)$; $(0.3, 0.7)$ (Section~\ref{sec:stage1redesign}) \\
+Reference set size $K_{\mathrm{ref}}$ & 5 \\
+Greedy selection cap / training cap & 20 / 8 \\
 DoF-stop selection cap & 20 equations \\
+Classical baseline weights & $(0.4, 0.6)$ (best of 12); $(0.7, 0.3)$ \\
 BM25 baseline & $k_1 = 1.5$, $b = 0.75$, word unigrams \\
 BM25 IDF & $\ln\{1 + (N - n + 0.5)/(n + 0.5)\}$ \\
 E5 baseline & \texttt{intfloat/e5-base-v2}, mean pooling, $\ell_2$ norm \\
 E5 maximum input length & 512 tokens \\
 Text-score normalization (BM25, E5) & per-query min--max over the database \\
-Equivalence judges (LLM baseline) & \texttt{claude-opus-4-8} (Table 3); \texttt{claude-fable-5-1} (check) \\
+LLM generator (baseline) & \texttt{claude-sonnet-4-5-20250929} \\
+Equations requested / judged & up to $\max(12, K + 4)$ / first 12 \\
+Equivalence judges (LLM baseline) & \texttt{claude-opus-4-8} (Table~\ref{tab:overall}); \texttt{claude-fable-5-1} (check) \\
 Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
+\bottomrule
+\end{tabular}
+\end{table}
+% source: set_aware_reranker.py（K_REF=5 L95, greedy_cap=20, --greedy-train-cap 8）; evaluate_llm_dae.py
+%         （max(12, X+4)）; evaluate_llm_equiv.py（gen[:12]）; external_baselines_{A,B}.json（重み 12 通り）
+
+\section{Weights of the Retrieval Baselines}
+Table~\ref{tab:weights} lists the classical baseline under each of the 12 weight pairs. Recall@K
+peaks at $(0.4, 0.6)$ in both settings and changes little for $w_{\mathrm{t}} \le 0.5$ (0.598 to
+0.607 in Setting~A), whereas the text term alone reaches only 0.120 and 0.153: the description
+alone rarely identifies the equations of a case. BM25 and E5 peak at $(0.1, 0.9)$ and stay at the
+level of the best TF-IDF mixture.
+% source: experiments/external_baselines_{A,B}.json results.tfidf__none__w*, bm25__minmax__w10-90,
+%         e5io__minmax__w10-90（per_seed の平均と標準偏差、10 seed）。日本語版報告 付録 A の表と同じ値
+
+\begin{table}[h]\centering
+\caption{The classical baseline (TF-IDF text similarity mixed with the variable overlap, ranking the
+whole database) under 12 weight pairs, and BM25 and E5 at their best weights (mean $\pm$ SD over 10
+splits). Bold marks the best Recall@K of each setting.}
+\label{tab:weights}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}cccccccc@{}}
+\toprule
+ & \multicolumn{3}{c}{Setting A (1,823 cases)} & & \multicolumn{3}{c}{Setting B (1,000 cases)} \\
+\cmidrule{2-4}\cmidrule{6-8}
+$(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@K & MAP & Recall@20 & & Recall@K & MAP & Recall@20 \\
+\midrule
+$(1.0, 0.0)$ & $0.120 \pm 0.020$ & $0.148 \pm 0.025$ & $0.311 \pm 0.049$ & & $0.153 \pm 0.029$ & $0.170 \pm 0.030$ & $0.360 \pm 0.053$ \\
+$(0.9, 0.1)$ & $0.215 \pm 0.030$ & $0.255 \pm 0.033$ & $0.503 \pm 0.065$ & & $0.254 \pm 0.031$ & $0.289 \pm 0.033$ & $0.516 \pm 0.048$ \\
+$(0.8, 0.2)$ & $0.370 \pm 0.035$ & $0.433 \pm 0.045$ & $0.726 \pm 0.049$ & & $0.379 \pm 0.032$ & $0.423 \pm 0.034$ & $0.645 \pm 0.037$ \\
+$(0.7, 0.3)$ & $0.521 \pm 0.045$ & $0.581 \pm 0.045$ & $0.836 \pm 0.023$ & & $0.466 \pm 0.037$ & $0.512 \pm 0.035$ & $0.721 \pm 0.032$ \\
+$(0.6, 0.4)$ & $0.574 \pm 0.043$ & $0.652 \pm 0.044$ & $0.879 \pm 0.018$ & & $0.517 \pm 0.036$ & $0.574 \pm 0.036$ & $0.780 \pm 0.027$ \\
+$(0.5, 0.5)$ & $0.602 \pm 0.042$ & $0.679 \pm 0.045$ & $0.898 \pm 0.017$ & & $0.546 \pm 0.039$ & $0.608 \pm 0.037$ & $0.814 \pm 0.027$ \\
+$(0.4, 0.6)$ & $\mathbf{0.607 \pm 0.043}$ & $0.692 \pm 0.046$ & $0.907 \pm 0.016$ & & $\mathbf{0.559 \pm 0.038}$ & $0.627 \pm 0.036$ & $0.827 \pm 0.027$ \\
+$(0.3, 0.7)$ & $0.600 \pm 0.044$ & $0.691 \pm 0.046$ & $0.908 \pm 0.016$ & & $0.558 \pm 0.038$ & $0.630 \pm 0.037$ & $0.829 \pm 0.026$ \\
+$(0.2, 0.8)$ & $0.600 \pm 0.044$ & $0.689 \pm 0.045$ & $0.906 \pm 0.016$ & & $0.554 \pm 0.038$ & $0.626 \pm 0.036$ & $0.826 \pm 0.023$ \\
+$(0.1, 0.9)$ & $0.598 \pm 0.042$ & $0.685 \pm 0.044$ & $0.901 \pm 0.014$ & & $0.550 \pm 0.035$ & $0.620 \pm 0.035$ & $0.816 \pm 0.021$ \\
+$(0.05, 0.95)$ & $0.599 \pm 0.041$ & $0.683 \pm 0.043$ & $0.899 \pm 0.013$ & & $0.550 \pm 0.032$ & $0.617 \pm 0.033$ & $0.812 \pm 0.022$ \\
+$(0.0, 1.0)$ & $0.603 \pm 0.035$ & $0.679 \pm 0.039$ & $0.897 \pm 0.013$ & & $0.541 \pm 0.027$ & $0.605 \pm 0.029$ & $0.807 \pm 0.020$ \\
+\midrule
+BM25, $(0.1, 0.9)$ & $0.601 \pm 0.037$ & $0.692 \pm 0.041$ & $0.905 \pm 0.016$ & & $0.555 \pm 0.032$ & $0.624 \pm 0.035$ & $0.822 \pm 0.026$ \\
+E5, $(0.1, 0.9)$ & $0.602 \pm 0.039$ & $0.684 \pm 0.039$ & $0.896 \pm 0.015$ & & $0.544 \pm 0.027$ & $0.611 \pm 0.031$ & $0.806 \pm 0.023$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Selection Strategies at Two Window Sizes}
+Table~\ref{tab:greedyk} compares the three selection strategies of Section~\ref{sec:seq} at the
+default window $k = 50$ and at $k = 200$ (Section~\ref{sec:greedyresults}). Static scoring at
+$k = 50$ is the proposed method of Table~\ref{tab:overall} with the first-stage weights $(0.7, 0.3)$.
+% source: experiments/greedy_3way_k50_stats.json（k=50, A・B）; greedy_3way_stats.json（k=200, B）;
+%         greedy_3way_A_stats.json（k=200, A）。差の括弧内は Wilcoxon の p 値。k=200 B の (3) の SD は
+%         experiments/xg/train__*.json の seed 値から 0.042499 → 0.042（stats JSON は 0.0425、日本語版付録 C は 0.043）
+
+\begin{table}[h]\centering
+\caption{Recall@K of the three selection strategies (first-stage weights $(0.7, 0.3)$; mean $\pm$ SD
+over 10 splits). Differences carry the Wilcoxon signed-rank $p$-value in parentheses.}
+\label{tab:greedyk}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{Setting B} & \multicolumn{2}{c}{Setting A} \\
+\cmidrule{2-3}\cmidrule{4-5}
+ & $k = 50$ & $k = 200$ & $k = 50$ & $k = 200$ \\
+\midrule
+(1) Static scoring & $0.689 \pm 0.033$ & $0.724 \pm 0.041$ & $0.743 \pm 0.054$ & $0.757 \pm 0.056$ \\
+(2) Greedy at inference & $0.709 \pm 0.030$ & $0.756 \pm 0.043$ & $0.762 \pm 0.049$ & $0.787 \pm 0.049$ \\
+(3) Learned greedy & $0.717 \pm 0.033$ & $0.765 \pm 0.042$ & $0.765 \pm 0.051$ & $0.797 \pm 0.053$ \\
+\midrule
+(2) $-$ (1) & $+0.020$ (0.0039) & $+0.032$ (0.00195) & $+0.019$ (0.0039) & $+0.030$ (0.00195) \\
+(3) $-$ (2) & $+0.008$ (0.014) & $+0.009$ (0.037) & $+0.002$ (0.49) & $+0.010$ (0.13) \\
+(3) $-$ (1) & $+0.028$ (0.00195) & $+0.041$ (0.00195) & $+0.022$ (0.0039) & $+0.040$ (0.00195) \\
+(3) $-$ (1), 8 or more equations & $+0.021$ (0.00195) & $+0.056$ (0.00195) & $+0.013$ (0.00195) & $+0.048$ (0.00195) \\
 \bottomrule
 \end{tabular}
 \end{table}
