@@ -123,21 +123,18 @@ wrong guesses, and our answer sizes range from 1 to 10. Two secondary metrics co
 Recall@20 $= |\mathcal{R}_q \cap \mathrm{Top}_{20}(q)| / |\mathcal{R}_q|$ reflects an engineer who
 reviews 20 candidates. Mean average precision (MAP) averages over cases
 \begin{equation}
-  \mathrm{AP}(q) = \frac{1}{|\mathcal{R}^{*}_q|} \sum_{e \in \mathcal{R}^{*}_q} P(e) ,
+  \mathrm{AP}(q) = \frac{1}{|\mathcal{R}_q|} \sum_{e \in \mathcal{R}_q} P(e) ,
   \label{eq:ap}
 \end{equation}
-where $\mathcal{R}^{*}_q$ holds the ground-truth equations that appear in the ranking, $P(e)$ is the
-fraction of ground-truth equations among the equations ranked at or above $e$, and
-$\mathrm{AP}(q) = 0$ when $\mathcal{R}^{*}_q$ is empty; MAP shows how closely the correct equations
-crowd at the top. The baselines rank the whole database, so $\mathcal{R}^{*}_q = \mathcal{R}_q$ for
-them, whereas a reranker ranks only its $k$ candidates, so its MAP leaves out the ground-truth
-equations that Stage~1 misses and favors the reranker. Counting each missing equation as zero
-precision, the standard definition, leaves the baselines unchanged and lowers the MAP of the
-proposed method from 0.863 to 0.796 in Setting~A and from 0.832 to 0.715 in Setting~B.
-% source: evaluate_multi_eq.py case_metrics L98-105（ap_values は rank < miss_rank の正解式だけ、np.mean で平均）。
-%         標準定義との比較は保存済みの per-case の ranks から再計算（2026-10-12、読み取りのみ。AP_std = Σ k/r_k / K）:
-%         strat_A.json reranker-10S 0.8629 → 0.7960、strat_B_percase.json reranker-10S 0.8321 → 0.7149;
-%         baseline（strat_A/B_percase baseline、xk50/baseline40_*）は全 DB を並べ rank < 10,000 なので両定義で同じ。
+where $P(e)$ is the fraction of ground-truth equations among the equations ranked at or above $e$,
+and $P(e) = 0$ when $e$ is not in the ranking; for a reranker, which ranks only its $k$ candidates,
+these are the ground-truth equations that Stage~1 did not admit. MAP shows how closely the correct
+equations crowd at the top.
+% source: MAP はすべて標準の定義（式 eq:ap）。値は保存済みの per-case の順位から計算した
+%         experiments/kato_0831_followup_stats.json map_standard（analyze_kato_0831_followup.py map_standard():
+%         MISS_RANK = 10,000、AP = Σ_{k 番目に見つかった正解式} k / r_k / K）。評価スクリプトの AP
+%         （evaluate_multi_eq.py case_metrics L98-105）は並べた中の正解式だけで平均するため提案手法で高めに出る
+%         （A 0.863、B 0.832）。2026-10-12 本人指示「修論も標準の定義の MAP にそろえて」で標準の定義に統一した。
 For LLM direct generation, Recall@K counts the ground-truth equations that have an equivalent among
 the first $K$ generated equations, a rank-free coverage counts those with an equivalent anywhere
 among the first 12, and MAP and Recall@20 are not computed. The candidate coverage of

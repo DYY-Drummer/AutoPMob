@@ -46,11 +46,16 @@ alone rarely identifies the equations of a case. BM25 and E5 peak at $(0.1, 0.9)
 level of the best TF-IDF mixture.
 % source: experiments/external_baselines_{A,B}.json results.tfidf__none__w*, bm25__minmax__w10-90,
 %         e5io__minmax__w10-90（per_seed の平均と標準偏差、10 seed）。日本語版報告 付録 A の表と同じ値
+% MAP の定義の確認（2026-10-12、標準の定義への統一）: external_baselines.py --save-per-case を scratch に出力して
+%   再実行し（学習なし・決定的。集計値は上の JSON と全ラベルで完全一致）、各正解式の順位を得た。順位 10,000 以上の正解式は
+%   (1.0, 0.0) だけ（A 176/17,420 本、B 101/13,468 本）で、ほかの全行（BM25・E5 を含む）は実装と標準の定義で MAP が同じ。
+%   (1.0, 0.0) の標準の定義の MAP は A 0.1473±0.0252（実装 0.1475）→ 0.147、B 0.1695±0.0297（実装 0.1700）→ 0.170 で不変。
 
 \begin{table}[h]\centering
 \caption{The classical baseline (TF-IDF text similarity mixed with the variable overlap, ranking the
 whole database) under 12 weight pairs, and BM25 and E5 at their best weights (mean $\pm$ SD over 10
-splits). Bold marks the best Recall@K of each setting.}
+splits; MAP by the standard definition of Eq.~\eqref{eq:ap}). Bold marks the best Recall@K of each
+setting.}
 \label{tab:weights}
 \footnotesize
 \setlength{\tabcolsep}{2.5pt}
@@ -60,7 +65,7 @@ splits). Bold marks the best Recall@K of each setting.}
 \cmidrule{2-4}\cmidrule{6-8}
 $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@K & MAP & Recall@20 & & Recall@K & MAP & Recall@20 \\
 \midrule
-$(1.0, 0.0)$ & $0.120 \pm 0.020$ & $0.148 \pm 0.025$ & $0.311 \pm 0.049$ & & $0.153 \pm 0.029$ & $0.170 \pm 0.030$ & $0.360 \pm 0.053$ \\
+$(1.0, 0.0)$ & $0.120 \pm 0.020$ & $0.147 \pm 0.025$ & $0.311 \pm 0.049$ & & $0.153 \pm 0.029$ & $0.170 \pm 0.030$ & $0.360 \pm 0.053$ \\
 $(0.9, 0.1)$ & $0.215 \pm 0.030$ & $0.255 \pm 0.033$ & $0.503 \pm 0.065$ & & $0.254 \pm 0.031$ & $0.289 \pm 0.033$ & $0.516 \pm 0.048$ \\
 $(0.8, 0.2)$ & $0.370 \pm 0.035$ & $0.433 \pm 0.045$ & $0.726 \pm 0.049$ & & $0.379 \pm 0.032$ & $0.423 \pm 0.034$ & $0.645 \pm 0.037$ \\
 $(0.7, 0.3)$ & $0.521 \pm 0.045$ & $0.581 \pm 0.045$ & $0.836 \pm 0.023$ & & $0.466 \pm 0.037$ & $0.512 \pm 0.035$ & $0.721 \pm 0.032$ \\

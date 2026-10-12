@@ -43,20 +43,21 @@ baseline that shares the first-stage weights $(0.7, 0.3)$, the gain is $+0.222$ 
 $+0.223$ in Setting~B; Section~\ref{sec:mechanism} decomposes the former.
 % source: stage1_weight_stats.json overall.reranker-10S.w30-70（0.7799±0.0477）; kato_0831_followup_stats.json
 %         stage1_B_w30-70.summary（0.7401±0.0405）, vs_best_baseline.{A,B}.proposed_w30-70（Recall@K +0.1728 /
-%         +0.1815、MAP +0.1861 / +0.2157、Recall@20 +0.0504 / +0.0979、すべて wins 10, p 0.00195）;
+%         +0.1815、Recall@20 +0.0504 / +0.0979、wins 10, p 0.00195）; MAP は標準の定義で map_standard.{A,B}.
+%         proposed_w30-70.MAP_standard_vs_best_baseline（+0.1582 / +0.1677、wins 10, p 0.00195）;
 %         strat_A.json / strat_B.json baseline（0.5206 / 0.4661）
 
-The secondary metrics qualify the gain. In MAP the proposed method leads the best baseline on all
-10 splits in both settings, under the implemented and the standard definition of
-Section~\ref{sec:metrics} alike. In Recall@20, however, the proposed method with the weights
+The secondary metrics qualify the gain. In MAP the proposed method with the weights $(0.7, 0.3)$
+leads the best baseline on all 10 splits, by $+0.104$ in Setting~A and $+0.088$ in Setting~B
+($p = 0.00195$). In Recall@20, however, the proposed method with the weights
 $(0.7, 0.3)$ nearly ties the best baseline: 0.909 against 0.907 in Setting~A ($p = 0.49$) and 0.838
 against 0.827 in Setting~B ($p = 0.049$). The reranker reorders only the 50 candidates of Stage~1,
 and under these weights the candidates hold only 92.0\% of the ground-truth equations in
 Setting~A. The weights $(0.3, 0.7)$ raise this coverage to 96.7\% and Recall@20 to 0.957 and 0.925.
-% source: kato_0831_followup_stats.json vs_best_baseline.{A,B}.proposed_w70-30（MAP +0.1713 / +0.2052 wins 10;
-%         Recall@20 +0.0027 wins 6 p 0.49219 / +0.0117 wins 9 p 0.04883）; strat_A/B.json Recall@20 0.9095 / 0.8384;
-%         external_baselines_{A,B}.json w40-60 Recall@20 0.9068 / 0.8267; 標準定義の MAP でも wins 10（A +0.1045、
-%         B +0.0879。保存済み per-case ranks からの再計算、Experiment.tex §5.3 の source を参照）;
+% source: kato_0831_followup_stats.json map_standard.{A,B}.proposed_w70-30.MAP_standard_vs_best_baseline
+%         （+0.1045 / +0.0879、wins 10、p 0.00195。A は対差の平均 0.104492）; vs_best_baseline.{A,B}.proposed_w70-30
+%         （Recall@20 +0.0027 wins 6 p 0.49219 / +0.0117 wins 9 p 0.04883）; strat_A/B.json Recall@20 0.9095 / 0.8384;
+%         external_baselines_{A,B}.json w40-60 Recall@20 0.9068 / 0.8267;
 %         stage1_weight_coverage.json k=50（w70-30 0.9203, w30-70 0.9671）; Recall@20 (0.3,0.7): xs1/ 0.9572,
 %         kato_0831_followup_stats.json stage1_B_w30-70 0.9246
 
@@ -113,9 +114,9 @@ where and why the proposed combination works.
 \caption{Recall@K, MAP, and Recall@20 of the compared methods (retrieval methods: mean $\pm$ SD
 over 10 stratified splits). ``Weights'' gives $(w_{\mathrm{t}}, w_{\mathrm{v}})$ of the Stage-1
 score; $(0.4, 0.6)$ is the best of the 12 baseline weights (Table~\ref{tab:weights}), and BM25 and E5
-mix their min--max-normalized text score with the variable-overlap term at their best weights. The
-MAP of the proposed method leaves out the ground-truth equations outside its candidates
-(Section~\ref{sec:metrics}). LLM direct generation is a single-run evaluation on a uniform sample
+mix their min--max-normalized text score with the variable-overlap term at their best weights. MAP
+counts a ground-truth equation outside the ranking as zero precision (Eq.~\eqref{eq:ap}). LLM direct
+generation is a single-run evaluation on a uniform sample
 with equivalence judged by Claude Opus 4.8; the values in parentheses come from the second judge,
 Claude Fable 5.1, and MAP and Recall@20 are not available for it.}
 \label{tab:overall}
@@ -128,27 +129,31 @@ Method & Weights & Recall@K & MAP & Recall@20 \\
 \multicolumn{5}{l}{\textit{Setting A (mixed, 1,823 cases)}} \\
 % source: experiments/external_baselines_A.json tfidf__none__w40-60 / strat_A.json baseline /
 %         external_baselines_A.json bm25__minmax__w10-90, e5io__minmax__w10-90 / llm_set_A_equiv_results.json
-%         (+ _fable51) / strat_A.json reranker-10S / stage1_weight_stats.json w30-70 と xs1/（MAP 0.8777±0.0349,
-%         Recall@20 0.9572±0.0112）
+%         (+ _fable51) / strat_A.json reranker-10S / stage1_weight_stats.json w30-70 と xs1/（Recall@20 0.9572±0.0112）;
+%         MAP は標準の定義: map_standard.A（baseline_w40-60 0.6915±0.0456、baseline_w70-30 0.5813±0.0454、
+%         proposed_w70-30 0.7960±0.0426、proposed_w30-70 0.8498±0.0377）。BM25・E5 は全 DB を並べ、順位 10,000 以上の
+%         正解式がないので両定義で同じ（per-case を出力した再実行で確認。Appendix.tex 表 tab:weights の source）
 Baseline (classical IR) & $(0.4, 0.6)$ & $0.607 \pm 0.043$ & $0.692 \pm 0.046$ & $0.907 \pm 0.016$ \\
 Baseline (classical IR) & $(0.7, 0.3)$ & $0.521 \pm 0.045$ & $0.581 \pm 0.045$ & $0.836 \pm 0.023$ \\
 BM25 + variables & $(0.1, 0.9)$ & $0.601 \pm 0.037$ & $0.692 \pm 0.041$ & $0.905 \pm 0.016$ \\
 E5 (dense) + variables & $(0.1, 0.9)$ & $0.602 \pm 0.039$ & $0.684 \pm 0.039$ & $0.896 \pm 0.015$ \\
 LLM direct generation ($n = 48$) & --- & 0.254 (0.198) & --- & --- \\
-Proposed (reranker-10S) & $(0.7, 0.3)$ & $0.743 \pm 0.054$ & $0.863 \pm 0.041$ & $0.909 \pm 0.014$ \\
-\textbf{Proposed (reranker-10S)} & $(0.3, 0.7)$ & $\mathbf{0.780 \pm 0.048}$ & $\mathbf{0.878 \pm 0.035}$ & $\mathbf{0.957 \pm 0.011}$ \\
+Proposed (reranker-10S) & $(0.7, 0.3)$ & $0.743 \pm 0.054$ & $0.796 \pm 0.043$ & $0.909 \pm 0.014$ \\
+\textbf{Proposed (reranker-10S)} & $(0.3, 0.7)$ & $\mathbf{0.780 \pm 0.048}$ & $\mathbf{0.850 \pm 0.038}$ & $\mathbf{0.957 \pm 0.011}$ \\
 \midrule
 \multicolumn{5}{l}{\textit{Setting B (synthesized only, 1,000 cases)}} \\
 % source: experiments/external_baselines_B.json tfidf__none__w40-60 / strat_B.json baseline /
 %         external_baselines_B.json bm25__minmax__w10-90, e5io__minmax__w10-90 / llm_set_B_equiv_results.json
-%         (+ _fable51) / strat_B.json reranker-10S / kato_0831_followup_stats.json stage1_B_w30-70.summary
+%         (+ _fable51) / strat_B.json reranker-10S / kato_0831_followup_stats.json stage1_B_w30-70.summary;
+%         MAP は標準の定義: map_standard.B（baseline_w40-60 0.6269±0.0359、baseline_w70-30 0.5120±0.0351、
+%         proposed_w70-30 0.7149±0.0339、proposed_w30-70 0.7946±0.0398）
 Baseline (classical IR) & $(0.4, 0.6)$ & $0.559 \pm 0.038$ & $0.627 \pm 0.036$ & $0.827 \pm 0.027$ \\
 Baseline (classical IR) & $(0.7, 0.3)$ & $0.466 \pm 0.037$ & $0.512 \pm 0.035$ & $0.721 \pm 0.032$ \\
 BM25 + variables & $(0.1, 0.9)$ & $0.555 \pm 0.032$ & $0.624 \pm 0.035$ & $0.822 \pm 0.026$ \\
 E5 (dense) + variables & $(0.1, 0.9)$ & $0.544 \pm 0.027$ & $0.611 \pm 0.031$ & $0.806 \pm 0.023$ \\
 LLM direct generation ($n = 50$) & --- & 0.226 (0.150) & --- & --- \\
-Proposed (reranker-10S) & $(0.7, 0.3)$ & $0.689 \pm 0.033$ & $0.832 \pm 0.037$ & $0.838 \pm 0.026$ \\
-\textbf{Proposed (reranker-10S)} & $(0.3, 0.7)$ & $\mathbf{0.740 \pm 0.040}$ & $\mathbf{0.843 \pm 0.038}$ & $\mathbf{0.925 \pm 0.020}$ \\
+Proposed (reranker-10S) & $(0.7, 0.3)$ & $0.689 \pm 0.033$ & $0.715 \pm 0.034$ & $0.838 \pm 0.026$ \\
+\textbf{Proposed (reranker-10S)} & $(0.3, 0.7)$ & $\mathbf{0.740 \pm 0.040}$ & $\mathbf{0.795 \pm 0.040}$ & $\mathbf{0.925 \pm 0.020}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
