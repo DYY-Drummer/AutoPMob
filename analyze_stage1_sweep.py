@@ -107,9 +107,9 @@ def make_report_figure(out_png="docs/figures/fig_stage1_redesign_ja.png"):
     order = ["w70-30", "w50-50", "w30-70", "w00-100"]
     color = {"w70-30": "#9aa0a6", "w50-50": "#f9ab00",
              "w30-70": "#1a73e8", "w00-100": "#188038"}
-    label = {"w70-30": "現行（文章 0.7＋変数 0.3）", "w50-50": "文章 0.5＋変数 0.5",
-             "w30-70": "文章 0.3＋変数 0.7", "w00-100": "変数のみ"}
-    tick = {"w70-30": "0.7 / 0.3\n（現行）", "w50-50": "0.5 / 0.5",
+    label = {"w70-30": "文章 0.7＋変数 0.3", "w50-50": "文章 0.5＋変数 0.5",
+             "w30-70": "文章 0.3＋変数 0.7", "w00-100": "変数のみ（文章 0＋変数 1）"}
+    tick = {"w70-30": "0.7 / 0.3", "w50-50": "0.5 / 0.5",
             "w30-70": "0.3 / 0.7", "w00-100": "0.0 / 1.0"}
 
     fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.6),
@@ -124,7 +124,7 @@ def make_report_figure(out_png="docs/figures/fig_stage1_redesign_ja.png"):
         ax.axvline(kk, color="#888888", ls=":", lw=1.1)
     ax.set_xscale("log")
     ax.set_xticks(ks); ax.set_xticklabels([str(k) for k in ks])
-    ax.set_xlabel("候補件数 k（対数軸。点線は実験で使う k=50 と k=200）")
+    ax.set_xlabel("候補の件数 $N_1$（対数軸。点線は実験で使う 50 件と 200 件）")
     ax.set_ylabel("正解式が候補に入る割合（平均±標準誤差）")
     ax.set_title("(a) 第 1 段の重み別の被覆率＝第 2 段の上限")
     ax.set_ylim(0.70, 1.005)
@@ -147,10 +147,10 @@ def make_report_figure(out_png="docs/figures/fig_stage1_redesign_ja.png"):
     ax.set_xticklabels([tick[wl] for wl in order], fontsize=9)
     ax.set_xlabel("第 1 段の重み（文章／変数）")
     ax.set_ylabel("Recall@K（乱数 10 通りそれぞれの平均）")
-    ax.set_title("(b) 同じ重みで訓練し直したときの Recall@K（k=50）")
+    ax.set_title("(b) 同じ重みで訓練し直したときの Recall@K（$N_1$=50）")
     handles = [Patch(facecolor="#9aa0a6", alpha=0.85, label="古典的情報検索手法（baseline）"),
-               Patch(facecolor="#1a73e8", alpha=0.85, label="本手法（reranker-10S、訓練し直し）")]
-    ax.legend(handles=handles, fontsize=8.5, loc="center right")
+               Patch(facecolor="#1a73e8", alpha=0.85, label="提案手法（一括の並べ直し）")]
+    ax.legend(handles=handles, fontsize=8.5, loc="lower right")
     ax.grid(axis="y", alpha=0.3)
 
     fig.tight_layout()
