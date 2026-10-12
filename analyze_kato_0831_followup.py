@@ -7,6 +7,7 @@
   2. vs_best_baseline   : 提案手法（0.7/0.3 と 0.3/0.7）と最良重みの baseline（0.4/0.6）の検定（設定 A・B、3 指標）。
   3. bucket_A           : 設定 A の正解式数・入力変数数ごとの Recall@K（提案手法 0.7/0.3、baseline 0.4/0.6
                           （experiments/xk50/baseline40_A__*.json）、baseline 0.7/0.3）。10 分割の per-case を合併した平均。
+  5. map_standard       : 表 3 の各行の MAP を標準の定義（K で割り、並べた中にない正解式は 0）で数え直した値と、実装の値。
   4. gt_checks          : 評価 1,823 件の正解集合が Kato and Kano (2025) の要件 1〜3 を満たすか、式と未知変数の
                           完全マッチングがあるか、正解式に「同じ文字列（空白などを除く）の式が別出典にある」ものの数。
 """
@@ -145,6 +146,58 @@ def gt_checks():
             "gt_equations": len(gt_all), "identical_latex_in_other_source": len(dup)}
 
 
+MISS_RANK = 10_000  # evaluate_multi_eq.case_metrics と同じ（候補外の正解式の順位）
+
+
+def map_standard():
+    """MAP を標準の定義（AP = 正解式ごとの順位までの適合率の和 / K、並べた中にない正解式は 0）で数え直す.
+
+    evaluate_multi_eq.case_metrics の AP は「並べた中にある正解式だけ」で平均するため、第 1 段の候補に入らなかった
+    正解式を除く提案手法の値が高めに出る。baseline は全式を並べるので、どちらの定義でも同じ値になる。
+    """
+    def ap(ranks, standard):
+        rs = sorted(ranks)
+        v = [k / r for k, r in enumerate(rs, 1) if r < MISS_RANK]
+        if standard:
+            return sum(v) / len(rs) if rs else 0.0
+        return sum(v) / len(v) if v else 0.0
+
+    def files(pattern):
+        recs = []
+        for f in sorted(glob.glob(str(pattern))):
+            r = json.load(open(f))["results"]
+            recs += r[list(r)[0]]["per_case"]
+        return recs
+    sA = json.load(open(EXP / "strat_A.json"))["results"]
+    sB = json.load(open(EXP / "strat_B_percase.json"))["results"]
+    groups = {
+        "A": {"baseline_w70-30": sA["baseline"]["per_case"], "baseline_w40-60": files(EXP / "xk50" / "baseline40_A__*.json"),
+              "proposed_w70-30": sA["reranker-10S"]["per_case"], "proposed_w30-70": files(EXP / "xs1" / "reranker-10S_w30-70__*.json")},
+        "B": {"baseline_w70-30": sB["baseline"]["per_case"], "baseline_w40-60": files(EXP / "xk50" / "baseline40_B__*.json"),
+              "proposed_w70-30": sB["reranker-10S"]["per_case"], "proposed_w30-70": files(EXP / "xs1_B" / "reranker-10S_w30-70__*.json")},
+    }
+    out = {}
+    for setting, g in groups.items():
+        res, seed_std = {}, {}
+        for name, recs in g.items():
+            by_std, by_imp = collections.defaultdict(list), collections.defaultdict(list)
+            for c in recs:
+                by_std[c["seed"]].append(ap(c["ranks"], True))
+                by_imp[c["seed"]].append(ap(c["ranks"], False))
+            std_vals = [float(np.mean(by_std[s])) for s in SEEDS]
+            imp_vals = [float(np.mean(by_imp[s])) for s in SEEDS]
+            seed_std[name] = std_vals
+            res[name] = {"MAP_standard": {"mean": round(st.mean(std_vals), 4), "std": round(st.stdev(std_vals), 4)},
+                         "MAP_implemented": {"mean": round(st.mean(imp_vals), 4), "std": round(st.stdev(imp_vals), 4)}}
+        for w in ("proposed_w70-30", "proposed_w30-70"):
+            x, y = seed_std[w], seed_std["baseline_w40-60"]
+            d = [i - j for i, j in zip(x, y)]
+            res[w]["MAP_standard_vs_best_baseline"] = {"mean_delta": round(st.mean(d), 4), "wins": sum(v > 0 for v in d),
+                                                       "p_wilcoxon": round(float(wilcoxon(x, y).pvalue), 5)}
+        out[setting] = res
+    return out
+
+
 def main():
     out = {}
     pB = per_seed_runs(EXP / "xs1_B" / "reranker-10S_w30-70__*.json")
@@ -163,6 +216,7 @@ def main():
         }
     out["bucket_A"] = bucket_A()
     out["gt_checks"] = gt_checks()
+    out["map_standard"] = map_standard()
     path = EXP / "kato_0831_followup_stats.json"
     json.dump(out, open(path, "w"), ensure_ascii=False, indent=1)
     print(json.dumps(out["stage1_B_w30-70"]["summary"]), json.dumps(out["gt_checks"]))

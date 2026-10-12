@@ -245,5 +245,111 @@
   },
   "gt_equations": 3132,
   "identical_latex_in_other_source": 386
+ },
+ "map_standard": {
+  "A": {
+   "baseline_w70-30": {
+    "MAP_standard": {
+     "mean": 0.5813,
+     "std": 0.0454
+    },
+    "MAP_implemented": {
+     "mean": 0.5813,
+     "std": 0.0454
+    }
+   },
+   "baseline_w40-60": {
+    "MAP_standard": {
+     "mean": 0.6915,
+     "std": 0.0456
+    },
+    "MAP_implemented": {
+     "mean": 0.6915,
+     "std": 0.0456
+    }
+   },
+   "proposed_w70-30": {
+    "MAP_standard": {
+     "mean": 0.796,
+     "std": 0.0426
+    },
+    "MAP_implemented": {
+     "mean": 0.8629,
+     "std": 0.0412
+    },
+    "MAP_standard_vs_best_baseline": {
+     "mean_delta": 0.1045,
+     "wins": 10,
+     "p_wilcoxon": 0.00195
+    }
+   },
+   "proposed_w30-70": {
+    "MAP_standard": {
+     "mean": 0.8498,
+     "std": 0.0377
+    },
+    "MAP_implemented": {
+     "mean": 0.8777,
+     "std": 0.0349
+    },
+    "MAP_standard_vs_best_baseline": {
+     "mean_delta": 0.1582,
+     "wins": 10,
+     "p_wilcoxon": 0.00195
+    }
+   }
+  },
+  "B": {
+   "baseline_w70-30": {
+    "MAP_standard": {
+     "mean": 0.512,
+     "std": 0.0351
+    },
+    "MAP_implemented": {
+     "mean": 0.512,
+     "std": 0.0351
+    }
+   },
+   "baseline_w40-60": {
+    "MAP_standard": {
+     "mean": 0.6269,
+     "std": 0.0359
+    },
+    "MAP_implemented": {
+     "mean": 0.6269,
+     "std": 0.0359
+    }
+   },
+   "proposed_w70-30": {
+    "MAP_standard": {
+     "mean": 0.7149,
+     "std": 0.0339
+    },
+    "MAP_implemented": {
+     "mean": 0.8321,
+     "std": 0.0366
+    },
+    "MAP_standard_vs_best_baseline": {
+     "mean_delta": 0.0879,
+     "wins": 10,
+     "p_wilcoxon": 0.00195
+    }
+   },
+   "proposed_w30-70": {
+    "MAP_standard": {
+     "mean": 0.7946,
+     "std": 0.0398
+    },
+    "MAP_implemented": {
+     "mean": 0.8427,
+     "std": 0.0378
+    },
+    "MAP_standard_vs_best_baseline": {
+     "mean_delta": 0.1677,
+     "wins": 10,
+     "p_wilcoxon": 0.00195
+    }
+   }
+  }
  }
 }
