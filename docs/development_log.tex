@@ -358,6 +358,11 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-10-14（8/31 報告の改訂版に修正箇所の注を付けた版を作った）：
+    本人指示「PDF にして、修正したところをハイライトし、修正内容と理由を簡略に書く」（加藤先生との打ち合わせで改訂状況を確かめられるため）。
+    \texttt{make\_revision\_marked\_0831.py} が改訂版の tex（本文は変えない）から \texttt{docs/progress\_report\_2026-08-31\_methods\_results\_marked.tex} を作り、lualatex でビルドする。用紙の幅だけを 286 mm に広げて右の余白に注を置くので、本文の折り返しとページ番号は改訂版と同じ（ラベルのページを照合して一致）。ハイライトは \texttt{lua-ul}、注は \texttt{marginpar}（\texttt{marginfix}）。
+    色は、黄＝注釈に対応して書き直した箇所、青＝計算や実験を追加した箇所（MAP の数え直しを含む）、橙＝一部だけ対応し相談したい箇所（\#54、\#57、\#59）。ハイライト 90 か所、注 77 件。注の番号は対応表（\texttt{docs/加藤先生コメント対応\_2026-08-31報告.md}）と同じ。表紙に、見方、数値と結論が変わった主な点、相談したいこと 4 点をまとめた。
+    あわせて、改訂版 \S 1 の「次の 4 点を改めた」を「次の 5 点」に直した（(1)〜(5) を挙げているため）。ltjsarticle 版と jresume 版の PDF、Overleaf 用 zip の tex を作り直した。
   \item 2026-10-13(2)（8/31 報告の追加実行の結果を git に追加）：
     本人指示「xk50 と xs1\_B も commit して」。\texttt{experiments/xk50/}（最良の重み $(0.4, 0.6)$ の baseline の per-case 付き 20 件、逐次選択の $N_1 = 50$ の推論のみと訓練も逐次の 40 件、各ログ）と \texttt{experiments/xs1\_B/}（設定 B の第 1 段の重み $(0.3, 0.7)$ の 10 seed とログ）を追加した。\texttt{analyze\_kato\_0831\_followup.py}、\texttt{analyze\_greedy\_3way\_k50.py}、\texttt{generate\_figures\_thesis.py} が読むデータで、これで集計を再現できる。完了マーカー \texttt{sweep\_B\_k50.done}（空）は、既存の \texttt{.gitignore}（\texttt{experiments/*.done}）の方針に合わせて外した。
   \item 2026-10-13（作文技術チェックリストに本人の指摘 3 件を追記）：
