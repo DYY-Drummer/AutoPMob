@@ -128,3 +128,6 @@ experiments/var_descriptions_raw/
 
 # 変数の説明による照合の本実験の実行ログ（run_var_description.sh が書く、追跡しない）
 experiments/var_desc_logs/
+
+# 2026-10-15 加藤先生の指示 3・4・5 の再実験：分割ごとの実行・試行・確認の生データ（run_kato1014*.sh で再生成できる。統計 JSON のみコミット）
+experiments/kato1014/raw/

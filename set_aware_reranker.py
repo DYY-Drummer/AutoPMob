@@ -212,13 +212,15 @@ def compute_features_with_set(
 
 def greedy_order(cands, full_feats, init_scores, model, set_mask,
                  eq_vars_l, eq_domains_l, output_v, query_vars,
-                 n_base, greedy_cap=20):
+                 n_base, greedy_cap=20, setf_fn=None):
     """推論時 greedy 集合構築：1 件選ぶごとに set-aware 特徴量を「既選択集合」を
     参照に再計算して次を選ぶ（学習済みモデルをそのまま使用，新規学習不要）。
 
     full_feats : 通常スコアリング用の全特徴量（base + set-aware）。
     init_scores: full_feats による初期スコア（最初の 1 件と残りの順序付けに使用）。
     n_base     : set-aware より前の特徴量数（基本 7 [+既存グラフ 3]）。
+    setf_fn    : (rem_db, ref_idx) -> set-aware 特徴量。None なら compute_set_aware_features
+                 （--fast では stage2_fast.FastBank.set_features。同じ値を返す）。
     """
     idx_map = {"Comp": 0, "Coh": 1, "Dom": 2, "OutNov": 3}
     npos = len(cands)
@@ -229,10 +231,13 @@ def greedy_order(cands, full_feats, init_scores, model, set_mask,
     while remaining and len(sel) < cap:
         ref_idx = [cands[k] for k in sel]            # 既選択集合（DB index）
         rem_db = [cands[k] for k in remaining]
-        setf = compute_set_aware_features(
-            rem_db, query_vars or set(), eq_vars_l, eq_domains_l,
-            output_vars=output_v, ref_indices=ref_idx,
-        )
+        if setf_fn is not None:
+            setf = setf_fn(rem_db, ref_idx)
+        else:
+            setf = compute_set_aware_features(
+                rem_db, query_vars or set(), eq_vars_l, eq_domains_l,
+                output_vars=output_v, ref_indices=ref_idx,
+            )
         feat = np.array(full_feats[remaining], dtype=np.float32, copy=True)
         for i, name in enumerate(set_mask):
             feat[:, n_base + i] = setf[:, idx_map[name]]
@@ -351,7 +356,12 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
              hidden_dim=64, margin=0.1, batch_size=16, n_neg_samples=8,
              weight_decay=1e-4, loss_type="pairwise", hard_neg=False, greedy=False,
              split_mode="random", train_greedy=False, greedy_train_cap=8,
-             stop_dof=False, stage1_w_text=0.7, stage1_w_var=0.3):
+             stop_dof=False, stage1_w_text=0.7, stage1_w_var=0.3,
+             fast=False, neg_pool=0, on_trained=None):
+    """fast=True: 特徴量を stage2_fast.FastBank でまとめて計算する（同じ値・同じ乱数の消費。
+    N1 を数千〜DB 全体に広げるため）。neg_pool>0: 不正解の候補を第 1 段の上位 neg_pool 件の
+    中からだけ選ぶ（0 = 候補全体から、既定）。on_trained: 訓練の直後に
+    {seed, model, te, get_cands, get_feats, base_subset} を渡して呼ぶ（PFI などの分析用。評価は変えない）。"""
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -364,6 +374,10 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
     n_feat = (len(base_subset) if base_subset else 7) + (3 if use_existing else 0) + len(set_mask)
     n_eq = len(eq_keys_l)
     graph = BipartiteGraph(eq_vars_l) if use_existing else None
+    if fast and use_existing:
+        raise ValueError("--fast は既存グラフ特徴量（reranker-10 / -13）に対応していない")
+    # 候補が 10,000 件以上（第 1 段なし）のときは、候補外の印 10,000 が本当の順位と重なるので大きくする
+    miss_rank = 10_000 if top_k < 10_000 else 10 ** 9
 
     per_seed_aggs = []
     per_case_records = []  # only populated when save_per_case=True
@@ -391,6 +405,27 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
         Q = svd.transform(tfidf.transform([case_text(c, io=True) for c in cases]))
         Q = Q/(np.linalg.norm(Q,axis=1,keepdims=True)+1e-12)
         svd_sim = Q @ E.T
+
+        bank = None
+        if fast:
+            from stage2_fast import FastBank
+            bank = FastBank(X_ctx, X_eq, cases, eq_vars_l, eq_domains_l, svd_sim)
+
+        def get_cands(ci):
+            if bank is not None:
+                return bank.stage1(ci, top_k, stage1_w_text, stage1_w_var)
+            return stage1(ci, X_ctx, X_eq, ios[ci], eq_vars_l, top_k,
+                          w_text=stage1_w_text, w_var=stage1_w_var)
+
+        def get_feats(ci, cands):
+            if bank is not None:
+                return bank.features(ci, cands, set_mask)
+            ts = cosine_similarity(X_ctx[ci], X_eq).ravel()
+            return compute_features_with_set(
+                cands, ts, ios[ci], in_vars(cases[ci]), out_vars(cases[ci]),
+                svd_sim[ci], eq_vars_l, eq_domains_l, case_text(cases[ci]),
+                graph, ios[ci], use_existing, set_mask,
+            )
 
         case_results = []
 
@@ -422,18 +457,13 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                     for ci in batch:
                         corr = set(correct_lists[ci])
                         if not corr: continue
-                        cands = stage1(ci, X_ctx, X_eq, ios[ci], eq_vars_l, top_k,
-                                       w_text=stage1_w_text, w_var=stage1_w_var)
+                        cands = get_cands(ci)
                         pos = [j for j in cands if j in corr]
-                        neg = [j for j in cands if j not in corr]
+                        neg_src = cands[:neg_pool] if neg_pool > 0 else cands
+                        neg = [j for j in neg_src if j not in corr]
                         if not pos or not neg: continue
 
-                        ts = cosine_similarity(X_ctx[ci], X_eq).ravel()
-                        feats = compute_features_with_set(
-                            cands, ts, ios[ci], in_vars(cases[ci]), out_vars(cases[ci]),
-                            svd_sim[ci], eq_vars_l, eq_domains_l, case_text(cases[ci]),
-                            graph, ios[ci], use_existing, set_mask,
-                        )
+                        feats = get_feats(ci, cands)
                         if base_subset:
                             feats = feats[:, list(base_subset)]
                         c2k = {j: k for k, j in enumerate(cands)}
@@ -454,16 +484,27 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                                 if t == 0:
                                     feat_t = feats  # 種：静的参照
                                 else:
-                                    setf = compute_set_aware_features(
-                                        cands, qv, eq_vars_l, eq_domains_l,
-                                        output_vars=out_v, ref_indices=sel_db,
-                                    )
+                                    if bank is not None:
+                                        setf = bank.set_features(ci, cands, sel_db)
+                                    else:
+                                        setf = compute_set_aware_features(
+                                            cands, qv, eq_vars_l, eq_domains_l,
+                                            output_vars=out_v, ref_indices=sel_db,
+                                        )
                                     feat_t = np.array(feats, dtype=np.float32, copy=True)
                                     for i, name in enumerate(set_mask):
                                         feat_t[:, n_base + i] = setf[:, idx_map[name]]
                                 scores = model(torch.tensor(feat_t, dtype=torch.float32))
                                 pk = c2k[pos[t]]
-                                chosen = rng.sample(neg, ns)
+                                if hard_neg and bank is not None:
+                                    # 段階 t の参照集合で計算した点数が高い不正解（同点は候補の順）
+                                    s_np = scores.detach().numpy()
+                                    key = -s_np[[c2k[j] for j in neg]]
+                                    chosen = [neg[i] for i in np.argsort(key, kind="stable")[:ns]]
+                                elif hard_neg:
+                                    chosen = sorted(neg, key=lambda j: -float(scores[c2k[j]].detach()))[:ns]
+                                else:
+                                    chosen = rng.sample(neg, ns)
                                 for ng in chosen:
                                     losses.append(F.relu(margin - scores[pk] + scores[c2k[ng]]))
                                 sel_db.append(pos[t])  # teacher forcing：正解接頭辞を既選択に
@@ -477,7 +518,12 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                             losses.append(lse - scores[torch.tensor(pos_k)].mean())
                         else:
                             ns = min(n_neg_samples, len(neg))
-                            if hard_neg:
+                            if hard_neg and bank is not None:
+                                # 下の sorted（安定）と同じ順：点数の降順、同点は候補の順
+                                s_np = scores.detach().numpy()
+                                key = -s_np[[c2k[j] for j in neg]]
+                                chosen = [neg[i] for i in np.argsort(key, kind="stable")[:ns]]
+                            elif hard_neg:
                                 # 現在スコアが高い（最も紛らわしい）negative を優先
                                 neg_sorted = sorted(neg, key=lambda j: -float(scores[c2k[j]].detach()))
                                 chosen = neg_sorted[:ns]
@@ -491,18 +537,17 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                         opt.zero_grad(); loss.backward(); opt.step()
 
             model.eval()
+            if on_trained is not None:
+                on_trained({"seed": seed, "model": model, "te": list(te), "get_cands": get_cands,
+                            "get_feats": (lambda ci, cands: get_feats(ci, cands)[:, list(base_subset)]
+                                          if base_subset else get_feats(ci, cands)),
+                            "base_subset": base_subset})
             with torch.no_grad():
                 for ci in te:
                     corr = set(correct_lists[ci])
                     if not corr: continue
-                    cands = stage1(ci, X_ctx, X_eq, ios[ci], eq_vars_l, top_k,
-                                   w_text=stage1_w_text, w_var=stage1_w_var)
-                    ts = cosine_similarity(X_ctx[ci], X_eq).ravel()
-                    feats = compute_features_with_set(
-                        cands, ts, ios[ci], in_vars(cases[ci]), out_vars(cases[ci]),
-                        svd_sim[ci], eq_vars_l, eq_domains_l, case_text(cases[ci]),
-                        graph, ios[ci], use_existing, set_mask,
-                    )
+                    cands = get_cands(ci)
+                    feats = get_feats(ci, cands)
                     if base_subset:
                         feats = feats[:, list(base_subset)]
                     scores = model(torch.tensor(feats, dtype=torch.float32)).numpy().ravel()
@@ -514,16 +559,20 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                             n_feat - len(set_mask), in_vars(cases[ci]),
                         )
                     elif (greedy or train_greedy) and set_mask:
+                        setf_fn = None
+                        if bank is not None:
+                            setf_fn = (lambda rem_db, ref_idx, _ci=ci:
+                                       bank.set_features(_ci, rem_db, ref_idx))
                         ranked_topK = greedy_order(
                             cands, feats, scores, model, set_mask,
                             eq_vars_l, eq_domains_l, out_vars(cases[ci]), ios[ci],
-                            n_feat - len(set_mask),
+                            n_feat - len(set_mask), setf_fn=setf_fn,
                         )
                     else:
                         order = sorted(range(len(cands)), key=lambda k: -scores[k])
                         ranked_topK = [cands[k] for k in order]
-                    ranks = compute_all_ranks(ranked_topK, corr, miss_rank=10_000)
-                    cm = case_metrics(ranks)
+                    ranks = compute_all_ranks(ranked_topK, corr, miss_rank=miss_rank)
+                    cm = case_metrics(ranks, miss_rank=miss_rank)
                     cm["variant"] = norm(cases[ci].get("variant_type") or "?")
                     cm["case_id"] = cases[ci].get("case_id", f"idx_{ci}")
                     cm["n_input"] = len(in_vars(cases[ci]))
@@ -633,6 +682,11 @@ def main():
                         help="第1段の文章類似度の重み（既定 0.7。A1: 第1段再設計実験用）")
     parser.add_argument("--stage1-w-var", type=float, default=0.3,
                         help="第1段の変数 Jaccard の重み（既定 0.3。訓練・評価・baseline の全てに適用）")
+    parser.add_argument("--fast", action="store_true",
+                        help="特徴量を stage2_fast.FastBank でまとめて計算する（既定と同じ値・同じ乱数。"
+                             "N1 を数千〜DB 全体に広げる実験用。2026-10-14 加藤先生の指示 3）")
+    parser.add_argument("--neg-pool", type=int, default=0,
+                        help="訓練の不正解の候補を第1段の上位 N 件からだけ選ぶ（0 = 候補全体、既定）")
     args = parser.parse_args()
 
     all_seeds = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
@@ -692,6 +746,8 @@ def main():
             stop_dof=args.stop_dof,
             stage1_w_text=args.stage1_w_text,
             stage1_w_var=args.stage1_w_var,
+            fast=args.fast,
+            neg_pool=args.neg_pool,
         )
 
     print(f"\n{'='*100}")
