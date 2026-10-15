@@ -1,0 +1,17 @@
+{
+ "n_equations": 11146,
+ "n_changed": 10629,
+ "chars_before": 1055252,
+ "chars_after": 924374,
+ "db_symbols": 13220,
+ "case_symbols": 4239,
+ "case_symbols_not_in_db_symbols": 0,
+ "equations_real_symbol_set_changed": 0,
+ "examples_real": [],
+ "case_symbol_pairs": 174913,
+ "case_symbol_pairs_real_changed": 0,
+ "equations_own_symbol_substring_set_changed": 0,
+ "examples_substring": [],
+ "case_symbol_pairs_substring_changed": 358,
+ "note": "real: 記号として現れる（字句の切れ目で始まり切れ目で終わる。\\left の綴りの中の t は数えない）。substring: 文字列として含まれる（\\frac の f のような命令の中の文字も数える）。substring の変化は、命令を除いたために見かけの一致が消えた分。"
+}

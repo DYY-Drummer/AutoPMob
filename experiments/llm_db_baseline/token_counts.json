@@ -1,0 +1,38 @@
+{
+ "time": "2026-10-14T13:40:09+00:00",
+ "prompt_version": "v1",
+ "counts": [
+  {
+   "model": "claude-opus-5-5",
+   "system_x": 366,
+   "examples_A42": 406745,
+   "task_A42": 143,
+   "task_chars_A42": 342,
+   "task_chars_mean_A42": 688.2364066193853,
+   "examples_A123": 380428,
+   "task_A123": 143,
+   "task_chars_A123": 342,
+   "task_chars_mean_A123": 724.5121457489879,
+   "examples_A456": 401795,
+   "task_A456": 143,
+   "task_chars_A456": 342,
+   "task_chars_mean_A456": 695.3287671232877,
+   "examples_B42": 309383,
+   "task_B42": 298,
+   "task_chars_B42": 814,
+   "task_chars_mean_B42": 1025.1877729257642,
+   "examples_B123": 293236,
+   "task_B123": 242,
+   "task_chars_B123": 753,
+   "task_chars_mean_B123": 1024.96992481203,
+   "examples_B456": 284001,
+   "task_B456": 298,
+   "task_chars_B456": 814,
+   "task_chars_mean_B456": 1034.8615916955018,
+   "system_db_eq": 880793,
+   "system_db_eq+sym": 1311023,
+   "system_db_eq+def": 1986253,
+   "system_db_eq+ctx": 1573692
+  }
+ ]
+}

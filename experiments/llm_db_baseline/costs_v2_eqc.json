@@ -1,0 +1,671 @@
+{
+ "prompt_version": "v2",
+ "db_format": "eqc",
+ "reserve_for_output": 16000,
+ "out_tokens_per_call": [
+  70,
+  2000
+ ],
+ "models": {
+  "claude-fable-5-1": {
+   "system_db": 831967,
+   "overhead": 208,
+   "fit": {
+    "A42": {
+     "single_total": 1227048,
+     "single_room": -227048,
+     "halves_total": 811065,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3833538418602291
+    },
+    "A123": {
+     "single_total": 1201370,
+     "single_room": -201370,
+     "halves_total": 785387,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4100692870731979
+    },
+    "A456": {
+     "single_total": 1222233,
+     "single_room": -222233,
+     "halves_total": 806250,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38809493231962605
+    },
+    "A789": {
+     "single_total": 1232576,
+     "single_room": -232576,
+     "halves_total": 816593,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.37805155714796845
+    },
+    "A1024": {
+     "single_total": 1195054,
+     "single_room": -195054,
+     "halves_total": 779071,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.41722099345300717
+    },
+    "A2024": {
+     "single_total": 1229645,
+     "single_room": -229645,
+     "halves_total": 813662,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3808444782755544
+    },
+    "A3141": {
+     "single_total": 1190670,
+     "single_room": -190670,
+     "halves_total": 774687,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.42233352992310635
+    },
+    "A5926": {
+     "single_total": 1221144,
+     "single_room": -221144,
+     "halves_total": 805161,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38918352260580413
+    },
+    "A7777": {
+     "single_total": 1204371,
+     "single_room": -204371,
+     "halves_total": 788388,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.40675643662441985
+    },
+    "A9999": {
+     "single_total": 1219789,
+     "single_room": -219789,
+     "halves_total": 803806,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3905465692736362
+    },
+    "B42": {
+     "single_total": 1135347,
+     "single_room": -135347,
+     "halves_total": 719364,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.499586700347833
+    },
+    "B123": {
+     "single_total": 1119533,
+     "single_room": -119533,
+     "halves_total": 703550,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5271499843003175
+    },
+    "B456": {
+     "single_total": 1110505,
+     "single_room": -110505,
+     "halves_total": 694522,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5442936290084366
+    },
+    "B789": {
+     "single_total": 1126995,
+     "single_room": -126995,
+     "halves_total": 711012,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5137746011452199
+    },
+    "B1024": {
+     "single_total": 1142045,
+     "single_room": -142045,
+     "halves_total": 726062,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4887624457369105
+    },
+    "B2024": {
+     "single_total": 1152501,
+     "single_room": -152501,
+     "halves_total": 736518,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.47277204488138225
+    },
+    "B3141": {
+     "single_total": 1130226,
+     "single_room": -130226,
+     "halves_total": 714243,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5081914281774367
+    },
+    "B5926": {
+     "single_total": 1138029,
+     "single_room": -138029,
+     "halves_total": 722046,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4951954274627531
+    },
+    "B7777": {
+     "single_total": 1136385,
+     "single_room": -136385,
+     "halves_total": 720402,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.49787796310819094
+    },
+    "B9999": {
+     "single_total": 1123281,
+     "single_room": -123281,
+     "halves_total": 707298,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5203458939726838
+    }
+   },
+   "cost_usd": {
+    "single_3splits_out70": 690,
+    "subset_3splits_out70": 570,
+    "halves_3splits_out70": 1223,
+    "single_10splits_out70": 2250,
+    "subset_10splits_out70": 1851,
+    "halves_10splits_out70": 4016,
+    "single_3splits_out2000": 896,
+    "subset_3splits_out2000": 777,
+    "halves_3splits_out2000": 1842,
+    "single_10splits_out2000": 2928,
+    "subset_10splits_out2000": 2529,
+    "halves_10splits_out2000": 6050
+   },
+   "single_worst_total": 1232576,
+   "single_worst_room": -232576,
+   "single_fits_with_reserve": false,
+   "halves_worst_total": 816593,
+   "subset_share_min": 0.37805155714796845
+  },
+  "claude-opus-5-5": {
+   "system_db": 831967,
+   "overhead": 208,
+   "fit": {
+    "A42": {
+     "single_total": 1227048,
+     "single_room": -227048,
+     "halves_total": 811065,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3833538418602291
+    },
+    "A123": {
+     "single_total": 1201370,
+     "single_room": -201370,
+     "halves_total": 785387,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4100692870731979
+    },
+    "A456": {
+     "single_total": 1222233,
+     "single_room": -222233,
+     "halves_total": 806250,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38809493231962605
+    },
+    "A789": {
+     "single_total": 1232576,
+     "single_room": -232576,
+     "halves_total": 816593,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.37805155714796845
+    },
+    "A1024": {
+     "single_total": 1195054,
+     "single_room": -195054,
+     "halves_total": 779071,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.41722099345300717
+    },
+    "A2024": {
+     "single_total": 1229645,
+     "single_room": -229645,
+     "halves_total": 813662,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3808444782755544
+    },
+    "A3141": {
+     "single_total": 1190670,
+     "single_room": -190670,
+     "halves_total": 774687,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.42233352992310635
+    },
+    "A5926": {
+     "single_total": 1221144,
+     "single_room": -221144,
+     "halves_total": 805161,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38918352260580413
+    },
+    "A7777": {
+     "single_total": 1204371,
+     "single_room": -204371,
+     "halves_total": 788388,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.40675643662441985
+    },
+    "A9999": {
+     "single_total": 1219789,
+     "single_room": -219789,
+     "halves_total": 803806,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3905465692736362
+    },
+    "B42": {
+     "single_total": 1135347,
+     "single_room": -135347,
+     "halves_total": 719364,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.499586700347833
+    },
+    "B123": {
+     "single_total": 1119533,
+     "single_room": -119533,
+     "halves_total": 703550,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5271499843003175
+    },
+    "B456": {
+     "single_total": 1110505,
+     "single_room": -110505,
+     "halves_total": 694522,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5442936290084366
+    },
+    "B789": {
+     "single_total": 1126995,
+     "single_room": -126995,
+     "halves_total": 711012,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5137746011452199
+    },
+    "B1024": {
+     "single_total": 1142045,
+     "single_room": -142045,
+     "halves_total": 726062,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4887624457369105
+    },
+    "B2024": {
+     "single_total": 1152501,
+     "single_room": -152501,
+     "halves_total": 736518,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.47277204488138225
+    },
+    "B3141": {
+     "single_total": 1130226,
+     "single_room": -130226,
+     "halves_total": 714243,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5081914281774367
+    },
+    "B5926": {
+     "single_total": 1138029,
+     "single_room": -138029,
+     "halves_total": 722046,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4951954274627531
+    },
+    "B7777": {
+     "single_total": 1136385,
+     "single_room": -136385,
+     "halves_total": 720402,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.49787796310819094
+    },
+    "B9999": {
+     "single_total": 1123281,
+     "single_room": -123281,
+     "halves_total": 707298,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5203458939726838
+    }
+   },
+   "cost_usd": {
+    "single_3splits_out70": 528,
+    "subset_3splits_out70": 438,
+    "halves_3splits_out70": 891,
+    "single_10splits_out70": 1731,
+    "subset_10splits_out70": 1431,
+    "halves_10splits_out70": 2932,
+    "single_3splits_out2000": 611,
+    "subset_3splits_out2000": 521,
+    "halves_3splits_out2000": 1138,
+    "single_10splits_out2000": 2002,
+    "subset_10splits_out2000": 1702,
+    "halves_10splits_out2000": 3745
+   },
+   "single_worst_total": 1232576,
+   "single_worst_room": -232576,
+   "single_fits_with_reserve": false,
+   "halves_worst_total": 816593,
+   "subset_share_min": 0.37805155714796845
+  },
+  "claude-sonnet-5-5": {
+   "system_db": 831967,
+   "overhead": 208,
+   "fit": {
+    "A42": {
+     "single_total": 1227048,
+     "single_room": -227048,
+     "halves_total": 811065,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3833538418602291
+    },
+    "A123": {
+     "single_total": 1201370,
+     "single_room": -201370,
+     "halves_total": 785387,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4100692870731979
+    },
+    "A456": {
+     "single_total": 1222233,
+     "single_room": -222233,
+     "halves_total": 806250,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38809493231962605
+    },
+    "A789": {
+     "single_total": 1232576,
+     "single_room": -232576,
+     "halves_total": 816593,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.37805155714796845
+    },
+    "A1024": {
+     "single_total": 1195054,
+     "single_room": -195054,
+     "halves_total": 779071,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.41722099345300717
+    },
+    "A2024": {
+     "single_total": 1229645,
+     "single_room": -229645,
+     "halves_total": 813662,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3808444782755544
+    },
+    "A3141": {
+     "single_total": 1190670,
+     "single_room": -190670,
+     "halves_total": 774687,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.42233352992310635
+    },
+    "A5926": {
+     "single_total": 1221144,
+     "single_room": -221144,
+     "halves_total": 805161,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38918352260580413
+    },
+    "A7777": {
+     "single_total": 1204371,
+     "single_room": -204371,
+     "halves_total": 788388,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.40675643662441985
+    },
+    "A9999": {
+     "single_total": 1219789,
+     "single_room": -219789,
+     "halves_total": 803806,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3905465692736362
+    },
+    "B42": {
+     "single_total": 1135347,
+     "single_room": -135347,
+     "halves_total": 719364,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.499586700347833
+    },
+    "B123": {
+     "single_total": 1119533,
+     "single_room": -119533,
+     "halves_total": 703550,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5271499843003175
+    },
+    "B456": {
+     "single_total": 1110505,
+     "single_room": -110505,
+     "halves_total": 694522,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5442936290084366
+    },
+    "B789": {
+     "single_total": 1126995,
+     "single_room": -126995,
+     "halves_total": 711012,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5137746011452199
+    },
+    "B1024": {
+     "single_total": 1142045,
+     "single_room": -142045,
+     "halves_total": 726062,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4887624457369105
+    },
+    "B2024": {
+     "single_total": 1152501,
+     "single_room": -152501,
+     "halves_total": 736518,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.47277204488138225
+    },
+    "B3141": {
+     "single_total": 1130226,
+     "single_room": -130226,
+     "halves_total": 714243,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5081914281774367
+    },
+    "B5926": {
+     "single_total": 1138029,
+     "single_room": -138029,
+     "halves_total": 722046,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4951954274627531
+    },
+    "B7777": {
+     "single_total": 1136385,
+     "single_room": -136385,
+     "halves_total": 720402,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.49787796310819094
+    },
+    "B9999": {
+     "single_total": 1123281,
+     "single_room": -123281,
+     "halves_total": 707298,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5203458939726838
+    }
+   },
+   "cost_usd": {
+    "single_3splits_out70": 264,
+    "subset_3splits_out70": 219,
+    "halves_3splits_out70": 445,
+    "single_10splits_out70": 866,
+    "subset_10splits_out70": 715,
+    "halves_10splits_out70": 1466,
+    "single_3splits_out2000": 305,
+    "subset_3splits_out2000": 261,
+    "halves_3splits_out2000": 569,
+    "single_10splits_out2000": 1001,
+    "subset_10splits_out2000": 851,
+    "halves_10splits_out2000": 1873
+   },
+   "single_worst_total": 1232576,
+   "single_worst_room": -232576,
+   "single_fits_with_reserve": false,
+   "halves_worst_total": 816593,
+   "subset_share_min": 0.37805155714796845
+  },
+  "claude-haiku-5-5": {
+   "system_db": 831967,
+   "overhead": 208,
+   "fit": {
+    "A42": {
+     "single_total": 1227048,
+     "single_room": -227048,
+     "halves_total": 811065,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3833538418602291
+    },
+    "A123": {
+     "single_total": 1201370,
+     "single_room": -201370,
+     "halves_total": 785387,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4100692870731979
+    },
+    "A456": {
+     "single_total": 1222233,
+     "single_room": -222233,
+     "halves_total": 806250,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38809493231962605
+    },
+    "A789": {
+     "single_total": 1232576,
+     "single_room": -232576,
+     "halves_total": 816593,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.37805155714796845
+    },
+    "A1024": {
+     "single_total": 1195054,
+     "single_room": -195054,
+     "halves_total": 779071,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.41722099345300717
+    },
+    "A2024": {
+     "single_total": 1229645,
+     "single_room": -229645,
+     "halves_total": 813662,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3808444782755544
+    },
+    "A3141": {
+     "single_total": 1190670,
+     "single_room": -190670,
+     "halves_total": 774687,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.42233352992310635
+    },
+    "A5926": {
+     "single_total": 1221144,
+     "single_room": -221144,
+     "halves_total": 805161,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.38918352260580413
+    },
+    "A7777": {
+     "single_total": 1204371,
+     "single_room": -204371,
+     "halves_total": 788388,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.40675643662441985
+    },
+    "A9999": {
+     "single_total": 1219789,
+     "single_room": -219789,
+     "halves_total": 803806,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.3905465692736362
+    },
+    "B42": {
+     "single_total": 1135347,
+     "single_room": -135347,
+     "halves_total": 719364,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.499586700347833
+    },
+    "B123": {
+     "single_total": 1119533,
+     "single_room": -119533,
+     "halves_total": 703550,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5271499843003175
+    },
+    "B456": {
+     "single_total": 1110505,
+     "single_room": -110505,
+     "halves_total": 694522,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5442936290084366
+    },
+    "B789": {
+     "single_total": 1126995,
+     "single_room": -126995,
+     "halves_total": 711012,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5137746011452199
+    },
+    "B1024": {
+     "single_total": 1142045,
+     "single_room": -142045,
+     "halves_total": 726062,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4887624457369105
+    },
+    "B2024": {
+     "single_total": 1152501,
+     "single_room": -152501,
+     "halves_total": 736518,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.47277204488138225
+    },
+    "B3141": {
+     "single_total": 1130226,
+     "single_room": -130226,
+     "halves_total": 714243,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5081914281774367
+    },
+    "B5926": {
+     "single_total": 1138029,
+     "single_room": -138029,
+     "halves_total": 722046,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.4951954274627531
+    },
+    "B7777": {
+     "single_total": 1136385,
+     "single_room": -136385,
+     "halves_total": 720402,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.49787796310819094
+    },
+    "B9999": {
+     "single_total": 1123281,
+     "single_room": -123281,
+     "halves_total": 707298,
+     "subset_examples_tokens": 151097,
+     "subset_share": 0.5203458939726838
+    }
+   },
+   "cost_usd": {
+    "single_3splits_out70": 129,
+    "subset_3splits_out70": 107,
+    "halves_3splits_out70": 212,
+    "single_10splits_out70": 424,
+    "subset_10splits_out70": 352,
+    "halves_10splits_out70": 698,
+    "single_3splits_out2000": 139,
+    "subset_3splits_out2000": 118,
+    "halves_3splits_out2000": 243,
+    "single_10splits_out2000": 458,
+    "subset_10splits_out2000": 385,
+    "halves_10splits_out2000": 799
+   },
+   "single_worst_total": 1232576,
+   "single_worst_room": -232576,
+   "single_fits_with_reserve": false,
+   "halves_worst_total": 816593,
+   "subset_share_min": 0.37805155714796845
+  }
+ }
+}
