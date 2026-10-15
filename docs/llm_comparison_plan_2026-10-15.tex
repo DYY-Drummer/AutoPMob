@@ -1,0 +1,157 @@
+% LLM との比較の進め方と費用の見積もり（2026-10-15、加藤先生に確認いただく案）
+% 10/14 のミーティングの方針 1・2 を、本人の決定（2026-10-15）で具体化したもの。
+%   - 例題（訓練・検証のケース）は渡さない（ゼロショット）。データベースは分けずに 1 回で渡す。
+%   - 方向性 1：DB 全体（ID・式の表記・分野ラベル）。方向性 2：第 1 段の上位 2,000 式に詳しい情報を付ける。
+%   - 4 モデル（Haiku 5.5・Sonnet 5.5・Opus 5.5・Fable 5.1）、effort high、安いモデルから順に。
+% 数値の出どころ:
+%   - トークン数：count_tokens（experiments/llm_db_baseline/token_counts_v3.json、prefix 952,185）。
+%     方向性 2 は 40 ケースの上位 2,000 式の文字数から換算（DB 全体の全情報 2,679,152 トークン ÷ 5,672,636 文字）。
+%   - テストケースの数：experiments/llm_db_baseline/splits.json（A 延べ 4,594／異なる 1,592、B 2,432／941、和集合 1,665。
+%     3 分割は A 1,355、B 784、和集合 1,204）。
+%   - 料金（USD／100 万トークン、入力／キャッシュ読み出し／出力）：Fable 10/0.25/50、Opus 4/0.20/20、
+%     Sonnet 2/0.10/10、Haiku 0.50/0.05/2.50（10 万トークン超）。LLM 比較のセッションの調べ（2026-10-14）。
+%   - 候補 2,000 式の被覆率 1.000：第 1 段の見直しのセッション（experiments/kato1014/）。
+\documentclass[11pt,a4paper]{ltjsarticle}
+\usepackage{luatexja-fontspec}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[round]{natbib}
+\usepackage{hyperref}
+
+\geometry{margin=24mm}
+\setmainjfont[BoldFont=Hiragino Kaku Gothic ProN]{Hiragino Mincho ProN}
+\setsansjfont{Hiragino Kaku Gothic ProN}
+\setmonofont{Menlo}
+\hypersetup{colorlinks=true, linkcolor=blue!55!black, urlcolor=blue!55!black}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{LLM との比較の計画}
+\rhead{2026 年 10 月 15 日}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+\setlist{nosep}
+
+\begin{document}
+
+\begin{center}
+{\sffamily\large LLM との比較の進め方と費用の見積もり（案）}
+\end{center}
+\vspace{0.3em}
+\hfill 作成者：M2\ 一洋
+\vspace{0.8em}
+
+%======================================================================
+\section{目的}
+%======================================================================
+数式データベースがあることを前提に、作りたいモデルに使える式をデータベースから選ぶ性能を、大規模言語モデル（large language model, LLM）と提案手法で比べる。規模の異なる 4 つのモデル（Claude Haiku 5.5、Claude Sonnet 5.5、Claude Opus 5.5、Claude Fable 5.1）を使い、モデルの規模によって精度がどう変わるかも調べる。次の 2 つの方向性で行う。
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{方向性 1}：データベースの全 11{,}146 式から、LLM に式を選ばせる。
+  \item \textbf{方向性 2}：提案手法の第 1 段の検索が残した候補 2{,}000 式から、式の詳しい情報を付けて、LLM に式を選ばせる。LLM が第 2 段の検索の代わりになるかを調べる。
+\end{itemize}
+
+%======================================================================
+\section{2 つの方向性に共通の条件}
+%======================================================================
+\begin{itemize}[leftmargin=1.5em]
+  \item \textbf{呼び出し方}：Anthropic の API（application programming interface）を、設定済みの API キーでプログラムから呼ぶ。モデル名、指示文の版、設定、日時を記録し、同じ手順で再実行できるようにする。
+  \item \textbf{例題は与えない}（ゼロショット）。訓練と検証のケース（正解の分かっているケース）は渡さない。
+  \item \textbf{1 回の呼び出しに渡すもの}：指示文、選ぶ対象の式の一覧、テストケース 1 件（説明文、入力変数、出力変数）。
+  \item \textbf{指示文}：作りたいモデルを、入力変数の値から出力変数を計算できる式の組と説明し、その式の組が満たす条件（入出力変数の包含、自由度の整合、可解性。\citealp{CombineEq} の要件 1〜3）を書いて、一覧から式を選ばせる。
+  \item \textbf{出力}：一覧の式の ID を、モデルに使う可能性の高い順に最大 20 個。
+  \item \textbf{出典は渡さない}：式の並びを無作為にし、ID も振り直して、どの式が同じ文献から来たかを分からなくする。提案手法は出典を使っていないためである。また、合成のケースの正解集合は同じ出典の式を優先して作っているので、出典が分かると、LLM だけが答えの手がかりを持つことになる。
+  \item \textbf{判定}：返された ID が正解集合 $R_q$ に含まれるかで判定する（式の等価性は判定しない）。一覧にない ID は不正解とし、その順位を占めるものとする。同じ ID が重なったときは、2 回目以降を除く。
+  \item \textbf{指標}：正解式の数を $K = |R_q|$、手法が並べた上位 $n$ 件を $\mathrm{Top}_n(q)$ とし、テストケースで平均する。提案手法の値も同じ式で計算する。
+  \begin{equation*}
+    \mathrm{Recall@20} = \frac{|R_q \cap \mathrm{Top}_{20}(q)|}{K}, \qquad
+    \mathrm{AP@20}(q) = \frac{1}{K} \sum_{e \in R_q} P(e)
+  \end{equation*}
+  ここで $P(e)$ は、正解式 $e$ が上位 20 件にあれば、その順位までの式のうち正解式の割合、なければ 0 である。MAP@20 は AP@20 のケース平均である。
+  \item \textbf{思考の深さ}（答える前に考える量の設定）：4 モデルとも同じ値（high）にそろえる。
+  \item \textbf{実行の順}：費用を抑えるため、安い Haiku と Sonnet を先に流し、その結果を確かめてから Opus と Fable を流す。
+\end{itemize}
+
+%======================================================================
+\section{方向性 1：データベース全体から選ぶ}
+%======================================================================
+\textbf{一覧}：データベースの全 11{,}146 式。各式には ID、式の表記（\LaTeX{} 形式）、分野ラベルだけを付ける。1 回の入力は約 95.2 万トークン（LLM が文字列を数える単位）で、4 モデルに共通の上限 100 万トークンに収まる。変数記号の一覧と定義、式周辺の文章は入らない（変数記号とその定義を加えるだけで、一覧は約 199 万トークンになる）。参考までに、訓練と検証のケースを例題として加えると約 130 万トークンになり、これも上限を超える。
+
+\textbf{テストケース}：提案手法と同じ 10 通りの分割のテストケースを使う。例題を渡さないので、同じケースへの入力はどの分割でも同じになる。そこで、異なるケースごとに 1 回だけ解かせ、その答えを、そのケースがテストに入るすべての分割で使う。呼び出しの回数は次のとおりである（設定 A は 3 種類の評価ケース 1{,}823 件、設定 B は合成のケース 1{,}000 件で評価する設定）。
+\begin{itemize}[leftmargin=1.5em]
+  \item 10 通りの分割：テストケースは設定 A と B で延べ 7{,}026 件、異なるケースは 1{,}665 件なので、呼び出しは 1{,}665 回。ほかの手法と同じ分割で比べられ、10 通りの分割を対にした検定もできる。
+  \item 3 通りの分割（乱数の種 42、123、456）：延べ 2{,}139 件、異なるケース 1{,}204 件なので、呼び出しは 1{,}204 回。
+\end{itemize}
+
+\textbf{費用}：一覧の部分は毎回同じなので、プロンプトキャッシュ（同じ入力の先頭部分を保存しておき、2 回目からは通常の 1/10〜1/40 の料金で読み出す仕組み）を使う。見積もりを表~\ref{tab:cost1} に示す。1 回の呼び出しには 1 分ほどかかり、8 本並べて流すと、1{,}665 回で 1 モデルあたり約 3〜4 時間である。
+
+\begin{table}[h]\centering
+\caption{Estimated API cost of direction 1 in US dollars, assuming 2,000 output tokens per call. The range in the last row assumes 70 to 8,000 output tokens per call.}
+\label{tab:cost1}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+モデル & 10 通りの分割（1{,}665 回） & 3 通りの分割（1{,}204 回） \\
+\midrule
+Claude Haiku 5.5  & 88  & 64  \\
+Claude Sonnet 5.5 & 194 & 140 \\
+Claude Opus 5.5   & 387 & 280 \\
+Claude Fable 5.1  & 572 & 414 \\
+\midrule
+合計 & 1{,}241（976〜2{,}066） & 898（706〜1{,}494） \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%======================================================================
+\section{方向性 2：第 1 段の候補から選ぶ}
+%======================================================================
+LLM が提案手法の第 2 段の検索の代わりになるかを調べる。
+
+\textbf{一覧}：テストケースごとに、提案手法の第 1 段の検索（文章類似度 0.3、変数の一致度 0.7 の重み付き和）が残した上位 2{,}000 式。正解式はすべて候補に入る（10 通りの分割のテストケースで、候補から漏れた正解式は 0 本）。各式には ID、式の表記、変数記号とその定義、式周辺の文章、分野ラベルを付け、出典は付けない。1 回の入力は約 44〜55 万トークンである（40 ケースで試算）。
+
+\textbf{並べ方}：候補は無作為に並べ、第 1 段の点数や順位は渡さない。LLM には、自分の判断で式を選ばせる。
+
+\textbf{方向性 1 との違い}：指示文、答え方、判定、指標は方向性 1 と同じである。違うのは、選ぶ対象（データベース全体ではなく候補 2{,}000 式）と、各式に付ける情報の多さだけである。
+
+\textbf{費用}：候補はケースごとに違うので、キャッシュが効かない。1 ケースを 4 モデルで解かせると、通常の料金で約 8.3 ドル、Batch API（結果がそろうまで最大 24 時間かかる代わりに料金が半額になる方式）で約 4.1 ドルかかる。そこで、方向性 1 のテストケースから 300 件を、ケースの種類（単一出典、出典横断、合成）と正解式の数の割合を保って無作為に選び、Batch API で 1 回ずつ解かせる案とした（表~\ref{tab:cost2}）。提案手法と方向性 1 とは、この 300 件で比べる。方向性 2 を行うかどうかは、方向性 1 の結果を見てから決める。
+
+\begin{table}[h]\centering
+\caption{Estimated API cost of direction 2 in US dollars for 300 test cases, one call per case through the Batch API, assuming 490,000 input tokens and 2,000 output tokens per call.}
+\label{tab:cost2}
+\begin{tabular}{@{}lr@{}}
+\toprule
+モデル & 300 件 \\
+\midrule
+Claude Haiku 5.5  & 38  \\
+Claude Sonnet 5.5 & 150 \\
+Claude Opus 5.5   & 300 \\
+Claude Fable 5.1  & 750 \\
+\midrule
+合計 & 約 1{,}240（1{,}130〜1{,}390） \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+参考までに、異なるテストケース 1{,}665 件をすべて解かせると、Batch API でも約 6{,}900 ドルかかる。
+
+%======================================================================
+\section{確認したいこと}
+%======================================================================
+\begin{enumerate}[leftmargin=2.2em]
+  \item 方向性 1 のテストケースを、10 通りの分割（1{,}665 回、約 1{,}240 ドル）にするか、3 通りの分割（1{,}204 回、約 900 ドル）にするか。
+  \item 方向性 2 を行うか。行う場合、300 件を 1 回ずつでよいか。
+  \item 4 つのモデル（Haiku 5.5、Sonnet 5.5、Opus 5.5、Fable 5.1）でよいか。
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem[Kato and Kano(2025)]{CombineEq}
+S.~Kato and M.~Kano.
+\newblock Automated physical model building from literature sources: Combining equations based on four predefined requirements.
+\newblock \emph{Computers \& Chemical Engineering}, 200:109147, 2025.
+\end{thebibliography}
+
+\end{document}
