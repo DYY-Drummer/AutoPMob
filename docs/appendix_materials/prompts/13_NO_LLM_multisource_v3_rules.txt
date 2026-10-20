@@ -1,0 +1,285 @@
+【用途】出典横断のケース 500 件（multisource_v3）を作る規則（LLM は使っていない）
+【スクリプト】generate_multisource_v3.py。分類の辞書 DOMAIN_CATEGORIES（35-88 行）、分類の判定 categorize_domain（91-100 行）、
+  組み合わせてよい分類の組と説明文の文型 COMPATIBLE_PAIRS（107-247 行）、定義の食い違いの判定 INCOMPATIBLE_DEFINITIONS と
+  vars_semantically_compatible（264-297 行）、微分方程式の判定 is_ode_or_pde（304-308 行）。
+【下に示すもの】ソースコードをそのまま。
+==============================================================================
+# ============================================================
+# ドメインカテゴリ（10 大分類）
+# ============================================================
+
+DOMAIN_CATEGORIES = {
+    "reactor": [
+        # CSTR / PFR / Batch / 反応工学 全般
+        "CSTR", "PFR", "Batch Reactor", "Reaction Engineering",
+        "Reactor", "Reaction Kinetics", "Catalysis",
+        "Reaction Engineering: CSTR", "Reaction Engineering: PFR",
+        "Reaction Engineering: Batch Reactors",
+        "Stirred-Tank Heating Process", "Blending Process",
+        "Polymerization", "Polymer Reactor",
+        "Isothermal CSTR", "CSTR Kinetics", "CSTR Modeling",
+        "Biodiesel Transesterification",
+    ],
+    "heat_transfer": [
+        "Heat Transfer", "Heat Exchanger", "Conduction", "Convection",
+        "Radiation", "Heat Transfer: Conduction", "Heat Transfer: Convection",
+        "Heat Transfer: Combined Modes", "Heat Exchanger Dynamics",
+        "Double-Pipe Heat Exchanger", "Helium Core Heat Exchanger Modeling",
+    ],
+    "mass_transfer": [
+        "Mass Transfer", "Diffusion", "Absorption",
+        "Mass Transfer: Molecular Diffusion", "Mass Transfer: Convective",
+        "Distillation", "Extraction",
+    ],
+    "fluid": [
+        "Fluid Dynamics", "Navier-Stokes", "Pipe Flow",
+        "Fluid Dynamics: Viscous Flow", "Fluid Dynamics: Turbulent",
+        "Fluid Dynamics: Inviscid Flow",
+    ],
+    "thermo": [
+        "Thermodynamics", "Phase Equilibrium", "Equation of State",
+        "Thermodynamics: Phase", "Thermodynamics: First Law",
+    ],
+    "control": [
+        "Process Control", "PID Control", "Control Theory",
+        "Process Control: PID Control", "Process Control: Process Modeling",
+        "State-Space Models", "Laplace Transform",
+        "Routh Stability Analysis", "Frequency Response",
+        "System Identification", "Analysis of Digital Control Systems",
+    ],
+    "bioprocess": [
+        "Bioprocess Engineering", "Bioprocess Kinetics",
+        "Bacterial chemostat", "Fermentation",
+        "Bioprocess Engineering: Microbial Kinetics",
+    ],
+    "electrochem": [
+        "Electrochemistry", "Butler-Volmer", "Nernst",
+    ],
+    "combustion": [
+        "Combustion", "Flame Theory", "Flame Propagation",
+    ],
+    "separation": [
+        "Separation", "Distillation", "Absorption", "Extraction",
+    ],
+}
+
+
+def categorize_domain(domain_label: str) -> str | None:
+    """ドメインラベルをカテゴリに分類"""
+    if not domain_label:
+        return None
+    label_lower = domain_label.lower()
+    for cat, keywords in DOMAIN_CATEGORIES.items():
+        for kw in keywords:
+            if kw.lower() in label_lower or label_lower in kw.lower():
+                return cat
+    return None
+
+
+# ============================================================
+# 自然な組合せのホワイトリスト（化学工学の定番）
+# ============================================================
+
+COMPATIBLE_PAIRS = {
+    # 反応器 + 熱（非等温反応器）
+    ("reactor", "heat_transfer"): {
+        "scenario": "non-isothermal reactor with heat transfer",
+        "context_template": (
+            "Design of a {reactor_type} with simultaneous heat transfer "
+            "to a coolant. The mass balance from the reactor kinetics couples "
+            "with the heat removal equation through shared variables "
+            "{shared_vars}, determining the steady-state concentration and "
+            "heat removal rate."
+        ),
+    },
+    # 反応器 + 物質移動（拡散律速反応器）
+    ("reactor", "mass_transfer"): {
+        "scenario": "diffusion-limited reactor",
+        "context_template": (
+            "A reactor with diffusion-limited substrate transfer at the "
+            "catalyst surface. The reaction rate from the kinetic equation "
+            "is coupled with the diffusion flux through shared variables "
+            "{shared_vars}, both required to predict the conversion."
+        ),
+    },
+    # 反応器 + プロセス制御（制御付き反応器）
+    ("reactor", "control"): {
+        "scenario": "feedback-controlled reactor",
+        "context_template": (
+            "A continuously operated reactor with feedback control on key "
+            "process variables {shared_vars}. The reactor model and the "
+            "controller transfer function together define the closed-loop "
+            "behavior."
+        ),
+    },
+    # 熱交換 + 流体（圧力損失込み）
+    ("heat_transfer", "fluid"): {
+        "scenario": "heat exchanger with flow dynamics",
+        "context_template": (
+            "A heat exchanger in which heat transfer and fluid flow are "
+            "coupled through shared variables {shared_vars}, requiring "
+            "simultaneous solution of the heat balance and the momentum "
+            "balance."
+        ),
+    },
+    # 物質移動 + 熱移動（蒸発・凝縮）
+    ("mass_transfer", "heat_transfer"): {
+        "scenario": "simultaneous heat and mass transfer",
+        "context_template": (
+            "A unit operation with simultaneous heat and mass transfer "
+            "(e.g., evaporator or absorber). Variables {shared_vars} couple "
+            "the two transport processes."
+        ),
+    },
+    # バイオプロセス + 反応器
+    ("bioprocess", "reactor"): {
+        "scenario": "bioreactor with substrate kinetics",
+        "context_template": (
+            "A bioreactor combining microbial growth kinetics with reactor "
+            "design equations. The growth rate and reactor balance share "
+            "variables {shared_vars}, both needed to predict steady-state "
+            "biomass and substrate concentrations."
+        ),
+    },
+    # バイオプロセス + 物質移動
+    ("bioprocess", "mass_transfer"): {
+        "scenario": "diffusion-limited bioreactor",
+        "context_template": (
+            "An immobilized-cell bioreactor where substrate diffusion limits "
+            "microbial growth. The Monod kinetics and the diffusion equation "
+            "share variables {shared_vars}."
+        ),
+    },
+    # 電気化学 + 物質移動
+    ("electrochem", "mass_transfer"): {
+        "scenario": "electrochemical cell with diffusion",
+        "context_template": (
+            "An electrochemical cell with diffusion-limited mass transport "
+            "to the electrode. The electrode kinetics and the diffusion flux "
+            "share variables {shared_vars}."
+        ),
+    },
+    # 反応器 + 熱力学（状態方程式）
+    ("reactor", "thermo"): {
+        "scenario": "reactor with phase equilibrium",
+        "context_template": (
+            "A reactor in which the reaction system is coupled with "
+            "thermodynamic phase equilibrium. The reactor balance and the "
+            "equation of state share variables {shared_vars}."
+        ),
+    },
+    # 燃焼 + 熱移動
+    ("combustion", "heat_transfer"): {
+        "scenario": "combustion with heat transfer",
+        "context_template": (
+            "A combustion process in which heat release from the chemical "
+            "reaction couples with heat transfer to the surroundings via "
+            "shared variables {shared_vars}."
+        ),
+    },
+    # 燃焼 + 流体（火炎伝播）
+    ("combustion", "fluid"): {
+        "scenario": "turbulent flame propagation",
+        "context_template": (
+            "Turbulent flame propagation in which combustion kinetics couples "
+            "with fluid flow dynamics through shared variables {shared_vars}."
+        ),
+    },
+    # 分離プロセス + 熱力学（VLE）
+    ("separation", "thermo"): {
+        "scenario": "separation with phase equilibrium",
+        "context_template": (
+            "A separation unit (distillation/absorption) in which the stage "
+            "balance is coupled with phase equilibrium relations through "
+            "shared variables {shared_vars}."
+        ),
+    },
+    # 分離プロセス + 物質移動
+    ("separation", "mass_transfer"): {
+        "scenario": "separation with mass transfer",
+        "context_template": (
+            "A separation unit in which the stage balance is coupled with "
+            "mass transfer at the interface through shared variables "
+            "{shared_vars}."
+        ),
+    },
+    # 制御 + 流体（流量制御）
+    ("control", "fluid"): {
+        "scenario": "flow control system",
+        "context_template": (
+            "A flow control system in which the process model and the "
+            "controller share variables {shared_vars}."
+        ),
+    },
+    # 制御 + 熱移動（温度制御）
+    ("control", "heat_transfer"): {
+        "scenario": "temperature control loop",
+        "context_template": (
+            "A temperature control loop on a thermal process. The heat "
+            "transfer equation and the controller transfer function share "
+            "variables {shared_vars}."
+        ),
+    },
+}
+
+
+def is_compatible_pair(cat_a: str, cat_b: str) -> dict | None:
+    """カテゴリペアが互換か？ → context テンプレート返す or None"""
+    if (cat_a, cat_b) in COMPATIBLE_PAIRS:
+        return COMPATIBLE_PAIRS[(cat_a, cat_b)]
+    if (cat_b, cat_a) in COMPATIBLE_PAIRS:
+        return COMPATIBLE_PAIRS[(cat_b, cat_a)]
+    return None
+
+
+# ============================================================
+# 変数意味整合性チェック
+# ============================================================
+
+# 同名変数で「異なる物理量」を区別するためのキーワード辞書
+INCOMPATIBLE_DEFINITIONS = [
+    # 温度 vs 時間定数 vs 透過率
+    ("temperature", "time constant"),
+    ("temperature", "transmission"),
+    ("temperature", "torque"),
+    # 圧力 vs 確率
+    ("pressure", "probability"),
+    # 反応速度 vs 抵抗
+    ("rate of reaction", "resistance"),
+    # 流量 vs 力
+    ("flow rate", "force"),
+    ("flow rate", "frequency"),
+    # 質量 vs モーメント
+    ("mass", "moment"),
+    # 角度 vs その他
+    ("angle", "concentration"),
+]
+
+
+def vars_semantically_compatible(eq_a: dict, eq_b: dict, shared_vars: set) -> bool:
+    """共有変数が両式で同じ物理量を指しているか粗くチェック"""
+    vars_a_def = {k: (v or "").lower() for k, v in eq_a.get("variables", {}).items()}
+    vars_b_def = {k: (v or "").lower() for k, v in eq_b.get("variables", {}).items()}
+
+    for var in shared_vars:
+        def_a = vars_a_def.get(var, "")
+        def_b = vars_b_def.get(var, "")
+        if not def_a or not def_b:
+            continue
+        # 不整合キーワードペアに該当するか
+        for kw_a, kw_b in INCOMPATIBLE_DEFINITIONS:
+            if (kw_a in def_a and kw_b in def_b) or (kw_b in def_a and kw_a in def_b):
+                return False
+    return True
+
+
+# ============================================================
+# 微分方程式判定（物理モデル感を強化）
+# ============================================================
+
+def is_ode_or_pde(eq_text: str) -> bool:
+    """微分方程式・偏微分方程式を含むか"""
+    if not eq_text:
+        return False
+    return any(p in eq_text for p in ["frac{d", "\\partial", "\\dot{", "\\nabla", "\\mathrm{d}"])
+==============================================================================

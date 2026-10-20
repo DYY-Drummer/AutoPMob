@@ -1,0 +1,24 @@
+【用途】8/31 報告の比較手法「LLM 直接生成」（各設定 50 件の無作為標本、1 回）。式を LaTeX で書かせる。
+【スクリプト】evaluate_llm_dae.py（PROMPT 41-54 行、gen_equations 57-78 行）。8/31 報告の値は --label set_A / set_B / set_full、--n-sample 50 で作った
+  experiments/llm_set_{A,B,full}_predictions.json（commit 5fbcf65）。
+【モデル】claude-sonnet-4-5-20250929（commit 5fbcf65 のメッセージ「生成はSonnet 4.5」。同じ commit で MODEL 定数 36 行を claude-opus-4-8 に変えた。
+  predictions の JSON にモデル名の欄はない）。
+【設定】max_tokens=1200（65 行）、system なし、temperature 指定なし。{n} = max(12, K+4)（145 行、K は正解式の数）。
+  {ctx} は説明文の先頭 1,200 字（61 行）。{inp}・{out} は Python のリストをそのまま文字列にしたもの（例: ['C_A', 'T']）。
+  応答は行ごとに分け、先頭の番号と $ を除き、= + - / ^ _ \ のどれかを含む行だけを式とみなす（69-72 行）。
+【下に示すもの】実行時の文字列（.format の前）。
+==============================================================================
+You are an expert in physical and chemical engineering modeling.
+A modeling task is described below, together with the KNOWN (input) variables
+and the UNKNOWN (output) variables to be solved for.
+
+List the governing equations required to solve this task. Output them in LaTeX,
+ONE equation per line, ordered from most to least essential, up to {n} equations.
+Output ONLY the equations (LaTeX), one per line — no numbering, no prose, no $ delimiters.
+
+SCENARIO:
+{ctx}
+
+KNOWN (input) variables: {inp}
+UNKNOWN (output) variables: {out}
+==============================================================================

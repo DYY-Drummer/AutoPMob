@@ -1,0 +1,47 @@
+【用途】文献 PDF からの式の抽出（Claude 版）
+【スクリプト】extract_equations_claude.py（プロンプト本体 59-91 行、送るときに 138-141 行で 1 文を後ろに足す）
+  呼び出し元: process_new_papers.py --engine claude（既定。69-72 行）
+【モデル】既定値 "claude-opus-4-5-20250805"（113・219 行）。docstring（1・15 行）は「Claude Opus 4.7」。
+  注意: claude-opus-4-5-20250805 は Anthropic のモデル一覧にない ID（Opus 4.5 は claude-opus-4-5-20251101、
+        日付 20250805 は Opus 4.1 = claude-opus-4-1-20250805 のもの）。この既定値のまま呼ぶとモデルが見つからない
+        エラーになるはずで（実際に呼んで確かめてはいない）、実際に使ったモデルと版の記録はリポジトリにない。
+【設定】max_tokens=16000（147 行）、system なし、temperature 指定なし。PDF は base64 の document ブロックでテキストより前（150-165 行）。
+  出力の source_id は必ずファイル名で上書き（208-210 行）。
+【下に示すもの】実行時の文字列。最後の 1 行の {source_id} には PDF のファイル名が入る。
+==============================================================================
+Extract all numbered equations and equations referenced in the main body
+and appendices of this document in LaTeX format.
+
+For each equation, provide:
+- source_id: use exactly the source_id given below
+- eq_id: a unique identifier (e.g., "eq_1", "eq_2.5")
+- equation: the LaTeX-formatted equation
+- variables: a dict mapping each variable symbol to its definition (extracted from surrounding text or symbol table)
+- context_text: 1-3 sentences describing the physical meaning of the equation, based on its surrounding context
+- domain: a concise domain label (e.g., "CSTR", "Heat Transfer: Conduction", "Polymer Reactor")
+
+CONSTRAINTS:
+- Extract the content exactly as it appears in the literature. Do not make unauthorized corrections.
+- Variables may include subscripts, superscripts, or other marks (hat, dot, bar, etc.).
+- Skip equations that are purely numerical examples or single-step substitutions.
+- Skip equations from exercise/problem sections.
+
+OUTPUT FORMAT: Respond with valid JSON ONLY (no markdown fences), matching this structure:
+
+{
+  "equations": [
+    {
+      "source_id": "<source_id>",
+      "eq_id": "eq_1",
+      "equation": "...",
+      "variables": {"x": "definition", "y": "definition"},
+      "context_text": "...",
+      "domain": "..."
+    },
+    ...
+  ]
+}
+
+
+Use source_id = "{source_id}" for all equations from this document.
+==============================================================================

@@ -1,0 +1,55 @@
+【用途】単一出典のケース（Gemini が作った「コアケース」123 件 → 自由度の条件で 92 件）の生成
+【スクリプト】generate_training_cases.py の _generate_core_cases_batch（132-226 行。プロンプト 144-180 行）、generate_core_cases（229-277 行）。
+【モデル】gemini-2.5-pro（188 行）。response_mime_type="application/json"、response_json_schema = CoreCaseList（35-62 行）。
+【渡した一覧（CATALOG）】式ごとに {"model_id", "source_id", "eq_id", "domain", "variable_symbols"}（build_model_catalog 84-104 行）。
+  式の表記・式周辺の文章・変数の定義は渡していない。
+  一覧の JSON が 20 万字以上なら、分野ラベルの辞書順にまとめて 1 回 300 式以下に分け（_group_by_domain 112-129 行）、
+  1 回あたり max(10, 150 // 回数) 件を求める（258 行）。当時の DB（3,244 式）で再構成すると 11 回・1 回 13 件（本確認での再計算）。
+  ケース ID には回の番号 b<i>_ が付く（270 行）。例: core_019_v1 の元 ID は b2_core_006。
+【差し込み】{len(batch_catalog)}、{domain_list}（その回の分野ラベル、先頭 20 個）、{catalog_text}（上の一覧の JSON）、{n_cases}。
+【下に示すもの】ソースコードの f 文字列をそのまま（textwrap.dedent で行頭の空白を除いてから送る）。
+==============================================================================
+    catalog_text = json.dumps(batch_catalog, ensure_ascii=False)
+    domains = sorted(set(e["domain"] for e in batch_catalog))
+    domain_list = ", ".join(domains[:20])
+    if len(domains) > 20:
+        domain_list += f", ... ({len(domains)} domains total)"
+
+    prompt = textwrap.dedent(
+        f"""
+        You are helping to create training data for a graph neural network that selects
+        relevant equations for physical process modeling.
+
+        You are given a catalog of equations. Each equation has:
+        - model_id: a unique ID in the form "<source_id>__<eq_id>"
+        - domain: a short domain label
+        - variable_symbols: list of variable symbols in the equation
+
+        CATALOG ({len(batch_catalog)} equations, domains: {domain_list}):
+        {catalog_text}
+
+        TASK:
+        Using ONLY the models listed above, create approximately {n_cases}
+        realistic and physically meaningful core training cases.
+
+        For each core case:
+        - Pick one or more model_ids that together represent a coherent physical model.
+        - Define a context string describing the physical scenario in natural language.
+        - Choose input_variables and output_variables from variable_symbols of selected models.
+        - correct_model_ids: list of model_ids forming a correct mathematical model.
+
+        CONDITIONS FOR correct_model_ids:
+        (1) Given input_variables values and the equations, it MUST be possible to solve for all output_variables.
+        (2) The equation set MUST be sufficient and minimal (no redundant equations).
+
+        REQUIREMENTS:
+        - All correct_model_ids MUST exactly match entries from the catalog.
+        - input/output variables MUST be subsets of variable_symbols from selected models.
+        - Make cases diverse across the available domains.
+        - Generate at least {n_cases} cases.
+
+        OUTPUT: JSON object with "cases" array, each having:
+        case_id, context, input_variables, output_variables, correct_model_ids
+        """
+    ).strip()
+==============================================================================

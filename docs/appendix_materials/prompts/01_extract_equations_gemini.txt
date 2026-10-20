@@ -1,0 +1,30 @@
+【用途】文献 PDF からの式の抽出（Gemini 版）
+【スクリプト】extract_equations.py（プロンプト本体 81-94 行、送るときに 169-172 行で 1 文を後ろに足す）
+  呼び出し元: build_equation_graph.py（run_batch_pdfs）、expand_dataset.py（--mode process・split-large、862・1107 行で import）、
+             process_new_papers.py --engine gemini（69 行で subprocess 起動）
+【モデル】gemini-2.5-pro（extract_equations.py 207 行）。
+  注意: 2026-03-10 の初版（commit c9f57e8）は gemini-2.5-flash で、03-16（commit 053165f）に 2.5-pro へ変更。
+        開発記録 docs/development_log.tex 129 行「当初 gemini-1.5-pro、のち gemini-2.5-flash、gemini-2.0-flash に変更後、gemini-2.5-pro に統一」。
+        プロンプト本文は c9f57e8 から現在まで 1 字も変わっていない（git show で比較）。
+【設定】response_mime_type="application/json"、response_json_schema = Equation（source_id, eq_id, equation, variables, context_text, domain）の配列。
+  temperature などは指定なし（API の既定値）。PDF は Files API でアップロードし、テキストより前に置く（173-184 行）。
+  出力の source_id が空のときだけファイル名で埋める（236-239 行）。モデルが別の値を返すとそのまま残る。
+【下に示すもの】Python の文字列としての値（実行時の文字列）。最後の 1 行の {source_id} には PDF のファイル名が入る。
+==============================================================================
+Extract all numbered equations and equations found in the appendices from this textbook in LaTeX format. For each equation, identify the "variable definitions" and the "physical meaning (context)" from the surrounding text. Output the result in the JSON format specified below.
+
+Constraints:
+- Extract the content EXACTLY as it appears in the literature. Do not make unauthorized corrections or modifications.
+- Preserve every variable symbol and subscript exactly as printed: e.g. if the source writes c_w (specific heat of water), do NOT change it to c_p; if it writes C_p or Cp, do not change to c_w. Never "normalize" or "standardize" notation.
+
+Output a single JSON array. Each element must have these fields:
+- source_id: string (e.g. PDF filename)
+- eq_id: string (e.g. "eq_1")
+- equation: string (LaTeX form)
+- variables: object with variable symbols as keys and their definitions (strings) as values
+- context_text: string (surrounding text explaining physical meaning)
+- domain: string (process or domain name, e.g. "CSTR Kinetics")
+
+
+Use source_id = "{source_id}" for all equations from this document.
+==============================================================================

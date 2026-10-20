@@ -1,0 +1,36 @@
+【用途】基礎式集 31 件（handbook_* のうち handbook_chemeng 以外）の生成
+【スクリプト】expand_dataset.py の _build_handbook_prompt（619-645 行）。分野の定義は HANDBOOK_DOMAINS（44-291 行、15 分野、--mode handbook）と
+  HANDBOOK_DOMAINS_R2（297-572 行、新 10 分野＋既存 6 分野の応用、--mode handbook2）。送る処理は generate_handbook_domain（648-711 行）。
+【モデル】gemini-2.5-pro（675 行）。response_mime_type="application/json"、response_json_schema = Equation の配列（extract_equations._get_response_schema）。
+  出力の source_id は分野の source_id で上書き（704-708 行）。
+【差し込み】{label}=domain_label、{n}=n_equations（20 または 25）、{source_id}、{topics}=分野ごとの話題の列（expand_dataset.py の各辞書）。
+【下に示すもの】ソースコードの f 文字列をそのまま（{...} が差し込み位置）。
+==============================================================================
+def _build_handbook_prompt(domain: Dict) -> str:
+    n = domain["n_equations"]
+    source_id = domain["source_id"]
+    label = domain["domain_label"]
+    topics = domain["topics"]
+
+    return f"""You are an expert in {label} and mathematical modeling.
+Generate exactly {n} fundamental equations used in {label}, in LaTeX format.
+
+Cover these topics:
+{topics}
+
+For each equation provide:
+- source_id: use exactly "{source_id}"
+- eq_id: "eq_1" through "eq_{n}" (sequential)
+- equation: LaTeX form of the equation (use standard notation)
+- variables: object with each variable symbol as key and its definition (with units where appropriate) as value
+- context_text: brief physical meaning or context (1-3 sentences, include when and where this equation is used)
+- domain: "{label}" or a more specific sub-domain (e.g., "{label}: Pipe Flow")
+
+IMPORTANT:
+- Each equation MUST be distinct (no duplicates).
+- Include both the differential form and algebraic form where applicable.
+- Use standard notation conventions for the field.
+- Variables dict must include ALL symbols that appear in the equation.
+
+Output a single JSON array of exactly {n} equation objects. No markdown fences."""
+==============================================================================

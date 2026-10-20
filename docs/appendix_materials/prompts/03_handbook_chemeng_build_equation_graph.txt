@@ -1,0 +1,27 @@
+【用途】基礎式集 handbook_chemeng（20 式）の生成（文献を読ませず、LLM の知識から生成）
+【スクリプト】build_equation_graph.py（60-80 行。_call_gemini_text_only 83-126 行で送る）
+【モデル】gemini-2.5-pro（105 行）。response_mime_type="application/json"、response_json_schema = Equation の配列。
+【下に示すもの】実行時の文字列（このまま送る。差し込みなし）。
+==============================================================================
+You are an expert in chemical engineering and process modeling.
+Generate exactly 20 fundamental equations that are essential for process modeling, in LaTeX format.
+Include equations from the following areas:
+- CSTR (continuous stirred-tank reactor): mass balance, energy balance, design equation
+- Biodiesel production: transesterification kinetics, yield relations
+- Mass balance and heat balance (general)
+- Reaction kinetics: rate laws, Arrhenius equation, activation energy
+- Dimensionless numbers: Reynolds, Nusselt, Prandtl, Damköhler, Peclet, etc.
+- Heat transfer: convection, overall heat transfer coefficient
+- Fluid mechanics: pressure drop, flow relations
+
+For each equation provide:
+- source_id: use exactly "handbook_chemeng"
+- eq_id: "eq_1" through "eq_20"
+- equation: LaTeX form of the equation
+- variables: object with each variable symbol as key and its definition (string) as value
+- context_text: brief physical meaning or context (one or two sentences)
+- domain: short domain name (e.g. "CSTR", "Reaction Kinetics", "Heat Transfer")
+
+Output a single JSON array of exactly 20 equation objects. Use the exact field names above.
+Do not include any markdown or code fence, only the JSON array.
+==============================================================================

@@ -1,0 +1,57 @@
+【用途】合成のケース（1,000 件）の説明文の生成。正解集合と入出力変数は規則で決めてから、説明文だけを書かせる。
+【スクリプト】generate_dae_cases.py の generate_description（157-208 行。プロンプト 174-192 行）。
+【モデル】実際に使ったのは claude-sonnet-4-5-20250929（dae_generation_report.json の "model"。commit d8697e1 時点の MODEL 定数 43 行も同じ）。
+  現在の MODEL 定数は claude-opus-4-8（commit 5fbcf65、2026-06-18 に「今後の生成用・既存データは再生成せず」として変更）。
+【設定】max_tokens=200（198 行）、system なし、temperature 指定なし。失敗時は最大 3 回まで再試行し、だめならそのケースを捨てる。
+【差し込み】eqs_str: 正解式ごとに "- [source_id/eq_id, domain: 分野ラベル]: 式の表記（先頭 200 字）"
+  {sorted(inputs)[:10]}: 入力変数（辞書順の先頭 10 個）、{sorted(outputs)}: 出力変数
+  var_defs_str: 出力変数と「入力変数の集合の先頭 5 個」（Python の集合の順なので実行ごとに変わりうる）の定義（"記号: 定義"、正解式ごとに重ねて最大 10 行）
+【下に示すもの】ソースコードをそのまま。
+==============================================================================
+def generate_description(client, correct_set: list[dict], inputs: set[str],
+                         outputs: set[str], model: str = MODEL) -> Optional[str]:
+    """物理シナリオの説明を Claude で生成"""
+    # 正解式を整形
+    eqs_str = "\n".join([
+        f"- [{e['source_id']}/{e['eq_id']}, domain: {e.get('domain','')}]: "
+        f"{e.get('equation','')[:200]}"
+        for e in correct_set
+    ])
+    sample_vars = sorted(list(outputs))[:3]
+    var_defs = []
+    for e in correct_set:
+        for k, v in e.get("variables", {}).items():
+            if k in outputs or k in list(inputs)[:5]:
+                var_defs.append(f"{k}: {v}")
+    var_defs_str = "\n".join(var_defs[:10])
+
+    prompt = f"""You are a chemical engineering expert. Given a set of equations from
+literature, and specified input/output variables, write a concise physical
+scenario description (2-3 sentences) in English describing the modeling task.
+
+EQUATIONS:
+{eqs_str}
+
+INPUT VARIABLES (known): {sorted(inputs)[:10]}
+OUTPUT VARIABLES (to be solved): {sorted(outputs)}
+
+VARIABLE DEFINITIONS (excerpt):
+{var_defs_str}
+
+Write a 2-3 sentence description of the physical modeling scenario. Focus on:
+- What system is being modeled (reactor, heat exchanger, etc.)
+- What is computed (the outputs) given the inputs
+- The physical meaning of the coupled equations
+
+Output only the description, no preamble or formatting."""
+
+    for attempt in range(3):
+        try:
+            resp = client.messages.create(
+                model=model,
+                max_tokens=200,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            text = resp.content[0].text.strip()
+            return text
+==============================================================================

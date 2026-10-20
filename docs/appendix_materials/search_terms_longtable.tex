@@ -1,0 +1,51 @@
+% 付録の素材：分野ごとの検索語と取得した PDF の数（2026-10-20 作成）。longtable, booktabs, array が必要。
+\begin{footnotesize}
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.13\linewidth}>{\raggedright\arraybackslash}p{0.40\linewidth}rrrrrrr@{}}
+\caption{分野ごとの検索語と、取得した PDF の数。検索語は fetch\_papers\_32domains.py のもので、OpenAlex には後ろに「mathematical model differential equation」を付けて送った。O はこの検索で取得した PDF、F1〜F3 は補強の検索（分野ごとに別の検索語 3〜5 個。search\_queries\_all.csv）、P は光学だけの追加検索で取得した PDF の数。「DB」は式が数式データベースに入った PDF の数。補強の検索は、分野のフォルダの PDF が 10 個になった時点で止めた。}\label{tab:search}\\
+\toprule
+分野 & 検索語（fetch\_papers\_32domains.py） & O & F1 & F2 & F3 & P & 計 & DB \\
+\midrule
+\endfirsthead
+\toprule
+分野 & 検索語（fetch\_papers\_32domains.py） & O & F1 & F2 & F3 & P & 計 & DB \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+化学工学基礎 & chemical process simulation steady state material balance & 4 & --- & 6 & --- & --- & 10 & 10 \\
+反応工学（基礎） & CSTR PFR batch reactor design equation kinetics & 3 & 6 & --- & --- & --- & 9 & 9 \\
+反応工学（応用） & non-isothermal reactor catalytic reactor multiphase model & 6 & --- & --- & 4 & --- & 10 & 9 \\
+プロセス制御（基礎） & process control PID transfer function dynamic & 6 & --- & --- & 4 & --- & 10 & 9 \\
+プロセス制御（応用） & model predictive control adaptive nonlinear process & 6 & --- & --- & 4 & --- & 10 & 10 \\
+熱力学（基礎） & chemical thermodynamics phase equilibrium equation of state & 4 & --- & 3 & 3 & --- & 10 & 10 \\
+熱力学（応用） & polymer solution thermodynamics activity coefficient model & 1 & 4 & --- & 5 & --- & 10 & 10 \\
+流体力学（基礎） & fluid dynamics Navier Stokes viscous flow boundary & 9 & --- & --- & --- & --- & 9 & 9 \\
+流体力学（応用） & turbulent flow multiphase CFD RANS LES simulation & 5 & --- & --- & 5 & --- & 10 & 10 \\
+伝熱（基礎） & heat transfer Fourier conduction convection radiation & 3 & 5 & --- & --- & --- & 8 & 7 \\
+伝熱（応用） & shell tube heat exchanger numerical thermal design & 4 & --- & 4 & --- & --- & 8 & 8 \\
+物質移動 & mass transfer Fick diffusion coefficient concentration & 4 & --- & 5 & --- & --- & 9 & 9 \\
+輸送現象 & transport phenomena momentum heat mass coupled & 1 & 9 & --- & --- & --- & 10 & 10 \\
+分離プロセス & distillation column tray model MESH equations & 3 & 6 & --- & --- & --- & 9 & 9 \\
+電気化学（基礎） & electrochemistry Butler Volmer Nernst Tafel electrode & 1 & 7 & --- & --- & --- & 8 & 8 \\
+電気化学（応用） & battery fuel cell electrolyzer mathematical model & 6 & --- & --- & 4 & --- & 10 & 10 \\
+バイオプロセス & bioprocess fermentation Monod chemostat kinetic model & 6 & --- & --- & 4 & --- & 10 & 7 \\
+薬学 & pharmaceutical dissolution pharmacokinetics compartment model & 2 & 8 & --- & --- & --- & 10 & 9 \\
+食品工学 & food engineering drying thermal processing freezing & 1 & 8 & --- & --- & --- & 9 & 9 \\
+高分子工学 & polymerization reactor model molecular weight distribution kinetics & 6 & --- & --- & 4 & --- & 10 & 10 \\
+半導体物理 & semiconductor device drift diffusion Shockley MOSFET & 3 & 7 & --- & --- & --- & 10 & 10 \\
+燃焼工学 & combustion flame propagation kinetic mechanism premixed & 4 & --- & 6 & --- & --- & 10 & 7 \\
+原子力工学 & nuclear reactor neutron diffusion point kinetics & 3 & 6 & --- & --- & --- & 9 & 8 \\
+HVAC & HVAC psychrometrics cooling load humidity ratio & 0 & 10 & --- & --- & --- & 10 & 8 \\
+環境工学 & environmental pollutant transport advection diffusion treatment & 4 & --- & 6 & --- & --- & 10 & 10 \\
+光学 & optics lens equation diffraction wave Maxwell & 5 & --- & --- & 2 & 3 & 10 & 10 \\
+音響学 & acoustics wave equation resonance impedance Helmholtz & 5 & --- & --- & 5 & --- & 10 & 10 \\
+空力 & aerodynamics lift drag boundary layer airfoil & 3 & 3 & --- & 4 & --- & 10 & 10 \\
+振動学 & mechanical vibration degree of freedom modal analysis & 2 & 8 & --- & --- & --- & 10 & 10 \\
+構造力学 & structural mechanics beam bending stress strain & 3 & 5 & --- & --- & --- & 8 & 8 \\
+電気工学 & RLC electrical circuit dynamic analysis state space & 7 & --- & --- & 3 & --- & 10 & 8 \\
+地盤工学 & geotechnical consolidation slope stability earth pressure & 4 & --- & 6 & --- & --- & 10 & 9 \\
+\midrule
+計 & & 124 & 92 & 36 & 51 & 3 & 306 & 290 \\
+\end{longtable}
+\end{footnotesize}

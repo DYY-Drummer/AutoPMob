@@ -1,0 +1,82 @@
+﻿openalex_id,題名,回数,source_id,分野,経路,式の数
+W4283013715,A study of triple-mass diffusion species and energy transfer in Carreau–Yasuda material influenced by activation energy and heat source,3,2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf,（初期）S2 検索語: mass transfer absorption mathematical mo,初期・Semantic Scholar（expand_dataset.py --mode papers）,23
+W4283013715,A study of triple-mass diffusion species and energy transfer in Carreau–Yasuda material influenced by activation energy and heat source,3,01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf,輸送現象,OpenAlex（fetch_papers_32domains.py）,23
+W4283013715,A study of triple-mass diffusion species and energy transfer in Carreau–Yasuda material influenced by activation energy and heat source,3,FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf,輸送現象,OpenAlex 補強 1（fetch_papers_fallback.py）,23
+W1786404767,The Future of Pharmaceutical Manufacturing Sciences,3,01_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf,プロセス制御（基礎）,OpenAlex（fetch_papers_32domains.py）,2
+W1786404767,The Future of Pharmaceutical Manufacturing Sciences,3,03_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf,高分子工学,OpenAlex（fetch_papers_32domains.py）,3
+W1786404767,The Future of Pharmaceutical Manufacturing Sciences,3,FB05_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf,食品工学,OpenAlex 補強 1（fetch_papers_fallback.py）,3
+W2973119841,Machine Learning for Fluid Mechanics,3,04_Machine_Learning_for_Fluid_Mechanics_2019.pdf,プロセス制御（応用）,OpenAlex（fetch_papers_32domains.py）,4
+W2973119841,Machine Learning for Fluid Mechanics,3,01_Machine_Learning_for_Fluid_Mechanics_2019.pdf,流体力学（基礎） / 流体力学（応用）,OpenAlex（fetch_papers_32domains.py）,4
+W2973119841,Machine Learning for Fluid Mechanics,3,FB3_01_Machine_Learning_for_Fluid_Mechanics_2019.pdf,流体力学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,4
+W2136719407,Dynamical Movement Primitives: Learning Attractor Models for Motor Behaviors,3,08_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf,プロセス制御（応用）,OpenAlex（fetch_papers_32domains.py）,33
+W2136719407,Dynamical Movement Primitives: Learning Attractor Models for Motor Behaviors,3,FB02_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf,振動学,OpenAlex 補強 1（fetch_papers_fallback.py）,34
+W2136719407,Dynamical Movement Primitives: Learning Attractor Models for Motor Behaviors,3,FB3_03_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf,電気工学,OpenAlex 補強 3（fetch_papers_fallback3.py）,33
+W2140347367,Theory of Star Formation,3,01_Theory_of_Star_Formation_2007.pdf,化学工学基礎,OpenAlex（fetch_papers_32domains.py）,56
+W2140347367,Theory of Star Formation,3,FB02_Theory_of_Star_Formation_2007.pdf,輸送現象,OpenAlex 補強 1（fetch_papers_fallback.py）,56
+W2140347367,Theory of Star Formation,3,FB2_03_Theory_of_Star_Formation_2007.pdf,化学工学基礎,OpenAlex 補強 2（fetch_papers_fallback2.py）,56
+W2023728301,Review: liquid phase sintering,3,02_Review_liquid_phase_sintering_2008.pdf,化学工学基礎,OpenAlex（fetch_papers_32domains.py）,50
+W2023728301,Review: liquid phase sintering,3,FB03_Review_liquid_phase_sintering_2008.pdf,熱力学（応用）,OpenAlex 補強 1（fetch_papers_fallback.py）,51
+W2023728301,Review: liquid phase sintering,3,FB2_10_Review_liquid_phase_sintering_2008.pdf,化学工学基礎,OpenAlex 補強 2（fetch_papers_fallback2.py）,52
+W2944878488,Dedalus: A flexible framework for numerical simulations with spectral methods,3,08_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf,流体力学（基礎）,OpenAlex（fetch_papers_32domains.py）,60
+W2944878488,Dedalus: A flexible framework for numerical simulations with spectral methods,3,FB01_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf,空力,OpenAlex 補強 1（fetch_papers_fallback.py）,50
+W2944878488,Dedalus: A flexible framework for numerical simulations with spectral methods,3,FB3_05_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf,流体力学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,115
+W2201313735,Lattice Boltzmann methods for multiphase flow and phase-change heat transfer,3,04_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf,流体力学（応用）,OpenAlex（fetch_papers_32domains.py）,191
+W2201313735,Lattice Boltzmann methods for multiphase flow and phase-change heat transfer,3,FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf,伝熱（応用）,OpenAlex 補強 2（fetch_papers_fallback2.py）,75
+W2201313735,Lattice Boltzmann methods for multiphase flow and phase-change heat transfer,3,FB3_03_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf,流体力学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,85
+W2139836399,Analysis and quantification of the diversities of aerosol life cycles within AeroCom,3,FB02_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf,食品工学,OpenAlex 補強 1（fetch_papers_fallback.py）,7
+W2139836399,Analysis and quantification of the diversities of aerosol life cycles within AeroCom,3,FB2_01_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf,物質移動,OpenAlex 補強 2（fetch_papers_fallback2.py）,7
+W2139836399,Analysis and quantification of the diversities of aerosol life cycles within AeroCom,3,FB3_03_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf,プロセス制御（基礎）,OpenAlex 補強 3（fetch_papers_fallback3.py）,7
+W4206933963,"A Review of Quadrotor Unmanned Aerial Vehicles: Applications, Architectural Design and Control Algorithms",2,02_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf,プロセス制御（基礎）,OpenAlex（fetch_papers_32domains.py）,23
+W4206933963,"A Review of Quadrotor Unmanned Aerial Vehicles: Applications, Architectural Design and Control Algorithms",2,FB11_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf,振動学,OpenAlex 補強 1（fetch_papers_fallback.py）,23
+W3003667836,"Digital Twin: Values, Challenges and Enablers From a Modeling Perspective",2,07_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf,プロセス制御（応用）,OpenAlex（fetch_papers_32domains.py）,1
+W3003667836,"Digital Twin: Values, Challenges and Enablers From a Modeling Perspective",2,FB01_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf,半導体物理,OpenAlex 補強 1（fetch_papers_fallback.py）,1
+W4361222942,Numerically analysis of Marangoni convective flow of hybrid nanofluid over an infinite disk with thermophoresis particle deposition,2,08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf,伝熱（基礎）,OpenAlex（fetch_papers_32domains.py）,44
+W4361222942,Numerically analysis of Marangoni convective flow of hybrid nanofluid over an infinite disk with thermophoresis particle deposition,2,04_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf,物質移動,OpenAlex（fetch_papers_32domains.py）,44
+W2074672863,Water Desalination Using a Humidification-Dehumidification Technique—A Detailed Review,2,04_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf,伝熱（応用）,OpenAlex（fetch_papers_32domains.py）,3
+W2074672863,Water Desalination Using a Humidification-Dehumidification Technique—A Detailed Review,2,FB2_14_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf,伝熱（応用）,OpenAlex 補強 2（fetch_papers_fallback2.py）,3
+W2803275049,Roadmap on transformation optics,2,06_Roadmap_on_transformation_optics_2018.pdf,光学,OpenAlex（fetch_papers_32domains.py）,4
+W2803275049,Roadmap on transformation optics,2,08_Roadmap_on_transformation_optics_2018.pdf,音響学,OpenAlex（fetch_papers_32domains.py）,8
+W3137828017,BISON: A Flexible Code for Advanced Simulation of the Performance of Multiple Nuclear Fuel Forms,2,03_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf,原子力工学,OpenAlex（fetch_papers_32domains.py）,2
+W3137828017,BISON: A Flexible Code for Advanced Simulation of the Performance of Multiple Nuclear Fuel Forms,2,FB04_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf,原子力工学,OpenAlex 補強 1（fetch_papers_fallback.py）,2
+W2121706862,Mathematical modeling of a three-phase trickle bed reactor,2,10_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf,反応工学（応用）,OpenAlex（fetch_papers_32domains.py）,41
+W2121706862,Mathematical modeling of a three-phase trickle bed reactor,2,FB3_14_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf,反応工学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,37
+W3186653963,Model order reduction methods for geometrically nonlinear structures: a review of nonlinear techniques,2,07_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf,振動学,OpenAlex（fetch_papers_32domains.py）,82
+W3186653963,Model order reduction methods for geometrically nonlinear structures: a review of nonlinear techniques,2,06_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf,構造力学,OpenAlex（fetch_papers_32domains.py）,77
+W2884681459,LES over RANS in building simulation for outdoor and indoor applications: A foregone conclusion?,2,02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf,流体力学（応用）,OpenAlex（fetch_papers_32domains.py）,30
+W2884681459,LES over RANS in building simulation for outdoor and indoor applications: A foregone conclusion?,2,FB07_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf,HVAC,OpenAlex 補強 1（fetch_papers_fallback.py）,30
+W3048565185,Extended tight‐binding quantum chemistry methods,2,03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf,熱力学（基礎）,OpenAlex（fetch_papers_32domains.py）,65
+W3048565185,Extended tight‐binding quantum chemistry methods,2,FB03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf,振動学,OpenAlex 補強 1（fetch_papers_fallback.py）,39
+W2221260956,Macroscopic fluctuation theory,2,04_Macroscopic_fluctuation_theory_2015.pdf,熱力学（基礎）,OpenAlex（fetch_papers_32domains.py）,54
+W2221260956,Macroscopic fluctuation theory,2,FB2_06_Macroscopic_fluctuation_theory_2015.pdf,熱力学（基礎）,OpenAlex 補強 2（fetch_papers_fallback2.py）,34
+W2163607170,Direct numerical simulation of premixed flame boundary layer flashback in turbulent channel flow,2,03_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf,燃焼工学,OpenAlex（fetch_papers_32domains.py）,6
+W2163607170,Direct numerical simulation of premixed flame boundary layer flashback in turbulent channel flow,2,FB2_10_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf,燃焼工学,OpenAlex 補強 2（fetch_papers_fallback2.py）,6
+W3187501684,"Critical Review of Electro-kinetic Remediation of Contaminated Soils and Sediments: Mechanisms, Performances and Technologies",2,04_Critical_Review_of_Electro-kinetic_Remediation_of_Contaminat_2021.pdf,環境工学,OpenAlex（fetch_papers_32domains.py）,35
+W3187501684,"Critical Review of Electro-kinetic Remediation of Contaminated Soils and Sediments: Mechanisms, Performances and Technologies",2,04_Critical_Review_of_Electro-kinetic_Rememdiation_of_Contaminat_2021.pdf,環境工学,OpenAlex（fetch_papers_32domains.py）,1
+W3115383201,Physics guided machine learning using simplified theories,2,01_Physics_guided_machine_learning_using_simplified_theories_2021.pdf,空力,OpenAlex（fetch_papers_32domains.py）,1
+W3115383201,Physics guided machine learning using simplified theories,2,FB07_Physics_guided_machine_learning_using_simplified_theories_2021.pdf,空力,OpenAlex 補強 1（fetch_papers_fallback.py）,1
+W4383982525,"Grand challenges in the design, manufacture, and operation of future wind turbine systems",2,03_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf,空力,OpenAlex（fetch_papers_32domains.py）,1
+W4383982525,"Grand challenges in the design, manufacture, and operation of future wind turbine systems",2,FB3_08_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf,空力,OpenAlex 補強 3（fetch_papers_fallback3.py）,1
+W2003693202,Materials science aspects of zinc–air batteries: a review,2,04_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf,電気化学（応用）,OpenAlex（fetch_papers_32domains.py）,5
+W2003693202,Materials science aspects of zinc–air batteries: a review,2,FB3_14_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf,電気化学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,5
+W1844774268,A Platform for Benchmark Cases in Computational Acoustics,2,09_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf,音響学,OpenAlex（fetch_papers_32domains.py）,2
+W1844774268,A Platform for Benchmark Cases in Computational Acoustics,2,FB3_19_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf,音響学,OpenAlex 補強 3（fetch_papers_fallback3.py）,2
+W2170889100,State of the Art for the Biosorption Process—a Review,2,01_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf,高分子工学,OpenAlex（fetch_papers_32domains.py）,23
+W2170889100,State of the Art for the Biosorption Process—a Review,2,FB2_07_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf,環境工学,OpenAlex 補強 2（fetch_papers_fallback2.py）,23
+W2692624521,Non-equilibrium steady states in supramolecular polymerization,2,02_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf,高分子工学,OpenAlex（fetch_papers_32domains.py）,5
+W2692624521,Non-equilibrium steady states in supramolecular polymerization,2,FB3_01_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf,反応工学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,5
+W2963784900,Machine learning in materials informatics: recent applications and prospects,2,FB05_Machine_learning_in_materials_informatics_recent_application_2017.pdf,HVAC,OpenAlex 補強 1（fetch_papers_fallback.py）,4
+W2963784900,Machine learning in materials informatics: recent applications and prospects,2,FB3_01_Machine_learning_in_materials_informatics_recent_application_2017.pdf,高分子工学,OpenAlex 補強 3（fetch_papers_fallback3.py）,4
+W2286961273,Computational intelligence techniques for HVAC systems: A review,2,FB12_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf,HVAC,OpenAlex 補強 1（fetch_papers_fallback.py）,23
+W2286961273,Computational intelligence techniques for HVAC systems: A review,2,FB2_09_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf,伝熱（応用）,OpenAlex 補強 2（fetch_papers_fallback2.py）,23
+W2146951146,Summer heatwaves promote blooms of harmful cyanobacteria,2,FB06_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf,分離プロセス,OpenAlex 補強 1（fetch_papers_fallback.py）,12
+W2146951146,Summer heatwaves promote blooms of harmful cyanobacteria,2,FB2_03_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf,環境工学,OpenAlex 補強 2（fetch_papers_fallback2.py）,14
+W1562045875,Dynamics Modeling and Loads Analysis of an Offshore Floating Wind Turbine,2,FB06_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf,振動学,OpenAlex 補強 1（fetch_papers_fallback.py）,92
+W1562045875,Dynamics Modeling and Loads Analysis of an Offshore Floating Wind Turbine,2,FB3_01_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf,空力,OpenAlex 補強 3（fetch_papers_fallback3.py）,73
+W2055655412,Redox flow batteries: a review,2,FB03_Redox_flow_batteries_a_review_2011.pdf,輸送現象,OpenAlex 補強 1（fetch_papers_fallback.py）,40
+W2055655412,Redox flow batteries: a review,2,FB2_05_Redox_flow_batteries_a_review_2011.pdf,化学工学基礎,OpenAlex 補強 2（fetch_papers_fallback2.py）,40
+W1923273760,Effect of Temperature on the Aging rate of Li Ion Battery Operating above Room Temperature,2,FB03_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf,電気化学（基礎）,OpenAlex 補強 1（fetch_papers_fallback.py）,7
+W1923273760,Effect of Temperature on the Aging rate of Li Ion Battery Operating above Room Temperature,2,FB3_05_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf,電気化学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,6
+W4239655581,Wood modification by heat treatment: A review,2,FB03_Wood_modification_by_heat_treatment_A_review_2008.pdf,食品工学,OpenAlex 補強 1（fetch_papers_fallback.py）,3
+W4239655581,Wood modification by heat treatment: A review,2,FB2_13_Wood_modification_by_heat_treatment_A_review_2008.pdf,化学工学基礎,OpenAlex 補強 2（fetch_papers_fallback2.py）,3
+W2205745736,dfnWorks: A discrete fracture network framework for modeling subsurface flow and transport,2,FB2_09_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf,環境工学,OpenAlex 補強 2（fetch_papers_fallback2.py）,2
+W2205745736,dfnWorks: A discrete fracture network framework for modeling subsurface flow and transport,2,FB3_06_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf,流体力学（応用）,OpenAlex 補強 3（fetch_papers_fallback3.py）,1

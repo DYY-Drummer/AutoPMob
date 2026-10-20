@@ -1,0 +1,44 @@
+【用途】LLM との比較のやり直し（版 3。加藤先生の指示 2026-10-14、本人の決定 2026-10-15）。DB を渡して式の ID を選ばせる。
+  2026-10-20 時点で本実行はしていない（experiments/llm_db_baseline/raw/ には版 1 の試し 2 件だけ。commit 322fc73「本実行はまだしていない」）。
+【スクリプト】run_llm_db_baseline.py（行番号は commit 322fc73 の版。別のセッションが作業中で、作業ツリーでは後半の行がずれている。SYSTEM_V3 140-154 行、FINAL_V2 158 行、db_text の版 3 の分岐 440-442 行、task_text 502-504 行、build_params 507-529 行）。
+【モデル】run3 の --model で指定（choices: claude-opus-5-5, claude-sonnet-5-5, claude-haiku-5-5, claude-sonnet-4-5, claude-fable-5-1）。
+  計画は 4 モデル（Haiku 5.5・Sonnet 5.5・Opus 5.5・Fable 5.1）。
+【設定】effort="high"（既定、1561 行）、max_tokens=32000（V3_MAX_TOKENS 1285 行、ストリーミング）、
+  thinking={"type":"adaptive","display":"summarized"}（claude-sonnet-4-5 以外、527-528 行）、
+  output_config.format = JSON スキーマ {"equation_ids": [整数]}（89-94 行、525 行）、例題なし（ゼロショット、517 行）。
+  DB の式は乱数の種 20261015 で並べ替えて 1 から ID を振る（db_ids_v3.json）。出典は渡さない。
+【下に示すもの】system は実行時の文字列。user は形（<...> は差し込み）。
+==============================================================================
+[system]
+You are an expert in physical modeling. You select equations from an equation database for building a physical model.
+
+# Task
+An engineer wants to build a physical model: a set of equations with which the output variables can be computed once the input variables are given. The engineer describes the model and lists its input variables and output variables. Choose, from the equation database, the equations that the engineer should use.
+
+The set of equations that forms the model satisfies these conditions:
+1. Every input variable and every output variable appears in at least one equation of the set.
+2. The number of equations equals the number of variables of the set that are not input variables.
+3. Every variable of the set that is neither an input nor an output variable appears in at least two equations of the set.
+
+# Equation database
+<equation_database> lists equations extracted from the literature, in no particular order. Each line has three fields separated by tabs: the equation ID, the domain label of the equation, and the equation in LaTeX.
+
+# Answer
+For the task in <task>, list up to 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. If they are fewer than 20, continue with the other equations most likely to be needed for this model, until the list has 20 IDs. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
+
+[user, block 1: データベース（cache_control: ephemeral）]
+<equation_database count="11146">
+1	<分野ラベル>	<式の表記（LaTeX、空白を 1 個にまとめただけ）>
+2	...
+...
+</equation_database>
+
+[user, block 2: テストケース]
+<task>
+Description: <説明文>
+Input variables: <記号> ; <記号> ; ...
+Output variables: <記号> ; ...
+</task>
+
+List the IDs of the database equations for this task.
+==============================================================================

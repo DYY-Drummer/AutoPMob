@@ -1,0 +1,25 @@
+【用途】拡張ケースの説明文（LLM は使っていない。決まった前置きを付けるだけ）
+【スクリプト】generate_training_cases.py の paraphrase_context_variants（309-318 行）: context_paraphrased 276 件（92×3）と、
+  random_io_from_models のうち同スクリプトの v3〜v6 由来 234 件（v3 は 2 番目、v4〜v6 は 3 番目の前置き。393 行）に使用。
+  expand_solvable_random_io.py の load_paraphrase_templates（67-73 行）は定義されているが呼ばれていない。同スクリプトが作った 504 件は元の説明文そのまま（127・143 行）。
+【確認】training_cases.json の context_paraphrased 276 件は、すべて「3 つの前置きのどれか＋元の説明文」と完全に一致した（本確認で照合）。
+==============================================================================
+def paraphrase_context_variants(context: str) -> List[str]:
+    """
+    LLM を使わずに簡単な言い換えテンプレートを適用して 3 パターンの context を生成。
+    """
+    return [
+        context,
+        f"This case describes the following physical model: {context}",
+        f"In this scenario, the underlying process can be summarized as: {context}",
+        f"From the perspective of process modeling, this case focuses on: {context}",
+    ]
+
+def load_paraphrase_templates():
+    """元の context_paraphrased で使われたテンプレート同等を用意（ランダム選択用）."""
+    return [
+        "This case describes the following physical model: {context}",
+        "In this scenario, the underlying process can be summarized as: {context}",
+        "Consider the physical setup below: {context}",
+    ]
+==============================================================================

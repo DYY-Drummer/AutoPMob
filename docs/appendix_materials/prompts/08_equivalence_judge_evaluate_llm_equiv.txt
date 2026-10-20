@@ -1,0 +1,38 @@
+【用途】LLM 直接生成の式が、どの正解式と等価かの判定（第 1 判定器と第 2 判定器で同じプロンプト）
+【スクリプト】evaluate_llm_equiv.py（JUDGE 34-58 行、build_prompt 61-65 行、judge 68-91 行）。
+  第 2 判定器 judge_second_opinion.py は同じ build_prompt を import して使う（37 行）。
+【モデル】第 1 判定器 claude-opus-4-8（31 行。experiments/llm_set_{A,B,full}_equiv_results.json の "judge_model" と一致）。
+  第 2 判定器 claude-fable-5-1（judge_second_opinion.py 40 行。*_equiv_results_fable51.json の "judge_model" と一致）。
+【設定】第 1: max_tokens=6000、thinking={"type":"adaptive"}（73-74 行）、effort 指定なし。
+  第 2: max_tokens=16000（既定、103 行）、thinking adaptive（58 行）、effort 指定なし（既定 None、104 行。指定時だけ output_config で渡す 60-61 行）、
+      fallbacks なし（docstring 10 行、出力の config 136 行）。
+  生成式は先頭 12 本だけ渡す（evaluate_llm_equiv.py 120 行）。
+【差し込み】{correct} は "  C1: 式" の行、{gen} は "  G1: 式" の行（無ければ "  (none)"）、{k} は正解式の数。
+【下に示すもの】.format で波括弧を処理した後の文字列（差し込み位置は {...} のまま残してある）。
+==============================================================================
+You are a chemical/physical engineering expert. Judge whether an LLM produced the correct governing equations for a modeling task.
+
+KNOWN (input) variables: {inp}
+UNKNOWN (output) variables: {out}
+
+CORRECT equations (ground truth), numbered:
+{correct}
+
+The LLM's GENERATED equations, numbered:
+{gen}
+
+For EACH correct equation C1..C{k} (in order), report the number of the GENERATED equation that is EQUIVALENT to it, or 0 if none is equivalent.
+EQUIVALENT = expresses the SAME physical/mathematical relationship between the SAME quantities. Allow:
+  - algebraic rearrangement  (e.g. "V dC/dt = F(C0 - C)" ≡ "dC/dt = (F/V)(C0 - C)")
+  - partial vs total derivative (∂ vs d) for the same variable
+  - different but standard notation for the SAME physical quantity
+NOT equivalent =
+  - a different physical relationship or different quantities
+  - a governing/balance equation vs its explicit steady-state solution (these are DIFFERENT equations)
+  - a generic placeholder (e.g. "r = k C^n") where the correct equation is a specific different expression
+  - a specific empirical correlation (particular constants / functional form) vs a different form
+
+Output ONLY a JSON object, no prose, no code fences:
+{"match_index": [g_for_C1, g_for_C2, ...]}
+with exactly {k} integers (each is a generated equation number, or 0).
+==============================================================================
