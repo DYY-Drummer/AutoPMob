@@ -52,3 +52,10 @@ def test_map_at_20_truncates_at_rank_20_and_divides_by_K():
     assert ap_at([1, 5, 25], 20) == pytest.approx((1 / 1 + 2 / 5) / 3)
     # 20 位までに全部あれば標準の AP と同じ
     assert ap_at([2, 3], 20) == pytest.approx(ap_std([2, 3], n_list=50))
+
+
+def test_r_precision_is_the_old_recall_at_k():
+    """2026-10-20：旧 Recall@K（K = 正解式の数）を R-Precision と呼ぶ（加藤先生のコメント）."""
+    from kato1014_common import METRIC_FNS
+    rec = {"ranks": [1, 3, 4]}
+    assert METRIC_FNS["R-Precision"](rec, 50) == METRIC_FNS["Recall@K"](rec, 50) == 2 / 3

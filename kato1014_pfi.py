@@ -101,12 +101,13 @@ def main():
     ap.add_argument("--stage1-w-text", type=float, default=0.3)
     ap.add_argument("--stage1-w-var", type=float, default=0.7)
     ap.add_argument("--hard-neg", action="store_true", help="訓練の不正解を点数の高い順に選ぶ（C と同じ訓練にする）")
+    ap.add_argument("--exclude", default=None, help="外すケースの一覧の JSON（2026-10-20）")
     ap.add_argument("--output", required=True)
     a = ap.parse_args()
 
     from analyze_stage1_n1 import load_setting_A
     from set_aware_reranker import run_mode
-    D = load_setting_A()
+    D = load_setting_A(a.exclude)
     cases, ek, et, ev, ed, es, cl, cs = (D[k] for k in ("cases", "ek", "et", "ev", "ed", "es", "cl", "cs"))
     holder = {}
     t0 = time.time()

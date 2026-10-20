@@ -60,6 +60,7 @@ METRIC_FNS = {
     "MAP": lambda rec, n: ap_std(rec["ranks"], n),
     "MAP@20": lambda rec, n: ap_at(rec["ranks"], 20),
     "Recall@K": lambda rec, n: rk(rec["ranks"]),
+    "R-Precision": lambda rec, n: rk(rec["ranks"]),   # 2026-10-20：旧 Recall@K（K = 正解式の数）の呼び名
     "coverage": lambda rec, n: sum(1 for r in rec["ranks"] if r <= n) / len(rec["ranks"]),
 }
 

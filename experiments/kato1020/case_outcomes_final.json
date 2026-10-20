@@ -1,0 +1,151 @@
+{
+ "config": {
+  "top_k": 2000,
+  "tag": "final",
+  "seed": 42,
+  "stage1_w_text": 0.3,
+  "stage1_w_var": 0.7,
+  "hard_neg": true,
+  "exclude": "/Users/kazuhiromiyamura/Projects/AutoPMob/experiments/kato1020/excluded_cases.json",
+  "out_dir": "/Users/kazuhiromiyamura/Projects/AutoPMob/experiments/kato1020",
+  "setting": "A",
+  "mode": "reranker-10S",
+  "n_test": 408
+ },
+ "top20": {
+  "n_cases": 408,
+  "n_gt": 1624,
+  "mean_recall": 0.9740050186741364,
+  "missed_total": 85,
+  "stage1_miss": 0,
+  "stage2_miss": 85,
+  "stage1_share": 0.0,
+  "solved": 368,
+  "unsolved": 40,
+  "solved_vs_unsolved": {
+   "n_correct": {
+    "mean_solved": 3.5543478260869565,
+    "mean_unsolved": 7.9,
+    "n_solved": 368,
+    "n_unsolved": 40,
+    "p": 1.7592300049189784e-17
+   },
+   "n_input": {
+    "mean_solved": 14.092391304347826,
+    "mean_unsolved": 25.825,
+    "n_solved": 368,
+    "n_unsolved": 40,
+    "p": 3.1018117746910136e-14
+   },
+   "n_sources": {
+    "mean_solved": 1.4809782608695652,
+    "mean_unsolved": 1.125,
+    "n_solved": 368,
+    "n_unsolved": 40,
+    "p": 1.3368150451663974e-06
+   },
+   "coverage": {
+    "mean_solved": 1.0,
+    "mean_unsolved": 1.0,
+    "n_solved": 368,
+    "n_unsolved": 40,
+    "p": 1.0
+   }
+  },
+  "rescue_fraction": {
+   "svd_sim": {
+    "mean": 0.46461891764281466,
+    "sem": 0.04779203312891339,
+    "n": 40
+   },
+   "text_sim": {
+    "mean": 0.47875161195014143,
+    "sem": 0.05366562895436921,
+    "n": 40
+   },
+   "domain": {
+    "mean": 0.5178797224017812,
+    "sem": 0.03111368724166011,
+    "n": 40
+   },
+   "specificity": {
+    "mean": 0.5212803046626575,
+    "sem": 0.006375677014490555,
+    "n": 40
+   },
+   "io_jaccard": {
+    "mean": 0.3335809255593263,
+    "sem": 0.04849318171441593,
+    "n": 40
+   }
+  }
+ },
+ "topK": {
+  "n_cases": 408,
+  "n_gt": 1624,
+  "mean_recall": 0.6872179427326486,
+  "missed_total": 510,
+  "stage1_miss": 0,
+  "stage2_miss": 510,
+  "stage1_share": 0.0,
+  "solved": 144,
+  "unsolved": 264,
+  "solved_vs_unsolved": {
+   "n_correct": {
+    "mean_solved": 3.1805555555555554,
+    "mean_unsolved": 4.416666666666667,
+    "n_solved": 144,
+    "n_unsolved": 264,
+    "p": 4.790238035563592e-07
+   },
+   "n_input": {
+    "mean_solved": 12.840277777777779,
+    "mean_unsolved": 16.553030303030305,
+    "n_solved": 144,
+    "n_unsolved": 264,
+    "p": 2.196094730429144e-05
+   },
+   "n_sources": {
+    "mean_solved": 1.3541666666666667,
+    "mean_unsolved": 1.496212121212121,
+    "n_solved": 144,
+    "n_unsolved": 264,
+    "p": 0.08191193176320882
+   },
+   "coverage": {
+    "mean_solved": 1.0,
+    "mean_unsolved": 1.0,
+    "n_solved": 144,
+    "n_unsolved": 264,
+    "p": 1.0
+   }
+  },
+  "rescue_fraction": {
+   "svd_sim": {
+    "mean": 0.4027132829141758,
+    "sem": 0.02513570767570505,
+    "n": 264
+   },
+   "text_sim": {
+    "mean": 0.4016126292688793,
+    "sem": 0.0253243477483381,
+    "n": 264
+   },
+   "domain": {
+    "mean": 0.49626623376623386,
+    "sem": 0.008362588161944625,
+    "n": 264
+   },
+   "specificity": {
+    "mean": 0.5081123737373737,
+    "sem": 0.003423582156436195,
+    "n": 264
+   },
+   "io_jaccard": {
+    "mean": 0.39395978277674704,
+    "sem": 0.019245735696025865,
+    "n": 264
+   }
+  }
+ }
+}

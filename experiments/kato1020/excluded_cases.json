@@ -1,0 +1,749 @@
+{
+ "description": "未知の変数のそれぞれに、それを決める式を 1 本ずつ割り当てられない（完全マッチングがない）ケース。評価と訓練から外す（2026-10-20 本人の決定）。",
+ "criterion": "analyze_kato_0831_followup.gt_checks と同じ：|V(R) − 入力| = |R| かつ 式と未知の変数の完全マッチングがある、を満たさない",
+ "n_excluded": 91,
+ "by_family": {
+  "cross_source": 91
+ },
+ "n_with_some_equation_all_inputs": 91,
+ "n_derived_io_variants": 87,
+ "counts_by_family_solvable_allinputs": {
+  "cross_source|solvable=False|some_eq_all_inputs=True": 91,
+  "cross_source|solvable=True|some_eq_all_inputs=False": 640,
+  "single_source|solvable=True|some_eq_all_inputs=False": 92,
+  "synthesized|solvable=True|some_eq_all_inputs=False": 1000
+ },
+ "setting_A_after": 1732,
+ "excluded_case_ids": [
+  "ms_cstr_heat_001_rv1",
+  "ms_cstr_heat_001_rv3",
+  "ms_cstr_heat_002_rv1",
+  "ms_cstr_heat_002_rv4",
+  "ms_cstr_heat_radiation_001_rv1",
+  "ms_cstr_heat_radiation_001_rv2",
+  "ms_cstr_heat_radiation_001_rv4",
+  "ms_cstr_heat_radiation_001_rv5",
+  "ms_cstr_heat_radiation_001_rv6",
+  "ms_pfr_kin_001_rv5",
+  "ms_reactor_pid_001_rv1",
+  "ms_reactor_pid_001_rv3",
+  "ms_reactor_pid_001_rv4",
+  "ms_reactor_sensor_001_rv4",
+  "ms_reactor_sensor_001_rv5",
+  "ms_bioreactor_001_rv2",
+  "ms_bioreactor_001_rv4",
+  "ms_diffusion_reaction_001_rv1",
+  "ms_diffusion_reaction_001_rv6",
+  "ms_arrhenius_001_rv1",
+  "ms_arrhenius_001_rv2",
+  "ms_arrhenius_001_rv3",
+  "ms_pfr_arrhenius_001_rv2",
+  "ms_pfr_arrhenius_001_rv3",
+  "ms_pfr_arrhenius_001_rv4",
+  "ms_pfr_arrhenius_001_rv6",
+  "ms_dual_reaction_001_rv6",
+  "ms_batch_cstr_001_rv1",
+  "ms_batch_cstr_001_rv2",
+  "ms_batch_cstr_001_rv6",
+  "ms_pbr_chemeng_001_rv1",
+  "ms_pbr_chemeng_001_rv3",
+  "ms_pbr_chemeng_001_rv4",
+  "ms_reaction_convection_001_rv3",
+  "ms_reaction_convection_001_rv5",
+  "ms_reaction_convection_001_rv6",
+  "ms_pfr_convection_001_rv3",
+  "ms_pfr_convection_001_rv4",
+  "ms_pfr_convection_001_rv5",
+  "ms_pfr_convection_001_rv6",
+  "ms_bio_diffusion_001_rv2",
+  "ms_bio_diffusion_001_rv5",
+  "ms_pid_arrhenius_001_rv3",
+  "ms_pfr_arrhenius_rate_001_rv1",
+  "ms_pfr_arrhenius_rate_001_rv2",
+  "ms_pfr_arrhenius_rate_001_rv3",
+  "ms_pfr_arrhenius_rate_001_rv4",
+  "ms_pfr_arrhenius_rate_001_rv6",
+  "ms_batch_arrhenius_001_rv4",
+  "ms_batch_arrhenius_001_rv5",
+  "ms_batch_integral_001_rv1",
+  "ms_batch_integral_001_rv2",
+  "ms_batch_integral_001_rv3",
+  "ms_chemeng_convection_001_rv1",
+  "ms_chemeng_convection_001_rv2",
+  "ms_chemeng_convection_001_rv3",
+  "ms_chemeng_convection_001_rv5",
+  "ms_chemeng_convection_001_rv6",
+  "ms_batch_sensor_001_rv2",
+  "ms_batch_sensor_001_rv3",
+  "ms_bio_pid_001_rv1",
+  "ms_bio_pid_001_rv2",
+  "ms_pfr_masstransfer_001_rv1",
+  "ms_pfr_masstransfer_001_rv4",
+  "ms_cstr_masstransfer_001_rv1",
+  "ms_cstr_masstransfer_001_rv5",
+  "ms_reactor_heat_arrhenius_001_rv1",
+  "ms_reactor_heat_arrhenius_001_rv4",
+  "ms_reactor_heat_arrhenius_001_rv5",
+  "ms_reactor_heat_arrhenius_001_rv6",
+  "ms_pfr_batch_arrhenius_001_rv1",
+  "ms_pfr_batch_arrhenius_001_rv4",
+  "ms_pfr_batch_arrhenius_001_rv5",
+  "ms_batch_diffusion_001_rv1",
+  "ms_batch_diffusion_001_rv2",
+  "ms_batch_diffusion_001_rv3",
+  "ms_batch_diffusion_001_rv4",
+  "ms_batch_diffusion_001_rv5",
+  "ms_bio_diffusion_002_rv2",
+  "ms_bio_diffusion_002_rv6",
+  "ms_chemeng_re_001_rv2",
+  "ms_steady_cstr_heat_001_rv1",
+  "ms_steady_cstr_heat_001_rv4",
+  "ms_steady_cstr_heat_001_rv5",
+  "ms_pfr_pid_001_rv1",
+  "ms_pfr_pid_001_rv4",
+  "ms_batch_convection_001_rv2",
+  "ms3_0215",
+  "ms3_0216",
+  "ms3_0217",
+  "ms3_0219"
+ ],
+ "cases": [
+  {
+   "case_id": "ms_cstr_heat_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_002_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_002_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_radiation_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_radiation_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_radiation_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_radiation_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_heat_radiation_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_kin_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_pid_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_pid_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_pid_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_sensor_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_sensor_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bioreactor_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bioreactor_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_diffusion_reaction_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_diffusion_reaction_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_arrhenius_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_arrhenius_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_arrhenius_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_dual_reaction_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_cstr_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_cstr_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_cstr_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pbr_chemeng_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pbr_chemeng_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pbr_chemeng_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reaction_convection_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reaction_convection_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reaction_convection_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_convection_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_convection_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_convection_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_convection_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bio_diffusion_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bio_diffusion_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pid_arrhenius_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_rate_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_rate_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_rate_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_rate_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_arrhenius_rate_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_arrhenius_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_arrhenius_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_integral_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_integral_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_integral_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_chemeng_convection_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_chemeng_convection_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_chemeng_convection_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_chemeng_convection_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_chemeng_convection_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_sensor_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_sensor_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bio_pid_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bio_pid_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_masstransfer_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_masstransfer_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_masstransfer_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_cstr_masstransfer_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_heat_arrhenius_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_heat_arrhenius_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_heat_arrhenius_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_reactor_heat_arrhenius_001_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_batch_arrhenius_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_batch_arrhenius_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_batch_arrhenius_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 3,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_diffusion_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_diffusion_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_diffusion_001_rv3",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_diffusion_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_diffusion_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bio_diffusion_002_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_bio_diffusion_002_rv6",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_chemeng_re_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_steady_cstr_heat_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_steady_cstr_heat_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_steady_cstr_heat_001_rv5",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_pid_001_rv1",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_pfr_pid_001_rv4",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms_batch_convection_001_rv2",
+   "variant_type": "multisource_random_io",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms3_0215",
+   "variant_type": "multisource_v3",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms3_0216",
+   "variant_type": "multisource_v3",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms3_0217",
+   "variant_type": "multisource_v3",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  },
+  {
+   "case_id": "ms3_0219",
+   "variant_type": "multisource_v3",
+   "family": "cross_source",
+   "n_correct": 2,
+   "some_equation_all_inputs": true
+  }
+ ]
+}

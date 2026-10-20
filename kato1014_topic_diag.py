@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
 import numpy as np
 
@@ -47,6 +48,8 @@ def main():
     ap.add_argument("--svd-seed", type=int, default=42)
     ap.add_argument("--w-text", type=float, default=0.3)
     ap.add_argument("--w-var", type=float, default=0.7)
+    ap.add_argument("--exclude", default=None, help="外すケースの一覧の JSON（2026-10-20）")
+    ap.add_argument("--out-dir", default=None, help="出力先（既定 experiments/kato1014/）")
     a = ap.parse_args()
 
     from sklearn.decomposition import TruncatedSVD
@@ -55,7 +58,7 @@ def main():
     from stage2_fast import FastBank
     from two_stage_query_conditioned import case_text
 
-    D = load_setting_A()
+    D = load_setting_A(a.exclude)
     cases, ek, et, ev, ed, cl, cs = (D[k] for k in ("cases", "ek", "et", "ev", "ed", "cl", "cs"))
     tfidf = TfidfVectorizer(lowercase=True, max_features=50000, ngram_range=(1, 2), min_df=1)
     X_eq = tfidf.fit_transform(et)
@@ -93,8 +96,9 @@ def main():
            "auc_within_candidates": {f: _mean_sem(v) for f, v in auc_cand.items()},
            "corr_text_jaccard_within_candidates_seed42_test": _mean_sem([corr_ts_vs[ci] for ci in te42]),
            "n_test_seed42": len(te42)}
-    OUT.mkdir(parents=True, exist_ok=True)
-    p = OUT / f"topic_diag_{a.tag}.json"
+    out_dir = Path(a.out_dir) if a.out_dir else OUT
+    out_dir.mkdir(parents=True, exist_ok=True)
+    p = out_dir / f"topic_diag_{a.tag}.json"
     json.dump(out, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"Saved: {p}")
     for f in FEATS:

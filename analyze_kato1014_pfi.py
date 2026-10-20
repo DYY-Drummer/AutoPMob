@@ -100,12 +100,12 @@ def figure(out, tag):
     ax.text(base - 0.01, -1.05, f"シャッフル前 {base:.3f}", ha="right", va="center", fontsize=11, color="#333")
     ax.set_xlim(0, 1.12)
     ax.set_ylim(y - 0.4, -1.6)
-    ax.set_xlabel("シャッフル後の Recall@20（設定 A、乱数 10 通りの平均）", fontsize=12)
+    ax.set_xlabel("シャッフル後の Recall@20（設定 A、10 通りの分割の平均）", fontsize=12)
     ax.tick_params(axis="x", labelsize=11)
     ax.grid(axis="x", alpha=0.25)
     ax.legend(handles=[Patch(color=C_VAR, label="変数の重複率を測る特徴量"),
                        Patch(color=C_TOP, label="話題の近さを測る特徴量")],
-              fontsize=11, loc="upper left", bbox_to_anchor=(0.2, 0.93), framealpha=1.0)
+              fontsize=11, loc="upper left", bbox_to_anchor=(0.38, 0.90), framealpha=1.0)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         p = ROOT / "docs" / "figures" / f"fig_pfi_recall20_ja_{tag}.{ext}"

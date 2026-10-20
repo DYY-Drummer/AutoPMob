@@ -58,11 +58,16 @@ def main():
     ap.add_argument("--stage1-w-var", type=float, default=0.7)
     ap.add_argument("--mode", default="reranker-2+Dom")
     ap.add_argument("--hard-neg", action="store_true", help="訓練の不正解を点数の高い順に選ぶ（run_kato1014.sh の EXTRA と合わせる）")
+    ap.add_argument("--exclude", default=None, help="外すケースの一覧の JSON（2026-10-20）")
     ap.add_argument("--output", required=True)
     a = ap.parse_args()
 
     ctx = load_lists()
     cases, ek, et, ev, ed, es, cl, cs = ctx
+    if a.exclude:
+        exs = set(json.load(open(a.exclude, encoding="utf-8"))["excluded_case_ids"])
+        keep = [i for i, c in enumerate(cases) if c.get("case_id") not in exs]
+        cases, cl, cs = [cases[i] for i in keep], [cl[i] for i in keep], [cs[i] for i in keep]
     labels = sorted({d for d in ed if d})
     maps = build_maps(labels)
     n_groups = len({maps[a.merge][d] for d in labels if maps[a.merge][d]})

@@ -322,6 +322,40 @@ def set_metrics(pred_list, correct_set, suffix=""):
     }
 
 
+def latex_key(s):
+    """同じ式の印：LaTeX から空白と \\left・\\right・\\,・\\;・\\!・\\quad を除いた文字列
+    （analyze_kato_0831_followup.gt_checks と同じ。報告書 §3.5 の 386/3,132 本）."""
+    import re
+    return re.sub(r"\\left|\\right|\\,|\\;|\\!|\\quad|\s+", "", s or "")
+
+
+def filter_excluded(cases, path):
+    """外すケースの一覧（JSON の excluded_case_ids）にあるケースを除く（順序は保つ）。2026-10-20 の再実験用."""
+    ex = set(json.load(open(path, encoding="utf-8"))["excluded_case_ids"])
+    return [c for c in cases if c.get("case_id") not in ex]
+
+
+def equiv_ranks(ranked_list, correct, eq_ids, miss_rank=10_000, eq_src=None):
+    """別の出典にある同じ式を正解とみなした順位（昇順）。eq_ids[j] は式 j の同じ式の印（正規化した LaTeX など）.
+
+    並べた順に見て、まだ数えていない正解式と同じ印の式が出たら、その正解式の順位とする
+    （1 本の正解式は 1 回だけ、1 本の式は 1 本の正解式にだけ数える）。並べた中になければ miss_rank。
+    eq_src を与えると、正解式そのもの以外は「正解式と別の出典」の式だけを数える（報告書 §3.5 の 386/3,132 本の定義）。
+    """
+    open_gt = sorted(correct)
+    got = {}
+    for r, j in enumerate(ranked_list, 1):
+        if not open_gt:
+            break
+        key = eq_ids[j]
+        for g in open_gt:
+            if eq_ids[g] == key and (eq_src is None or j == g or eq_src[j] != eq_src[g]):
+                got[g] = r
+                open_gt.remove(g)
+                break
+    return sorted(got.get(g, miss_rank) for g in correct)
+
+
 MODE_CONFIGS = {
     "baseline":         {"use_mlp": False, "use_existing_graph": False, "set_aware_mask": ()},
     # baseline と同じ 2 特徴量（text_sim, io_jaccard）だけを MLP で学習：
@@ -357,11 +391,15 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
              weight_decay=1e-4, loss_type="pairwise", hard_neg=False, greedy=False,
              split_mode="random", train_greedy=False, greedy_train_cap=8,
              stop_dof=False, stage1_w_text=0.7, stage1_w_var=0.3,
-             fast=False, neg_pool=0, on_trained=None):
+             fast=False, neg_pool=0, on_trained=None, eval_val=False, equiv_ids=None,
+             equiv_src=None):
     """fast=True: 特徴量を stage2_fast.FastBank でまとめて計算する（同じ値・同じ乱数の消費。
     N1 を数千〜DB 全体に広げるため）。neg_pool>0: 不正解の候補を第 1 段の上位 neg_pool 件の
     中からだけ選ぶ（0 = 候補全体から、既定）。on_trained: 訓練の直後に
-    {seed, model, te, get_cands, get_feats, base_subset} を渡して呼ぶ（PFI などの分析用。評価は変えない）。"""
+    {seed, model, te, get_cands, get_feats, base_subset} を渡して呼ぶ（PFI などの分析用。評価は変えない）。
+    eval_val=True: 検証用のケース（分割の val の出典）も評価し、per-case に split（"test"/"val"）を付ける
+    （per-seed の集計はテストのまま）。equiv_ids: 式ごとの「同じ式」の印。与えると per-case に ranks_equiv を足す。
+    fast=True のときは per-seed の集計に訓練と評価の時間（秒）を足す。"""
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.decomposition import TruncatedSVD
     from sklearn.metrics.pairwise import cosine_similarity
@@ -394,6 +432,7 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
             split = src_split(eq_sources_l, seed)
         tr = [i for i, s in enumerate(case_srcs) if s in split["train"] and correct_lists[i]]
         te = [i for i, s in enumerate(case_srcs) if s in split["test"] and correct_lists[i]]
+        va = [i for i, s in enumerate(case_srcs) if s in split["val"] and correct_lists[i]]
 
         tfidf = TfidfVectorizer(lowercase=True, max_features=50000, ngram_range=(1, 2), min_df=1)
         X_eq = tfidf.fit_transform(eq_texts_l)
@@ -428,6 +467,7 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
             )
 
         case_results = []
+        val_results = []
 
         if not use_mlp:
             for ci in te:
@@ -445,6 +485,8 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                 cm["n_sources"] = len({(eq_keys_l[j].split("__")[0] if j < len(eq_keys_l) else "?") for j in corr})
                 case_results.append(cm)
         else:
+            import time as _time
+            t_train0 = _time.perf_counter()
             model = Reranker(n_feat, hidden_dim)
             opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
             rng = random.Random(seed)
@@ -537,13 +579,17 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                         opt.zero_grad(); loss.backward(); opt.step()
 
             model.eval()
+            t_train = _time.perf_counter() - t_train0
             if on_trained is not None:
                 on_trained({"seed": seed, "model": model, "te": list(te), "get_cands": get_cands,
                             "get_feats": (lambda ci, cands: get_feats(ci, cands)[:, list(base_subset)]
                                           if base_subset else get_feats(ci, cands)),
                             "base_subset": base_subset})
+            t_eval0 = _time.perf_counter()
+            eval_sets = [("test", te, case_results)] + ([("val", va, val_results)] if eval_val else [])
             with torch.no_grad():
-                for ci in te:
+              for split_name, eval_cases, results_out in eval_sets:
+                for ci in eval_cases:
                     corr = set(correct_lists[ci])
                     if not corr: continue
                     cands = get_cands(ci)
@@ -589,13 +635,23 @@ def run_mode(mode, seeds, cases, eq_keys_l, eq_texts_l, eq_vars_l,
                         # 閉包の保証：DoF停止集合は構成上閉じる。oracle-K（スコア上位K件）は？
                         cm["closed_dof"] = is_closed(pred_dof, eq_vars_l, inv, outv)
                         cm["closed_oracleK"] = is_closed(pred_orc, eq_vars_l, inv, outv)
-                    case_results.append(cm)
+                    if equiv_ids is not None:
+                        cm["ranks_equiv"] = [int(r) for r in equiv_ranks(ranked_topK, corr, equiv_ids, miss_rank,
+                                                                          eq_src=equiv_src)]
+                    if eval_val:
+                        cm["split"] = split_name
+                    results_out.append(cm)
+            t_eval = _time.perf_counter() - t_eval0
 
         agg = aggregate_metrics(case_results)
         agg["seed"] = seed
+        if fast and use_mlp:
+            agg["time_train_sec"] = round(t_train, 2)
+            agg["time_eval_sec"] = round(t_eval, 2)
+            agg["n_val"] = len(val_results)
         per_seed_aggs.append(agg)
         if save_per_case:
-            for cm in case_results:
+            for cm in case_results + val_results:
                 rec = {"seed": seed, "mode": mode, **cm}
                 # remove non-serializable / bulky inner dicts; keep scalar metrics + Recall@K_correct
                 rec.pop("FullRecall", None); rec.pop("Recall", None)
@@ -687,6 +743,12 @@ def main():
                              "N1 を数千〜DB 全体に広げる実験用。2026-10-14 加藤先生の指示 3）")
     parser.add_argument("--neg-pool", type=int, default=0,
                         help="訓練の不正解の候補を第1段の上位 N 件からだけ選ぶ（0 = 候補全体、既定）")
+    parser.add_argument("--exclude-cases", type=str, default=None,
+                        help="外すケースの一覧（JSON の excluded_case_ids）。分割の前に除く（2026-10-20：未知の変数が決まらない 91 件）")
+    parser.add_argument("--eval-val", action="store_true",
+                        help="検証用のケースも評価し、per-case に split を付ける（定数を検証用のケースで選ぶため）")
+    parser.add_argument("--equiv", action="store_true",
+                        help="別の出典にある同じ式（空白などを除いて同じ LaTeX）を正解とみなした順位 ranks_equiv も per-case に記録")
     args = parser.parse_args()
 
     all_seeds = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
@@ -714,12 +776,16 @@ def main():
         cases = [c for c in cases if matches(c.get("variant_type", ""))]
         print(f"Variant filter: {wanted}")
         print(f"  ケース絞込み: {n_before} → {len(cases)} 件")
-    ek, et, ev, ed, es = [], [], [], [], []
+    if args.exclude_cases:
+        n_before = len(cases)
+        cases = filter_excluded(cases, args.exclude_cases)
+        print(f"  外すケース（{args.exclude_cases}）: {n_before} → {len(cases)} 件")
+    ek, et, ev, ed, es, ex = [], [], [], [], [], []
     for e in eqs:
         k = eq_key(e)
         if not k: continue
         ek.append(k); et.append(eq_text(e)); ev.append(eq_vars(e))
-        ed.append(norm(e.get("domain") or "")); es.append(get_src(e))
+        ed.append(norm(e.get("domain") or "")); es.append(get_src(e)); ex.append(latex_key(e.get("equation")))
     ki = {k: i for i, k in enumerate(ek)}
     cl = [[ki[norm(m)] for m in (c.get("correct_model_ids") or []) if norm(m) in ki] for c in cases]
     cs = [case_src(c) for c in cases]
@@ -748,6 +814,9 @@ def main():
             stage1_w_var=args.stage1_w_var,
             fast=args.fast,
             neg_pool=args.neg_pool,
+            eval_val=args.eval_val,
+            equiv_ids=ex if args.equiv else None,
+            equiv_src=es if args.equiv else None,
         )
 
     print(f"\n{'='*100}")

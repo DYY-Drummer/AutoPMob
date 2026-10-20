@@ -131,3 +131,6 @@ experiments/var_desc_logs/
 
 # 2026-10-15 加藤先生の指示 3・4・5 の再実験：分割ごとの実行・試行・確認の生データ（run_kato1014*.sh で再生成できる。統計 JSON のみコミット）
 experiments/kato1014/raw/
+
+# 2026-10-21 加藤先生の 2 回目のコメントによる再実験：分割ごとの実行の生データ（kato1020_run.py で再生成できる。統計 JSON のみコミット）
+experiments/kato1020/raw/

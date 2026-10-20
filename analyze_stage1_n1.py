@@ -126,14 +126,19 @@ def family(v: str) -> str:
     return "other"
 
 
-def load_setting_A():
-    """set_aware_reranker.main と同じ手順で DB とケース（設定 A）を作る."""
+def load_setting_A(exclude=None):
+    """set_aware_reranker.main と同じ手順で DB とケース（設定 A）を作る.
+
+    exclude: 外すケースの一覧の JSON（set_aware_reranker.py --exclude-cases と同じ。2026-10-20）。
+    """
     from two_stage_query_conditioned import (
         load_equations, load_cases, norm, eq_key, eq_text, eq_vars, case_src,
     )
-    from set_aware_reranker import get_src
+    from set_aware_reranker import filter_excluded, get_src
     eqs = load_equations()
     cases = [c for c in load_cases() if family(str(c.get("variant_type", ""))) != "other"]
+    if exclude:
+        cases = filter_excluded(cases, exclude)
     ek, et, ev, ed, es, eq_raw = [], [], [], [], [], []
     for e in eqs:
         k = eq_key(e)
@@ -165,11 +170,11 @@ def _grid(n_eq):
     return [x for x in g if 1 <= x <= n_eq]
 
 
-def run(w_text=0.3, w_var=0.7, out_json=None, check_cases=60):
+def run(w_text=0.3, w_var=0.7, out_json=None, check_cases=60, exclude=None):
     from sklearn.feature_extraction.text import TfidfVectorizer
     from two_stage_query_conditioned import case_text, io_vars, stage1, in_vars, out_vars
 
-    D = load_setting_A()
+    D = load_setting_A(exclude)
     cases, ek, et, ev, ed, cl, cs = (D[k] for k in ("cases", "ek", "et", "ev", "ed", "cl", "cs"))
     n_eq = len(ek)
     tfidf = TfidfVectorizer(lowercase=True, max_features=50000, ngram_range=(1, 2), min_df=1)
@@ -308,7 +313,9 @@ def run(w_text=0.3, w_var=0.7, out_json=None, check_cases=60):
     return out
 
 
-def make_figure(in_json=None, out_png="docs/figures/fig_n1_full_coverage_ja.png"):
+def make_figure(in_json=None, out_png="docs/figures/fig_n1_full_coverage_ja.png", n_all=None,
+                marks=None, chosen=None):
+    """marks: 比べた N1（点線）、chosen: 本研究で使う N1（実線）。どちらも None なら 2026-10-14 版の印（50・200・全ケース 100%）."""
     """N1 ごとの「全正解式が入るケースの割合」と被覆率（設定 A・B）。判断材料と報告書用."""
     import matplotlib
     matplotlib.use("Agg")
@@ -317,18 +324,27 @@ def make_figure(in_json=None, out_png="docs/figures/fig_n1_full_coverage_ja.png"
     plt.rcParams["axes.unicode_minus"] = False
     d = json.load(open(in_json or OUT_DIR / "n1_coverage_w30-70.json", encoding="utf-8"))
     col = {"A": "#2a78d6", "B": "#eb6834"}
-    lab = {"A": "設定 A（1,823 件）", "B": "設定 B（合成 1,000 件）"}
+    lab = {"A": f"設定 A（{d['settings']['A']['n_cases']:,} 件）", "B": f"設定 B（合成 {d['settings']['B']['n_cases']:,} 件）"}
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.4))
     for ax, key, title in ((axes[0], "full", "(a) 全正解式が候補に入るケースの割合"),
                            (axes[1], "coverage", "(b) 被覆率（候補に入る正解式の割合）")):
         for S in ("A", "B"):
             cur = d["settings"][S]["curve"]
             ax.plot(cur["n1"], cur[key], color=col[S], lw=2, label=lab[S])
-        for x, ls in ((50, ":"), (200, ":"), (1880, "--")):
-            ax.axvline(x, color="#888888", ls=ls, lw=1)
-        ax.text(1880, 0.705, " 1,880\n（全ケース 100%）", fontsize=8.5, color="#52514e", va="bottom")
-        ax.text(50, 0.705, " 50", fontsize=8.5, color="#52514e", va="bottom")
-        ax.text(200, 0.705, " 200", fontsize=8.5, color="#52514e", va="bottom")
+        x100 = max(d["settings"]["A"]["max_min_n1"], d["settings"]["B"]["max_min_n1"])
+        if marks is None and chosen is None:
+            for x, ls in ((50, ":"), (200, ":"), (x100, "--")):
+                ax.axvline(x, color="#888888", ls=ls, lw=1)
+            ax.text(x100, 0.705, f" {x100:,}\n（全ケース 100%）", fontsize=8.5, color="#52514e", va="bottom")
+            ax.text(50, 0.705, " 50", fontsize=8.5, color="#52514e", va="bottom")
+            ax.text(200, 0.705, " 200", fontsize=8.5, color="#52514e", va="bottom")
+        else:
+            for x in (marks or []):
+                ax.axvline(x, color="#888888", ls=":", lw=1)
+                ax.text(x, 0.705, f" {x:,}", fontsize=8.5, color="#52514e", va="bottom")
+            if chosen:
+                ax.axvline(chosen, color="#333333", ls="-", lw=1.2)
+                ax.text(chosen, 0.735, f" {chosen:,}\n（本研究）", fontsize=8.5, color="#333333", va="bottom")
         ax.set_xscale("log")
         ax.set_xlim(10, d["config"]["n_eq"])
         ax.set_ylim(0.70, 1.005)
@@ -349,7 +365,9 @@ if __name__ == "__main__":
     ap.add_argument("--w-var", type=float, default=0.7)
     ap.add_argument("--output", type=str, default=None)
     ap.add_argument("--figure-only", action="store_true", help="保存済み JSON から図だけ作る")
+    ap.add_argument("--exclude", default=None, help="外すケースの一覧の JSON（2026-10-20）")
+    ap.add_argument("--figure", default="docs/figures/fig_n1_full_coverage_ja.png")
     a = ap.parse_args()
     if not a.figure_only:
-        run(a.w_text, a.w_var, a.output)
-    make_figure(a.output)
+        run(a.w_text, a.w_var, a.output, exclude=a.exclude)
+    make_figure(a.output, a.figure)
