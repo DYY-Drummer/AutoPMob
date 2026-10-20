@@ -1,9 +1,9 @@
 {
- "time": "2026-10-15T14:11:30+00:00",
+ "time": "2026-10-20T12:51:13+00:00",
  "prompt_version": "v3",
  "n_calls": {
-  "10splits": 1665,
-  "3splits": 1204
+  "10splits": 1674,
+  "3splits": 1308
  },
  "max_tokens": 32000,
  "limit": 1000000,
@@ -16,65 +16,65 @@
   "claude-haiku-5-5": {
    "prefix_tokens": 952185,
    "task_max": 734,
-   "task_mean_est": 351,
+   "task_mean_est": 352,
    "full_request_max": 952918,
    "room": 47082,
    "fits_with_max_tokens": true,
    "cost_usd": {
-    "10splits_out70": 80.4,
-    "10splits_out2000": 88.5,
-    "10splits_out8000": 113.5,
-    "3splits_out70": 58.3,
-    "3splits_out2000": 64.1,
-    "3splits_out8000": 82.2
+    "10splits_out70": 80.9,
+    "10splits_out2000": 89.0,
+    "10splits_out8000": 114.1,
+    "3splits_out70": 63.3,
+    "3splits_out2000": 69.6,
+    "3splits_out8000": 89.3
    }
   },
   "claude-sonnet-5-5": {
    "prefix_tokens": 952185,
    "task_max": 734,
-   "task_mean_est": 351,
+   "task_mean_est": 352,
    "full_request_max": 952918,
    "room": 47082,
    "fits_with_max_tokens": true,
    "cost_usd": {
-    "10splits_out70": 163.3,
-    "10splits_out2000": 195.4,
-    "10splits_out8000": 295.3,
-    "3splits_out70": 118.7,
-    "3splits_out2000": 141.9,
-    "3splits_out8000": 214.2
+    "10splits_out70": 164.1,
+    "10splits_out2000": 196.4,
+    "10splits_out8000": 296.9,
+    "3splits_out70": 128.8,
+    "3splits_out2000": 154.0,
+    "3splits_out8000": 232.5
    }
   },
   "claude-opus-5-5": {
    "prefix_tokens": 952185,
    "task_max": 734,
-   "task_mean_est": 351,
+   "task_mean_est": 352,
    "full_request_max": 952918,
    "room": 47082,
    "fits_with_max_tokens": true,
    "cost_usd": {
-    "10splits_out70": 326.5,
-    "10splits_out2000": 390.8,
-    "10splits_out8000": 590.6,
-    "3splits_out70": 237.4,
-    "3splits_out2000": 283.9,
-    "3splits_out8000": 428.4
+    "10splits_out70": 328.3,
+    "10splits_out2000": 392.9,
+    "10splits_out8000": 593.7,
+    "3splits_out70": 257.5,
+    "3splits_out2000": 308.0,
+    "3splits_out8000": 465.0
    }
   },
   "claude-fable-5-1": {
    "prefix_tokens": 952185,
    "task_max": 734,
-   "task_mean_est": 351,
+   "task_mean_est": 352,
    "full_request_max": 952918,
    "room": 47082,
    "fits_with_max_tokens": true,
    "cost_usd": {
-    "10splits_out70": 419.9,
-    "10splits_out2000": 580.6,
-    "10splits_out8000": 1080.1,
-    "3splits_out70": 307.0,
-    "3splits_out2000": 423.1,
-    "3splits_out8000": 784.3
+    "10splits_out70": 422.1,
+    "10splits_out2000": 583.7,
+    "10splits_out8000": 1085.9,
+    "3splits_out70": 332.4,
+    "3splits_out2000": 458.7,
+    "3splits_out8000": 851.1
    }
   }
  }

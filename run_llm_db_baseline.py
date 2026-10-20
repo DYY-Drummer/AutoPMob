@@ -625,6 +625,14 @@ def shuffled_keys(keys, seed: int) -> list:
     return out
 
 
+def split_test_records(per_case: list, seed: int) -> list:
+    """per-case 出力のうち、その種のテストのケースの記録（並びは保つ）.
+
+    種ごとのファイル（seed がない記録）も、全部の種を持つファイルも読む。検証用のケース（split "val"）は除く。
+    """
+    return [r for r in per_case if r.get("seed", seed) == seed and r.get("split", "test") == "test"]
+
+
 def v3_plan(splits: dict, seeds, cases: dict) -> list:
     """版 3 で解かせるケース：seeds の分割の、設定 A と設定 B のテストケースの和集合（training_cases.json の順）.
 
@@ -651,13 +659,15 @@ def split_summary(per_case: dict, splits: dict, setting: str, seeds: list) -> di
             "MAP@20": _mean_sd([v["MAP@20"] for v in per_seed.values()])}
 
 
-def paired_test(a: dict, b: dict) -> dict:
-    """分割ごとの値（種 → 値）を対にした比較：差の平均、a が上回った分割の数、Wilcoxon の符号順位検定の両側 p."""
-    from scipy.stats import wilcoxon
+def compare_splits(a: dict, b: dict) -> dict:
+    """分割ごとの値（種 → 値）を対にした比較：差の平均と、a が上回った・同じ・下回った分割の数.
+
+    検定はしない（本人の決定、2026-10-20）。結果は「10 通りの分割のうち何通りで上回ったか」で書く。
+    """
     keys = sorted(set(a) & set(b), key=int)
     d = [a[k] - b[k] for k in keys]
-    p = float(wilcoxon(d).pvalue) if any(x != 0 for x in d) else 1.0
-    return {"n": len(d), "mean_diff": float(np.mean(d)), "wins": sum(x > 0 for x in d), "wilcoxon_p": p}
+    return {"n": len(d), "mean_diff": float(np.mean(d)), "wins": sum(x > 0 for x in d),
+            "ties": sum(x == 0 for x in d), "losses": sum(x < 0 for x in d)}
 
 
 def price_for(model: str, prompt_tokens: int) -> dict:
@@ -793,9 +803,18 @@ def cmd_splits(args) -> None:
         sys.exit("eq_key が重複している")
     ki = {k: i for i, k in enumerate(ek)}
     all_cases = load_cases()
+    excluded = set()
+    if args.exclude:   # 評価と訓練から外すケース（外してから層化分割する。set_aware_reranker の --exclude-cases と同じ）
+        ex = json.loads(Path(args.exclude).read_text(encoding="utf-8"))
+        excluded = set(ex["excluded_case_ids"] if isinstance(ex, dict) else ex)
+    checks = {}
+    for spec in args.check or []:
+        setting, pattern = spec.split("=", 1)
+        checks.setdefault(setting, []).append(pattern)
     out = {"splits": {}, "n_cases": {}, "check": {}}
     for setting, wanted in SETTINGS.items():
-        cases = [c for c in all_cases if variant_matches(c.get("variant_type", ""), wanted)]
+        cases = [c for c in all_cases if variant_matches(c.get("variant_type", ""), wanted)
+                 and c["case_id"] not in excluded]
         if len({c["case_id"] for c in cases}) != len(cases):
             sys.exit(f"設定 {setting} に同じ case_id がある")
         # set_aware_reranker.run_mode（split_mode="stratified"）と同じ入力
@@ -810,7 +829,8 @@ def cmd_splits(args) -> None:
             parts = {part: [cases[i]["case_id"] for i, s in enumerate(cs) if s in sp[part] and cl[i]]
                      for part in ("train", "val", "test")}
             out["splits"][setting][str(seed)] = parts
-            out["check"][setting][str(seed)] = _check_against_saved(setting, seed, parts["test"])
+            out["check"][setting][str(seed)] = (_check_patterns(checks.get(setting, []), seed, parts["test"])
+                                                if args.check else _check_against_saved(setting, seed, parts["test"]))
             print(f"{setting} seed={seed}: train {len(parts['train'])} val {len(parts['val'])} "
                   f"test {len(parts['test'])}  check={out['check'][setting][str(seed)]}")
     files = ["set_aware_reranker.py", "two_stage_query_conditioned.py"]
@@ -824,6 +844,9 @@ def cmd_splits(args) -> None:
                 "出力変数数・正解式の出典数）で stratified_src_split を呼んだ。train/val/test は正解式が DB にある"
                 "ケースだけ（run_mode の tr/te と同じ）。",
         "variants": SETTINGS,
+        "exclude_file": args.exclude, "exclude_sha256": sha256(Path(args.exclude)) if args.exclude else None,
+        "excluded_case_ids": sorted(excluded),
+        "checked_against": checks,
     }
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     SPLITS_JSON.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -832,6 +855,21 @@ def cmd_splits(args) -> None:
         "unified_equations_sha256": sha256(EQ_JSON), "n": len(ek), "keys": ek,
     }, ensure_ascii=False, indent=0), encoding="utf-8")
     print(f"wrote {SPLITS_JSON} and {DB_IDS_JSON}")
+
+
+def _check_patterns(patterns: list, seed: int, test: list) -> dict:
+    """--check で与えた per-case 出力（パターンの {seed} を種に置き換えたファイル）のテストの並びと比べる.
+
+    ファイルが種ごとでも、全部の種を含む 1 つのファイルでも読む（per_case の seed で絞る）。ファイルがなければ記録しない。
+    """
+    res = {}
+    for pat in patterns:
+        f = ROOT / pat.format(seed=seed)
+        if not f.exists():
+            continue
+        r = json.loads(f.read_text(encoding="utf-8"))["results"]
+        res[pat] = [x["case_id"] for x in split_test_records(next(iter(r.values()))["per_case"], seed)] == test
+    return res
 
 
 def _check_against_saved(setting: str, seed: int, test: list) -> dict:
@@ -1181,44 +1219,54 @@ def cmd_run(args) -> None:
 
 # ---- evaluate：判定・指標・既存の手法との比較 ----------------------------------------------
 
-REFERENCE = {  # 8/31 報告の手法（同じ分割の per-case 出力）。ranks は各正解式の順位（候補・DB にない式は 10,000）
-    "baseline (0.4, 0.6)": lambda s, seed: (EXP / "xk50" / f"baseline40_{s}__{seed}.json", "baseline"),
-    "baseline (0.7, 0.3)": lambda s, seed: (EXP / ("strat_A.json" if s == "A" else "strat_B_percase.json"),
-                                            "baseline"),
-    "proposed N1=50 (0.7, 0.3)": lambda s, seed: (EXP / ("strat_A.json" if s == "A" else "strat_B_percase.json"),
-                                                  "reranker-10S"),
-    "proposed N1=50 (0.3, 0.7)": lambda s, seed: (EXP / ("xs1" if s == "A" else "xs1_B")
-                                                  / f"reranker-10S_w30-70__{seed}.json", "reranker-10S"),
-    # 10/14 の指示 3・4 による新しい設定（別セッション、commit 49785f8）。分割ごとの出力は experiments/kato1014/raw/（非追跡）
-    "baseline (0.3, 0.7)": lambda s, seed: (EXP / "kato1014" / "raw" / f"baselines_{s}.json", "tfidf__none__w30-70"),
-    "proposed N1=2000 hard (0.3, 0.7)": lambda s, seed: (EXP / "kato1014" / "raw" / "n2000_hard"
-                                                         / f"static_{s}__{seed}.json", "reranker-10S"),
+def _selected_kato1020(setting: str, seed: int) -> dict:
+    """第 1 段のやり直しのセッション（commit c7c4feb）が検証用のケースで選んだ、提案手法の設定（重み・不正解の選び方）."""
+    return json.loads((EXP / "kato1020" / "selected.json").read_text(encoding="utf-8"))["selected"][setting][str(seed)]
+
+
+# 比べる相手：91 件を外した分割での最終の設定（commit c7c4feb、報告書 4781cdd の §4 の主結果と同じ出力）。
+# 出力は experiments/kato1020/raw/（非追跡。run_kato1020 の手順で作り直せる）。ranks は各正解式の順位。
+REFERENCE = {
+    "proposed (N1 = 2,000, (0.3, 0.7), validation-selected negatives)": lambda s, seed: (
+        EXP / "kato1020" / "raw" / "select"
+        / f"{s}_{_selected_kato1020(s, seed)['w']}_{_selected_kato1020(s, seed)['neg']}__{seed}.json", "reranker-10S"),
+    "baseline TF-IDF (validation-selected weights)": lambda s, seed: (
+        EXP / "kato1020" / "raw" / f"baselines_percase_{s}.json", "baseline"),
 }
 
 
 def reference_rows(settings: list, seeds: list, splits: dict) -> dict:
+    """既存の手法の、同じ分割のケースごとの値。ある手法・設定で、どれかの分割の出力がないか、
+    テストケースの並びが splits.json と違うときは、その手法・設定を外して知らせる（古い分割の出力を混ぜないため）."""
     out, cache = {}, {}
     for name, where in REFERENCE.items():
         recs = []
         for s in settings:
+            rows, reason = [], None
             for seed in seeds:
                 f, mode = where(s, seed)
                 if not f.exists():
-                    continue
+                    reason = f"{f} がない"
+                    break
                 if f not in cache:
                     cache[f] = json.loads(f.read_text(encoding="utf-8"))["results"]
-                pcs = [r for r in cache[f][mode]["per_case"] if r["seed"] == seed]
+                pcs = split_test_records(cache[f][mode]["per_case"], seed)
                 if [r["case_id"] for r in pcs] != splits[s][str(seed)]["test"]:
-                    sys.exit(f"{f} の seed {seed} のテストケースが固定した分割と食い違う")
-                for r in pcs:
-                    recs.append({"setting": s, "seed": seed, "case_id": r["case_id"],
-                                 **metrics_from_ranks(r["ranks"]), "AP_full": ap_full(r["ranks"])})
+                    reason = f"{f} の種 {seed} のテストケースが splits.json と違う"
+                    break
+                rows += [{"setting": s, "seed": seed, "case_id": r["case_id"],
+                          **metrics_from_ranks(r["ranks"]), "AP_full": ap_full(r["ranks"])} for r in pcs]
+            if reason:
+                print(f"  比べる相手から外す: {name} 設定 {s}（{reason}）", file=sys.stderr)
+            else:
+                recs += rows
         if recs:
             summ = summarize(recs)
             for s in summ:
                 summ[s]["MAP_full"] = _mean_sd([float(np.mean([r["AP_full"] for r in recs
                                                                if r["setting"] == s and r["seed"] == seed]))
-                                                for seed in seeds if any(r["seed"] == seed for r in recs)])
+                                                for seed in seeds if any(r["seed"] == seed and r["setting"] == s
+                                                                         for r in recs)])
             out[name] = {"summary": summ, "per_case": recs}
     return out
 
@@ -1470,7 +1518,7 @@ def cmd_evaluate3(args) -> None:
                     continue
                 rs = {sd: x for sd, x in v["summary"][st]["per_seed"].items() if int(sd) in seeds}
                 out["comparison"][f"{st}_{name}__vs__{ref}"] = {
-                    metric: paired_test({sd: x[metric] for sd, x in sm["per_seed"].items()},
+                    metric: compare_splits({sd: x[metric] for sd, x in sm["per_seed"].items()},
                                         {sd: x[metric] for sd, x in rs.items()})
                     for metric in ("recall@20", "MAP@20")}
     out["quality"] = {
@@ -1504,6 +1552,9 @@ def main() -> None:
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("splits")
     p.add_argument("--force", action="store_true")
+    p.add_argument("--exclude", default=None, help="外すケースの JSON（キー excluded_case_ids）。外してから分割する")
+    p.add_argument("--check", action="append",
+                   help="設定=per-case 出力のパターン（{seed} を種に置き換える）。テストの並びが一致するか確かめる。複数可")
     p.set_defaults(fn=cmd_splits)
 
     def common(p, settings="A,B", seeds="42,123,456"):

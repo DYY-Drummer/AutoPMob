@@ -15,8 +15,8 @@ import pytest
 
 from run_llm_db_baseline import (
     MISS_RANK, KeyIndex, ap_full, build_params, compress_latex, cost_usd, db_text, examples_text,
-    judge_ids, metrics_from_ranks, paired_test, parse_output, pending_cases, price_for, ranks_in_list, ref_cases,
-    shuffled_keys, split_cost, split_summary, summarize, task_text, v3_case_ids, v3_plan,
+    judge_ids, metrics_from_ranks, compare_splits, parse_output, pending_cases, price_for, ranks_in_list, ref_cases,
+    shuffled_keys, split_cost, split_summary, summarize, task_text, split_test_records, v3_case_ids, v3_plan,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -245,30 +245,27 @@ def test_pending_cases_skips_answered_and_retries_failed_calls():
 @pytest.mark.skipif(not SPLITS.exists(), reason="splits.json がまだない")
 def test_fixed_splits_are_disjoint_and_cover_each_setting():
     d = json.loads(SPLITS.read_text(encoding="utf-8"))
-    n_cases = {"A": 1823, "B": 1000}
+    excluded = set(d["provenance"].get("excluded_case_ids", []))
+    # 2026-10-20：未知の変数が決まらない出典横断の 91 件を外してから分割した（設定 A 1,823 → 1,732、B は 1,000 のまま）
+    assert len(excluded) == 91
+    assert d["n_cases"] == {"A": 1823 - 91, "B": 1000}
     for setting, by_seed in d["splits"].items():
         assert len(by_seed) == 10
         for seed, sp in by_seed.items():
             tr, va, te = set(sp["train"]), set(sp["val"]), set(sp["test"])
             assert not (tr & va) and not (tr & te) and not (va & te)
-            assert len(tr | va | te) == n_cases[setting]
+            assert len(tr | va | te) == d["n_cases"][setting]
+            assert not ((tr | va | te) & excluded)
             assert te
 
 
 @pytest.mark.skipif(not SPLITS.exists(), reason="splits.json がまだない")
-def test_fixed_splits_match_saved_per_case_outputs():
+def test_fixed_splits_match_the_recorded_per_case_outputs():
+    # splits を作ったとき、--check で与えた per-case 出力のテストの並びと比べた結果。すべて一致していること
     d = json.loads(SPLITS.read_text(encoding="utf-8"))
-    checked = 0
-    for setting, folder in (("A", "xs1"), ("B", "xs1_B")):
-        for seed in ("42", "123", "456"):
-            f = ROOT / "experiments" / folder / f"reranker-10S_w30-70__{seed}.json"
-            if not f.exists():
-                continue
-            saved = [r["case_id"] for r in json.loads(f.read_text())["results"]["reranker-10S"]["per_case"]]
-            assert saved == d["splits"][setting][seed]["test"]
-            checked += 1
-    if not checked:
-        pytest.skip("比べる per-case 出力がない")
+    results = [ok for by_seed in d["check"].values() for checks in by_seed.values() for ok in checks.values()]
+    assert results and all(results)
+    assert {s for s, by_seed in d["check"].items() if any(by_seed.values())} >= {"B"}
 
 
 # ---- 参考ケース ------------------------------------------------------------------
@@ -452,11 +449,11 @@ def test_split_summary_means_per_split_and_sd_across_splits():
     assert s["recall@20"]["sd"] == pytest.approx(math.sqrt(2 * 0.125 ** 2))
 
 
-def test_paired_test_over_splits():
-    p = paired_test({"1": 0.5, "2": 0.6, "3": 0.7}, {"1": 0.4, "2": 0.5, "3": 0.6})
-    assert p["mean_diff"] == pytest.approx(0.1)
-    assert p["wins"] == 3 and p["n"] == 3
-    assert p["wilcoxon_p"] == pytest.approx(0.25)   # 3 対がすべて同じ向き：両側の正確な p は 2/8
+def test_compare_splits_counts_wins_without_a_test():
+    # 検定はしない（本人の決定、2026-10-20）。分割ごとの値を対にして、何通りで上回ったかを数える
+    c = compare_splits({"1": 0.5, "2": 0.6, "3": 0.7, "4": 0.2}, {"1": 0.4, "2": 0.6, "3": 0.6, "4": 0.3})
+    assert c == {"n": 4, "mean_diff": pytest.approx(0.025), "wins": 2, "ties": 1, "losses": 1}
+    assert "wilcoxon_p" not in c
 
 
 DB_IDS = ROOT / "experiments" / "llm_db_baseline" / "db_ids.json"
@@ -476,6 +473,14 @@ def test_v3_cases_are_all_setting_a_cases_including_setting_b():
     d = json.loads(SPLITS.read_text(encoding="utf-8"))["splits"]
     cases = json.loads((ROOT / "training_cases.json").read_text(encoding="utf-8"))
     ids = v3_case_ids({c["case_id"]: c for c in cases}, d)
-    assert len(ids) == len(set(ids)) == 1823
+    assert len(ids) == len(set(ids)) == 1732
     b = set(d["B"]["42"]["train"]) | set(d["B"]["42"]["val"]) | set(d["B"]["42"]["test"])
     assert len(b) == 1000 and b <= set(ids)
+
+
+def test_test_records_keeps_the_seed_and_the_test_split_only():
+    # 第 1 段のセッションの出力は、検証用のケース（split "val"）も含み、全部の種を 1 つのファイルに持つことがある
+    pcs = [{"seed": 42, "case_id": "a", "split": "test"}, {"seed": 42, "case_id": "b", "split": "val"},
+           {"seed": 123, "case_id": "c", "split": "test"}, {"seed": 42, "case_id": "d"}]
+    assert [r["case_id"] for r in split_test_records(pcs, 42)] == ["a", "d"]   # split がない記録はテスト（旧い出力）
+    assert [r["case_id"] for r in split_test_records([{"case_id": "e"}], 7)] == ["e"]   # 種ごとのファイル（seed なし）
