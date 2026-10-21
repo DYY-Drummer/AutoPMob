@@ -2,14 +2,17 @@
 """修士論文用の英語ラベル図を一括生成する.
 
 出力: thesis/master_thesis/figures/*.{png,pdf}
-データ: training_cases.json / experiments/strat_*.json / llm_set_*_equiv_results.json /
-        experiments/xg/ xg_A/ xd_dof/（シード別生データ、箱ひげ用）/
-        experiments/ablation_x_difficulty.json
-方針: 10シード比較は箱ひげ図（G7）。LLM直接生成はシードなし単発評価のため点表示。
-      日本語フォント設定は入れない（英語ラベルのみ）。suptitleは付けない。
+データ（2026-10-21 改訂。加藤先生の 2 回目のコメントによる再実験 c7c4feb の結果。日本語版 8/31 報告 4781cdd と同じ値）:
+    training_cases.json / experiments/kato1020/excluded_cases.json（評価と訓練から外した 91 件）/
+    experiments/kato1020/main.json（全体比較、正解式の数と入力変数の数で分けた値）/ mech.json（特徴量を足したときの上乗せ）/
+    pfi.json / greedy.json / n1_coverage_w30-70.json
+方針: 10 通りの分割の比較は箱ひげ図（G7）。日本語フォント設定は入れない（英語ラベルのみ）。suptitle は付けない。
+2026-10-21: 自由度ゼロ停止（fig_dof_stop）と第 1 段の重みの再設計（fig_stage1_redesign）の図は、報告書と同じく
+    削除した。LLM 直接生成の点も削除した（DB を渡す新しい LLM との比較は未実行）。話題の特徴量の診断
+    （fig_topic_diagnosis、diagnose_topic_features.py）は、報告書と同じく表（AUC）に置き換えた。
 """
 import json
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 
 import matplotlib
@@ -20,6 +23,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent
 EXP = ROOT / "experiments"
+K20 = EXP / "kato1020"
 FIG = ROOT / "thesis" / "master_thesis" / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 
@@ -28,11 +32,11 @@ matplotlib.rcParams["axes.axisbelow"] = True
 matplotlib.rcParams["pdf.fonttype"] = 42
 
 C_BASE = "#9aa0a6"   # baseline: gray
-C_PROP = "#1a73e8"   # proposed: blue
-C_LLM = "#d93025"    # LLM: red
-C_INFER = "#f9ab00"  # inference greedy: amber
-C_TRAIN = "#188038"  # trained greedy: green
-C_DAE = "#16A085"    # DAE hard-case highlight (ported from generate_figures_strat.py)
+C_PROP = "#1a73e8"   # proposed (static reranking): blue
+C_INFER = "#f9ab00"  # greedy selection at inference only: amber
+C_TRAIN = "#188038"  # learned greedy: green
+C_DAE = "#16A085"    # synthesized cases (Setting B)
+SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
 
 
 def save(fig, name):
@@ -43,7 +47,7 @@ def save(fig, name):
 
 
 def _box(ax, data, positions, colors, widths=0.55):
-    """10シード値の箱ひげ＋ジッター散点（fig_v6_boxplot のスタイル踏襲）."""
+    """10 分割の値の箱ひげ＋ジッター散点（fig_v6_boxplot のスタイル踏襲）."""
     bp = ax.boxplot(data, positions=positions, widths=widths, patch_artist=True,
                     showfliers=False, medianprops=dict(color="black", lw=1.2))
     for patch, c in zip(bp["boxes"], colors):
@@ -56,187 +60,81 @@ def _box(ax, data, positions, colors, widths=0.55):
     return bp
 
 
-def _per_seed(path, mode, metric="Recall@K_correct"):
-    doc = json.load(open(path))
-    return [p[metric] for p in doc["results"][mode]["per_seed"]]
+def _excluded_ids():
+    """未知の変数が決まらない出典横断の 91 件（kato1020_exclusions.py、analyze_kato_0831_followup.gt_checks と同じ判定）."""
+    return set(json.load(open(K20 / "excluded_cases.json"))["excluded_case_ids"])
+
+
+def _family(c):
+    v = c.get("variant_type", "")
+    if v == "original":
+        return "single"
+    if v.startswith("multisource_"):
+        return "cross"
+    if v.startswith("dae_"):
+        return "synth"
+    return "aug"
 
 
 # ----------------------------------------------------------------------
-# dataset() — ported from generate_figures_strat.py L53-101
+# dataset() — 評価に使う 1,732 件と、使わない 91 件・拡張 1,015 件
 # ----------------------------------------------------------------------
 def dataset():
     cases = json.load(open(ROOT / "training_cases.json"))
-    vt = Counter(c.get("variant_type", "?") for c in cases)
-    # 表示名は §4.2 の用語（single-source / cross-source / synthesized）に合わせる。
-    # 2026-09-28 訂正: as-published / cross-document は実データの作り方と合わないため改称。
-    fam = {
-        "Single-source": vt["original"],
-        "Paraphrase (aug.)": vt["context_paraphrased"],
-        "Random I/O (aug.)": vt["random_io_from_models"] + vt["swap_io"],
-        "Cross-source": vt["multisource_original"] + vt["multisource_random_io"] + vt["multisource_v3"],
-        "Synthesized": sum(v for k, v in vt.items() if k.startswith("dae_")),
-    }
-    labels, vals = list(fam.keys()), list(fam.values())
-    # 青＋緑＝評価の設定 A（original+multisource+DAE）, 灰＝拡張のため設定 A から除外
-    colors = [C_PROP, C_BASE, C_BASE, C_PROP, C_DAE]
+    ex = _excluded_ids()
+    used, dropped = Counter(), Counter()
+    for c in cases:
+        (dropped if c["case_id"] in ex else used)[_family(c)] += 1
+    keys = ["single", "cross", "synth", "aug"]
+    labels = ["Single-source", "Cross-source", "Synthesized", "Augmented"]
+    colors = [C_PROP, C_PROP, C_DAE, "white"]
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.2))
-    ypos = np.arange(len(labels))
-    bars = ax1.barh(ypos, vals, color=colors, edgecolor="black", linewidth=0.8)
-    ax1.set_yticks(ypos); ax1.set_yticklabels(labels, fontsize=10); ax1.invert_yaxis()
-    for b, v in zip(bars, vals):
-        ax1.text(v + 12, b.get_y() + b.get_height() / 2, f"{v:,}", va="center", fontsize=11, fontweight="bold")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.0))
+    ypos = np.arange(len(keys))
+    for y, k, col in zip(ypos, keys, colors):
+        v = used[k]
+        hatch = "//" if k == "aug" else None
+        ax1.barh(y, v, color=col, edgecolor="black", linewidth=0.8, hatch=hatch)
+        if dropped[k]:
+            ax1.barh(y, dropped[k], left=v, color="white", edgecolor="black", linewidth=0.8, hatch="xx")
+        tot = v + dropped[k]
+        txt = f"{v:,}" if not dropped[k] else f"{v:,} + {dropped[k]:,} excluded"
+        ax1.text(tot + 15, y, txt, va="center", fontsize=11, fontweight="bold")
+    ax1.set_yticks(ypos)
+    ax1.set_yticklabels(labels, fontsize=11)
+    ax1.invert_yaxis()
     ax1.set_xlabel("Number of cases", fontsize=12)
-    ax1.set_xlim(0, max(vals) * 1.18)
-    ax1.set_title(f"(a) Composition of the 2,838 cases", fontsize=12)
-    ax1.legend(handles=[Patch(facecolor=C_PROP, edgecolor="black", label="Setting A: evaluation target (1,823 cases)"),
-                        Patch(facecolor=C_DAE, edgecolor="black", label="  of which synthesized (1,000 cases)"),
-                        Patch(facecolor=C_BASE, edgecolor="black", label="Augmentation: excluded from Setting A")],
-               fontsize=9, loc="upper right")
+    ax1.set_xlim(0, max(used[k] + dropped[k] for k in keys) * 1.45)
+    ax1.set_title("(a) Composition of the cases", fontsize=12)
+    n_eval = sum(used[k] for k in ("single", "cross", "synth"))
+    ax1.legend(handles=[Patch(facecolor=C_PROP, edgecolor="black", label=f"Setting A: evaluation ({n_eval:,} cases)"),
+                        Patch(facecolor=C_DAE, edgecolor="black", label=f"  of which synthesized = Setting B ({used['synth']:,})"),
+                        Patch(facecolor="white", edgecolor="black", hatch="xx",
+                              label=f"Excluded: some unknowns undetermined ({sum(dropped.values()):,})"),
+                        Patch(facecolor="white", edgecolor="black", hatch="//",
+                              label=f"Augmented: used for neither training nor testing ({used['aug']:,})")],
+               fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=2, framealpha=1.0)
 
-    nc = Counter(len(c.get("correct_model_ids", [])) for c in cases)
-    ks = sorted(k for k in nc if k >= 1); vs = [nc[k] for k in ks]
-    multi_ratio = sum(v for k, v in zip(ks, vs) if k >= 2) / sum(vs)
-    barcolors = [C_BASE if k == 1 else C_PROP for k in ks]
-    bars = ax2.bar(ks, vs, color=barcolors, edgecolor="black", linewidth=0.8)
+    ev = [c for c in cases if c["case_id"] not in ex and _family(c) != "aug"]
+    nc = Counter(len(c.get("correct_model_ids", [])) for c in ev)
+    ks = sorted(k for k in nc if k >= 1)
+    vs = [nc[k] for k in ks]
+    bars = ax2.bar(ks, vs, color=[C_BASE if k == 1 else C_PROP for k in ks], edgecolor="black", linewidth=0.8)
     for b, v in zip(bars, vs):
-        if v >= 20:
-            ax2.text(b.get_x() + b.get_width() / 2, v + 8, f"{v}", ha="center", fontsize=8.5)
-    ax2.set_xlabel("Number of equations in the true model", fontsize=12)
-    ax2.set_ylabel("Number of cases", fontsize=12); ax2.set_xticks(ks)
-    ax2.set_title(f"(b) Distribution of the number of correct equations", fontsize=12)
-    ax2.legend(handles=[Patch(facecolor=C_BASE, edgecolor="black", label="Single-equation"),
-                        Patch(facecolor=C_PROP, edgecolor="black", label="Multi-equation")],
+        ax2.text(b.get_x() + b.get_width() / 2, v + 8, f"{v}", ha="center", fontsize=8.5)
+    ax2.set_xlabel("Number of ground-truth equations", fontsize=12)
+    ax2.set_ylabel("Number of cases", fontsize=12)
+    ax2.set_xticks(ks)
+    ax2.set_title(f"(b) Ground-truth size in Setting A ({len(ev):,} cases)", fontsize=12)
+    ax2.legend(handles=[Patch(facecolor=C_BASE, edgecolor="black", label="One equation"),
+                        Patch(facecolor=C_PROP, edgecolor="black", label="Two or more equations")],
                fontsize=10, loc="upper right")
     fig.tight_layout()
     save(fig, "fig_dataset")
 
 
 # ----------------------------------------------------------------------
-# characteristic() — ported from generate_figures_strat.py L128-252
-# (incl. bucket_stats L132-147)
-# ----------------------------------------------------------------------
-def bucket_stats(per_case_by_mode, keyfn, order):
-    """keyfn(entry) -> bucket label. return {bucket: {mode: mean R@K, n}}"""
-    out = {}
-    # paired delta: per case_id 平均してから対応差
-    for b in order:
-        out[b] = {}
-    for mode, entries in per_case_by_mode.items():
-        agg = defaultdict(list)
-        for e in entries:
-            b = keyfn(e)
-            if b is not None:
-                agg[b].append(e["Recall@K_correct"])
-        for b in order:
-            vals = agg.get(b, [])
-            out[b][mode] = (float(np.mean(vals)) if vals else float("nan"), len(vals))
-    return out
-
-
-def characteristic():
-    """設定 A の正解式数・出典数・入力変数数ごとの Recall@K.
-
-    2026-10-12 改訂（加藤先生の 8/31 報告への注釈 #61）: baseline を最良重み (0.4, 0.6) の per-case
-    （experiments/xk50/baseline40_A__*.json、集計値は external_baselines_A.json と一致）に替えた。
-    """
-    d = json.load(open(EXP / "strat_A.json"))
-    b46 = []
-    for f in sorted((EXP / "xk50").glob("baseline40_A__*.json")):
-        r = json.load(open(f))["results"]
-        b46 += r[list(r)[0]]["per_case"]
-    pcm = {"baseline": b46, "reranker-10S": d["results"]["reranker-10S"]["per_case"]}
-
-    # --- 数式数 n_correct: 1..10 ---
-    ncs = list(range(1, 11))
-    nc = bucket_stats(pcm, lambda e: e["n_correct"] if 1 <= e["n_correct"] <= 10 else (10 if e["n_correct"] > 10 else None), ncs)
-    nc_base, nc_ours = [], []
-    for k in ncs:
-        b = nc[k]["baseline"][0]; r = nc[k]["reranker-10S"][0]
-        nc_base.append(b); nc_ours.append(r)
-
-    # --- ソース数 n_sources: 1,2,>=3 ---
-    def srcbucket(e):
-        s = e["n_sources"]
-        if s == 1: return "1"
-        if s == 2: return "2"
-        return "3+"
-    sorder = ["1", "2", "3+"]
-    sc = bucket_stats(pcm, srcbucket, sorder)
-    sc_base, sc_ours = [], []
-    for k in sorder:
-        b = sc[k]["baseline"][0]; r = sc[k]["reranker-10S"][0]
-        sc_base.append(b); sc_ours.append(r)
-
-    # --- 入力変数数 n_input: <=5,6-10,11-15,16-20,21+ ---
-    def inbucket(e):
-        v = e["n_input"]
-        if v <= 5: return "5 以下"
-        if v <= 10: return "6-10"
-        if v <= 15: return "11-15"
-        if v <= 20: return "16-20"
-        return "21 以上"
-    iorder = ["5 以下", "6-10", "11-15", "16-20", "21 以上"]
-    ic = bucket_stats(pcm, inbucket, iorder)
-    ic_base, ic_ours = [], []
-    for k in iorder:
-        b = ic[k]["baseline"][0]; r = ic[k]["reranker-10S"][0]
-        ic_base.append(b); ic_ours.append(r)
-
-    iorder_labels = ["≤5", "6–10", "11–15", "16–20", "≥21"]
-
-    # ---------------- 図（3 パネル） ----------------
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.4))
-
-    # (a) 数式数
-    ax = axes[0]
-    ax.plot(ncs, nc_base, "o-", color=C_BASE, lw=2.2, ms=7, label="Baseline (classical IR), (0.4, 0.6)")
-    ax.plot(ncs, nc_ours, "s-", color=C_PROP, lw=2.4, ms=7, label="Proposed, (0.7, 0.3)")
-    ax.fill_between(ncs, nc_base, nc_ours, color=C_PROP, alpha=0.15)
-    ax.set_xlabel("Number of equations in the true model", fontsize=12)
-    ax.set_ylabel("Recall@K", fontsize=12)
-    ax.set_xticks(ncs)
-    ax.set_ylim(0, 1.02)
-    ax.set_title("(a) By number of equations", fontsize=12)
-    ax.legend(fontsize=10, loc="lower left")
-    ax.grid(alpha=0.3)
-
-    # (b) ソース数
-    ax = axes[1]
-    x = np.arange(len(sorder)); w = 0.38
-    ax.bar(x - w / 2, sc_base, w, color=C_BASE, edgecolor="black", linewidth=0.8, label="Baseline (classical IR), (0.4, 0.6)")
-    ax.bar(x + w / 2, sc_ours, w, color=C_PROP, edgecolor="black", linewidth=0.8, label="Proposed, (0.7, 0.3)")
-    for i in range(len(sorder)):
-        ax.text(x[i] - w / 2, sc_base[i] + 0.012, f"{sc_base[i]:.2f}", ha="center", fontsize=9)
-        ax.text(x[i] + w / 2, sc_ours[i] + 0.012, f"{sc_ours[i]:.2f}", ha="center", fontsize=9, fontweight="bold")
-    ax.set_xticks(x); ax.set_xticklabels(["1", "2", "≥3"], fontsize=11)
-    ax.set_xlabel("Number of sources", fontsize=12)
-    ax.set_ylabel("Recall@K", fontsize=12)
-    ax.set_ylim(0, 1.02)
-    ax.set_title("(b) By number of sources", fontsize=12)
-    ax.legend(fontsize=10, loc="upper right")
-    ax.grid(alpha=0.3, axis="y")
-
-    # (c) 入力変数数
-    ax = axes[2]
-    x = np.arange(len(iorder))
-    ax.plot(x, ic_base, "o-", color=C_BASE, lw=2.2, ms=7, label="Baseline (classical IR), (0.4, 0.6)")
-    ax.plot(x, ic_ours, "s-", color=C_PROP, lw=2.4, ms=7, label="Proposed, (0.7, 0.3)")
-    ax.fill_between(x, ic_base, ic_ours, color=C_PROP, alpha=0.15)
-    ax.set_xticks(x); ax.set_xticklabels(iorder_labels, fontsize=11)
-    ax.set_xlabel("Number of input variables", fontsize=12)
-    ax.set_ylabel("Recall@K", fontsize=12)
-    ax.set_ylim(0, 1.02)
-    ax.set_title("(c) By number of input variables", fontsize=12)
-    ax.legend(fontsize=10, loc="lower left")
-    ax.grid(alpha=0.3)
-
-    fig.tight_layout()
-    save(fig, "fig_characteristic")
-
-
-# ----------------------------------------------------------------------
-# split_balance() — ported from generate_figures_v6.py fig_split_balance() L586-635
+# split_balance() — ported from generate_figures_v6.py fig_split_balance() L586-635（本文では非表示）
 # ----------------------------------------------------------------------
 def split_balance(seed=42):
     import sys
@@ -244,8 +142,9 @@ def split_balance(seed=42):
     from set_aware_reranker import stratified_src_split
     from two_stage_query_conditioned import load_cases, case_src, in_vars, out_vars
     cases = load_cases()
+    ex = _excluded_ids()
     keep = lambda v: v == "original" or v.startswith("multisource_") or v.startswith("dae_")
-    sub = [c for c in cases if keep(c.get("variant_type", ""))]
+    sub = [c for c in cases if keep(c.get("variant_type", "")) and c["case_id"] not in ex]
     csrc = [case_src(c) for c in sub]
     nc = [len(c.get("correct_model_ids") or []) for c in sub]
     nin = [len(in_vars(c)) for c in sub]
@@ -260,275 +159,159 @@ def split_balance(seed=42):
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.3))
     for ax, (name, vals) in zip(axes, panels):
         allv = sorted(set(vals))
-        # 連続的な変数はビン化
         if len(allv) > 12:
-            import numpy as _np
-            bins = _np.linspace(min(vals), max(vals), 10)
-            trh, _ = _np.histogram([vals[i] for i in tr], bins=bins, density=True)
-            teh, _ = _np.histogram([vals[i] for i in te], bins=bins, density=True)
+            bins = np.linspace(min(vals), max(vals), 10)
+            trh, _ = np.histogram([vals[i] for i in tr], bins=bins, density=True)
+            teh, _ = np.histogram([vals[i] for i in te], bins=bins, density=True)
             x = (bins[:-1] + bins[1:]) / 2
             w = (bins[1] - bins[0]) * 0.4
-            ax.bar(x - w/2, trh, w, color=C_PROP, alpha=0.8, label="Train")
-            ax.bar(x + w/2, teh, w, color=C_LLM, alpha=0.8, label="Test")
+            ax.bar(x - w / 2, trh, w, color=C_PROP, alpha=0.8, label="Train")
+            ax.bar(x + w / 2, teh, w, color="#d93025", alpha=0.8, label="Test")
         else:
-            from collections import Counter as _Counter
-            ctr = _Counter(vals[i] for i in tr); cte = _Counter(vals[i] for i in te)
-            ntr = sum(ctr.values()); nte = sum(cte.values())
-            x = np.arange(len(allv)); w = 0.38
-            ax.bar(x - w/2, [ctr[v]/ntr for v in allv], w, color=C_PROP, alpha=0.85, label="Train")
-            ax.bar(x + w/2, [cte[v]/nte for v in allv], w, color=C_LLM, alpha=0.85, label="Test")
-            ax.set_xticks(x); ax.set_xticklabels(allv, fontsize=8)
-        ax.set_title(name, fontsize=12); ax.set_xlabel("Value", fontsize=9)
+            ctr = Counter(vals[i] for i in tr)
+            cte = Counter(vals[i] for i in te)
+            ntr = sum(ctr.values())
+            nte = sum(cte.values())
+            x = np.arange(len(allv))
+            w = 0.38
+            ax.bar(x - w / 2, [ctr[v] / ntr for v in allv], w, color=C_PROP, alpha=0.85, label="Train")
+            ax.bar(x + w / 2, [cte[v] / nte for v in allv], w, color="#d93025", alpha=0.85, label="Test")
+            ax.set_xticks(x)
+            ax.set_xticklabels(allv, fontsize=8)
+        ax.set_title(name, fontsize=12)
+        ax.set_xlabel("Value", fontsize=9)
         ax.grid(axis="y", alpha=0.3)
-    axes[0].set_ylabel("Fraction", fontsize=11); axes[0].legend(fontsize=10)
+    axes[0].set_ylabel("Fraction", fontsize=11)
+    axes[0].legend(fontsize=10)
     fig.tight_layout()
     save(fig, "fig_split_balance")
     print(f"split_balance: train/test = {len(tr)}/{len(te)}")
 
 
-C_PROP2 = "#00897b"  # proposed with the variable-weighted first stage (0.3, 0.7): teal (validated vs gray/blue/red)
-SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
-
-
-def _best_baseline_per_seed(setting):
-    """最良重み (0.4, 0.6) の古典的情報検索手法（12 重みで Recall@K 最大。external_baselines_*.json）."""
-    r = json.load(open(EXP / f"external_baselines_{setting}.json"))["results"]["tfidf__none__w40-60"]["per_seed"]
-    return [p["Recall@K_correct"] for p in sorted(r, key=lambda p: p["seed"])]
-
-
-def _w3070_per_seed(setting):
-    """第 1 段の重み (0.3, 0.7) の提案手法（A: stage1_weight_stats.json、B: experiments/xs1_B/）."""
-    if setting == "A":
-        d = json.load(open(EXP / "stage1_weight_stats.json"))["overall"]["reranker-10S"]["w30-70"]["per_seed"]
-        return [float(d[str(s)]) if str(s) in d else float(d[s]) for s in SEEDS]
-    vals = []
-    for s in SEEDS:
-        v = json.load(open(EXP / "xs1_B" / f"reranker-10S_w30-70__{s}.json"))["results"]["reranker-10S"]["Recall@K_correct"]
-        vals.append(v["mean"] if isinstance(v, dict) else v)
-    return vals
+# ----------------------------------------------------------------------
+# method_comparison() — 全体比較（Table 3 と同じ値。main.json table）
+# ----------------------------------------------------------------------
+MODES_MAIN = [("baseline_tfidf", "Baseline (classical IR)", C_BASE),
+              ("proposed_static", "Proposed, static reranking", C_PROP),
+              ("proposed_train", "Proposed, learned greedy", C_TRAIN)]
 
 
 def method_comparison():
-    """設定 A・B × 最良重みの baseline・提案手法 (0.7, 0.3)・提案手法 (0.3, 0.7) の箱ひげ＋LLM 点.
-
-    2026-10-12 改訂（加藤先生の 8/31 報告への注釈 #52）: 比較相手を最良重み (0.4, 0.6) の baseline にし、
-    第 1 段の重み (0.3, 0.7) の提案手法を加えた。最良重みの baseline がない「拡張を含む全ケース」は外した。
-    """
-    settings = [
-        ("A", "strat_A.json", "llm_set_A_equiv_results.json", "Setting A\n(mixed, 1,823 cases)"),
-        ("B", "strat_B.json", "llm_set_B_equiv_results.json", "Setting B\n(synthesized only, 1,000 cases)"),
-    ]
-    fig, ax = plt.subplots(figsize=(8.4, 4.6))
-    centers = np.arange(len(settings)) * 3.6
-    for i, (st_, sf, lf, label) in enumerate(settings):
-        data = [_best_baseline_per_seed(st_), _per_seed(EXP / sf, "reranker-10S"), _w3070_per_seed(st_)]
-        _box(ax, data, [centers[i] - 0.95, centers[i], centers[i] + 0.95], [C_BASE, C_PROP, C_PROP2],
-             widths=0.62)
-        llm = json.load(open(EXP / lf))
-        ax.scatter([centers[i] + 1.8], [llm["Recall@K_correct"]], marker="D", s=55,
-                   color=C_LLM, zorder=4)
-        ax.hlines(llm["coverage"], centers[i] + 1.6, centers[i] + 2.0,
-                  colors=C_LLM, linestyles="--", lw=1.4)
-    ax.set_xticks(centers + 0.4)
-    ax.set_xticklabels([s[3] for s in settings])
-    ax.set_ylabel("Recall@K")
-    ax.set_ylim(0, 1.0)
-    ax.grid(axis="y", alpha=0.3)
-    handles = [
-        plt.Rectangle((0, 0), 1, 1, fc=C_BASE, alpha=0.85, label="Baseline (classical IR), weights (0.4, 0.6)"),
-        plt.Rectangle((0, 0), 1, 1, fc=C_PROP, alpha=0.85, label="Proposed, first-stage weights (0.7, 0.3)"),
-        plt.Rectangle((0, 0), 1, 1, fc=C_PROP2, alpha=0.85, label="Proposed, first-stage weights (0.3, 0.7)"),
-        plt.Line2D([], [], marker="D", ls="", color=C_LLM, label="LLM direct generation (single run)"),
-        plt.Line2D([], [], ls="--", color=C_LLM, label="LLM coverage (rank-free)"),
-    ]
-    ax.legend(handles=handles, loc="lower left", fontsize=8.2, ncol=2, framealpha=0.95)
+    tab = json.load(open(K20 / "main.json"))["table"]
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.4))
+    centers = np.array([0.0, 3.4])
+    for ax, metric, tag in ((axes[0], "Recall@20", "(a)"), (axes[1], "MAP", "(b)")):
+        for i, S in enumerate(("A", "B")):
+            data = [[tab[S][mode][metric]["per_seed"][str(s)] for s in SEEDS] for mode, _, _ in MODES_MAIN]
+            _box(ax, data, [centers[i] - 0.9, centers[i], centers[i] + 0.9], [c for _, _, c in MODES_MAIN],
+                 widths=0.62)
+        ax.set_xticks(centers)
+        ax.set_xticklabels(["Setting A\n(1,732 cases)", "Setting B\n(synthesized, 1,000 cases)"], fontsize=10)
+        ax.set_ylabel(metric, fontsize=11)
+        ax.set_title(f"{tag} {metric}", fontsize=12)
+        ax.grid(axis="y", alpha=0.3)
+    fig.legend(handles=[Patch(facecolor=c, alpha=0.85, label=lab) for _, lab, c in MODES_MAIN],
+               fontsize=10, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.06), framealpha=1.0)
+    fig.tight_layout()
     save(fig, "fig_method_comparison")
 
 
 # ----------------------------------------------------------------------
-# mechanism() — feature x difficulty cross (per Task 5 brief Step 1)
+# characteristic() — 正解式の数と入力変数の数で分けた値（設定 A、10 分割のテストを合わせた延べ 4,233 件。main.json buckets）
 # ----------------------------------------------------------------------
-MODES_MECH = [
-    ("reranker-7+Comp", "+Complementarity (gComp)", "#1a73e8"),
-    ("reranker-7+Coh", "+Coherence (gCoh)", "#188038"),
-    ("reranker-7+Dom", "+Domain (gDom)", "#9aa0a6"),
-    ("reranker-10S", "All three (10S)", "#d93025"),
-]
-BASE_MECH = "reranker-7"
+IN_ORDER = ["<=5", "6-10", "11-15", "16-20", ">=21"]
+IN_LABELS = ["≤5", "6–10", "11–15", "16–20", "≥21"]
+MARK = {"baseline_tfidf": "o-", "proposed_static": "s-", "proposed_train": "^-"}
 
 
-def _seed_bucket_means(per_case, bucket_fn):
-    """per_case を (seed, bucket) 別に平均 → {bucket: {seed: mean}}."""
-    acc = {}
-    for rec in per_case:
-        b = bucket_fn(rec)
-        if b is None:
-            continue
-        acc.setdefault(b, {}).setdefault(rec["seed"], []).append(rec["Recall@K_correct"])
-    return {b: {s: float(np.mean(v)) for s, v in d.items()} for b, d in acc.items()}
+def characteristic():
+    b = json.load(open(K20 / "main.json"))["buckets"]["A"]
+    nc_order = [str(k) for k in range(1, 11)]
+    fig, axes = plt.subplots(2, 2, figsize=(11.5, 7.6), sharey="row")
+    for col, (key, order, ticklabels, xlabel) in enumerate((
+            ("n_correct", nc_order, nc_order, "Number of ground-truth equations"),
+            ("n_input", IN_ORDER, IN_LABELS, "Number of input variables"))):
+        for row, metric in enumerate(("Recall@20", "MAP")):
+            ax = axes[row, col]
+            x = np.arange(len(order))
+            for mode, lab, color in MODES_MAIN:
+                ax.plot(x, [b[key][k][f"{mode}|{metric}"] for k in order], MARK[mode], color=color,
+                        lw=2.0, ms=6, label=lab)
+            ax.set_xticks(x)
+            ax.set_xticklabels(ticklabels, fontsize=10)
+            ax.set_xlabel(xlabel, fontsize=11)
+            if col == 0:
+                ax.set_ylabel(metric, fontsize=11)
+            ax.set_title(f"({'abcd'[row * 2 + col]}) {metric} by {xlabel.lower()}", fontsize=11)
+            ax.grid(alpha=0.3)
+    axes[0, 0].legend(fontsize=9, loc="lower left")
+    fig.tight_layout()
+    save(fig, "fig_characteristic")
 
 
-def _lift_sem(base_by, mode_by):
-    """シード対応リフトの mean±SEM を bucket ごとに返す."""
-    out = {}
-    for b in sorted(set(base_by) & set(mode_by)):
-        seeds = sorted(set(base_by[b]) & set(mode_by[b]))
-        d = np.array([mode_by[b][s] - base_by[b][s] for s in seeds])
-        if len(d) >= 2:
-            out[b] = (float(d.mean()), float(d.std(ddof=1) / np.sqrt(len(d))))
-    return out
+# ----------------------------------------------------------------------
+# mechanism() — 集合の特徴量を 7 特徴量に足したときの MAP の上乗せ（mech.json lift_by_*）
+# ----------------------------------------------------------------------
+MODES_MECH = [("reranker-7_Comp", "+ Complementarity", "#1a73e8"),
+              ("reranker-7_Coh", "+ Coherence", "#188038"),
+              ("reranker-7_Dom", "+ Domain agreement", "#9aa0a6"),
+              ("reranker-10S", "All three", "#d93025")]
 
 
 def mechanism():
-    doc = json.load(open(EXP / "ablation_x_difficulty.json"))
-    res = doc["results"]
-    nin_edges = [(1, 3, "1–3"), (4, 6, "4–6"), (7, 10, "7–10"), (11, 15, "11–15"), (16, 10**9, "≥16")]
-
-    def by_x(rec):
-        return rec["n_correct"] if 1 <= rec["n_correct"] <= 10 else None
-
-    def by_nin(rec):
-        for lo, hi, lab in nin_edges:
-            if lo <= rec["n_input"] <= hi:
-                return lab
-        return None
-
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
-    for bucket_fn, ax, xlabel, order in [
-        (by_x, axes[0], "Number of equations in the true model", list(range(1, 11))),
-        (by_nin, axes[1], "Number of input variables", [e[2] for e in nin_edges]),
-    ]:
-        base_by = _seed_bucket_means(res[BASE_MECH]["per_case"], bucket_fn)
-        for mode, label, color in MODES_MECH:
-            ls = _lift_sem(base_by, _seed_bucket_means(res[mode]["per_case"], bucket_fn))
-            xs = [b for b in order if b in ls]
-            ax.errorbar(range(len(xs)), [ls[b][0] for b in xs], yerr=[ls[b][1] for b in xs],
+    me = json.load(open(K20 / "mech.json"))
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.3), sharey=True)
+    for ax, key, xlabel, tag in ((axes[0], "lift_by_n_correct", "Number of ground-truth equations", "(a)"),
+                                 (axes[1], "lift_by_n_input", "Number of input variables", "(b)")):
+        bins = None
+        for j, (mode, label, color) in enumerate(MODES_MECH):
+            rows = me[key][mode]["MAP"]
+            bins = [r["bin"] for r in rows]
+            x = np.arange(len(rows)) + (j - 1.5) * 0.08
+            ax.errorbar(x, [r["mean_delta"] for r in rows], yerr=[r["std_delta"] for r in rows],
                         marker="o", ms=4, lw=1.6, capsize=3, label=label, color=color)
         ax.axhline(0, color="black", lw=0.8)
-        ax.set_xticks(range(len([b for b in order if b in ls])))
-        ax.set_xticklabels([str(b) for b in order if b in ls])
-        ax.set_xlabel(xlabel)
+        ax.set_xticks(np.arange(len(bins)))
+        ax.set_xticklabels([("≥" + s[:-1]) if s.endswith("+") else s.replace("-", "–") for s in bins])
+        ax.set_xlabel(xlabel, fontsize=11)
+        ax.set_title(f"{tag} By {xlabel.lower()}", fontsize=11)
         ax.grid(alpha=0.3)
-    axes[0].set_ylabel("Recall@K lift over 7-feature reranker")
-    axes[0].set_title("(a) Stratified by number of equations")
-    axes[1].set_title("(b) Stratified by number of input variables")
-    axes[0].legend(fontsize=8.5)
+    axes[0].set_ylabel("MAP gain over the seven-feature reranker", fontsize=10)
+    axes[0].legend(fontsize=9, loc="lower right")
+    fig.tight_layout()
     save(fig, "fig_mechanism")
 
 
 # ----------------------------------------------------------------------
-# greedy_3way() — static / inference-greedy / trained-greedy comparison
+# greedy_3way() — 一括の並べ直し・逐次選択（推論のみ）・逐次選択（訓練も逐次）の MAP（greedy.json）
 # ----------------------------------------------------------------------
-def _greedy_seed_means(dirname, config):
-    vals = {}
-    for f in sorted((EXP / dirname).glob(f"{config}__*.json")):
-        doc = json.load(open(f))
-        for mode_res in doc["results"].values():
-            for rec in mode_res.get("per_case", []):
-                vals.setdefault(rec["seed"], []).append(rec["Recall@K_correct"])
-    return [float(np.mean(v)) for _, v in sorted(vals.items())]
-
-
-GREEDY_CONFIGS = [("static", "Static", C_BASE), ("infer", "Greedy\n(inference)", C_INFER),
-                  ("train", "Greedy\n(trained)", C_TRAIN)]
+GREEDY_CONFIGS = [("static", "Static reranking", C_PROP), ("infer", "Greedy at inference", C_INFER),
+                  ("train", "Learned greedy", C_TRAIN)]
 
 
 def greedy_3way():
-    fig, axes = plt.subplots(1, 3, figsize=(13, 4.2))
-    for ax, dirname, title in [(axes[0], "xg", "(a) Setting B (synthesized only)"),
-                               (axes[1], "xg_A", "(b) Setting A")]:
-        data = [_greedy_seed_means(dirname, c) for c, _, _ in GREEDY_CONFIGS]
-        _box(ax, data, [0, 1, 2], [c for _, _, c in GREEDY_CONFIGS])
-        ax.set_xticks([0, 1, 2])
-        ax.set_xticklabels([lab for _, lab, _ in GREEDY_CONFIGS], fontsize=8.5)
-        ax.set_title(title)
+    g = json.load(open(K20 / "greedy.json"))["summary"]
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.3), sharey=True)
+    centers = np.array([0.0, 3.4])
+    for ax, S, title in ((axes[0], "A", "(a) Setting A"), (axes[1], "B", "(b) Setting B (synthesized)")):
+        for i, sub in enumerate(("all", "K>=8")):
+            data = [[g[S][sub][mode]["MAP"]["per_seed"][str(s)] for s in SEEDS] for mode, _, _ in GREEDY_CONFIGS]
+            _box(ax, data, [centers[i] - 0.9, centers[i], centers[i] + 0.9], [c for _, _, c in GREEDY_CONFIGS],
+                 widths=0.62)
+        ax.set_xticks(centers)
+        ax.set_xticklabels(["All cases", "Cases with eight or more\nground-truth equations"], fontsize=10)
+        ax.set_title(title, fontsize=12)
         ax.grid(axis="y", alpha=0.3)
-    axes[0].set_ylabel("Recall@K (seed mean)")
-    # (c) DAE の正解式数別（シード別平均の mean±SEM）
-    ax = axes[2]
-    for config, label, color in GREEDY_CONFIGS:
-        acc = {}
-        for f in sorted((EXP / "xg").glob(f"{config}__*.json")):
-            doc = json.load(open(f))
-            for mode_res in doc["results"].values():
-                for rec in mode_res.get("per_case", []):
-                    acc.setdefault(rec["n_correct"], {}).setdefault(rec["seed"], []).append(
-                        rec["Recall@K_correct"])
-        xs = sorted(x for x in acc if 1 <= x <= 10)
-        means, sems = [], []
-        for x in xs:
-            sm = np.array([np.mean(v) for v in acc[x].values()])
-            means.append(sm.mean())
-            sems.append(sm.std(ddof=1) / np.sqrt(len(sm)))
-        ax.errorbar(xs, means, yerr=sems, marker="o", ms=4, lw=1.6, capsize=3,
-                    label=label.replace("\n", " "), color=color)
-    ax.set_xlabel("Number of equations in the true model")
-    ax.set_title("(c) By number of equations (Setting B)")  # 2026-10-12: 「難しさ」の語をやめた（注釈 #60）
-    ax.legend(fontsize=8.5)
-    ax.grid(alpha=0.3)
+    axes[0].set_ylabel("MAP", fontsize=11)
+    fig.legend(handles=[Patch(facecolor=c, alpha=0.85, label=lab) for _, lab, c in GREEDY_CONFIGS],
+               fontsize=10, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.06), framealpha=1.0)
+    fig.tight_layout()
     save(fig, "fig_greedy_3way")
 
 
 # ----------------------------------------------------------------------
-# dof_stop() — DoF-based self-stopping vs. oracle-K
-# ----------------------------------------------------------------------
-def _dof_seed_means(setting, key):
-    vals = {}
-    for f in sorted((EXP / "xd_dof").glob(f"{setting}__*.json")):
-        doc = json.load(open(f))
-        for mode_res in doc["results"].values():
-            for rec in mode_res.get("per_case", []):
-                vals.setdefault(rec["seed"], []).append(rec[key])
-    return [float(np.mean(v)) for _, v in sorted(vals.items())]
-
-
-def dof_stop():
-    stats_doc = json.load(open(EXP / "dof_stop_stats.json"))
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
-    ax = axes[0]
-    groups = [("dae", "Setting B (synthesized)"), ("A", "Setting A")]
-    for i, (setting, glabel) in enumerate(groups):
-        oracle = _dof_seed_means(setting, "set_f1_oracleK")
-        dof = _dof_seed_means(setting, "set_f1_dof")
-        _box(ax, [oracle, dof], [i * 2.4 - 0.45, i * 2.4 + 0.45], [C_BASE, C_PROP])
-        dof_closed = stats_doc[setting]["closed_dof"]["mean"]
-        oracle_closed = stats_doc[setting]["closed_oracleK"]["mean"]
-        # 2026-10-12: 「closure」をやめ「停止条件の充足率」に（加藤先生の注釈 #33。条件を満たしても解けるとは限らない）
-        ax.text(i * 2.4, 1.01, f"stop condition met:\n{dof_closed:.2f} vs {oracle_closed:.2f} (oracle-K)",
-                ha="center", fontsize=7.5, linespacing=1.2)
-    ax.set_ylim(top=1.10)
-    ax.set_xticks([0, 2.4])
-    ax.set_xticklabels([g[1] for g in groups])
-    ax.set_ylabel("Set F1 (seed mean)")
-    ax.set_title("(a) Oracle-K vs. DoF-stop")
-    handles = [plt.Rectangle((0, 0), 1, 1, fc=C_BASE, alpha=0.85, label="Oracle-K (K given)"),
-               plt.Rectangle((0, 0), 1, 1, fc=C_PROP, alpha=0.85, label="DoF-stop (K unknown)")]
-    ax.legend(handles=handles, fontsize=8.5, loc="lower right")
-    ax.grid(axis="y", alpha=0.3)
-    ax = axes[1]
-    series = [("set_f1_oracleK", "Set F1, oracle-K", C_BASE), ("set_f1_dof", "Set F1, DoF-stop", C_PROP),
-              ("set_exact_dof", "Exact match, DoF-stop", C_TRAIN)]
-    for key, label, color in series:
-        acc = {}
-        for f in sorted((EXP / "xd_dof").glob("dae__*.json")):
-            doc = json.load(open(f))
-            for mode_res in doc["results"].values():
-                for rec in mode_res.get("per_case", []):
-                    acc.setdefault(rec["n_correct"], {}).setdefault(rec["seed"], []).append(rec[key])
-        xs = sorted(x for x in acc if 1 <= x <= 10)
-        sm = [np.array([np.mean(v) for v in acc[x].values()]) for x in xs]
-        ax.errorbar(xs, [m.mean() for m in sm], yerr=[m.std(ddof=1) / np.sqrt(len(m)) for m in sm],
-                    marker="o", ms=4, lw=1.6, capsize=3, label=label, color=color)
-    ax.set_xlabel("Number of equations in the true model")
-    ax.set_title("(b) By number of equations (Setting B)")
-    ax.legend(fontsize=8.5)
-    ax.grid(alpha=0.3)
-    save(fig, "fig_dof_stop")
-
-
-# ----------------------------------------------------------------------
-# pfi() — permutation feature importance of reranker-10S (English labels;
-# ported from generate_pfi_figure.py, terms aligned with Method Table 2)
+# pfi() — 日本語版 docs/figures/fig_pfi_recall20_ja_final（analyze_kato1014_pfi.figure）の英語版。同じ構成・同じ値。
+# 棒 = シャッフル前の平均 − 低下量の平均（10 分割、各 20 回）、誤差棒 = 低下量の分割間の標準偏差。
 # ----------------------------------------------------------------------
 EN_FEAT = {
     "text_sim": "Text similarity", "io_jaccard": "I/O Jaccard", "svd_sim": "Latent similarity",
@@ -536,142 +319,91 @@ EN_FEAT = {
     "domain": "Domain match", "gComp": "Complementarity", "gCoh": "Coherence",
     "gDom": "Domain agreement",
 }
-FEAT_GROUP = {
-    "text_sim": "topic", "io_jaccard": "var", "svd_sim": "topic", "input_cov": "var",
-    "output_cov": "var", "specificity": "var", "domain": "topic", "gComp": "var",
-    "gCoh": "var", "gDom": "topic",
-}
-C_VARF, C_TOPICF = "#1f77b4", "#d62728"  # fig_topic_diagnosis と同じ色分け
-
-
-C_VAR_G, C_VAR_M = "#1f77b4", "#6baed6"   # variable overlap: whole group / single feature
-C_TOP_G, C_TOP_M = "#d62728", "#ee8a8a"   # topic: whole group / single feature (validated pairs)
+VAR_FEATS = ["io_jaccard", "input_cov", "output_cov", "specificity", "gComp", "gCoh"]
+TOPIC_FEATS = ["text_sim", "svd_sim", "domain", "gDom"]
+C_VAR_G, C_VAR_M = "#08519c", "#6baed6"   # variable overlap: whole group / single feature
+C_TOP_G, C_TOP_M = "#a63603", "#fdae6b"   # topic: whole group / single feature
 
 
 def pfi():
-    """PFI（2026-10-12 改訂）: シャッフル後の Recall@K を 1 枚にまとめる.
-
-    加藤先生の 8/31 報告への注釈 #67 に沿って、旧 2 枚組（(a) 個別の低下量、(b) 群の低下量）を 1 枚にし、
-    各群の先頭に「群をまとめてシャッフル」した棒（濃い色・枠線）を置き、横軸を低下量でなくシャッフル後の
-    Recall@K に、シャッフル前の値を点線にした。日本語版 generate_pfi_recall_figure.py と同じ構成・同じ数値。
-    棒 = シャッフル前の平均 − 低下量の平均（10 seed、各 20 回）、誤差棒 = 低下量の seed 間の標準偏差。
-    """
-    d = json.load(open(EXP / "pfi_results.json"))
-    res = d["results"]["case"]
-    base = d["baseline_mean"]
-
-    rows = []  # (label, value, err, color, is_group)
-    for grp, gkey, cg, cm, gname in (
-        ("var", "GROUP_var", C_VAR_G, C_VAR_M, "All 6 variable-overlap features"),
-        ("topic", "GROUP_topic", C_TOP_G, C_TOP_M, "All 4 topic features"),
-    ):
-        g = res[gkey]
-        rows.append((gname, base - g["importance_mean"], g["importance_std"], cg, True))
-        feats = [f for f in EN_FEAT if FEAT_GROUP[f] == grp]
-        for f in sorted(feats, key=lambda f: -res[f]["importance_mean"]):
-            r = res[f]
-            rows.append((EN_FEAT[f], base - r["importance_mean"], r["importance_std"], cm, False))
-        rows.append(None)  # gap between the groups
+    out = json.load(open(K20 / "pfi.json"))
+    m = "Recall@20"
+    base = out["base"][m]["mean"]
+    res = out["targets"]
+    rows = []
+    for feats, gkey, c, cg, gname in ((VAR_FEATS, "GROUP_var", C_VAR_M, C_VAR_G, "All 6 variable-overlap features"),
+                                      (TOPIC_FEATS, "GROUP_topic", C_TOP_M, C_TOP_G, "All 4 topic features")):
+        gr = res[gkey][m]
+        rows.append((gname, base - gr["drop_mean"], gr["drop_std"], cg, True))
+        for f in sorted(feats, key=lambda f: -res[f][m]["drop_mean"]):
+            r = res[f][m]
+            rows.append(("  " + EN_FEAT[f], base - r["drop_mean"], r["drop_std"], c, False))
+        rows.append(None)
     rows = rows[:-1]
-
     fig, ax = plt.subplots(figsize=(9.6, 5.6))
-    y, ticks, labels, is_groups = 0, [], [], []
+    y, ticks, labels = 0, [], []
     for row in rows:
         if row is None:
             y += 0.6
             continue
         lab, v, e, col, is_g = row
-        ax.barh(y, v, xerr=e, color=col, height=0.72, capsize=3,
-                error_kw=dict(ecolor="#333", lw=1), edgecolor="#222" if is_g else col,
-                linewidth=1.2 if is_g else 0)
-        ax.text(min(v + e, base) + 0.012 if v < base - 0.05 else max(v + e, base) + 0.012, y,
-                f"{v:.3f}", va="center", fontsize=11, fontweight="bold" if is_g else "normal")
+        ax.barh(y, v, xerr=e, color=col, height=0.72, capsize=3, error_kw=dict(ecolor="#333", lw=1),
+                edgecolor="#222" if is_g else col, linewidth=1.2 if is_g else 0)
+        ax.text(min(v + e, base) + 0.012 if v < base - 0.05 else base + 0.012, y, f"{v:.3f}",
+                va="center", fontsize=11, fontweight="bold" if is_g else "normal")
         ticks.append(y)
         labels.append(lab)
-        is_groups.append(is_g)
         y += 1
     ax.set_yticks(ticks)
     ax.set_yticklabels(labels, fontsize=12)
-    for t, is_g in zip(ax.get_yticklabels(), is_groups):
-        if is_g:
+    for t, lab in zip(ax.get_yticklabels(), labels):
+        if not lab.startswith("  "):
             t.set_fontweight("bold")
-    ax.invert_yaxis()
     ax.axvline(base, color="#555", ls=":", lw=1.5)
-    ax.text(base - 0.01, -1.05, f"before permutation {base:.3f}", ha="right", va="center",
-            fontsize=11, color="#333")
-    ax.set_xlim(0, 0.86)
+    ax.text(base - 0.01, -1.05, f"before permutation {base:.3f}", ha="right", va="center", fontsize=11,
+            color="#333")
+    ax.set_xlim(0, 1.12)
     ax.set_ylim(y - 0.4, -1.6)
-    ax.set_xlabel("Recall@K after permutation (Setting A, mean over 10 splits)", fontsize=12)
+    ax.set_xlabel("Recall@20 after permutation (Setting A, mean over 10 splits)", fontsize=12)
     ax.tick_params(axis="x", labelsize=11)
     ax.grid(axis="x", alpha=0.25)
-    ax.legend(handles=[Patch(color=C_VAR_G, label="Variable-overlap features"),
-                       Patch(color=C_TOP_G, label="Topic features"),
-                       Patch(facecolor="white", edgecolor="#222", linewidth=1.2,
-                             label="Whole group permuted")],
-              fontsize=11, loc="upper left", bbox_to_anchor=(0.36, 0.93), framealpha=1.0)
+    ax.legend(handles=[Patch(color=C_VAR_M, label="Variable-overlap features"),
+                       Patch(color=C_TOP_M, label="Topic features")],
+              fontsize=11, loc="upper left", bbox_to_anchor=(0.38, 0.90), framealpha=1.0)
     fig.tight_layout()
     save(fig, "fig_pfi")
 
 
 # ----------------------------------------------------------------------
-# stage1_redesign() — A1: variable-weighted first stage (coverage + end metric)
+# n1_coverage() — 日本語版 docs/figures/fig_n1_full_coverage_ja_1020.png（analyze_stage1_n1.make_figure、
+# marks = 50・200・500・1,000、chosen = 2,000）の英語版。同じ値（experiments/kato1020/n1_coverage_w30-70.json）。
 # ----------------------------------------------------------------------
-W_ORDER = ["w70-30", "w50-50", "w30-70", "w00-100"]
-W_TICK = {"w70-30": "0.7 / 0.3\n(default)", "w50-50": "0.5 / 0.5",
-          "w30-70": "0.3 / 0.7", "w00-100": "0.0 / 1.0"}
-W_COLOR = {"w70-30": "#9aa0a6", "w50-50": "#f9ab00",
-           "w30-70": "#1a73e8", "w00-100": "#188038"}
-W_LABEL = {"w70-30": "0.7 text + 0.3 variable (default)",
-           "w50-50": "0.5 text + 0.5 variable",
-           "w30-70": "0.3 text + 0.7 variable",
-           "w00-100": "variable only"}
-
-
-def stage1_redesign():
-    cov = json.load(open(EXP / "stage1_weight_coverage.json"))
-    st = json.load(open(EXP / "stage1_weight_stats.json"))
-    ks = cov["config"]["ks"]
-
-    fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.6),
-                             gridspec_kw={"width_ratios": [1.0, 1.15]})
-
-    # (a) coverage vs k
-    ax = axes[0]
-    for wl in W_ORDER:
-        ys = [cov["coverage"][wl][str(k)]["mean"] for k in ks]
-        es = [cov["coverage"][wl][str(k)]["sem"] for k in ks]
-        ax.errorbar(ks, ys, yerr=es, marker="o", ms=4.5, lw=2.0, capsize=3,
-                    color=W_COLOR[wl], label=W_LABEL[wl])
-    for kk in (50, 200):  # 実験で使う 2 つの窓（説明はキャプションに置く）
-        ax.axvline(kk, color="#888888", ls=":", lw=1.1)
-    ax.set_xscale("log")
-    ax.set_xticks(ks); ax.set_xticklabels([str(k) for k in ks])
-    ax.set_xlabel("Candidate window k (log axis)")
-    ax.set_ylabel("Stage-1 coverage of ground-truth equations")
-    ax.set_title("(a) Coverage bound by Stage-1 weights")
-    ax.set_ylim(0.70, 1.005)
-    ax.grid(alpha=0.25); ax.legend(fontsize=8, loc="lower right")
-
-    # (b) end metric at k=50: baseline vs reranker-10S, per-seed boxes
-    ax = axes[1]
-    centers = np.arange(len(W_ORDER)) * 2.2
-    for i, wl in enumerate(W_ORDER):
-        base = list(st["overall"]["baseline"][wl]["per_seed"].values())
-        prop = list(st["overall"]["reranker-10S"][wl]["per_seed"].values())
-        _box(ax, [base, prop], [centers[i] - 0.42, centers[i] + 0.42],
-             [C_BASE, C_PROP], widths=0.7)
-    ax.set_xticks(centers)
-    ax.set_xticklabels([W_TICK[wl] for wl in W_ORDER], fontsize=9)
-    ax.set_xlabel("Stage-1 weights (text / variable)")
-    ax.set_ylabel("Recall@K (seed mean)")
-    ax.set_title("(b) End metric at k = 50 under the same weights")
-    handles = [Patch(facecolor=C_BASE, alpha=0.85, label="Baseline (classical IR)"),
-               Patch(facecolor=C_PROP, alpha=0.85, label="Proposed (reranker-10S, retrained)")]
-    ax.legend(handles=handles, fontsize=8.5, loc="center right")
-    ax.grid(axis="y", alpha=0.3)
-
+def n1_coverage(marks=(50, 200, 500, 1000), chosen=2000):
+    d = json.load(open(K20 / "n1_coverage_w30-70.json"))
+    col = {"A": "#2a78d6", "B": "#eb6834"}
+    lab = {"A": f"Setting A ({d['settings']['A']['n_cases']:,} cases)",
+           "B": f"Setting B (synthesized, {d['settings']['B']['n_cases']:,} cases)"}
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.4))
+    for ax, key, title in ((axes[0], "full", "(a) Cases with every ground-truth equation among the candidates"),
+                           (axes[1], "coverage", "(b) Candidate coverage")):
+        for S in ("A", "B"):
+            cur = d["settings"][S]["curve"]
+            ax.plot(cur["n1"], cur[key], color=col[S], lw=2, label=lab[S])
+        for x in marks:
+            ax.axvline(x, color="#888888", ls=":", lw=1)
+            ax.text(x, 0.705, f" {x:,}", fontsize=8.5, color="#52514e", va="bottom")
+        ax.axvline(chosen, color="#333333", ls="-", lw=1.2)
+        ax.text(chosen, 0.735, f" {chosen:,}\n (this study)", fontsize=8.5, color="#333333", va="bottom")
+        ax.set_xscale("log")
+        ax.set_xlim(10, d["config"]["n_eq"])
+        ax.set_ylim(0.70, 1.005)
+        ax.set_xlabel("Number of first-stage candidates $N_1$ (log scale)", fontsize=11)
+        ax.set_ylabel("Fraction", fontsize=11)
+        ax.set_title(title, fontsize=11)
+        ax.grid(alpha=0.25)
+        ax.legend(fontsize=9, loc="center right")
     fig.tight_layout()
-    save(fig, "fig_stage1_redesign")
+    save(fig, "fig_n1_coverage")
 
 
 # ---------------------------------------------------------------------------
@@ -837,7 +569,6 @@ if __name__ == "__main__":
     characteristic()
     mechanism()
     greedy_3way()
-    dof_stop()
     pfi()
-    stage1_redesign()
+    n1_coverage()
     plt.close(overview())

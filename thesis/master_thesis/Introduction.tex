@@ -9,6 +9,10 @@
 % 2026-10-12 改訂（8/31 報告への加藤先生の注釈の反映）: 「物理モデルは変数を共有し連立して解く系」（注釈 #5 で
 %   「すべての式が変数を共有するわけではない」）を、入出力変数による定義と CSTR の例に置き換えた。自由度は
 %   変数の数 − 式の数（第 3 章）に合わせ、「自由度ゼロ」「閉じる」を使わない。結果は最良の重みの baseline との差で書いた。
+% 2026-10-21 改訂（日本語版 8/31 報告の 2 回目の改訂 4781cdd・再実験 c7c4feb にそろえた）: P4 から自由度ゼロ停止を削除。
+%   P5 のデータの記述を訂正（拡張ケースは訓練にも評価にも使っていない、抽出はすべて Gemini、91 件を除いた 1,732 件、
+%   定数は検証用のケースで選ぶ）。P6・貢献を N_1 = 2,000・Recall@20 の結果で書き直し、検定・LLM 直接生成・二つの介入による
+%   因果の主張を削除した。
 % ============================================================
 
 Physical models --- systems of equations that describe how the material, energy, and momentum
@@ -67,99 +71,81 @@ from an unrelated document may look more relevant than any of them, and no simil
 whether a set of equations determines the outputs. Retrieval must therefore evaluate candidate
 equations as a set, not one by one.
 
-We propose a two-stage retrieval method whose second stage evaluates each candidate against the
-equations already selected. The first stage ranks the whole database by a mixture of text
-similarity and variable overlap and keeps the top candidates. The second stage reranks the
-candidates with a multilayer perceptron (MLP) that reads ten features per candidate: seven
-features of the query--equation pair, such as the text similarity and the fraction of the query
-variables the equation contains, and three set-aware features that compare the candidate with a
-reference set --- the top-ranked candidates or, in the sequential variants, the equations already
-selected. The set-aware features ask whether the candidate supplies query variables the reference
-set still lacks (complementarity), whether it shares variables with the set (coherence), and
-whether it comes from the same field (domain agreement). We further introduce a learned greedy
-selection that builds the set one equation at a time and trains with teacher forcing so that
-training and inference see the same sequential context, and a self-terminating criterion
-that halts retrieval once the selected set covers every output variable with no more unknowns than
-equations (DoF-stop, named after the degrees of freedom it monitors). The method thus ranks the
-equations and decides by itself where to cut the ranking, without being told how many equations the
-answer has; whether the presented equations form a model remains for the engineer to check.
+We propose a two-stage retrieval method whose second stage evaluates each candidate against other
+equations. The first stage ranks the whole database by a mixture of text similarity and variable
+overlap and keeps the top candidates. The second stage reranks the candidates with a multilayer
+perceptron (MLP) that reads ten features per candidate: seven features of the query--equation
+pair, such as the text similarity and the fraction of the query variables the equation contains,
+and three set-aware features that compare the candidate with a reference set --- the top-ranked
+candidates or, in sequential selection, the equations already selected. The set-aware features
+ask whether the candidate supplies query variables the reference set still lacks
+(complementarity), whether it shares variables with the set (coherence), and whether it comes from
+the same field (domain agreement). We further introduce a learned greedy selection that builds the
+ranking one equation at a time and trains with teacher forcing, so that training and inference see
+the same sequential context. The method presents the top 20 equations of its ranking; whether they
+form a model remains for the engineer to check.
 
 To evaluate the method on realistic data, we construct a large equation database and test cases
-whose evaluation ground truths all meet the input--output and degree-of-freedom requirements that
-Kato and Kano formulated for model building\cite{CombineEq}, and we split them so that no document
-leaks between training and testing.
-% source: experiments/kato_0831_followup_stats.json gt_checks（評価 1,823 件すべて要件 1〜3 を満たす。拡張ケースは未確認）
-The database holds 11,146 equations from 361 sources: large language models (LLMs)
-extracted 10,476 of them from 329 documents, and one of them generated the other 670 as reference
-sets of textbook fundamentals. The 2,838 cases fall into three families by how their answer sets
-were formed --- picked by an LLM within one source, combined across two or three sources, or
-synthesized by rule --- plus augmented copies used only for training; the 1,000 synthesized
-cases grow by a rule that adds variable-sharing equations up to a target size and gives each
-equation an output variable of its own, so that, once the inputs are given, each unknown has an
-equation of its own. We assign every source wholly to training, validation, or testing, and we
-stratify the assignment so that the distributions of four case properties, such as the number of
-ground-truth equations, match between training and testing. All experiments repeat over 10 random
+whose ground truths all meet the input--output and degree-of-freedom requirements that Kato and
+Kano formulated for model building\cite{CombineEq}, and we split them so that no document leaks
+between training and testing.
+% source: experiments/kato_0831_followup_stats.json gt_checks; experiments/kato1020/excluded_cases.json（91 件を除いた
+%         1,732 件はすべて要件 1〜3 を満たし、未知の変数と式の 1 対 1 の割り当てがある）
+The database holds 11,146 equations from 361 sources: a large language model (LLM), Gemini,
+extracted 10,476 of them from 329 documents, and Gemini 2.5 Pro generated the other 670 as
+reference sets of textbook fundamentals. The 1,732 evaluation cases fall into three families by how
+their ground truths were formed --- picked by an LLM, combined from two or three sources, or
+synthesized by a program. The 1,000 synthesized cases grow by a program that adds
+variable-sharing equations up to a target size and gives each equation an output variable of its
+own, so that, once the inputs are given, each unknown has an equation of its own. The 1,732 cases
+leave out 91 cross-source cases in which the inputs leave some unknowns undetermined. We assign every source wholly to
+training, validation, or testing, stratify the assignment so that the distributions of four case
+properties, such as the number of ground-truth equations, match between training and testing, and
+choose the constants of the methods on the validation cases. All experiments repeat over 10 random
 splits and report the mean and the standard deviation.
-% source: unified_equations.json（11,146 式・361 source）; training_cases.json（original 92 /
-%         multisource_* 731 / dae_* 1,000 / 拡張 1,015 = 2,838）; 第 4 章 §4.1-4.4
+% source: unified_equations.json（11,146 式・361 source）; training_cases.json（original 92 / multisource_* 731 − 91 = 640 /
+%         dae_* 1,000 = 1,732。拡張 1,015 件は訓練にも評価にも使っていない）; 第 4 章 §4.1-4.4
 
-Experiments show that the proposed method outperforms lexical and dense retrieval baselines and
-direct generation by an LLM, and the analyses explain why. Recall@K --- the fraction of the
-ground-truth equations found within the top $K$ of the ranking, where $K$ is the size of the
-ground truth --- rises from 0.607 for classical retrieval at its best weights to 0.743 in the
-mixed setting and from 0.559 to 0.689 in the synthesized-only setting, whose cases hold the most
-equations, on all 10 splits (Wilcoxon signed-rank test, $p = 0.00195$); a variable-weighted first
-stage raises it further to 0.780 and 0.740.
-% source: experiments/external_baselines_{A,B}.json tfidf__none__w40-60（0.6071 / 0.5585）; strat_A.json /
-%         strat_B.json reranker-10S（0.7429 / 0.6890）; kato_0831_followup_stats.json vs_best_baseline
-%         （wins 10, p_wilcoxon 0.00195）; stage1_weight_stats.json w30-70（0.7799）; stage1_B_w30-70（0.7401）
-Stronger text scorers do not close the gap: BM25 and a dense sentence encoder (E5), each mixed
-with the variable-overlap term at its best weight, reach at most 0.602 and 0.555 in the two
-settings, and an LLM that writes the equations directly reaches 0.23--0.30 even when a separate
-model judges mathematical equivalence.
-% source: experiments/external_baselines_stats.json best_per_scorer（A: bm25 0.6008 / e5io 0.6020;
-%         B: bm25 0.5548 / e5io 0.5439）; llm_set_A/B/full_equiv_results.json（0.2545 / 0.2258 /
-%         0.3003）
-The analyses locate the cause of the gain in the structure of the answer rather than in its
-topic: the set-aware features that read shared variables --- complementarity and coherence ---
-carry the set-aware gain, domain agreement adds nothing ($p = 0.98$), and permuting the
-variable-overlap features of the trained model collapses its score while permuting the topic
-features leaves it unchanged.
-% source: experiments/feature_x_difficulty_stats.json overall_tests（reranker-7+Dom −0.0001,
-%         p_wilcoxon 0.98）; pfi_results.json（GROUP_var +0.678 / GROUP_topic +0.006, p=0.10）
-Two interventions then confirm the mechanism causally. The mechanism analysis predicted that a
-fixed reference set saturates on the cases with the most equations, and learned greedy selection
-recovers exactly there ($+0.056$ on cases with eight or more equations); the error analysis predicted that the
-text-heavy first stage caps what the reranker can reach, and a variable-weighted first stage
-raises the candidate coverage and, with it, Recall@K. Without being told the answer size, DoF-stop
-stops at the same exact-match rate as selection that is told it (0.526 in the mixed setting and
-0.368 in the synthesized-only setting).
-% source: experiments/greedy_3way_stats.json tests_hard_X8plus train_vs_static（+0.056）;
-%         stage1_weight_stats.json coverage_k50 / overall.reranker-10S w30-70;
-%         dof_stop_stats.json set_exact_dof = set_exact_oracleK（0.5262 / 0.3678）
+Experiments show that the proposed method outperforms classical retrieval and its variants with
+stronger text scorers, and the analyses explain why. With a first stage that admits every
+ground-truth equation, Recall@20 --- the fraction of the ground-truth equations among the 20
+equations presented --- rises from 0.906 for classical retrieval, whose weights the validation cases
+choose, to 0.981 in the mixed setting and from 0.825 to 0.966 in the synthesized-only setting, and
+mean average precision (MAP) rises from 0.690 to 0.860 and from 0.626 to 0.832, on all 10 splits.
+Variants of the classical retrieval with BM25 and with a dense sentence encoder (E5) rank no better
+than the original. The gain grows with the numbers of ground-truth equations and input variables.
+% source: experiments/kato1020/main.json（table / compare、wins 10）; baselines.json（BM25 0.904・0.819、E5 0.892・0.806）
+The analyses locate the cause of the gain in the variables that equations share rather than in
+their topic. The features that read variable overlap carry the improvement, and among them the
+set-aware features mainly raise the ground-truth equations within the top 20; permuting the
+variable-overlap features of the trained model collapses Recall@20 from 0.981 to 0.020, whereas
+permuting the topic features leaves it at 0.973. Learned greedy selection raises MAP over static reranking by
+$+0.032$ on the cases with eight or more ground-truth equations. A comparison with LLMs that read the whole
+database is prepared and remains to be run.
+% source: mech.json; pfi.json（GROUP_var → 0.0199、GROUP_topic → 0.9732）; greedy.json（K>=8 train − static MAP
+%         A +0.0318・B +0.0319）
 
 The contributions of this thesis are threefold.
 \begin{enumerate}
-  \item A benchmark: an 11,146-equation database from 361 sources, 1,823 evaluation cases whose
-    ground truths all meet the first three requirements of Kato and Kano, including 1,000
-    synthesized cases in which each unknown has an equation of its own, and a stratified
-    source-disjoint split with 10 seeds.
-  \item A set-aware two-stage retrieval method that improves Recall@K by $+0.13$ to $+0.18$ over
-    classical information retrieval at its best weights, exceeds BM25, dense retrieval, and LLM
-    direct generation, and, with a self-terminating criterion, stops by itself without knowing the
-    answer size.
-  \item An empirical account of the mechanism --- which features cause the improvement, where
-    it saturates, and where the remaining errors arise --- confirmed causally by two
-    interventions, learned greedy selection and a variable-weighted first stage.
+  \item A benchmark: an 11,146-equation database from 361 sources; 1,732 evaluation cases whose
+    ground truths all meet the first three requirements of Kato and Kano and let each unknown be
+    assigned to an equation of its own, including 1,000 synthesized cases; and a stratified
+    source-disjoint split with 10 seeds, whose validation cases choose the constants.
+  \item A set-aware two-stage retrieval method that improves Recall@20 by $+0.075$ and $+0.141$ and
+    MAP by $+0.170$ and $+0.205$ over classical information retrieval with weights chosen on the
+    validation cases, on all 10 splits, and that also beats the variants with BM25 and E5.
+  \item An empirical account of the method --- which features cause the improvement, where
+    sequential selection helps, why topical similarity adds little, and where the remaining errors
+    arise.
 \end{enumerate}
 
 The rest of this thesis is organized as follows. Chapter~2 reviews the component technologies of
 AutoPMoB, equation discovery from numerical data, information retrieval and reranking, direct
 generation by LLMs, and mathematical information retrieval, and states how this study differs from
-each. Chapter~3 formulates the task
-and presents the two-stage method, its sequential variants, and DoF-stop. Chapter~4 describes the
-equation database, the construction of the test cases, and the stratified split. Chapter~5
-defines the evaluation settings, the compared methods, and the metrics. Chapter~6 reports the
-results and discusses them in the order performance, case characteristics, mechanism, a first
-intervention, self-termination, the null result for topic similarity, error analysis, a second
-intervention, and limitations. Chapter~7 concludes the thesis and outlines future work.
+each. Chapter~3 formulates the task and presents the two-stage method and its sequential variants.
+Chapter~4 describes the equation database, the construction of the test cases, and the stratified
+split. Chapter~5 defines the evaluation settings, the compared methods and their constants, and the
+metrics. Chapter~6 reports the results and discusses them in the order performance, case
+characteristics, sources of the improvement, sequential selection, the null result for topic
+similarity, error analysis, and limitations. Chapter~7 concludes the thesis and outlines future
+work.

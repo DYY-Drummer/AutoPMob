@@ -5,21 +5,22 @@
 %   two_stage_query_conditioned.py : stage1() L248-254, class Reranker L197-205,
 %                                    compute_features L212-236, eq_text() L71
 %   set_aware_reranker.py          : K_REF L95, compute_set_aware_features L98-160,
-%                                    greedy_order L213-243, greedy_close L246-291
+%                                    greedy_order L213-243, run_mode の訓練ループ（不正解の選び方・逐次の訓練）
 % 骨子からの訂正（実装を一次情報として確認）:
-%   (1) 第1段のスコアは 2 特徴の混合（w_text*text_sim + w_var*io_jaccard、既定 0.7/0.3）。7 特徴は第2段 MLP の入力。
+%   (1) 第1段のスコアは 2 特徴の混合（w_text*text_sim + w_var*io_jaccard）。7 特徴は第2段 MLP の入力。
 %   (2) MLP の隠れ層は 64 ユニット 2 層（骨子は「1 層」と誤記）。
-%   (3) 集合特徴の参照集合は第1段の上位 K_REF=5 件（候補集合 k=50 とは別）。
-%   (4) 停止条件は |未知数| <= |S| かつ出力被覆。骨子の「DoF=0」は等号のみで狭い。
-% 2026-10-12 改訂（8/31 報告への加藤先生の注釈 78 件を反映。docs/加藤先生コメント対応_2026-08-31報告.md、
-%   日本語版 docs/progress_report_2026-08-31_methods_results.tex §2）:
-%   (a) §3.1 を Kato and Kano (2025, CACE) の 4 要件と自由度の定義（変数の数 − 式の数、Seborg et al. 2010）で
-%       書き直し、正解・不正解（式 ID で区別）を定義した。旧 DoF(S)=|unknowns|−|S| と "closed" の定義は撤回。
-%   (b) 第 1 段の重みを (w_t, w_v) に、参照集合の大きさを K_ref に変数化した（値は第 5 章）。
-%       被覆率の実測値（結果）は手法の節から §6.7 に移した（注釈 #12）。
-%   (c) 停止規則を条件 (a)(b) と要件 1・2 の関係で書き、先生の反例（y1=x, y1=x+1, y2=z）を入れた（注釈 #2, #33）。
-%   (d) 式の文脈テキストは LLM が式の前後の本文をもとに書いた説明（extract_equations.py / extract_equations_claude.py
-%       の context_text の指示）。f7 は「一方が他方に含まれれば 1」（compute_features L232-233）。
+%   (3) 集合特徴の参照集合は第1段の上位 m = 5 件（候補の件数 N_1 とは別）。
+% 2026-10-12 改訂（8/31 報告への加藤先生の注釈 78 件を反映）: §3.1 を Kato and Kano (2025, CACE) の 4 要件と
+%   自由度の定義（変数の数 − 式の数、Seborg et al. 2010）で書き直し、正解・不正解（式 ID で区別）を定義した。
+% 2026-10-21 改訂（日本語版 8/31 報告の 2 回目の改訂 4781cdd と、再実験 c7c4feb にそろえた）:
+%   (a) §3.1 に、提案手法を Kato and Kano (2025) の手法の上流に置けること（加藤先生の注釈 R1・R3）、変数の定義の文章は
+%       使わず、記号が同じなら同じ変数とみなすこと（R2）、提示は上位 n 件（n = 20）であることを書いた。
+%   (b) 記号を報告にそろえた: 第 1 段の候補の件数 k → N_1、参照集合の大きさ K_ref → m。N_1 は正解式がすべて候補に入る
+%       大きさにする（値は第 5 章）。
+%   (c) 不正解の選び方に hard negative を加え、検証用のケースで選ぶと書いた（set_aware_reranker.py の訓練ループ:
+%       ケースごとに n_neg 件を選び、候補に入った正解式のそれぞれと組にする）。
+%   (d) 逐次選択（訓練も逐次）が teacher forcing であることを、正解式が 3 本の例で示した（R6）。
+%   (e) 自由度ゼロ停止（旧 §3.5 Self-terminating Retrieval）は、報告と同じく削除した（2026-10-14 の方針 4）。
 % ============================================================
 \section{Problem Formulation}
 \label{sec:formulation}
@@ -53,57 +54,67 @@ The four requirements are necessary conditions; a set that meets them need not s
 model\cite{CombineEq}.
 
 The combination method of Kato and Kano takes a given set of equations and returns every
-combination that meets the requirements. This study instead searches a large database built from
-many documents and presents the equations most likely to serve in the requested model; the
-engineer assembles and checks the model from them. A query is a triple
-$q = (c, \mathcal{I}, \mathcal{O})$, where the description $c$ states the desired model in natural
-language and $\mathcal{I}$ and $\mathcal{O}$ list the symbols of the input and output variables; we
-write $\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ for the query variables. The database
-$\mathcal{E} = \{e_1, \dots, e_N\}$ stores for each equation $e_j$ its \LaTeX{} expression, its
-variable set $V(e_j)$ with a definition of each symbol, a context text that explains the physical
-meaning of the equation, its source, and a domain label $\mathrm{dom}(e_j)$ that names the field
-or process in free text; the extracting language model writes the context text from the passage
-around the equation and chooses the domain label freely (Section~4.1). Two variables are the same only when their
-symbols match exactly, both between the query and an equation and between two equations. The
-method outputs a ranking of the database and presents its top equations, and
-Section~\ref{sec:dofstop} decides how many.
-% source: extract_equations.py EXTRACTION_PROMPT（context_text: "surrounding text explaining physical
-%         meaning"）, extract_equations_claude.py（"1-3 sentences describing the physical meaning ... based on
-%         its surrounding context"）; two_stage_query_conditioned.py norm() は strip() のみ（記号の正規化なし）
+combination that meets the requirements. This study addresses the step before it: from a large
+database built from many documents, choose the equations that the combination method needs, that
+is, the equations needed to build the desired model. The proposed method can therefore sit
+upstream of the combination method, and it can also serve to find useful equations among a vast
+number of equations.
+A query is a triple $q = (c, \mathcal{I}, \mathcal{O})$, where the description $c$ states the
+desired model in natural language and $\mathcal{I}$ and $\mathcal{O}$ list the symbols of the
+input and output variables; we write $\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ for the query
+variables. The database $\mathcal{E} = \{e_1, \dots, e_N\}$ stores five items for each equation
+$e_j$: its \LaTeX{} expression; its variable set $V(e_j)$, with a text that defines each symbol; a
+context text, which the extracting language model wrote out from the passage around the equation
+to explain its physical meaning; its source; and a domain label $\mathrm{dom}(e_j)$, a free-text
+name of the field or process that the language model chose rather than an entry of a fixed
+taxonomy (Section~\ref{sec:db}). Two variables are the same only
+when their symbols match exactly, both between the query and an equation and between two
+equations, and the method applies no notational normalization, so $C_A$ and $C_A(t)$ are
+different variables. The method does not read the definitions of the symbols either: two
+variables with the same symbol count as one even when their definitions differ
+(Section~\ref{sec:db} counts such symbols in the database).
+% source: extract_equations.py EXTRACTION_PROMPT（context_text: "surrounding text explaining physical meaning"）;
+%         two_stage_query_conditioned.py norm() は strip() のみ（記号の正規化なし）、式の変数は variables のキーだけで、
+%         定義の文章（値）は手法のどこでも使わない（docs/加藤先生コメント2_事実確認_2026-10-20.md 項目 9.3）
+
+The method outputs a ranking of the database. It places the equations most likely to be needed
+for the desired model at the top and presents the top $n$, with $n = 20$ in this thesis.
 
 To evaluate the method, each test case designates one ground-truth set
-$\mathcal{R}_q \subset \mathcal{E}$, the equations of the requested model (Section~4.2). We call the
-equations in $\mathcal{R}_q$ correct and all other equations incorrect, and we write
-$K = |\mathcal{R}_q|$ for the answer size. Equations are identified by an identifier that combines
-the source and the equation number, so an equation identical to a correct one but taken from
-another source counts as incorrect (Sections~\ref{sec:metrics} and~\ref{sec:erroranalysis}).
+$\mathcal{R}_q \subset \mathcal{E}$, the equations of the requested model
+(Section~\ref{sec:cases}). We call the equations in $\mathcal{R}_q$ correct and all other
+equations incorrect, and we write $K = |\mathcal{R}_q|$ for the number of ground-truth equations.
+Equations are identified by an identifier that combines the source and the equation number, so an
+equation identical to a correct one but taken from another source counts as incorrect;
+Section~\ref{sec:overall} also reports the results when such equations count as correct.
 
 \section{Stage 1: Candidate Retrieval}
 \label{sec:stage1}
 
-The first stage scores every equation in the database independently and keeps the top $k$ as
-candidates. The score mixes one text term and one variable term,
-% source: two_stage_query_conditioned.py stage1() L248-254（w_text*ts + w_var*vs, argsort 上位 k）;
+The first stage scores every equation in the database independently and keeps the top $N_1$ as
+the candidate set $C_q$. The score mixes one text term and one variable term,
+% source: two_stage_query_conditioned.py stage1() L248-254（w_text*ts + w_var*vs, argsort 上位 N_1）;
 %         eq_text() L71（context_text・equation・domain を連結）
 \begin{equation}
   s_1(q, e_j) = w_{\mathrm{t}} \cos\!\big(\mathrm{tfidf}(c), \mathrm{tfidf}(t_j)\big)
               + w_{\mathrm{v}} \, J\!\big(\mathcal{Q}, V(e_j)\big) ,
   \label{eq:stage1}
 \end{equation}
-where $t_j$ joins the context text, the expression, and the domain label of equation $e_j$,
-$J(A, B) = |A \cap B| / |A \cup B|$ is the Jaccard similarity, the
-term-frequency--inverse-document-frequency (TF-IDF) vectors\cite{Salton} use word unigrams and
-bigrams over a vocabulary built from all $t_j$, and the weights $w_{\mathrm{t}}$ and $w_{\mathrm{v}}$
-balance the text similarity against the variable overlap. Chapter~5 gives the values of $k$ and of
-the weights. Ranking the whole database by Eq.~\eqref{eq:stage1} is a classical
-information-retrieval method\cite{Manning}, and Chapter~5 uses it, without a learned model or a
-candidate window, as the baseline; the second stage reranks only the $k$ candidates it receives.
+where $t_j$ joins the context text, the expression, and the domain label of equation $e_j$. The
+first term, the text similarity, compares the description with this text through
+term-frequency--inverse-document-frequency (TF-IDF) vectors\cite{Salton}, which weight each word
+by its count in a text and by its rarity across the equation texts of the database; the vectors
+use word unigrams and bigrams over a vocabulary built from all $t_j$. The second term, the
+variable overlap, is the Jaccard similarity $J(A, B) = |A \cap B| / |A \cup B|$ between the query
+variables and the variables of the equation. The weights $w_{\mathrm{t}}$ and $w_{\mathrm{v}}$
+balance the two terms. Ranking the whole database by Eq.~\eqref{eq:stage1} is a classical
+information-retrieval method\cite{Manning}, and Chapter~\ref{Experiment} uses it, without a
+learned model or a candidate set, as the baseline.
 
-The second stage cannot recover a ground-truth equation that the first stage leaves out, so the
-fraction of ground-truth equations among the candidates --- the candidate coverage --- bounds what
-the second stage can achieve. The coverage depends on both the window $k$ and the weights, and we
-measure it because it separates the two error sources that Chapter~6 analyses: equations the first
-stage never proposes, and equations the second stage proposes but ranks too low.
+The second stage reranks only the candidates, so the fraction of ground-truth equations among the
+candidates --- the candidate coverage --- bounds what the second stage can achieve. The coverage
+depends on both the weights and $N_1$. We set $N_1$ so large that every ground-truth equation
+enters the candidates (Section~\ref{sec:compared}).
 
 \section{Stage 2: Set-aware Reranking}
 \label{sec:stage2}
@@ -113,10 +124,10 @@ Table~\ref{tab:features} lists the ten features it uses. Seven of them compare t
 single equation: two measure topical closeness of the description ($f_1$, $f_3$), one matches the
 domain label against the description ($f_7$), and four measure how the equation's variables relate
 to the query variables ($f_2$, $f_4$, $f_5$, $f_6$). The remaining three are the set-aware features
-that this study introduces. They are computed against a reference set $R$, which is the top
-$K_{\mathrm{ref}}$ candidates of Stage 1 during static scoring and the already selected
-equations during sequential selection (Section~\ref{sec:seq}); a candidate that belongs to $R$ is
-excluded from its own reference set.
+that this study introduces. They compare the candidate with a reference set $R$, the equations
+against which the candidate is judged: the top $m$ equations of Stage~1 in static reranking, and the
+equations already selected in sequential selection (Section~\ref{sec:seq}). A candidate that
+belongs to $R$ is compared with $R$ without itself.
 % source: set_aware_reranker.py K_REF=5 L95, compute_set_aware_features L119-137（自己除外）
 
 Complementarity $g_{\mathrm{Comp}}$ asks what the candidate adds: it is the fraction of query
@@ -126,7 +137,7 @@ fraction of the candidate's variables shared with the reference set. Domain agre
 $g_{\mathrm{Dom}}$ asks whether the candidate comes from the same topic as the reference set: it is
 the fraction of reference equations whose domain label equals the candidate's. The first two
 encode how equations determine one another's variables, the third encodes topical consistency, and
-Section~\ref{sec:mechanism} shows that only the first two contribute.
+Section~\ref{sec:mechanism} measures what each contributes.
 
 \begin{table}[H]
 \centering
@@ -155,86 +166,79 @@ $g_{\mathrm{Dom}}$  & Domain agreement & $|\{e \in R : \mathrm{dom}(e) = \mathrm
 \end{table}
 % source: two_stage_query_conditioned.py compute_features L232-233（d in dl or dl in d、小文字化）
 
-The latent similarity $f_3$ deserves one remark. We factorize the TF-IDF matrix of all equation
-texts with a truncated singular-value decomposition (SVD)\cite{LSA} into 256 dimensions, project the query
-into the same space, and take the cosine similarity. Unlike $f_1$, the query text here also lists
-the input and output variable names, so $f_3$ sees both the description and the requested
-variables.
+Two features deserve a remark. The domain match $f_7$ compares the strings without regard to case.
+The latent similarity $f_3$ applies latent semantic analysis\cite{LSA}: we factorize the TF-IDF
+matrix of all equation texts with a truncated singular-value decomposition (SVD) into 256
+dimensions, project the query into the same space, and take the cosine similarity. In this space,
+words that tend to appear in the same texts share dimensions, so the similarity grows when the two
+texts contain words that appear in similar texts, even without shared words. Unlike $f_1$, the
+query text here also lists the input and output variable symbols, so $f_3$ sees both the
+description and the requested variables.
 % source: two_stage_query_conditioned.py case_text(c, io=True) → svd クエリ; 256 成分
 
-A multilayer perceptron (MLP) maps the ten features to a score. It has two hidden layers of 64
-units with rectified-linear activation and dropout 0.1.
+A multilayer perceptron (MLP) maps the ten features $x(q, e)$ of a candidate to a score
+$f(x(q, e))$. It has two hidden layers of 64 units with rectified-linear activation and dropout
+0.1.
 % source: two_stage_query_conditioned.py class Reranker L197-205（Linear-ReLU-Dropout ×2 + Linear）
-We train it with a pairwise ranking loss\cite{LTR}: for each ground-truth equation $e^{+}$ among
-the candidates of a training case and each of eight incorrect candidates $e^{-}$ sampled at
-random from the same case,
+We train it with a pairwise ranking loss\cite{LTR} that asks every correct candidate to outscore
+the incorrect candidates of the same case by at least a margin $\gamma$. For a training case $q$,
+a ground-truth equation $e^{+} \in \mathcal{R}_q \cap C_q$, and an incorrect candidate
+$e^{-} \in C_q \setminus \mathcal{R}_q$,
 \begin{equation}
-  \ell(e^{+}, e^{-}) = \max\!\big(0,\; \gamma - \mathrm{MLP}(x(q, e^{+})) + \mathrm{MLP}(x(q, e^{-}))\big),
-  \qquad \gamma = 0.1 ,
+  \ell(q, e^{+}, e^{-}) = \max\!\big(0,\; \gamma - f(x(q, e^{+})) + f(x(q, e^{-}))\big) .
   \label{eq:loss}
 \end{equation}
-where $x(q, e)$ is the feature vector. We optimize with AdamW (learning rate $10^{-3}$, weight
-decay $10^{-4}$) for 15 epochs over batches of 16 cases. Appendix~A lists every hyperparameter. We
-call this configuration reranker-10S, and reranker-7 for the variant that drops the three
-set-aware features.
+For each training case we choose $n_{\mathrm{neg}}$ incorrect candidates and pair every correct
+candidate with each of them. We compare two ways of choosing them and let the validation cases
+decide between them (Section~\ref{sec:compared}): (a) at random, and (b) the incorrect candidates
+that the MLP, at that point of training, scores highest (hard negatives). We add (b) because, with
+a large $N_1$, most randomly chosen incorrect candidates already trail the correct ones by more
+than the margin and contribute no loss. Each update averages $\ell$ over all pairs of a batch of 16
+training cases. Chapter~\ref{Experiment} gives the values of $\gamma$, $n_{\mathrm{neg}}$, and the
+other constants, and \ref{app:hyper} lists them all. We call this configuration
+reranker-10S, and reranker-7 for the variant that drops the three set-aware features.
+% source: set_aware_reranker.py run_mode の訓練ループ（ケースごとに ns = min(n_neg_samples, |neg|) 件を無作為
+%         （rng.sample）または現在の点数の高い順（hard_neg）で選び、候補に入った正解式 pos_k のそれぞれと組にする。
+%         バッチ 16 ケースの組の損失を平均）
 
 \section{Sequential Selection}
 \label{sec:seq}
 
-Because the set-aware features depend on what has already been selected, the reference set used
-during training need not match the one used at inference. We therefore compare three strategies and
-isolate the effect of that mismatch.
-
-Static scoring computes the set-aware features once against the Stage-1 top-$K_{\mathrm{ref}}$
-reference and ranks all candidates by a single forward pass. Greedy selection at inference builds
-the answer one equation at a time: it takes the candidate with the highest static score first,
-recomputes the set-aware features of the remaining candidates against the equations selected so
-far, takes the highest-scoring one, and repeats until it has selected 20 equations or exhausted
-the candidates; the unselected candidates follow in the order of their static scores. The model
-itself is trained statically.
+Static reranking fixes the reference set to the top $m$ equations of Stage~1 and scores all
+candidates in one pass. When a case has many ground-truth equations, the equations that actually
+rise to the top drift away from this fixed reference set. Sequential selection therefore replaces
+the reference set with the equations selected so far and selects one equation at a time:
+\begin{enumerate}
+  \item It takes first the candidate with the highest static score, the score computed against the
+    fixed reference set.
+  \item It then recomputes the set-aware features of the remaining candidates against the equations
+    selected so far and takes the candidate with the highest score.
+  \item It repeats step~2 until it has selected $n$ equations or exhausted the candidates; the
+    unselected candidates follow in the order of their static scores.
+\end{enumerate}
 % source: set_aware_reranker.py greedy_order L213-243（先頭は静的スコア最大、以降は再計算、
 %         greedy_cap=20、残りは init_scores 順）
-Learned greedy additionally \emph{trains} on the same sequential contexts with teacher forcing: at
-step $t$ the true partial answer serves as the reference set, and the loss pushes the next
-ground-truth equation above the sampled negatives. Training then asks the same question as
-inference, namely which equation to select next, given the ones already chosen.
-% source: set_aware_reranker.py run_mode の train_greedy ブロック L440-470（teacher forcing・
-%         t=0 は静的参照で「種」を学習・greedy_train_cap=8）
-Teacher forcing keeps training stable but leaves a train--test gap, because at inference the
-reference set may contain mistakes; Section~\ref{sec:limitations} returns to this point.
+Sequential selection comes in two variants that differ in how the MLP is trained. Greedy
+selection at inference uses the MLP trained for static reranking. Learned greedy selection also
+trains on the sequential contexts. It puts ground-truth equations, not the equations the MLP
+itself would select, into the reference set during training, as teacher forcing does when a model
+that generates a sequence learns with the correct preceding outputs in place of its own.
 
-\section{Self-terminating Retrieval}
-\label{sec:dofstop}
-
-Ranking assumes the caller knows how many equations to take. An engineer does not know the answer
-size $K$ in advance, so we let retrieval stop by itself. DoF-stop extends greedy selection: after
-each selection it checks whether the selected set $S$ meets two conditions,
-\begin{equation}
-  \text{(a)}\;\; \mathcal{O} \subseteq V(S)
-  \qquad\text{and}\qquad
-  \text{(b)}\;\; |V(S) \setminus \mathcal{I}| \le |S| ,
-  \label{eq:stopcond}
-\end{equation}
-and it stops and returns $S$ at the first length where both hold. Condition~(a) is the output part
-of requirement~1, and condition~(b) relaxes the equality of requirement~2 to an inequality. When no
-prefix meets the conditions within the selection cap of 20 equations, DoF-stop returns the 20 it
-selected.
-% source: set_aware_reranker.py greedy_close L246-291（closed() = 出力被覆 かつ |covered − input_v| <= |sel|、
-%         greedy_cap=20、閉じなければ選択総数を返す）
-
-DoF-stop checks neither requirement~3 nor requirement~4, and it does not check whether the
-selected equations are independent or consistent, so the set at which it stops need not be
-solvable. Counting variables against equations is a necessary check for solvability, not a
-sufficient one\cite{Hangos}. Consider a query with $\mathcal{I} = \{x, z\}$ and
-$\mathcal{O} = \{y_1, y_2\}$, and the selections $y_1 = x$, $y_1 = x + 1$, and $y_2 = z$ in this
-order. After the third selection both conditions hold, since the two unknowns $y_1$ and $y_2$ number
-fewer than the three equations, and DoF-stop stops. Yet the two equations for $y_1$ contradict each
-other, and $N_{\mathrm{DoF}}(S) = 4 - 3 = 1$ differs from $|\mathcal{I}| = 2$, so the set violates
-requirement~2 as well. DoF-stop also selects greedily without backtracking and only among the
-first-stage candidates, so it may never meet the conditions --- for instance, when the first stage
-has missed an equation that the answer needs. DoF-stop thus decides how many equations to present;
-whether the presented equations form a model remains for the engineer to check. Evaluating it
-requires set-level measures rather than ranking measures, so Chapter~5 adds the exact-match rate,
-the set $F_1$, and the stop-condition rate.
-% 旧: "The returned set is closed by construction" / "closure test"（2026-09-29 撤回）。2026-10-12、
-%   加藤先生の反例（8/31 報告への注釈 #33）を入れ、"closed" という語をやめて停止条件 (a)(b) で書いた。
+Learned greedy selection orders the ground-truth equations among the candidates of a training case
+by their Stage-1 rank, $e^{+}_1, e^{+}_2, \dots$, and adds a loss at each step $t = 1, 2, \dots$.
+At step~$t$ it treats $e^{+}_1, \dots, e^{+}_{t-1}$ as the equations already selected and uses them
+as the reference set (the top $m$ equations of Stage~1 at $t = 1$); with the features computed
+against this reference set, it adds the loss of Eq.~\eqref{eq:loss} for the next ground-truth
+equation $e^{+}_t$ and the chosen incorrect candidates. For a case with three ground-truth
+equations, step~1 learns to rank $e^{+}_1$ above the incorrect candidates against the Stage-1
+reference set, step~2 learns to rank $e^{+}_2$ above them against $\{e^{+}_1\}$, and step~3 learns
+to rank $e^{+}_3$ above them against $\{e^{+}_1, e^{+}_2\}$. A case contributes at most eight steps.
+Training thus asks the same question as inference --- which equation to select next, given the
+ones already selected.
+% source: set_aware_reranker.py run_mode の train_greedy ブロック（pos は候補の順＝第 1 段の順位の順、
+%         t=0 は静的参照で「種」を学習、greedy_train_cap=8、sel_db に正解を足す teacher forcing、hard negative は
+%         段階ごとの点数で選ぶ）
+Teacher forcing keeps training stable but leaves a train--test gap: at inference the reference set
+holds the model's own selections, which may include mistakes (Section~\ref{sec:limitations}).
+% 旧 §3.5 Self-terminating Retrieval（DoF-stop: 停止条件 (a) 出力被覆 (b) |V(S) \ I| <= |S|）は 2026-10-21 に削除した。
+%   2026-10-14 の方針 4（自由度ゼロ停止をやめ、提示する式の数を 20 件に固定して Recall@20 で評価する）による。

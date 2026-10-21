@@ -1,129 +1,456 @@
 % ============================================================
-% Appendix — OUTLINE (Phase 1)
-% 骨子段階は1章に統合（ページ節約）。本文化時に章分割を検討。
+% Appendix — 骨子段階は 1 章に統合（ページ節約）。本文化時に章分割を検討。
 % 2026-10-12: 比較手法の重み 12 通りの表（加藤先生の注釈 #52）と、逐次選択 3 通りの k=50 / 200 の表（注釈 #68）を追加。
+% 2026-10-21 全面改訂（日本語版 8/31 報告の 2 回目の改訂 4781cdd の付録 A〜E と同じ内容・同じ数値にそろえた。
+%   数値は再実験 c7c4feb の experiments/kato1020/*.json）:
+%   - 定数の表を N_1 = 2,000・重み (0.3, 0.7)・検証用で選ぶ不正解などに更新し、自由度ゼロ停止と LLM 直接生成の行を削除。
+%   - 付録 A の重みの表を、検証用とテストの Recall@20・MAP（12 通り＋分割ごとに選んだ TF-IDF・BM25・E5）と、
+%     提案手法の第 1 段の重み×不正解の選び方の表に置き換えた。旧「逐次選択 3 通りの k=50 / 200」の表は削除（N_1 を統一）。
+%   - 正解式の数と入力変数の数で分けた表（報告の付録 B）、N_1 を変えた結果（付録 C、図は英語版を作った）を追加。
+%   - 文献の収集（付録 D: 分野ごとの検索語と文献 329 件の一覧）を英語版で追加（scratchpad の make_appendix_tables.py で
+%     docs/appendix_materials から作った。数値・DOI・出典 ID は元の表と一致を確認）。
+%   - プロンプト（付録 E）を本文どおり転記した。合成のケースの例（dae_X3_016）を training_cases.json から転記した。
 % ============================================================
 \chapter{Supplementary Materials}
 
-\section{Hyperparameters and Reproducibility}
-% source: experiments/strat_A.json config / set_aware_reranker.py argparse defaults
+\section{Constants and Reproducibility}
+\label{app:hyper}
+Table~\ref{tab:hyper} lists the constants of the methods. Section~\ref{sec:compared} explains which
+of them the validation cases chose.
+% source: experiments/kato1020/selected.json fixed / selected; set_aware_reranker.py（K_REF=5、greedy_cap=20、
+%         --greedy-train-cap 8）; external_baselines.py・kato1020_baselines.py; run_llm_db_baseline.py（版 3）
+
 \begin{table}[h]\centering
-\caption{Hyperparameters of the reranker (identical across settings unless noted).}
-\begin{tabular}{ll}
+\caption{Constants of the methods (identical across settings and splits unless noted).}
+\label{tab:hyper}
+\small
+\begin{tabular}{l>{\raggedright\arraybackslash}p{0.5\linewidth}}
 \toprule
 Item & Value \\
 \midrule
-MLP hidden units / dropout & 64 / 0.1 \\
-Loss / margin & pairwise ranking / 0.1 \\
-Epochs / learning rate / batch size & 15 / 0.001 / 16 \\
-Negative samples / weight decay & 8 / 0.0001 \\
-Stage-1 top-$k$ & 50 (Settings A, B); 200 (greedy and DoF-stop runs) \\
-Stage-1 weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & $(0.7, 0.3)$; $(0.3, 0.7)$ (Section~\ref{sec:stage1redesign}) \\
-Reference set size $K_{\mathrm{ref}}$ & 5 \\
-Greedy selection cap / training cap & 20 / 8 \\
-DoF-stop selection cap & 20 equations \\
-Classical baseline weights & $(0.4, 0.6)$ (best of 12); $(0.7, 0.3)$ \\
-BM25 baseline & $k_1 = 1.5$, $b = 0.75$, word unigrams \\
+MLP hidden layers / units / dropout & 2 / 64 / 0.1 \\
+Loss / margin $\gamma$ & pairwise ranking / 0.1 \\
+Optimizer / epochs / batch & AdamW / 15 / 16 training cases \\
+Learning rate / weight decay & $10^{-3}$ / $10^{-4}$ \\
+Incorrect candidates $n_{\mathrm{neg}}$ & 8 per training case \\
+Choice of incorrect candidates & chosen on validation: hard negatives in 19 of 20 splits, random in 1 \\
+Stage-1 weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & $(0.3, 0.7)$ \\
+Stage-1 candidates $N_1$ & 2,000 \\
+Reference set size $m$ & 5 \\
+Equations presented $n$ / greedy selection cap & 20 / 20 \\
+Training steps of learned greedy selection & at most 8 per case \\
+TF-IDF vocabulary & word unigrams and bigrams \\
+Latent similarity & truncated SVD, 256 dimensions \\
+Classical baseline weights & best of 12 pairs on validation, per split \\
+BM25 & $k_1 = 1.5$, $b = 0.75$, word unigrams \\
 BM25 IDF & $\ln\{1 + (N - n + 0.5)/(n + 0.5)\}$ \\
-E5 baseline & \texttt{intfloat/e5-base-v2}, mean pooling, $\ell_2$ norm \\
-E5 maximum input length & 512 tokens \\
-Text-score normalization (BM25, E5) & per-query min--max over the database \\
-LLM generator (baseline) & \texttt{claude-sonnet-4-5-20250929} \\
-Equations requested / judged & up to $\max(12, K + 4)$ / first 12 \\
-Equivalence judges (LLM baseline) & \texttt{claude-opus-4-8} (Table~\ref{tab:overall}); \texttt{claude-fable-5-1} (check) \\
+E5 & \texttt{intfloat/e5-base-v2}, mean pooling, $\ell_2$ norm, 512 tokens \\
+E5 query & description \\
+Text scores of BM25 and E5 & min--max normalized over the database, per query \\
+LLMs (prepared, not yet run) & Claude Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1 \\
+LLM effort / answer & high / up to 20 identifiers, no solved example \\
 Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
 \bottomrule
 \end{tabular}
 \end{table}
-% source: set_aware_reranker.py（K_REF=5 L95, greedy_cap=20, --greedy-train-cap 8）; evaluate_llm_dae.py
-%         （max(12, X+4)）; evaluate_llm_equiv.py（gen[:12]）; external_baselines_{A,B}.json（重み 12 通り）
 
-\section{Weights of the Retrieval Baselines}
-Table~\ref{tab:weights} lists the classical baseline under each of the 12 weight pairs. Recall@K
-peaks at $(0.4, 0.6)$ in both settings and changes little for $w_{\mathrm{t}} \le 0.5$ (0.598 to
-0.607 in Setting~A), whereas the text term alone reaches only 0.120 and 0.153: the description
-alone rarely identifies the equations of a case. BM25 and E5 peak at $(0.1, 0.9)$ and stay at the
-level of the best TF-IDF mixture.
-% source: experiments/external_baselines_{A,B}.json results.tfidf__none__w*, bm25__minmax__w10-90,
-%         e5io__minmax__w10-90（per_seed の平均と標準偏差、10 seed）。日本語版報告 付録 A の表と同じ値
-% MAP の定義の確認（2026-10-12、標準の定義への統一）: external_baselines.py --save-per-case を scratch に出力して
-%   再実行し（学習なし・決定的。集計値は上の JSON と全ラベルで完全一致）、各正解式の順位を得た。順位 10,000 以上の正解式は
-%   (1.0, 0.0) だけ（A 176/17,420 本、B 101/13,468 本）で、ほかの全行（BM25・E5 を含む）は実装と標準の定義で MAP が同じ。
-%   (1.0, 0.0) の標準の定義の MAP は A 0.1473±0.0252（実装 0.1475）→ 0.147、B 0.1695±0.0297（実装 0.1700）→ 0.170 で不変。
+\section{Weights of the Baseline and of the First Stage}
+\label{app:weights}
+Table~\ref{tab:weights} lists the classical baseline under each of the 12 weight pairs. Its
+validation Recall@20 hardly changes for text weights $w_{\mathrm{t}} \le 0.5$ (0.889 to 0.906 in
+Setting~A), and the text term alone, $(1.0, 0.0)$, reaches only 0.351. The baseline of
+Chapter~\ref{ResultsAndDiscussion} takes, in each split, the pair with the highest validation
+Recall@20. When BM25 or E5 replaces the TF-IDF text similarity, rescaled to $[0, 1]$ over the
+database before it is mixed with the variable overlap, and the weights are again chosen per split,
+the test Recall@20 is 0.904 (Setting~A) and 0.819 (Setting~B) for BM25 and 0.892 and 0.806 for E5,
+on a par with TF-IDF (0.906 and 0.825).
+% source: experiments/kato1020/baselines.json（by_weight の val / test、scorers.*.summary_test）
 
 \begin{table}[h]\centering
-\caption{The classical baseline (TF-IDF text similarity mixed with the variable overlap, ranking the
-whole database) under 12 weight pairs, and BM25 and E5 at their best weights (mean $\pm$ SD over 10
-splits; MAP by the standard definition of Eq.~\eqref{eq:ap}). Bold marks the best Recall@K of each
-setting.}
+\caption{The classical baseline under 12 weight pairs. ``Validation'' gives the Recall@20 of the
+validation cases and ``test'' the values of the test cases (both means over 10 splits; test values
+with $\pm$ SD). The last three rows choose the weights per split on the validation cases.}
 \label{tab:weights}
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{@{}cccccccc@{}}
+\begin{tabular}{@{}lccccccc@{}}
 \toprule
- & \multicolumn{3}{c}{Setting A (1,823 cases)} & & \multicolumn{3}{c}{Setting B (1,000 cases)} \\
+ & \multicolumn{3}{c}{Setting A (1,732 cases)} & & \multicolumn{3}{c}{Setting B (1,000 cases)} \\
 \cmidrule{2-4}\cmidrule{6-8}
-$(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@K & MAP & Recall@20 & & Recall@K & MAP & Recall@20 \\
+ & Validation & \multicolumn{2}{c}{Test} & & Validation & \multicolumn{2}{c}{Test} \\
+\cmidrule{3-4}\cmidrule{7-8}
+Weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@20 & Recall@20 & MAP & & Recall@20 & Recall@20 & MAP \\
 \midrule
-$(1.0, 0.0)$ & $0.120 \pm 0.020$ & $0.147 \pm 0.025$ & $0.311 \pm 0.049$ & & $0.153 \pm 0.029$ & $0.170 \pm 0.030$ & $0.360 \pm 0.053$ \\
-$(0.9, 0.1)$ & $0.215 \pm 0.030$ & $0.255 \pm 0.033$ & $0.503 \pm 0.065$ & & $0.254 \pm 0.031$ & $0.289 \pm 0.033$ & $0.516 \pm 0.048$ \\
-$(0.8, 0.2)$ & $0.370 \pm 0.035$ & $0.433 \pm 0.045$ & $0.726 \pm 0.049$ & & $0.379 \pm 0.032$ & $0.423 \pm 0.034$ & $0.645 \pm 0.037$ \\
-$(0.7, 0.3)$ & $0.521 \pm 0.045$ & $0.581 \pm 0.045$ & $0.836 \pm 0.023$ & & $0.466 \pm 0.037$ & $0.512 \pm 0.035$ & $0.721 \pm 0.032$ \\
-$(0.6, 0.4)$ & $0.574 \pm 0.043$ & $0.652 \pm 0.044$ & $0.879 \pm 0.018$ & & $0.517 \pm 0.036$ & $0.574 \pm 0.036$ & $0.780 \pm 0.027$ \\
-$(0.5, 0.5)$ & $0.602 \pm 0.042$ & $0.679 \pm 0.045$ & $0.898 \pm 0.017$ & & $0.546 \pm 0.039$ & $0.608 \pm 0.037$ & $0.814 \pm 0.027$ \\
-$(0.4, 0.6)$ & $\mathbf{0.607 \pm 0.043}$ & $0.692 \pm 0.046$ & $0.907 \pm 0.016$ & & $\mathbf{0.559 \pm 0.038}$ & $0.627 \pm 0.036$ & $0.827 \pm 0.027$ \\
-$(0.3, 0.7)$ & $0.600 \pm 0.044$ & $0.691 \pm 0.046$ & $0.908 \pm 0.016$ & & $0.558 \pm 0.038$ & $0.630 \pm 0.037$ & $0.829 \pm 0.026$ \\
-$(0.2, 0.8)$ & $0.600 \pm 0.044$ & $0.689 \pm 0.045$ & $0.906 \pm 0.016$ & & $0.554 \pm 0.038$ & $0.626 \pm 0.036$ & $0.826 \pm 0.023$ \\
-$(0.1, 0.9)$ & $0.598 \pm 0.042$ & $0.685 \pm 0.044$ & $0.901 \pm 0.014$ & & $0.550 \pm 0.035$ & $0.620 \pm 0.035$ & $0.816 \pm 0.021$ \\
-$(0.05, 0.95)$ & $0.599 \pm 0.041$ & $0.683 \pm 0.043$ & $0.899 \pm 0.013$ & & $0.550 \pm 0.032$ & $0.617 \pm 0.033$ & $0.812 \pm 0.022$ \\
-$(0.0, 1.0)$ & $0.603 \pm 0.035$ & $0.679 \pm 0.039$ & $0.897 \pm 0.013$ & & $0.541 \pm 0.027$ & $0.605 \pm 0.029$ & $0.807 \pm 0.020$ \\
+$(1.0, 0.0)$ & 0.351 & $0.290 \pm 0.046$ & $0.143 \pm 0.031$ & & 0.368 & $0.360 \pm 0.053$ & $0.170 \pm 0.030$ \\
+$(0.9, 0.1)$ & 0.531 & $0.479 \pm 0.063$ & $0.248 \pm 0.038$ & & 0.544 & $0.516 \pm 0.048$ & $0.289 \pm 0.033$ \\
+$(0.8, 0.2)$ & 0.748 & $0.711 \pm 0.052$ & $0.427 \pm 0.052$ & & 0.680 & $0.645 \pm 0.037$ & $0.423 \pm 0.034$ \\
+$(0.7, 0.3)$ & 0.833 & $0.827 \pm 0.025$ & $0.584 \pm 0.057$ & & 0.762 & $0.721 \pm 0.032$ & $0.512 \pm 0.035$ \\
+$(0.6, 0.4)$ & 0.875 & $0.876 \pm 0.021$ & $0.649 \pm 0.057$ & & 0.826 & $0.780 \pm 0.027$ & $0.574 \pm 0.036$ \\
+$(0.5, 0.5)$ & 0.898 & $0.897 \pm 0.020$ & $0.676 \pm 0.060$ & & 0.858 & $0.814 \pm 0.027$ & $0.608 \pm 0.037$ \\
+$(0.4, 0.6)$ & 0.906 & $0.905 \pm 0.020$ & $0.689 \pm 0.060$ & & 0.873 & $0.827 \pm 0.027$ & $0.627 \pm 0.036$ \\
+$(0.3, 0.7)$ & 0.906 & $0.907 \pm 0.020$ & $0.690 \pm 0.061$ & & 0.877 & $0.829 \pm 0.026$ & $0.630 \pm 0.037$ \\
+$(0.2, 0.8)$ & 0.901 & $0.906 \pm 0.018$ & $0.689 \pm 0.060$ & & 0.875 & $0.826 \pm 0.023$ & $0.626 \pm 0.036$ \\
+$(0.1, 0.9)$ & 0.893 & $0.901 \pm 0.017$ & $0.686 \pm 0.059$ & & 0.863 & $0.816 \pm 0.021$ & $0.620 \pm 0.035$ \\
+$(0.05, 0.95)$ & 0.891 & $0.899 \pm 0.016$ & $0.684 \pm 0.058$ & & 0.860 & $0.812 \pm 0.022$ & $0.617 \pm 0.033$ \\
+$(0.0, 1.0)$ & 0.889 & $0.896 \pm 0.016$ & $0.677 \pm 0.054$ & & 0.854 & $0.807 \pm 0.020$ & $0.605 \pm 0.029$ \\
 \midrule
-BM25, $(0.1, 0.9)$ & $0.601 \pm 0.037$ & $0.692 \pm 0.041$ & $0.905 \pm 0.016$ & & $0.555 \pm 0.032$ & $0.624 \pm 0.035$ & $0.822 \pm 0.026$ \\
-E5, $(0.1, 0.9)$ & $0.602 \pm 0.039$ & $0.684 \pm 0.039$ & $0.896 \pm 0.015$ & & $0.544 \pm 0.027$ & $0.611 \pm 0.031$ & $0.806 \pm 0.023$ \\
+TF-IDF, chosen per split & --- & $0.906 \pm 0.020$ & $0.690 \pm 0.060$ & & --- & $0.825 \pm 0.024$ & $0.626 \pm 0.035$ \\
+BM25, chosen per split & --- & $0.904 \pm 0.019$ & $0.686 \pm 0.057$ & & --- & $0.819 \pm 0.023$ & $0.622 \pm 0.033$ \\
+E5, chosen per split & --- & $0.892 \pm 0.023$ & $0.675 \pm 0.058$ & & --- & $0.806 \pm 0.020$ & $0.610 \pm 0.029$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Selection Strategies at Two Window Sizes}
-Table~\ref{tab:greedyk} compares the three selection strategies of Section~\ref{sec:seq} at the
-default window $k = 50$ and at $k = 200$ (Section~\ref{sec:greedyresults}). Static scoring at
-$k = 50$ is the proposed method of Table~\ref{tab:overall} with the first-stage weights $(0.7, 0.3)$.
-% source: experiments/greedy_3way_k50_stats.json（k=50, A・B）; greedy_3way_stats.json（k=200, B）;
-%         greedy_3way_A_stats.json（k=200, A）。差の括弧内は Wilcoxon の p 値。k=200 B の (3) の SD は
-%         experiments/xg/train__*.json の seed 値から 0.042499 → 0.042（stats JSON は 0.0425、日本語版付録 C は 0.043）
+Table~\ref{tab:stage1grid} lists the proposed method (static reranking) for each combination of
+first-stage weights and choice of incorrect candidates. $N_1$ is, for each weight pair, the number
+of candidates that holds every ground-truth equation of the training and validation cases
+(Section~\ref{sec:compared}). Hard negatives beat random ones in validation Recall@20 for every
+weight pair in both settings. With hard negatives, the weights differ little: the validation
+Recall@20 is 0.980 to 0.983 in Setting~A and 0.974 to 0.975 in Setting~B. Only the pair
+$(0.3, 0.7)$ gave $N_1 = 2{,}000$ in every split and admitted every ground-truth equation of the
+test cases as well; under the other pairs, the $N_1$ fixed on the training and validation cases
+left a few ground-truth equations of the test cases out of the candidates in some splits.
+% source: experiments/kato1020/selected.json grid（val / test の平均）; n1_rule.json（重みと分割ごとの N_1）
 
 \begin{table}[h]\centering
-\caption{Recall@K of the three selection strategies (first-stage weights $(0.7, 0.3)$; mean $\pm$ SD
-over 10 splits). Differences carry the Wilcoxon signed-rank $p$-value in parentheses.}
-\label{tab:greedyk}
+\caption{The proposed method (static reranking) for each combination of first-stage weights and
+choice of incorrect candidates (means over 10 splits). $N_1$ gives the range over the splits.}
+\label{tab:stage1grid}
 \footnotesize
-\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{@{}lcccc@{}}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lllrccc@{}}
 \toprule
- & \multicolumn{2}{c}{Setting B} & \multicolumn{2}{c}{Setting A} \\
-\cmidrule{2-3}\cmidrule{4-5}
- & $k = 50$ & $k = 200$ & $k = 50$ & $k = 200$ \\
+ & & & & Validation & \multicolumn{2}{c}{Test} \\
+\cmidrule{5-5}\cmidrule{6-7}
+Setting & Weights & Incorrect candidates & $N_1$ & Recall@20 & Recall@20 & MAP \\
 \midrule
-(1) Static scoring & $0.689 \pm 0.033$ & $0.724 \pm 0.041$ & $0.743 \pm 0.054$ & $0.757 \pm 0.056$ \\
-(2) Greedy at inference & $0.709 \pm 0.030$ & $0.756 \pm 0.043$ & $0.762 \pm 0.049$ & $0.787 \pm 0.049$ \\
-(3) Learned greedy & $0.717 \pm 0.033$ & $0.765 \pm 0.042$ & $0.765 \pm 0.051$ & $0.797 \pm 0.053$ \\
+A & $(0.7, 0.3)$ & random & 4,000--6,000 & 0.974 & 0.974 & 0.828 \\
+ & $(0.7, 0.3)$ & hard negatives & 4,000--6,000 & 0.980 & 0.981 & 0.844 \\
+ & $(0.5, 0.5)$ & random & 2,000--4,000 & 0.975 & 0.975 & 0.838 \\
+ & $(0.5, 0.5)$ & hard negatives & 2,000--4,000 & 0.981 & 0.981 & 0.857 \\
+ & $(0.3, 0.7)$ & random & 2,000 & 0.978 & 0.975 & 0.843 \\
+ & $(0.3, 0.7)$ & hard negatives & 2,000 & 0.982 & 0.981 & 0.861 \\
+ & $(0.0, 1.0)$ & random & 2,000--3,000 & 0.979 & 0.976 & 0.844 \\
+ & $(0.0, 1.0)$ & hard negatives & 2,000--3,000 & 0.983 & 0.981 & 0.863 \\
 \midrule
-(2) $-$ (1) & $+0.020$ (0.0039) & $+0.032$ (0.00195) & $+0.019$ (0.0039) & $+0.030$ (0.00195) \\
-(3) $-$ (2) & $+0.008$ (0.014) & $+0.009$ (0.037) & $+0.002$ (0.49) & $+0.010$ (0.13) \\
-(3) $-$ (1) & $+0.028$ (0.00195) & $+0.041$ (0.00195) & $+0.022$ (0.0039) & $+0.040$ (0.00195) \\
-(3) $-$ (1), 8 or more equations & $+0.021$ (0.00195) & $+0.056$ (0.00195) & $+0.013$ (0.00195) & $+0.048$ (0.00195) \\
+B & $(0.7, 0.3)$ & random & 4,000--6,000 & 0.963 & 0.952 & 0.775 \\
+ & $(0.7, 0.3)$ & hard negatives & 4,000--6,000 & 0.975 & 0.965 & 0.812 \\
+ & $(0.5, 0.5)$ & random & 2,000--4,000 & 0.967 & 0.957 & 0.798 \\
+ & $(0.5, 0.5)$ & hard negatives & 2,000--4,000 & 0.975 & 0.969 & 0.826 \\
+ & $(0.3, 0.7)$ & random & 2,000 & 0.967 & 0.957 & 0.809 \\
+ & $(0.3, 0.7)$ & hard negatives & 2,000 & 0.974 & 0.966 & 0.832 \\
+ & $(0.0, 1.0)$ & random & 2,000--3,000 & 0.967 & 0.957 & 0.801 \\
+ & $(0.0, 1.0)$ & hard negatives & 2,000--3,000 & 0.974 & 0.966 & 0.829 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\section{Results by Case Characteristics}
+\label{app:bucket}
+Table~\ref{tab:bucket} gives the values behind Fig.~\ref{fig:characteristic} (Setting~A; means
+over the 4,233 test records of the 10 splits; the table does not show the spread across splits).
+% source: experiments/kato1020/main.json buckets.A（baseline_tfidf, proposed_static, proposed_train）
+
+\begin{table}[h]\centering
+\caption{Results by the number of ground-truth equations and by the number of input variables
+(Setting~A). ``Static'' and ``learned'' denote the proposed method with static reranking and with
+learned greedy selection.}
+\label{tab:bucket}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrcccccc@{}}
+\toprule
+ & & \multicolumn{3}{c}{Recall@20} & \multicolumn{3}{c}{MAP} \\
+\cmidrule(lr){3-5}\cmidrule(l){6-8}
+ & Records & Baseline & Static & Learned & Baseline & Static & Learned \\
+\midrule
+1 ground-truth equation & 408 & 1.000 & 1.000 & 1.000 & 0.934 & 0.928 & 0.930 \\
+2 ground-truth equations & 1,888 & 0.992 & 0.999 & 0.999 & 0.730 & 0.886 & 0.893 \\
+3 ground-truth equations & 280 & 0.910 & 0.995 & 0.994 & 0.647 & 0.856 & 0.870 \\
+4 ground-truth equations & 244 & 0.895 & 0.991 & 0.991 & 0.624 & 0.833 & 0.826 \\
+5 ground-truth equations & 239 & 0.885 & 0.982 & 0.982 & 0.637 & 0.853 & 0.874 \\
+6 ground-truth equations & 249 & 0.811 & 0.973 & 0.962 & 0.623 & 0.827 & 0.860 \\
+7 ground-truth equations & 227 & 0.729 & 0.943 & 0.945 & 0.542 & 0.770 & 0.795 \\
+8 ground-truth equations & 238 & 0.739 & 0.934 & 0.947 & 0.566 & 0.806 & 0.828 \\
+9 ground-truth equations & 236 & 0.720 & 0.933 & 0.936 & 0.560 & 0.798 & 0.830 \\
+10 ground-truth equations & 224 & 0.663 & 0.900 & 0.917 & 0.493 & 0.750 & 0.792 \\
+\midrule
+5 or fewer input variables & 467 & 0.989 & 1.000 & 1.000 & 0.860 & 0.892 & 0.907 \\
+6--10 input variables & 1,096 & 0.971 & 0.998 & 0.997 & 0.739 & 0.869 & 0.872 \\
+11--15 input variables & 913 & 0.950 & 0.992 & 0.993 & 0.658 & 0.850 & 0.863 \\
+16--20 input variables & 761 & 0.893 & 0.978 & 0.980 & 0.678 & 0.875 & 0.886 \\
+21 or more input variables & 996 & 0.757 & 0.943 & 0.947 & 0.573 & 0.820 & 0.847 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Number of First-stage Candidates}
+\label{app:n1}
+Fig.~\ref{fig:n1} shows, for the first-stage weights $(0.3, 0.7)$, how the fraction of cases with
+every ground-truth equation among the candidates and the candidate coverage grow with $N_1$; every
+ground-truth equation of every case enters the candidates at $N_1 = 1{,}880$.
+Table~\ref{tab:n1} lists the proposed method (static reranking) trained and evaluated with
+different $N_1$. Beyond $N_1 = 500$, Recall@20 and MAP hardly change (in Setting~A, Recall@20 is
+0.980 at 500 and 0.981 at 2,000). Only $N_1 = 2{,}000$, however, admits every ground-truth
+equation of the test cases in every split, and one run of training and evaluation then takes about
+three times as long as at $N_1 = 50$ (162 against 54 seconds in Setting~A).
+% source: experiments/kato1020/n1_coverage_w30-70.json（max_min_n1 1,880）; sweep.json（N1 ごとの値と時間）
+
+\begin{figure}[h]\centering
+\includegraphics[width=\linewidth]{figures/fig_n1_coverage.pdf}
+\caption{Number of first-stage candidates $N_1$ (log scale) and (a) the fraction of cases with
+every ground-truth equation among the candidates and (b) the candidate coverage, the fraction of
+ground-truth equations among the candidates (first-stage weights $(0.3, 0.7)$). Dotted lines mark
+the values of $N_1$ compared in Table~\ref{tab:n1}, and the solid line the $N_1 = 2{,}000$ of this
+thesis. Every ground-truth equation of every case enters the candidates at $N_1 = 1{,}880$.}
+\label{fig:n1}
+\end{figure}
+
+\begin{table}[h]\centering
+\caption{The proposed method (static reranking) with different numbers of first-stage candidates
+$N_1$ (mean $\pm$ SD over 10 splits). Coverage is that of the test cases. Time is the wall-clock
+time of one run of training and evaluation, with six runs in parallel.}
+\label{tab:n1}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrccccr@{}}
+\toprule
+ & $N_1$ & Coverage & Recall@20 & MAP & R-Precision & Time (s) \\
+\midrule
+Setting A & 50 & 0.9645 & $0.959 \pm 0.013$ & $0.845 \pm 0.052$ & $0.775 \pm 0.065$ & 54 \\
+ & 200 & 0.9918 & $0.978 \pm 0.011$ & $0.857 \pm 0.055$ & $0.780 \pm 0.073$ & 60 \\
+ & 500 & 0.9982 & $0.980 \pm 0.010$ & $0.859 \pm 0.054$ & $0.780 \pm 0.069$ & 70 \\
+ & 1,000 & 0.9998 & $0.981 \pm 0.010$ & $0.858 \pm 0.055$ & $0.776 \pm 0.072$ & 125 \\
+ & 2,000 & 1.0000 & $0.981 \pm 0.010$ & $0.860 \pm 0.053$ & $0.779 \pm 0.073$ & 162 \\
+\midrule
+Setting B & 50 & 0.9335 & $0.924 \pm 0.020$ & $0.798 \pm 0.041$ & $0.745 \pm 0.042$ & 35 \\
+ & 200 & 0.9834 & $0.959 \pm 0.015$ & $0.824 \pm 0.041$ & $0.754 \pm 0.042$ & 38 \\
+ & 500 & 0.9960 & $0.965 \pm 0.015$ & $0.829 \pm 0.043$ & $0.755 \pm 0.044$ & 43 \\
+ & 1,000 & 0.9994 & $0.967 \pm 0.015$ & $0.832 \pm 0.041$ & $0.756 \pm 0.042$ & 71 \\
+ & 2,000 & 1.0000 & $0.966 \pm 0.016$ & $0.832 \pm 0.041$ & $0.755 \pm 0.042$ & 87 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\clearpage
+\section{Literature Collection}
+\label{app:papers}
+Table~\ref{tab:search} gives the search term of each field and the numbers of PDFs obtained, and
+Table~\ref{tab:papers} lists the 329 documents among the sources of the database (types follow the
+OpenAlex classification as of 20 October 2026).
+
+\input{appendix_search_terms}
+\input{appendix_papers}
 
 \section{Example of a Synthesized Case}
+\label{app:example}
+The synthesized case \texttt{dae\_X3\_016} ($X = 3$) draws its three ground-truth equations from
+one source, a chapter of Seborg et al.'s textbook, and reads as follows; the description is the one
+that Claude Sonnet 4.5 wrote.
+% source: training_cases.json dae_X3_016、unified_equations.json（式・変数の定義・分野ラベル）。改変せずに転記した
 \begin{itemize}
-  \item One synthesized case ($X=3$, CSTR) with its description, I/O variables, and ground-truth equations.
-  % Phase 2: dae_cases.json から実例を1件転記する（改変しない）。
+  \item Description: ``This modeling scenario involves a stirred-tank system, likely a fed-batch
+    bioreactor or heated tank with variable holdup, where volume dynamics are governed by inlet and
+    outlet flow rates. Given the feed flow rate (F), temperature profile (T(t)), and inlet/outlet
+    mass flow rates (w\_i, w), the model computes the reactor volume (V), fluid density ($\rho$),
+    and time evolution (t). The coupled equations describe how volume changes over time due to
+    both volumetric feed addition and mass balance considerations, accounting for density effects
+    in the material accumulation within the tank.''
+  \item Input variables: $F$, $T(t)$, $w$, $w_i$. Output variables: $V$, $\rho$, $t$.
+  \item Ground-truth equations, in the order the program added them, with their domain labels:
+    $\mathrm{d}V/\mathrm{d}t = F$ (Fed-Batch Bioreactor);
+    $T(t) = 350 + 20 (1 - e^{-t/12})$ (Electrically Heated Stirred Tank);
+    $\mathrm{d}V/\mathrm{d}t = (w_i - w)/\rho$ (Stirred-Tank Heating Process: Variable Holdup).
 \end{itemize}
+The program took the differentiated variable $V$ of the first equation as an output and then chose
+$t$ from the second equation and $\rho$ from the third. Time $t$ thus becomes an output that the
+temperature profile determines: the program fixes the inputs and outputs by counting variables,
+not by the physical roles of the variables.
 
 \section{LLM Prompts}
-\begin{itemize}
-  \item Prompts used for generating the descriptions of the synthesized cases and for the LLM direct-generation baseline, with pinned model identifiers.
-  % Phase 2: generate_dae_cases.py / evaluate_llm_dae.py から実プロンプトを転記する（改変しない）。
-\end{itemize}
+\label{app:prompts}
+This section gives the prompts with which language models built the data and the prompt prepared
+for the comparison with LLMs. Braces mark the parts filled in for each call. No fixed prompt
+produced the 33 cross-source combinations, which the coding assistant Claude wrote directly into a
+program, and no language model took part in the descriptions of the augmented cases or of the
+program-built cross-source cases.
+
+\subsection*{Equation extraction (Gemini)}
+The prompt went with the PDF of a document, and \texttt{\{source\_id\}} received the file name.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+Extract all numbered equations and equations found in the appendices from this textbook in LaTeX format. For each equation, identify the "variable definitions" and the "physical meaning (context)" from the surrounding text. Output the result in the JSON format specified below.
+
+Constraints:
+- Extract the content EXACTLY as it appears in the literature. Do not make unauthorized corrections or modifications.
+- Preserve every variable symbol and subscript exactly as printed: e.g. if the source writes c_w (specific heat of water), do NOT change it to c_p; if it writes C_p or Cp, do not change to c_w. Never "normalize" or "standardize" notation.
+
+Output a single JSON array. Each element must have these fields:
+- source_id: string (e.g. PDF filename)
+- eq_id: string (e.g. "eq_1")
+- equation: string (LaTeX form)
+- variables: object with variable symbols as keys and their definitions (strings) as values
+- context_text: string (surrounding text explaining physical meaning)
+- domain: string (process or domain name, e.g. "CSTR Kinetics")
+
+
+Use source_id = "{source_id}" for all equations from this document.
+\end{Verbatim}
+
+\subsection*{Reference equation sets (Gemini 2.5 Pro)}
+The first set, 20 fundamental equations of chemical engineering, came from the following prompt.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+You are an expert in chemical engineering and process modeling.
+Generate exactly 20 fundamental equations that are essential for process modeling, in LaTeX format.
+Include equations from the following areas:
+- CSTR (continuous stirred-tank reactor): mass balance, energy balance, design equation
+- Biodiesel production: transesterification kinetics, yield relations
+- Mass balance and heat balance (general)
+- Reaction kinetics: rate laws, Arrhenius equation, activation energy
+- Dimensionless numbers: Reynolds, Nusselt, Prandtl, Damköhler, Peclet, etc.
+- Heat transfer: convection, overall heat transfer coefficient
+- Fluid mechanics: pressure drop, flow relations
+
+For each equation provide:
+- source_id: use exactly "handbook_chemeng"
+- eq_id: "eq_1" through "eq_20"
+- equation: LaTeX form of the equation
+- variables: object with each variable symbol as key and its definition (string) as value
+- context_text: brief physical meaning or context (one or two sentences)
+- domain: short domain name (e.g. "CSTR", "Reaction Kinetics", "Heat Transfer")
+
+Output a single JSON array of exactly 20 equation objects. Use the exact field names above.
+Do not include any markdown or code fence, only the JSON array.
+\end{Verbatim}
+The other 31 sets came from the following prompt, field by field; \texttt{\{label\}} received the
+name of the field, \texttt{\{n\}} the number of equations, \texttt{\{topics\}} the topics fixed for
+the field, and \texttt{\{source\_id\}} the name of the set.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+You are an expert in {label} and mathematical modeling.
+Generate exactly {n} fundamental equations used in {label}, in LaTeX format.
+
+Cover these topics:
+{topics}
+
+For each equation provide:
+- source_id: use exactly "{source_id}"
+- eq_id: "eq_1" through "eq_{n}" (sequential)
+- equation: LaTeX form of the equation (use standard notation)
+- variables: object with each variable symbol as key and its definition (with units where appropriate) as value
+- context_text: brief physical meaning or context (1-3 sentences, include when and where this equation is used)
+- domain: "{label}" or a more specific sub-domain (e.g., "{label}: Pipe Flow")
+
+IMPORTANT:
+- Each equation MUST be distinct (no duplicates).
+- Include both the differential form and algebraic form where applicable.
+- Use standard notation conventions for the field.
+- Variables dict must include ALL symbols that appear in the equation.
+
+Output a single JSON array of exactly {n} equation objects. No markdown fences.
+\end{Verbatim}
+
+\subsection*{Single-source cases (Gemini 2.5 Pro)}
+\texttt{\{catalog\_text\}} received the catalog of the batch in JSON (for each equation, its
+identifier, source name, number within the source, domain label, and variable symbols),
+\texttt{\{domain\_list\}} the first 20 domain labels of the batch, and \texttt{\{n\_cases\}} the
+number of cases requested (13).
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+You are helping to create training data for a graph neural network that selects
+relevant equations for physical process modeling.
+
+You are given a catalog of equations. Each equation has:
+- model_id: a unique ID in the form "<source_id>__<eq_id>"
+- domain: a short domain label
+- variable_symbols: list of variable symbols in the equation
+
+CATALOG ({len(batch_catalog)} equations, domains: {domain_list}):
+{catalog_text}
+
+TASK:
+Using ONLY the models listed above, create approximately {n_cases}
+realistic and physically meaningful core training cases.
+
+For each core case:
+- Pick one or more model_ids that together represent a coherent physical model.
+- Define a context string describing the physical scenario in natural language.
+- Choose input_variables and output_variables from variable_symbols of selected models.
+- correct_model_ids: list of model_ids forming a correct mathematical model.
+
+CONDITIONS FOR correct_model_ids:
+(1) Given input_variables values and the equations, it MUST be possible to solve for all output_variables.
+(2) The equation set MUST be sufficient and minimal (no redundant equations).
+
+REQUIREMENTS:
+- All correct_model_ids MUST exactly match entries from the catalog.
+- input/output variables MUST be subsets of variable_symbols from selected models.
+- Make cases diverse across the available domains.
+- Generate at least {n_cases} cases.
+
+OUTPUT: JSON object with "cases" array, each having:
+case_id, context, input_variables, output_variables, correct_model_ids
+\end{Verbatim}
+
+\subsection*{Descriptions of the synthesized cases (Claude Sonnet 4.5)}
+\texttt{\{eqs\_str\}} received one line per ground-truth equation with its source name, its number
+within the source, its domain label, and the first 200 characters of its expression; the prompt
+listed the first 10 input variables in alphabetical order and at most 10 lines of definitions of
+the output variables and of some input variables.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+You are a chemical engineering expert. Given a set of equations from
+literature, and specified input/output variables, write a concise physical
+scenario description (2-3 sentences) in English describing the modeling task.
+
+EQUATIONS:
+{eqs_str}
+
+INPUT VARIABLES (known): {sorted(inputs)[:10]}
+OUTPUT VARIABLES (to be solved): {sorted(outputs)}
+
+VARIABLE DEFINITIONS (excerpt):
+{var_defs_str}
+
+Write a 2-3 sentence description of the physical modeling scenario. Focus on:
+- What system is being modeled (reactor, heat exchanger, etc.)
+- What is computed (the outputs) given the inputs
+- The physical meaning of the coupled equations
+
+Output only the description, no preamble or formatting.
+\end{Verbatim}
+
+\subsection*{Comparison with LLMs (prepared for the four models)}
+The system instruction, the database, and the test case go to the model in this order. The
+database part is the same for every call, so it uses prompt caching. The model returns the
+equation identifiers as a JSON list.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+[system]
+You are an expert in physical modeling. You select equations from an equation database for building a physical model.
+
+# Task
+An engineer wants to build a physical model: a set of equations with which the output variables can be computed once the input variables are given. The engineer describes the model and lists its input variables and output variables. Choose, from the equation database, the equations that the engineer should use.
+
+The set of equations that forms the model satisfies these conditions:
+1. Every input variable and every output variable appears in at least one equation of the set.
+2. The number of equations equals the number of variables of the set that are not input variables.
+3. Every variable of the set that is neither an input nor an output variable appears in at least two equations of the set.
+
+# Equation database
+<equation_database> lists equations extracted from the literature, in no particular order. Each line has three fields separated by tabs: the equation ID, the domain label of the equation, and the equation in LaTeX.
+
+# Answer
+For the task in <task>, list up to 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. If they are fewer than 20, continue with the other equations most likely to be needed for this model, until the list has 20 IDs. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
+
+[user, block 1: the database (cache_control: ephemeral)]
+<equation_database count="11146">
+1	<domain label>	<equation in LaTeX, with runs of white space collapsed>
+2	...
+...
+</equation_database>
+
+[user, block 2: the test case]
+<task>
+Description: <description>
+Input variables: <symbol> ; <symbol> ; ...
+Output variables: <symbol> ; ...
+</task>
+
+List the IDs of the database equations for this task.
+\end{Verbatim}

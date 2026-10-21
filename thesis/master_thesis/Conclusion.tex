@@ -1,73 +1,64 @@
 % ============================================================
 % Chapter 7: Conclusion — 本文（Phase 2, 2026-09-07）
 % 骨子版（Phase 1, P1-P2）は git 履歴を参照。
-% 構成: 何をしたか → 何が分かったか（貢献 3 点に対応）→ 限界と今後の課題 3 方向。
-% 数値は第 6 章と同じ一次データ（% source: を参照）。第 1 段の再設計は A1 で実施済みのため
-% 将来課題から外し、第 2 段落の介入として記した（ギャップ分析 W3）。
+% 構成: 何をしたか → 何が分かったか（貢献 3 点に対応）→ 限界と今後の課題。
 % 設計書: docs/superpowers/specs/2026-09-07-w3-conclusion-abstract-design.md
-% 2026-10-12 改訂（8/31 報告への加藤先生の注釈の反映）: 結果を最良の重みの baseline との差で書き直し、
-%   「閉じた系」「閉包率がオラクルより高い」を撤回（停止条件の充足率が高いのは規則の定義による）。
-%   LLM 評価と等価な式の扱いを今後の課題に加えた（日本語版報告 §11 と同じ）。
+% 2026-10-21 改訂（日本語版 8/31 報告の 2 回目の改訂 4781cdd の §10 と、再実験 c7c4feb の結果にそろえた）:
+%   自由度ゼロ停止・二つの介入（逐次選択、第 1 段の再設計）による因果の主張・LLM 直接生成の数値を削除し、
+%   N_1 = 2,000・Recall@20・検証用で選んだ定数の結果で書き直した。今後の課題に LLM との比較（準備済み・未実行）、
+%   データベースの重複の除去、記号の意味の食い違いの見直しを加えた（報告 §10 と同じ）。
 % ============================================================
 
 This thesis formulated one step of automated physical model building as a retrieval problem and
 addressed it with a method that evaluates candidate equations as a set. Given a description of the
 desired model and its input and output variables, the method presents, from a database of 11,146
-equations drawn from 361 sources, the equations likely to serve in the model, and the engineer
-assembles and checks the model from them. Because an equation that contains a variable other than
-the inputs and outputs is useful only together with an equation that determines that variable, the
-method scores each candidate not only by its relevance to the query but by its relation to the
-equations already selected: a first stage narrows the database by text similarity and variable
-overlap, and a second stage reranks the candidates with a multilayer perceptron that reads three
-set-aware features --- complementarity, coherence, and domain agreement --- beside seven
-query--equation features. A learned greedy variant selects one equation at a time, and a
-self-terminating criterion, DoF-stop, decides how many equations to present: it halts once the
-selected equations cover every output variable with no more unknowns than equations.
+equations drawn from 361 sources, the 20 equations most likely to serve in the model, and the
+engineer assembles and checks the model from them. Because an equation that contains a variable
+other than the inputs and outputs is useful only together with an equation that determines that
+variable, the method scores each candidate not only by its relevance to the query but also by its
+relation to other equations: a first stage narrows the database to the candidates by text
+similarity and variable overlap, and a second stage reranks the candidates with a multilayer
+perceptron that reads three set-aware features --- complementarity, coherence, and domain agreement
+--- beside seven query--equation features. A greedy variant selects one equation at a time and
+learns, with teacher forcing, which equation to select next.
 
 The thesis makes three contributions. First, it provides a benchmark on which a failure can be
-attributed to the method: all 1,823 evaluation ground truths meet the first three requirements of
-Kato and Kano, 1,000 of the 2,838 cases are synthesized by a rule that grows a ground-truth set
-from an ordinary differential equation and gives each equation an output of its own, and a
-stratified source-disjoint split with 10 seeds measures generalization to unseen sources. Second,
-the set-aware two-stage method raises Recall@K over classical retrieval at its best weights from
-0.607 to 0.743 in the mixed setting and from 0.559 to 0.689 in the synthesized-only setting, on all
-10 splits, and to 0.780 and 0.740 with a variable-weighted first stage; BM25 and dense retrieval with
-E5 stay at or below 0.602 and 0.555 even at their best mixing weights, and direct generation by a
-large language model reaches 0.23--0.30. Third, the thesis explains the gain rather than only
-reporting it. Ablation and permutation importance agree that the variable overlap between an
-equation and the query --- and, among the set-aware features, the two that read shared variables
---- carries the improvement, whereas topical similarity, informative over the whole database,
-becomes redundant once the first stage has screened the candidates. Two predictions drawn from this
-analysis were tested by intervention and confirmed: learned greedy selection recovered the
-saturation of the static reference set on the cases with the most equations ($+0.056$ at eight or
-more ground-truth equations), and a variable-weighted first stage raised the candidate coverage and,
-with it, the end metric. Without being told the answer size, DoF-stop stopped at the same
-exact-match rate as selection that is told it, although the set at which it stops need not be
-solvable.
-% source: experiments/external_baselines_{A,B}.json tfidf__none__w40-60（0.6071 / 0.5585）;
-%         strat_A.json / strat_B.json（0.7429 / 0.6890）; kato_0831_followup_stats.json vs_best_baseline
-%         （wins 10）, stage1_B_w30-70（0.7401）, gt_checks; stage1_weight_stats.json（0.7799）;
-%         external_baselines_stats.json best_per_scorer（A ≤ 0.6020, B ≤ 0.5548）;
-%         llm_set_A/B/full_equiv_results.json（0.2258–0.3003）; feature_x_difficulty_stats.json /
-%         pfi_results.json（変数系 +0.678 / 話題系 +0.006）; greedy_3way_stats.json
-%         tests_hard_X8plus（+0.056）; dof_stop_stats.json set_exact_dof = set_exact_oracleK
+attributed to the method: all 1,732 evaluation ground truths meet the first three requirements of
+Kato and Kano and let each unknown be assigned to an equation of its own, 1,000 of them are
+synthesized by a program that grows a ground truth from a differential equation, and stratified
+source-disjoint splits with 10 seeds measure generalization to unseen sources, with validation
+cases choosing the constants. Second, with a first stage that admits every ground-truth equation
+($N_1 = 2{,}000$), the method raises Recall@20 over classical retrieval, whose weights the
+validation cases choose, from 0.906 to 0.981 in the mixed setting and from 0.825 to 0.966 in the
+synthesized-only setting, and MAP from 0.690 to 0.860 and from 0.626 to 0.832; it wins on every
+metric in all 10 splits and also beats the variants of the baseline with BM25 and E5. The lead grows
+with the numbers of ground-truth equations and input variables. Third, the thesis explains the
+gain. Ablation and permutation importance agree that the features reading variable overlap ---
+specificity above all --- decide most of the accuracy, and that the set-aware features mainly raise
+the ground-truth equations within the top 20 (MAP $+0.073$). The topic features still separate the
+ground-truth equations within the candidates, yet add little next to the variable-overlap features.
+Learned greedy selection raises MAP over static reranking by $+0.032$ on the cases with eight or
+more ground-truth equations. Every ground-truth equation that misses the top 20 is missed by the second stage, and
+the present features cannot repair these misses.
+% source: experiments/kato1020/main.json（Recall@20 A 0.906 → 0.981・B 0.825 → 0.966、MAP 0.690 → 0.860・0.626 → 0.832、
+%         wins 10）; mech.json（(iii) MAP +0.0733）; pfi.json; topic_diag_final.json; greedy.json（K>=8 train − static MAP
+%         A +0.0318・B +0.0319）; case_outcomes_final.json（85 本すべて第 2 段）
 
-Four directions follow from the limitations of Section~\ref{sec:limitations}. First, learned
-greedy selection still trains with teacher forcing, which scheduled sampling addresses. The ranking
-errors that remain after the two interventions lie outside every current feature: an identical
-equation from another document, which an evaluation that counts equivalent equations as correct
-would no longer penalize, and an equation that determines the wrong variable, which a feature
-encoding the determined variable addresses. The comparison between equations, which now reads only their variable sets, could also borrow the
-tree-based and embedding representations of formula search (Section~\ref{sec:rw-mathir}). DoF-stop,
-which selects greedily and only counts unknowns against equations, could instead search the
-candidates for combinations that meet all four requirements, as the combination method
-does\cite{CombineEq}, and check that each unknown can be matched to an equation of its own. Second,
-the comparison with language models should cover every case, repeat the evaluation, check the
-equivalence judgments against human judgments, and include a model that reads the source documents.
-Third, the evaluation is database-internal and the variable notation of the queries matches the
-database; validation on real modeling tasks, including requests whose equations are absent from
-the database or written in a different notation, will show how far the results carry. Fourth, the
+Several directions follow from the limitations of Section~\ref{sec:limitations}. First, the
+comparison with large language models prepared in Section~\ref{sec:compared} should be run. Second,
+the data need cleaning: the database should be freed of duplicate sources and of identical equations
+taken from different documents, and the cases should be reviewed for descriptions that do not match
+their input and output variables and for symbols that denote different quantities in different
+equations. Third,
+the ranking errors that remain lie outside every current feature: an equation that determines the
+wrong variable calls for a feature that encodes which variable an equation determines, and the
+comparison between equations, which now reads only their variable sets, could borrow the tree-based
+and embedding representations of formula search (Section~\ref{sec:rw-mathir}). Learned greedy
+selection, which still trains with teacher forcing, could adopt scheduled sampling. Fourth, the
+evaluation is internal to the database and the variable notation of the queries matches the
+database; validation on real modeling tasks, including requests whose equations are absent from the
+database or written in a different notation, will show how far the results carry. Finally, the
 method should be integrated into the AutoPMoB pipeline, downstream of equation extraction and
-variable-equivalence judgment and upstream of a simulator, so that the engineer can assemble the
-presented equations into a model, solve it, and compare it with plant data --- the test that
-automated model building must finally pass.
+variable-equivalence judgment and upstream of the combination method of Kato and
+Kano\cite{CombineEq}, so that the presented equations can be assembled into a model, solved, and
+compared with plant data --- the test that automated model building must finally pass.

@@ -40,6 +40,10 @@
 % 2026-10-12 改訂（第 3 章の問題設定の書き直しに合わせた最小限の修正）: 式の文脈は「出典で式を囲む文章」ではなく
 %   抽出 LLM が式の前後の本文をもとに書いた説明（抽出の指示どおり）。§2.5 の「自由度ゼロ」を「入力を与えると自由度が残らない」に、
 %   "form a system" を "be used together" に改めた（自由度＝変数の数 − 式の数、第 3 章）。
+% 2026-10-21 改訂（日本語版 8/31 報告の 2 回目の改訂 4781cdd・再実験 c7c4feb にそろえた）: §2.1 から停止規則を削除し、
+%   「文脈なしで絞れる」の根拠を N_1 = 50 の被覆率（旧 96.1%/96.7%）から、全 DB を並べる baseline の重み別の Recall@20
+%   （変数だけ 0.896、最良の混合 0.907、文章だけ 0.290。kato1020/baselines.json）と PFI に替えた。§2.4 を、LLM 直接生成を
+%   外部比較にする書き方から、DB を渡す比較の準備（第 5 章）に改め、データ作成の LLM の役割を訂正した（抽出はすべて Gemini）。
 % ============================================================
 \section{Component Technologies for Automated Physical Model Building}
 \label{sec:rw-autopmob}
@@ -70,15 +74,12 @@ This study differs from the combination method in its input and output. The comb
 takes equations and their variables and returns every combination that meets the requirements.
 This study also takes a description of the desired model, reads the context of each equation ---
 a text that the extracting language model wrote from the passage around the equation --- and ranks
-the equations that the
-description asks for above the rest; it scores each candidate against the equations already
-selected and can stop once the selected equations cover every output variable with no more unknowns than
-equations (Chapter~3). Narrowing the database
-to the equations that concern the requested model, however, does not by itself require context. In
-our benchmark, a first stage that reads variable overlap alone keeps 96.1\% of the ground-truth
-equations among its 50 candidates, and adding text similarity raises this only to 96.7\%
-(Section~\ref{sec:stage1redesign}); after narrowing, the features that read variable overlap
-carry the ranking (Section~\ref{sec:mechanism}). The benchmark favors variables, because every
+the equations that the description asks for above the rest, scoring each candidate against other
+equations (Chapter~3). Finding the equations that concern the requested model, however, does not by
+itself require context. In our benchmark, ranking the whole database by variable overlap alone
+reaches a Recall@20 of 0.896 in Setting~A, and mixing in text similarity raises it only to 0.907 at
+the best weights (\ref{app:weights}); the reranker, too, relies far more on the features
+that read variable overlap than on those that read topical closeness (Section~\ref{sec:mechanism}). The benchmark favors variables, because every
 query takes its variables from the symbols of its ground-truth equations. Context is needed
 where variables cannot decide --- when several combinations meet the requirements and only the
 description tells which one the user wants, or when a user writes variables in a notation that
@@ -154,18 +155,19 @@ Generation, however, carries no provenance. LLMs are well known to hallucinate -
 fluent output that no source supports\cite{Hallucination} --- and a user cannot trace a generated
 equation to a source to check whether it is correct. The check matters for physical models: the
 equations are solved as one system, so a single wrong equation can corrupt every variable connected
-to it. This study therefore treats direct generation as an external baseline (Chapter~5) and
-retrieves equations instead: a user can check each equation drawn from a document --- 94\% of the
-database --- against its source, and inference runs a small multilayer perceptron without calling
-an LLM. LLMs still serve in data construction (Chapter~4): one extracted the equations from
-documents, generated the remaining 6\% as reference sets, which therefore have no source document,
-and picked the answer sets of the 92 single-source cases; others wrote 33 of the cross-source
-combinations and the natural-language descriptions of the synthesized cases, whose answer sets
-follow from a rule.
+to it. This study therefore retrieves equations instead: a user can check each equation drawn
+from a document --- 94\% of the database --- against its source, and inference runs a small
+multilayer perceptron without calling an LLM. An LLM can also select equations from a database
+instead of writing them, and Chapter~5 prepares such a comparison, in which LLMs read the whole
+database and answer with equation identifiers. LLMs still serve in data construction (Chapter~4):
+Gemini extracted the equations from the documents; Gemini 2.5 Pro generated the remaining 6\% as
+reference sets, which therefore have no source document, and picked the ground truths of the 92
+single-source cases; and Claude wrote 33 of the cross-source combinations and the natural-language
+descriptions of the synthesized cases, whose ground truths a program formed.
 % source: unified_equations.json（文書由来 10,476/11,146 = 94.0\%、handbook_* 670 = 6.0\%）;
-%         generate_training_cases.py（single-source の正解集合）; generate_multisource_cases.py（33 組）;
-%         generate_dae_cases.py（合成ケースの説明文のみ Claude）。2026-09-28 訂正（旧:「全式が監査可能な文献に
-%         ある」「LLM の役割は抽出と合成ケースの説明文のみ」）
+%         generate_training_cases.py（single-source の正解集合、gemini-2.5-pro）; generate_multisource_cases.py（33 組、
+%         コーディング支援の Claude）; generate_dae_cases.py（合成ケースの説明文のみ claude-sonnet-4-5）。2026-09-28 訂正
+%         （旧:「全式が監査可能な文献にある」「LLM の役割は抽出と合成ケースの説明文のみ」）。2026-10-21: 抽出はすべて Gemini
 
 \section{Mathematical Information Retrieval}
 \label{sec:rw-mathir}
@@ -191,5 +193,5 @@ community-question-answering archive\cite{ARQMath}. These tasks retrieve single 
 similarity to the query. Our method presents equations meant to be used together --- to contain
 the requested outputs and to leave no degree of freedom once the inputs are given --- so the value
 of one equation depends on the equations presented with it. We found no formula-search benchmark that imposes this
-joint condition. Chapter~6 shows a consequence of the joint condition: after the first stage narrows the candidates, topical similarity becomes redundant, and
-the improvement comes from features that read the variable structure of the selected set.
+joint condition. Chapter~6 shows a consequence of the joint condition: the improvement comes from
+features that read the variables of the equations, and topical similarity adds little to them.
