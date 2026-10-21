@@ -21392,7 +21392,7 @@
     "case_id": "ms_pfr_arrhenius_001",
     "original_core_id": "ms_pfr_arrhenius_001",
     "variant_type": "multisource_original",
-    "context": "Size a PFR for a first-order Arrhenius reaction: combine the temperature-dependent rate constant from one source with the PFR design equation from another.",
+    "context": "For a first-order Arrhenius reaction in a PFR, determine the temperature-dependent reaction rate coefficient from one source and the local rate of reaction of A from the PFR design equation of another source.",
     "input_variables": [
       "k_0",
       "E",
@@ -21460,7 +21460,7 @@
     "case_id": "ms_pbr_chemeng_001",
     "original_core_id": "ms_pbr_chemeng_001",
     "variant_type": "multisource_original",
-    "context": "For a packed bed reactor, calculate the catalyst weight required (from the catalyst-based design equation) and the steady-state outlet concentration (from CSTR analogy).",
+    "context": "For a packed bed reactor, determine the local rate of reaction of A (from the catalyst-based design equation) and the space time, defined as reactor volume divided by volumetric flow rate (from CSTR analogy).",
     "input_variables": [
       "X_A",
       "V",
@@ -21987,7 +21987,7 @@
     "case_id": "ms_cstr_heat_001_rv2",
     "original_core_id": "ms_cstr_heat_001",
     "variant_type": "multisource_random_io",
-    "context": "Steady-state design of a CSTR that requires the residence time from the mass balance and the rate of heat removal from the cooling jacket, given the reaction kinetics and heat transfer characteristics.",
+    "context": "Steady-state design of a CSTR that requires the inlet concentration of reactant A from the mass balance and the rate of heat removal from the cooling jacket, given the space time, the reaction kinetics, and heat transfer characteristics.",
     "input_variables": [
       "A",
       "C_A",
@@ -22031,7 +22031,7 @@
     "case_id": "ms_cstr_heat_001_rv4",
     "original_core_id": "ms_cstr_heat_001",
     "variant_type": "multisource_random_io",
-    "context": "Steady-state design of a CSTR that requires the residence time from the mass balance and the rate of heat removal from the cooling jacket, given the reaction kinetics and heat transfer characteristics.",
+    "context": "Steady-state design of a CSTR that requires the overall heat transfer coefficient and the rate of reaction for the reactant, given the space time from the mass balance and the overall heat transfer rate from the cooling jacket.",
     "input_variables": [
       "A",
       "C_A",
@@ -22053,7 +22053,7 @@
     "case_id": "ms_cstr_heat_001_rv5",
     "original_core_id": "ms_cstr_heat_001",
     "variant_type": "multisource_random_io",
-    "context": "Steady-state design of a CSTR that requires the residence time from the mass balance and the rate of heat removal from the cooling jacket, given the reaction kinetics and heat transfer characteristics.",
+    "context": "Steady-state design of a CSTR that requires the rate of heat removal from the cooling jacket and the rate of reaction for reactant A, given the space time from the mass balance and the heat transfer characteristics.",
     "input_variables": [
       "A",
       "C_A",
@@ -22075,7 +22075,7 @@
     "case_id": "ms_cstr_heat_001_rv6",
     "original_core_id": "ms_cstr_heat_001",
     "variant_type": "multisource_random_io",
-    "context": "Steady-state design of a CSTR that requires the residence time from the mass balance and the rate of heat removal from the cooling jacket, given the reaction kinetics and heat transfer characteristics.",
+    "context": "Steady-state design of a CSTR that requires the heat transfer area of the cooling jacket and the rate of reaction for reactant A from the mass balance, given the reaction kinetics and heat transfer characteristics, the space time, and the overall heat transfer rate.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -22120,7 +22120,7 @@
     "case_id": "ms_cstr_heat_002_rv2",
     "original_core_id": "ms_cstr_heat_002",
     "variant_type": "multisource_random_io",
-    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "context": "Non-isothermal CSTR design: compute the residence time and the surface temperature, given the kinetics, the convective heat transfer characteristics, and the rate of convective heat removal at the wall.",
     "input_variables": [
       "A_s",
       "C_A",
@@ -22143,7 +22143,7 @@
     "case_id": "ms_cstr_heat_002_rv3",
     "original_core_id": "ms_cstr_heat_002",
     "variant_type": "multisource_random_io",
-    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "context": "Non-isothermal CSTR design: compute the surface area for convection and the rate of reaction for reactant A, given the kinetics and convective heat transfer characteristics, the space time, and the rate of convective heat transfer.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -22189,7 +22189,7 @@
     "case_id": "ms_cstr_heat_002_rv5",
     "original_core_id": "ms_cstr_heat_002",
     "variant_type": "multisource_random_io",
-    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "context": "Non-isothermal CSTR design: compute the outlet concentration of reactant A and the convective heat removal at the wall, given the space time, the kinetics, and convective heat transfer characteristics.",
     "input_variables": [
       "A_s",
       "C_{A0}",
@@ -22212,7 +22212,7 @@
     "case_id": "ms_cstr_heat_002_rv6",
     "original_core_id": "ms_cstr_heat_002",
     "variant_type": "multisource_random_io",
-    "context": "Non-isothermal CSTR design: compute the residence time and the convective heat removal at the wall, given the kinetics and convective heat transfer characteristics.",
+    "context": "Non-isothermal CSTR design: compute the convection heat transfer coefficient and the rate of reaction for reactant A, given the residence time, the convective heat removal at the wall, and the kinetics and convective heat transfer characteristics.",
     "input_variables": [
       "A_s",
       "C_A",
@@ -22283,7 +22283,7 @@
     "case_id": "ms_cstr_heat_radiation_001_rv3",
     "original_core_id": "ms_cstr_heat_radiation_001",
     "variant_type": "multisource_random_io",
-    "context": "For a high-temperature reactor where radiation heat loss is significant, calculate the residence time and the radiative heat flux from the reactor wall, given the surface emissivity and surface temperatures.",
+    "context": "For a high-temperature reactor where radiation heat loss is significant, calculate the surface area and the outlet concentration of reactant A, given the space time, the net rate of radiation heat transfer, the surface emissivity, and surface temperatures.",
     "input_variables": [
       "C_{A0}",
       "T_s",
@@ -22379,7 +22379,7 @@
     "case_id": "ms_pfr_kin_001_rv1",
     "original_core_id": "ms_pfr_kin_001",
     "variant_type": "multisource_random_io",
-    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "context": "Analyzing a PFR and an equivalent CSTR in series: determine the molar feed rate of reactant A and the rate of reaction for reactant A, given the total reactor volume, the CSTR space time, the feed flow and kinetics.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -22401,7 +22401,7 @@
     "case_id": "ms_pfr_kin_001_rv2",
     "original_core_id": "ms_pfr_kin_001",
     "variant_type": "multisource_random_io",
-    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "context": "Analyzing a PFR and an equivalent CSTR in series: given the feed flow, kinetics, and the total reactor volume, determine the final conversion of reactant A at the outlet and the CSTR space time.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -22423,7 +22423,7 @@
     "case_id": "ms_pfr_kin_001_rv3",
     "original_core_id": "ms_pfr_kin_001",
     "variant_type": "multisource_random_io",
-    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the outlet concentration of reactant A, given the feed flow, the kinetics, and the CSTR space time.",
     "input_variables": [
       "-r_A",
       "C_{A0}",
@@ -22445,7 +22445,7 @@
     "case_id": "ms_pfr_kin_001_rv4",
     "original_core_id": "ms_pfr_kin_001",
     "variant_type": "multisource_random_io",
-    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "context": "Analyzing a PFR and an equivalent CSTR in series: determine the rate of reaction of A as a function of conversion and the CSTR residence time, given the feed flow, the total reactor volume, and kinetics.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -22489,7 +22489,7 @@
     "case_id": "ms_pfr_kin_001_rv6",
     "original_core_id": "ms_pfr_kin_001",
     "variant_type": "multisource_random_io",
-    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the CSTR residence time, given the feed flow and kinetics.",
+    "context": "Sizing a PFR and an equivalent CSTR in series: determine the PFR volume from the integral design equation and the rate of reaction for reactant A, given the feed flow, the CSTR space time, and kinetics.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -22537,7 +22537,7 @@
     "case_id": "ms_reactor_pid_001_rv2",
     "original_core_id": "ms_reactor_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "Compute both the steady-state residence time of a CSTR and the PID controller output for maintaining the desired conversion, given the kinetics and controller parameters.",
+    "context": "Compute both the inlet concentration of reactant A for a CSTR and the proportional gain of the PID controller for maintaining the desired conversion, given the kinetics, the controller output signal, and the steady-state residence time.",
     "input_variables": [
       "C_A",
       "K_d",
@@ -22615,7 +22615,7 @@
     "case_id": "ms_reactor_pid_001_rv5",
     "original_core_id": "ms_reactor_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "Compute both the steady-state residence time of a CSTR and the PID controller output for maintaining the desired conversion, given the kinetics and controller parameters.",
+    "context": "Compute both the rate of reaction for reactant A in a CSTR and the PID controller output for maintaining the desired conversion, given the steady-state space time (reactor volume divided by volumetric flow rate), the kinetics, and controller parameters.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -22641,7 +22641,7 @@
     "case_id": "ms_reactor_pid_001_rv6",
     "original_core_id": "ms_reactor_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "Compute both the steady-state residence time of a CSTR and the PID controller output for maintaining the desired conversion, given the kinetics and controller parameters.",
+    "context": "Compute both the outlet concentration of reactant A in a CSTR and the error signal of the PID controller for maintaining the desired conversion, given the kinetics and controller parameters, the steady-state residence time of the reactor, and the controller output signal.",
     "input_variables": [
       "C_{A0}",
       "K_d",
@@ -22667,7 +22667,7 @@
     "case_id": "ms_reactor_sensor_001_rv1",
     "original_core_id": "ms_reactor_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a continuous reactor with a measurement sensor, determine the steady-state residence time from the reactor kinetics and the first-order plus dead time (FOPDT) transfer function of the sensor.",
+    "context": "For a continuous reactor with a measurement sensor, given the steady-state residence time from the reactor kinetics and the process transfer function from the first-order plus dead time (FOPDT) transfer function of the sensor, determine the inlet concentration of reactant A and the process gain.",
     "input_variables": [
       "C_A",
       "G_p(s)",
@@ -22690,7 +22690,7 @@
     "case_id": "ms_reactor_sensor_001_rv2",
     "original_core_id": "ms_reactor_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a continuous reactor with a measurement sensor, determine the steady-state residence time from the reactor kinetics and the first-order plus dead time (FOPDT) transfer function of the sensor.",
+    "context": "For a continuous reactor with a measurement sensor, given the steady-state residence time from the reactor kinetics and the process transfer function of the first-order plus dead time (FOPDT) sensor, determine the inlet concentration of reactant A and the Laplace variable.",
     "input_variables": [
       "C_A",
       "G_p(s)",
@@ -22713,7 +22713,7 @@
     "case_id": "ms_reactor_sensor_001_rv3",
     "original_core_id": "ms_reactor_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a continuous reactor with a measurement sensor, determine the steady-state residence time from the reactor kinetics and the first-order plus dead time (FOPDT) transfer function of the sensor.",
+    "context": "For a continuous reactor with a measurement sensor, determine the steady-state residence time from the reactor kinetics and the process gain, given the process transfer function and the first-order plus dead time (FOPDT) transfer function of the sensor.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -22782,7 +22782,7 @@
     "case_id": "ms_reactor_sensor_001_rv6",
     "original_core_id": "ms_reactor_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a continuous reactor with a measurement sensor, determine the steady-state residence time from the reactor kinetics and the first-order plus dead time (FOPDT) transfer function of the sensor.",
+    "context": "For a continuous reactor with a measurement sensor, given the steady-state residence time from the reactor kinetics and the process transfer function, determine the inlet concentration of reactant A and the process time constant of the first-order plus dead time (FOPDT) transfer function of the sensor.",
     "input_variables": [
       "C_A",
       "G_p(s)",
@@ -22805,7 +22805,7 @@
     "case_id": "ms_bioreactor_001_rv1",
     "original_core_id": "ms_bioreactor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a chemostat (continuous bioreactor) at steady state, determine the specific growth rate from Monod kinetics and the substrate consumption residence time analog, given the limiting substrate concentration.",
+    "context": "For a chemostat (continuous bioreactor) at steady state, determine the outlet concentration of reactant A and the limiting substrate concentration from Monod kinetics and the substrate consumption residence time analog, given the specific growth rate and the space time (reactor volume divided by volumetric flow rate).",
     "input_variables": [
       "C_{A0}",
       "K_S",
@@ -22849,7 +22849,7 @@
     "case_id": "ms_bioreactor_001_rv3",
     "original_core_id": "ms_bioreactor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a chemostat (continuous bioreactor) at steady state, determine the specific growth rate from Monod kinetics and the substrate consumption residence time analog, given the limiting substrate concentration.",
+    "context": "For a chemostat (continuous bioreactor) at steady state, determine the Monod half-saturation constant and the rate of reaction for the reactant, given the limiting substrate concentration, the specific growth rate, and the space time (reactor volume divided by volumetric flow rate).",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -22893,7 +22893,7 @@
     "case_id": "ms_bioreactor_001_rv5",
     "original_core_id": "ms_bioreactor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a chemostat (continuous bioreactor) at steady state, determine the specific growth rate from Monod kinetics and the substrate consumption residence time analog, given the limiting substrate concentration.",
+    "context": "For a chemostat (continuous bioreactor) at steady state, determine the inlet concentration of reactant A and the maximum specific growth rate from Monod kinetics, given the limiting substrate concentration, the specific growth rate, and the space time (reactor volume divided by volumetric flow rate).",
     "input_variables": [
       "C_A",
       "K_S",
@@ -22915,7 +22915,7 @@
     "case_id": "ms_bioreactor_001_rv6",
     "original_core_id": "ms_bioreactor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a chemostat (continuous bioreactor) at steady state, determine the specific growth rate from Monod kinetics and the substrate consumption residence time analog, given the limiting substrate concentration.",
+    "context": "For a chemostat (continuous bioreactor) at steady state, determine the inlet concentration of reactant A and the Monod half-saturation constant, given the limiting substrate concentration, the specific growth rate from Monod kinetics, and the substrate consumption residence time analog (space time).",
     "input_variables": [
       "C_A",
       "S",
@@ -22958,7 +22958,7 @@
     "case_id": "ms_diffusion_reaction_001_rv2",
     "original_core_id": "ms_diffusion_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "In a diffusion-controlled reactor, calculate the molecular diffusion flux at the catalyst surface and the reactor residence time, given the diffusion coefficient, concentration gradient, and reactor kinetics.",
+    "context": "In a diffusion-controlled reactor, calculate the molar concentration of species A and the distance in the direction of diffusion, given the diffusion coefficient, concentration gradient, reactor kinetics, the molecular diffusion flux at the catalyst surface, and the reactor residence time.",
     "input_variables": [
       "C_{A0}",
       "D_{AB}",
@@ -22979,7 +22979,7 @@
     "case_id": "ms_diffusion_reaction_001_rv3",
     "original_core_id": "ms_diffusion_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "In a diffusion-controlled reactor, calculate the molecular diffusion flux at the catalyst surface and the reactor residence time, given the diffusion coefficient, concentration gradient, and reactor kinetics.",
+    "context": "In a diffusion-controlled reactor, calculate the molar concentration of species A at the outlet and the rate of reaction for reactant A, given the diffusion coefficient, concentration gradient, reactor kinetics, the molecular diffusion flux at the catalyst surface, and the reactor residence time.",
     "input_variables": [
       "C_{A0}",
       "D_{AB}",
@@ -23000,7 +23000,7 @@
     "case_id": "ms_diffusion_reaction_001_rv4",
     "original_core_id": "ms_diffusion_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "In a diffusion-controlled reactor, calculate the molecular diffusion flux at the catalyst surface and the reactor residence time, given the diffusion coefficient, concentration gradient, and reactor kinetics.",
+    "context": "In a diffusion-controlled reactor, calculate the binary diffusion coefficient and the reactor residence time, given the molecular diffusion flux at the catalyst surface, the concentration gradient, and reactor kinetics.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -23021,7 +23021,7 @@
     "case_id": "ms_diffusion_reaction_001_rv5",
     "original_core_id": "ms_diffusion_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "In a diffusion-controlled reactor, calculate the molecular diffusion flux at the catalyst surface and the reactor residence time, given the diffusion coefficient, concentration gradient, and reactor kinetics.",
+    "context": "In a diffusion-controlled reactor, calculate the binary diffusion coefficient of A in B and the rate of reaction for reactant A, given the concentration gradient, the molecular diffusion flux at the catalyst surface, and the reactor residence time.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -23126,7 +23126,7 @@
     "case_id": "ms_arrhenius_001_rv4",
     "original_core_id": "ms_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Compute the temperature-dependent reaction rate constant from the Arrhenius expression and the corresponding reaction rate for a first-order reaction, combining definitions from two process control references.",
+    "context": "For a first-order reaction, given the temperature-dependent reaction rate constant from the Arrhenius expression and the corresponding reaction rate, compute the pre-exponential factor and the concentration of the reactant, combining definitions from two process control references.",
     "input_variables": [
       "E",
       "R",
@@ -23147,7 +23147,7 @@
     "case_id": "ms_arrhenius_001_rv5",
     "original_core_id": "ms_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Compute the temperature-dependent reaction rate constant from the Arrhenius expression and the corresponding reaction rate for a first-order reaction, combining definitions from two process control references.",
+    "context": "Given the temperature-dependent reaction rate constant from the Arrhenius expression, compute the pre-exponential factor and the corresponding reaction rate for a first-order reaction, combining definitions from two process control references.",
     "input_variables": [
       "C_A",
       "E",
@@ -23168,7 +23168,7 @@
     "case_id": "ms_arrhenius_001_rv6",
     "original_core_id": "ms_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Compute the temperature-dependent reaction rate constant from the Arrhenius expression and the corresponding reaction rate for a first-order reaction, combining definitions from two process control references.",
+    "context": "For a first-order reaction, with the temperature-dependent reaction rate constant from the Arrhenius expression and the corresponding reaction rate given, compute the concentration of the reactant and the ideal gas constant, combining definitions from two process control references.",
     "input_variables": [
       "E",
       "T",
@@ -23189,7 +23189,7 @@
     "case_id": "ms_pfr_arrhenius_001_rv1",
     "original_core_id": "ms_pfr_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Size a PFR for a first-order Arrhenius reaction: combine the temperature-dependent rate constant from one source with the PFR design equation from another.",
+    "context": "For a first-order Arrhenius reaction in a PFR, combine the temperature-dependent rate expression from one source with the PFR design equation from another. Given the reaction rate coefficient, determine the local rate of reaction of A and the activation energy.",
     "input_variables": [
       "F_{A0}",
       "R",
@@ -23281,7 +23281,7 @@
     "case_id": "ms_pfr_arrhenius_001_rv5",
     "original_core_id": "ms_pfr_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Size a PFR for a first-order Arrhenius reaction: combine the temperature-dependent rate constant from one source with the PFR design equation from another.",
+    "context": "For a PFR with a first-order Arrhenius reaction, combine the temperature-dependent rate constant from one source with the PFR design equation from another, given the reaction rate coefficient and the local rate of reaction of A. Determine the molar feed rate of reactant A and the ideal gas constant.",
     "input_variables": [
       "-r_A",
       "E",
@@ -23327,7 +23327,7 @@
     "case_id": "ms_dual_reaction_001_rv1",
     "original_core_id": "ms_dual_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design.",
+    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design, given the conversion of reactant A at the outlet. Determine the inlet concentration of reactant A and the space time (mean residence time).",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -23349,7 +23349,7 @@
     "case_id": "ms_dual_reaction_001_rv2",
     "original_core_id": "ms_dual_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design.",
+    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion), given the conversion of reactant A at the outlet, to determine the space time and the rate of reaction for reactant A.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -23371,7 +23371,7 @@
     "case_id": "ms_dual_reaction_001_rv3",
     "original_core_id": "ms_dual_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design.",
+    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design, given the conversion of reactant A at the outlet. Determine the reactor volume and the space time (mean residence time).",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -23393,7 +23393,7 @@
     "case_id": "ms_dual_reaction_001_rv4",
     "original_core_id": "ms_dual_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design.",
+    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design, given the space time and the conversion of reactant A at the outlet, and determine the outlet concentration of reactant A and the inlet volumetric flow rate.",
     "input_variables": [
       "-r_A",
       "C_{A0}",
@@ -23415,7 +23415,7 @@
     "case_id": "ms_dual_reaction_001_rv5",
     "original_core_id": "ms_dual_reaction_001",
     "variant_type": "multisource_random_io",
-    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion) to cross-validate the reactor design.",
+    "context": "Use two equivalent expressions for CSTR residence time (one based on concentration difference, another on conversion), given the space time and the conversion of reactant A at the outlet, to determine the outlet concentration of reactant A and the inlet concentration of reactant A.",
     "input_variables": [
       "-r_A",
       "V",
@@ -23505,7 +23505,7 @@
     "case_id": "ms_batch_cstr_001_rv3",
     "original_core_id": "ms_batch_cstr_001",
     "variant_type": "multisource_random_io",
-    "context": "Determine the batch reactor's conversion dynamics and the equivalent CSTR's residence time for the same first-order reaction.",
+    "context": "For a first-order reaction, given the batch reactor's time, determine the reactor volume and the equivalent CSTR's residence time.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -23528,7 +23528,7 @@
     "case_id": "ms_batch_cstr_001_rv4",
     "original_core_id": "ms_batch_cstr_001",
     "variant_type": "multisource_random_io",
-    "context": "Determine the batch reactor's conversion dynamics and the equivalent CSTR's residence time for the same first-order reaction.",
+    "context": "For a first-order reaction, determine the batch reactor's rate of reaction of A at a given time, and the equivalent CSTR's residence time.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -23551,7 +23551,7 @@
     "case_id": "ms_batch_cstr_001_rv5",
     "original_core_id": "ms_batch_cstr_001",
     "variant_type": "multisource_random_io",
-    "context": "Determine the batch reactor's conversion dynamics and the equivalent CSTR's residence time for the same first-order reaction.",
+    "context": "For a first-order reaction, determine the batch reactor's outlet concentration of reactant A and conversion of reactant A, given the time and the equivalent CSTR's space time.",
     "input_variables": [
       "-r_A",
       "C_{A0}",
@@ -23619,7 +23619,7 @@
     "case_id": "ms_pbr_chemeng_001_rv2",
     "original_core_id": "ms_pbr_chemeng_001",
     "variant_type": "multisource_random_io",
-    "context": "For a packed bed reactor, calculate the catalyst weight required (from the catalyst-based design equation) and the steady-state outlet concentration (from CSTR analogy).",
+    "context": "For a packed bed reactor, given the space time (reactor volume divided by volumetric flow rate), determine the local rate of reaction of A and the rate of reaction for reactant A (negative for consumption).",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -23685,7 +23685,7 @@
     "case_id": "ms_pbr_chemeng_001_rv5",
     "original_core_id": "ms_pbr_chemeng_001",
     "variant_type": "multisource_random_io",
-    "context": "For a packed bed reactor, calculate the catalyst weight required (from the catalyst-based design equation) and the steady-state outlet concentration (from CSTR analogy).",
+    "context": "For a packed bed reactor, given the local rate of reaction of A and the space time, calculate the inlet concentration of reactant A and the cumulative reactor volume.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -23707,7 +23707,7 @@
     "case_id": "ms_pbr_chemeng_001_rv6",
     "original_core_id": "ms_pbr_chemeng_001",
     "variant_type": "multisource_random_io",
-    "context": "For a packed bed reactor, calculate the catalyst weight required (from the catalyst-based design equation) and the steady-state outlet concentration (from CSTR analogy).",
+    "context": "For a packed bed reactor with a given local rate of reaction of A and a given space time (reactor volume divided by volumetric flow rate), calculate the steady-state outlet concentration of reactant A (from CSTR analogy) and the conversion of reactant A.",
     "input_variables": [
       "-r_A",
       "C_{A0}",
@@ -23729,7 +23729,7 @@
     "case_id": "ms_reaction_convection_001_rv1",
     "original_core_id": "ms_reaction_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a wall-cooled reactor, compute the convective heat removal from the reactor wall and the reactor residence time, given surface temperatures and concentration profile.",
+    "context": "For a wall-cooled reactor, compute the bulk fluid temperature and the inlet volumetric flow rate, given surface temperatures, concentration profile, the convective heat removal from the reactor wall, and the reactor residence time.",
     "input_variables": [
       "-r_A",
       "A_s",
@@ -23754,7 +23754,7 @@
     "case_id": "ms_reaction_convection_001_rv2",
     "original_core_id": "ms_reaction_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a wall-cooled reactor, compute the convective heat removal from the reactor wall and the reactor residence time, given surface temperatures and concentration profile.",
+    "context": "For a wall-cooled reactor, compute the bulk fluid temperature and the reactor volume, given surface temperatures, concentration profile, the rate of convective heat removal from the reactor wall, and the reactor residence time.",
     "input_variables": [
       "-r_A",
       "A_s",
@@ -23804,7 +23804,7 @@
     "case_id": "ms_reaction_convection_001_rv4",
     "original_core_id": "ms_reaction_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a wall-cooled reactor, compute the convective heat removal from the reactor wall and the reactor residence time, given surface temperatures and concentration profile.",
+    "context": "For a wall-cooled reactor, compute the rate of reaction of A at outlet conditions and the surface temperature, given the convective heat removal from the reactor wall, the reactor residence time, and the concentration profile.",
     "input_variables": [
       "A_s",
       "C_{A0}",
@@ -23879,7 +23879,7 @@
     "case_id": "ms_pfr_convection_001_rv1",
     "original_core_id": "ms_pfr_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a tubular reactor with wall cooling, compute the PFR volume and the convective heat removal, given the conversion profile, kinetics, and heat transfer characteristics.",
+    "context": "For a tubular reactor with wall cooling, compute the rate of reaction of A as a function of conversion and the convective heat removal, given the reactor volume, the conversion profile, kinetics, and heat transfer characteristics.",
     "input_variables": [
       "A_s",
       "F_{A0}",
@@ -23902,7 +23902,7 @@
     "case_id": "ms_pfr_convection_001_rv2",
     "original_core_id": "ms_pfr_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a tubular reactor with wall cooling, compute the PFR volume and the convective heat removal, given the conversion profile, kinetics, and heat transfer characteristics.",
+    "context": "For a tubular reactor with wall cooling, compute the molar feed rate of reactant A and the bulk fluid temperature, given the reactor volume, the rate of convective heat removal, the conversion profile, kinetics, and heat transfer characteristics.",
     "input_variables": [
       "-r_A",
       "A_s",
@@ -24017,7 +24017,7 @@
     "case_id": "ms_bio_diffusion_001_rv1",
     "original_core_id": "ms_bio_diffusion_001",
     "variant_type": "multisource_random_io",
-    "context": "In a bioreactor, calculate the Monod growth rate and the diffusion flux of nutrients, given the substrate concentration profile and bioreactor parameters.",
+    "context": "In a bioreactor, calculate the Monod growth rate and the molar concentration of nutrients, given the molar flux of nutrients in the z-direction and bioreactor parameters.",
     "input_variables": [
       "D_{AB}",
       "J_{Az}",
@@ -24061,7 +24061,7 @@
     "case_id": "ms_bio_diffusion_001_rv3",
     "original_core_id": "ms_bio_diffusion_001",
     "variant_type": "multisource_random_io",
-    "context": "In a bioreactor, calculate the Monod growth rate and the diffusion flux of nutrients, given the substrate concentration profile and bioreactor parameters.",
+    "context": "In a bioreactor, calculate the molar concentration of species A and the Monod half-saturation constant, given the specific growth rate, the molar flux of species A in the z-direction, and bioreactor parameters.",
     "input_variables": [
       "D_{AB}",
       "J_{Az}",
@@ -24083,7 +24083,7 @@
     "case_id": "ms_bio_diffusion_001_rv4",
     "original_core_id": "ms_bio_diffusion_001",
     "variant_type": "multisource_random_io",
-    "context": "In a bioreactor, calculate the Monod growth rate and the diffusion flux of nutrients, given the substrate concentration profile and bioreactor parameters.",
+    "context": "In a bioreactor, calculate the diffusion flux of nutrients and the Monod half-saturation constant, given the substrate concentration profile, the specific growth rate, and bioreactor parameters.",
     "input_variables": [
       "C_A",
       "D_{AB}",
@@ -24127,7 +24127,7 @@
     "case_id": "ms_bio_diffusion_001_rv6",
     "original_core_id": "ms_bio_diffusion_001",
     "variant_type": "multisource_random_io",
-    "context": "In a bioreactor, calculate the Monod growth rate and the diffusion flux of nutrients, given the substrate concentration profile and bioreactor parameters.",
+    "context": "In a bioreactor, calculate the Monod growth rate and the binary diffusion coefficient of nutrients, given the substrate concentration profile, the molar flux of nutrients in the z-direction, and bioreactor parameters.",
     "input_variables": [
       "C_A",
       "J_{Az}",
@@ -24149,7 +24149,7 @@
     "case_id": "ms_pid_arrhenius_001_rv1",
     "original_core_id": "ms_pid_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-controlled reactor, compute the Arrhenius rate constant at the current temperature and the PID controller output for maintaining the setpoint.",
+    "context": "For a temperature-controlled reactor, given the PID controller output for maintaining the setpoint, compute the Arrhenius rate constant at the current temperature and the error signal.",
     "input_variables": [
       "E",
       "K_d",
@@ -24177,7 +24177,7 @@
     "case_id": "ms_pid_arrhenius_001_rv2",
     "original_core_id": "ms_pid_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-controlled reactor, compute the Arrhenius rate constant at the current temperature and the PID controller output for maintaining the setpoint.",
+    "context": "For a temperature-controlled reactor with a given reaction rate coefficient at the current temperature and a given PID controller output for maintaining the setpoint, compute the absolute temperature and the process variable.",
     "input_variables": [
       "E",
       "K_d",
@@ -24233,7 +24233,7 @@
     "case_id": "ms_pid_arrhenius_001_rv4",
     "original_core_id": "ms_pid_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-controlled reactor, compute the Arrhenius rate constant at the current temperature and the PID controller output for maintaining the setpoint.",
+    "context": "For a temperature-controlled reactor with a known PID controller output for maintaining the setpoint, compute the Arrhenius rate constant at the current temperature and the integration variable for time.",
     "input_variables": [
       "E",
       "K_d",
@@ -24261,7 +24261,7 @@
     "case_id": "ms_pid_arrhenius_001_rv5",
     "original_core_id": "ms_pid_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-controlled reactor, compute the Arrhenius rate constant at the current temperature and the PID controller output for maintaining the setpoint.",
+    "context": "For a temperature-controlled reactor with a known Arrhenius rate constant at the current temperature and a known PID controller output for maintaining the setpoint, determine the pre-exponential factor and the proportional gain.",
     "input_variables": [
       "E",
       "K_d",
@@ -24289,7 +24289,7 @@
     "case_id": "ms_pid_arrhenius_001_rv6",
     "original_core_id": "ms_pid_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-controlled reactor, compute the Arrhenius rate constant at the current temperature and the PID controller output for maintaining the setpoint.",
+    "context": "For a temperature-controlled reactor, given the reaction rate coefficient at the current temperature and the PID controller output for maintaining the setpoint, determine the activation energy and the process variable at the current time.",
     "input_variables": [
       "K_d",
       "K_i",
@@ -24421,7 +24421,7 @@
     "case_id": "ms_pfr_arrhenius_rate_001_rv5",
     "original_core_id": "ms_pfr_arrhenius_rate_001",
     "variant_type": "multisource_random_io",
-    "context": "Size a PFR for a first-order Arrhenius reaction by combining: (1) Arrhenius rate constant, (2) first-order rate equation, (3) PFR integral design equation. This requires equations from three different sources.",
+    "context": "Size a PFR for a first-order Arrhenius reaction by combining: (1) Arrhenius rate constant, (2) first-order rate equation, (3) PFR integral design equation. This requires equations from three different sources. Given the reaction rate, determine the reactor volume, the reaction rate constant, and the ideal gas constant.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -24473,7 +24473,7 @@
     "case_id": "ms_batch_arrhenius_001_rv1",
     "original_core_id": "ms_batch_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-dependent batch reaction, compute the Arrhenius rate constant and the batch reactor conversion dynamics.",
+    "context": "For a temperature-dependent batch reaction with a given reaction rate coefficient and given time, compute the ideal gas constant and the batch reactor conversion of reactant A.",
     "input_variables": [
       "-r_A",
       "E",
@@ -24497,7 +24497,7 @@
     "case_id": "ms_batch_arrhenius_001_rv2",
     "original_core_id": "ms_batch_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-dependent batch reaction, compute the Arrhenius rate constant and the batch reactor conversion dynamics.",
+    "context": "For a temperature-dependent batch reaction, given the reaction rate coefficient and the time, compute the activation energy and the reactor volume.",
     "input_variables": [
       "-r_A",
       "N_{A0}",
@@ -24521,7 +24521,7 @@
     "case_id": "ms_batch_arrhenius_001_rv3",
     "original_core_id": "ms_batch_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-dependent batch reaction, compute the Arrhenius rate constant and the batch reactor conversion dynamics.",
+    "context": "For a temperature-dependent batch reaction, given the reaction rate coefficient and the time, compute the rate of reaction of A and the activation energy.",
     "input_variables": [
       "N_{A0}",
       "R",
@@ -24593,7 +24593,7 @@
     "case_id": "ms_batch_arrhenius_001_rv6",
     "original_core_id": "ms_batch_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "For a temperature-dependent batch reaction, compute the Arrhenius rate constant and the batch reactor conversion dynamics.",
+    "context": "For a temperature-dependent batch reaction with given time, compute the Arrhenius rate constant and the initial moles of reactant A.",
     "input_variables": [
       "-r_A",
       "E",
@@ -24686,7 +24686,7 @@
     "case_id": "ms_batch_integral_001_rv4",
     "original_core_id": "ms_batch_integral_001",
     "variant_type": "multisource_random_io",
-    "context": "Calculate the time required for a batch reactor (from the integral design equation) and the equivalent CSTR residence time, given identical kinetics and target conversion.",
+    "context": "For a batch reactor and an equivalent CSTR with identical kinetics and target conversion, given the time required for the batch reactor and the equivalent CSTR residence time, determine the inlet concentration of reactant A and the reactor volume.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -24709,7 +24709,7 @@
     "case_id": "ms_batch_integral_001_rv5",
     "original_core_id": "ms_batch_integral_001",
     "variant_type": "multisource_random_io",
-    "context": "Calculate the time required for a batch reactor (from the integral design equation) and the equivalent CSTR residence time, given identical kinetics and target conversion.",
+    "context": "For a batch reactor with given kinetics and target conversion, and given the equivalent CSTR space time (reactor volume divided by volumetric flow rate), calculate the rate of reaction for reactant A and the time required to achieve the target conversion from the integral design equation.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -24732,7 +24732,7 @@
     "case_id": "ms_batch_integral_001_rv6",
     "original_core_id": "ms_batch_integral_001",
     "variant_type": "multisource_random_io",
-    "context": "Calculate the time required for a batch reactor (from the integral design equation) and the equivalent CSTR residence time, given identical kinetics and target conversion.",
+    "context": "For a batch reactor and an equivalent CSTR with identical kinetics and target conversion, given the time required to achieve the conversion and the space time, determine the outlet concentration of reactant A and the reactor volume.",
     "input_variables": [
       "-r_A",
       "C_{A0}",
@@ -24824,7 +24824,7 @@
     "case_id": "ms_chemeng_convection_001_rv4",
     "original_core_id": "ms_chemeng_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a CSTR with a cooling coil, compute the residence time from the reactor mass balance and the convective heat transfer rate at the coil surface.",
+    "context": "For a CSTR with a cooling coil, given the space time and the rate of convective heat transfer at the coil surface, compute the outlet concentration of reactant A from the reactor mass balance and the surface area for convection at the coil surface.",
     "input_variables": [
       "C_{A0}",
       "T_\\infty",
@@ -24893,7 +24893,7 @@
     "case_id": "ms_batch_sensor_001_rv1",
     "original_core_id": "ms_batch_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a batch reactor with a temperature sensor, compute the batch reaction time and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
+    "context": "For a batch reactor with a temperature sensor operating over a given batch reaction time, compute the initial moles of reactant A and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
     "input_variables": [
       "-r_A",
       "K_p",
@@ -24965,7 +24965,7 @@
     "case_id": "ms_batch_sensor_001_rv4",
     "original_core_id": "ms_batch_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a batch reactor with a temperature sensor, compute the batch reaction time and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
+    "context": "For a batch reactor with a temperature sensor, given the sensor's FOPDT process transfer function, compute the batch reaction time and the Laplace variable, combining batch reactor engineering and process control.",
     "input_variables": [
       "-r_A",
       "G_p(s)",
@@ -24989,7 +24989,7 @@
     "case_id": "ms_batch_sensor_001_rv5",
     "original_core_id": "ms_batch_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a batch reactor with a temperature sensor, compute the batch reaction time and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
+    "context": "For a batch reactor with a temperature sensor, given the sensor's FOPDT transfer function, compute the batch reaction time and the process dead time, combining batch reactor engineering and process control.",
     "input_variables": [
       "-r_A",
       "G_p(s)",
@@ -25013,7 +25013,7 @@
     "case_id": "ms_batch_sensor_001_rv6",
     "original_core_id": "ms_batch_sensor_001",
     "variant_type": "multisource_random_io",
-    "context": "For a batch reactor with a temperature sensor, compute the batch reaction time and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
+    "context": "For a batch reactor with a temperature sensor, given the batch reaction time, compute the rate of reaction of A and the sensor's FOPDT transfer function, combining batch reactor engineering and process control.",
     "input_variables": [
       "K_p",
       "N_{A0}",
@@ -25091,7 +25091,7 @@
     "case_id": "ms_bio_pid_001_rv3",
     "original_core_id": "ms_bio_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a bioreactor with PID-controlled feed rate, compute the Monod-based specific growth rate and the controller output simultaneously.",
+    "context": "For a bioreactor with PID-controlled feed rate, given the Monod-based specific growth rate and the controller output signal, compute the maximum specific growth rate and the process variable simultaneously.",
     "input_variables": [
       "K_S",
       "K_d",
@@ -25118,7 +25118,7 @@
     "case_id": "ms_bio_pid_001_rv4",
     "original_core_id": "ms_bio_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a bioreactor with PID-controlled feed rate, compute the Monod-based specific growth rate and the controller output simultaneously.",
+    "context": "For a bioreactor with PID-controlled feed rate, given the Monod-based specific growth rate and the controller output signal, determine the limiting substrate concentration and the time.",
     "input_variables": [
       "K_S",
       "K_d",
@@ -25145,7 +25145,7 @@
     "case_id": "ms_bio_pid_001_rv5",
     "original_core_id": "ms_bio_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a bioreactor with PID-controlled feed rate, compute the Monod-based specific growth rate and the controller output simultaneously.",
+    "context": "For a bioreactor with PID-controlled feed rate and a given controller output signal, compute the Monod-based specific growth rate and the integration variable for time simultaneously.",
     "input_variables": [
       "K_S",
       "K_d",
@@ -25172,7 +25172,7 @@
     "case_id": "ms_bio_pid_001_rv6",
     "original_core_id": "ms_bio_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a bioreactor with PID-controlled feed rate, compute the Monod-based specific growth rate and the controller output simultaneously.",
+    "context": "For a bioreactor with PID-controlled feed rate, given the Monod-based specific growth rate and the controller output signal, compute the limiting substrate concentration and the setpoint signal simultaneously.",
     "input_variables": [
       "K_S",
       "K_d",
@@ -25221,7 +25221,7 @@
     "case_id": "ms_pfr_masstransfer_001_rv2",
     "original_core_id": "ms_pfr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a packed bed reactor with external diffusion limitation, compute the PFR volume from the integral design equation and the mass transfer flux to the catalyst surface.",
+    "context": "For a packed bed reactor with external diffusion limitation, given the PFR volume from the integral design equation and the molar flux of species A to the catalyst surface, determine the rate of reaction of A as a function of conversion and the binary diffusion coefficient of A in B.",
     "input_variables": [
       "C_A",
       "F_{A0}",
@@ -25243,7 +25243,7 @@
     "case_id": "ms_pfr_masstransfer_001_rv3",
     "original_core_id": "ms_pfr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a packed bed reactor with external diffusion limitation, compute the PFR volume from the integral design equation and the mass transfer flux to the catalyst surface.",
+    "context": "For a packed bed reactor with external diffusion limitation, with the total reactor volume given, compute the final conversion of reactant A at the outlet from the integral design equation and the mass transfer flux to the catalyst surface.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -25287,7 +25287,7 @@
     "case_id": "ms_pfr_masstransfer_001_rv5",
     "original_core_id": "ms_pfr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a packed bed reactor with external diffusion limitation, compute the PFR volume from the integral design equation and the mass transfer flux to the catalyst surface.",
+    "context": "For a packed bed reactor with external diffusion limitation, given the PFR volume from the integral design equation and the mass transfer flux to the catalyst surface, determine the rate of reaction of A as a function of conversion and the molar concentration of species A.",
     "input_variables": [
       "D_{AB}",
       "F_{A0}",
@@ -25309,7 +25309,7 @@
     "case_id": "ms_pfr_masstransfer_001_rv6",
     "original_core_id": "ms_pfr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a packed bed reactor with external diffusion limitation, compute the PFR volume from the integral design equation and the mass transfer flux to the catalyst surface.",
+    "context": "For a packed bed reactor with external diffusion limitation, given the mass transfer flux of species A to the catalyst surface, compute the molar concentration of species A and the PFR volume from the integral design equation.",
     "input_variables": [
       "-r_A",
       "D_{AB}",
@@ -25352,7 +25352,7 @@
     "case_id": "ms_cstr_masstransfer_001_rv2",
     "original_core_id": "ms_cstr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the residence time and the diffusion flux at the gas-liquid interface, given the outlet concentration.",
+    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the diffusion flux at the gas-liquid interface and the rate of reaction for reactant A, given the outlet concentration and the residence time.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -25373,7 +25373,7 @@
     "case_id": "ms_cstr_masstransfer_001_rv3",
     "original_core_id": "ms_cstr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the residence time and the diffusion flux at the gas-liquid interface, given the outlet concentration.",
+    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the rate of reaction for the reactant and the distance in the direction of diffusion, given the outlet concentration, the space time, and the molar flux at the gas-liquid interface.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -25394,7 +25394,7 @@
     "case_id": "ms_cstr_masstransfer_001_rv4",
     "original_core_id": "ms_cstr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the residence time and the diffusion flux at the gas-liquid interface, given the outlet concentration.",
+    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the residence time and the outlet concentration, given the diffusion flux at the gas-liquid interface.",
     "input_variables": [
       "C_{A0}",
       "D_{AB}",
@@ -25436,7 +25436,7 @@
     "case_id": "ms_cstr_masstransfer_001_rv6",
     "original_core_id": "ms_cstr_masstransfer_001",
     "variant_type": "multisource_random_io",
-    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the residence time and the diffusion flux at the gas-liquid interface, given the outlet concentration.",
+    "context": "For a CSTR with external mass transfer between liquid and gas phases, compute the outlet concentration of reactant A and the binary diffusion coefficient of A in B, given the residence time and the diffusion flux at the gas-liquid interface.",
     "input_variables": [
       "C_{A0}",
       "J_{Az}",
@@ -25483,7 +25483,7 @@
     "case_id": "ms_reactor_heat_arrhenius_001_rv2",
     "original_core_id": "ms_reactor_heat_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Three-source non-isothermal reactor design: combine the Arrhenius temperature dependence, the first-order rate expression, and the overall heat transfer law to determine the rate constant, reaction rate, and heat removal in a temperature-controlled CSTR.",
+    "context": "Three-source non-isothermal reactor design: combine the Arrhenius temperature dependence, the first-order rate expression, and the overall heat transfer law to determine the reaction rate constant, the absolute temperature, and the heat transfer area in a temperature-controlled CSTR, given the reaction rate and the overall heat transfer rate.",
     "input_variables": [
       "C_A",
       "E",
@@ -25509,7 +25509,7 @@
     "case_id": "ms_reactor_heat_arrhenius_001_rv3",
     "original_core_id": "ms_reactor_heat_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Three-source non-isothermal reactor design: combine the Arrhenius temperature dependence, the first-order rate expression, and the overall heat transfer law to determine the rate constant, reaction rate, and heat removal in a temperature-controlled CSTR.",
+    "context": "Three-source non-isothermal reactor design: combine the Arrhenius temperature dependence, the first-order rate expression, and the overall heat transfer law to determine the concentration of the reactant, the activation energy, and the heat removal in a temperature-controlled CSTR, given the rate constant and the reaction rate.",
     "input_variables": [
       "A",
       "R",
@@ -25640,7 +25640,7 @@
     "case_id": "ms_pfr_batch_arrhenius_001_rv2",
     "original_core_id": "ms_pfr_batch_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Design a temperature-controlled reactor by combining: (1) Arrhenius rate constant, (2) batch reactor design equation, (3) PFR integral design equation.",
+    "context": "Analyze a temperature-controlled reactor by combining: (1) Arrhenius rate constant, (2) batch reactor design equation, (3) PFR integral design equation, given the reaction rate coefficient and the time. Determine the molar feed rate of reactant A, the ideal gas constant, and the reactor volume required.",
     "input_variables": [
       "-r_A",
       "E",
@@ -25667,7 +25667,7 @@
     "case_id": "ms_pfr_batch_arrhenius_001_rv3",
     "original_core_id": "ms_pfr_batch_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Design a temperature-controlled reactor by combining: (1) Arrhenius rate constant, (2) batch reactor design equation, (3) PFR integral design equation.",
+    "context": "Analyze a temperature-controlled reactor by combining: (1) Arrhenius rate constant, (2) batch reactor design equation, (3) PFR integral design equation. Given the reaction rate coefficient and the time, determine the reactor volume, the conversion of reactant A, and the pre-exponential factor.",
     "input_variables": [
       "-r_A",
       "E",
@@ -25748,7 +25748,7 @@
     "case_id": "ms_pfr_batch_arrhenius_001_rv6",
     "original_core_id": "ms_pfr_batch_arrhenius_001",
     "variant_type": "multisource_random_io",
-    "context": "Design a temperature-controlled reactor by combining: (1) Arrhenius rate constant, (2) batch reactor design equation, (3) PFR integral design equation.",
+    "context": "Design a temperature-controlled reactor by combining: (1) Arrhenius rate constant, (2) batch reactor design equation, (3) PFR integral design equation. Given the reaction rate coefficient and the time, determine the rate of reaction of A, the reactor volume, and the pre-exponential factor.",
     "input_variables": [
       "E",
       "F_{A0}",
@@ -25890,7 +25890,7 @@
     "case_id": "ms_batch_diffusion_001_rv6",
     "original_core_id": "ms_batch_diffusion_001",
     "variant_type": "multisource_random_io",
-    "context": "For a batch reactor with controlled mass transfer from a feeding solid surface, compute the batch reaction time and the diffusion flux at the surface.",
+    "context": "For a batch reactor with controlled mass transfer from a feeding solid surface, given the batch reaction time and the diffusion flux at the surface, compute the rate of reaction of A and the binary diffusion coefficient of A in B.",
     "input_variables": [
       "C_A",
       "J_{Az}",
@@ -25913,7 +25913,7 @@
     "case_id": "ms_bio_diffusion_002_rv1",
     "original_core_id": "ms_bio_diffusion_002",
     "variant_type": "multisource_random_io",
-    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, compute the Monod growth rate and the substrate diffusion flux into the cell, given the substrate concentration profile.",
+    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, determine the molar concentration of the substrate species and the limiting substrate concentration, given the Monod specific growth rate and the substrate diffusion flux into the cell.",
     "input_variables": [
       "D_{AB}",
       "J_{Az}",
@@ -25957,7 +25957,7 @@
     "case_id": "ms_bio_diffusion_002_rv3",
     "original_core_id": "ms_bio_diffusion_002",
     "variant_type": "multisource_random_io",
-    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, compute the Monod growth rate and the substrate diffusion flux into the cell, given the substrate concentration profile.",
+    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, given the substrate concentration profile, the Monod specific growth rate, and the substrate diffusion flux into the cell, determine the Monod half-saturation constant and the distance in the direction of diffusion.",
     "input_variables": [
       "C_A",
       "D_{AB}",
@@ -25979,7 +25979,7 @@
     "case_id": "ms_bio_diffusion_002_rv4",
     "original_core_id": "ms_bio_diffusion_002",
     "variant_type": "multisource_random_io",
-    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, compute the Monod growth rate and the substrate diffusion flux into the cell, given the substrate concentration profile.",
+    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, compute the Monod growth rate and the distance in the direction of diffusion, given the substrate concentration profile and the substrate diffusion flux into the cell.",
     "input_variables": [
       "C_A",
       "D_{AB}",
@@ -26001,7 +26001,7 @@
     "case_id": "ms_bio_diffusion_002_rv5",
     "original_core_id": "ms_bio_diffusion_002",
     "variant_type": "multisource_random_io",
-    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, compute the Monod growth rate and the substrate diffusion flux into the cell, given the substrate concentration profile.",
+    "context": "For an immobilized cell bioreactor with diffusion-limited substrate uptake, determine the binary diffusion coefficient of the substrate and the Monod half-saturation constant, given the substrate concentration profile, the specific growth rate, and the substrate diffusion flux into the cell.",
     "input_variables": [
       "C_A",
       "J_{Az}",
@@ -26045,7 +26045,7 @@
     "case_id": "ms_chemeng_re_001_rv1",
     "original_core_id": "ms_chemeng_re_001",
     "variant_type": "multisource_random_io",
-    "context": "Cross-validate the CSTR residence time using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations.",
+    "context": "For a CSTR, using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations, and given the space time (mean residence time) and the outlet concentration of reactant A, determine the reactor volume and the rate of reaction for reactant A.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -26089,7 +26089,7 @@
     "case_id": "ms_chemeng_re_001_rv3",
     "original_core_id": "ms_chemeng_re_001",
     "variant_type": "multisource_random_io",
-    "context": "Cross-validate the CSTR residence time using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations.",
+    "context": "For a CSTR with known space time (mean residence time) and known outlet concentration of reactant A, cross-validate using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations to determine the rate of reaction of A evaluated at outlet conditions and the rate of reaction for reactant A.",
     "input_variables": [
       "C_A",
       "C_{A0}",
@@ -26111,7 +26111,7 @@
     "case_id": "ms_chemeng_re_001_rv4",
     "original_core_id": "ms_chemeng_re_001",
     "variant_type": "multisource_random_io",
-    "context": "Cross-validate the CSTR residence time using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations.",
+    "context": "For a CSTR with a given space time (mean residence time), using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations, determine the outlet concentration of reactant A and the inlet volumetric flow rate.",
     "input_variables": [
       "-r_A",
       "C_{A0}",
@@ -26133,7 +26133,7 @@
     "case_id": "ms_chemeng_re_001_rv5",
     "original_core_id": "ms_chemeng_re_001",
     "variant_type": "multisource_random_io",
-    "context": "Cross-validate the CSTR residence time using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations.",
+    "context": "For a CSTR with a given space time (mean residence time) and given outlet concentration of reactant A, determine the inlet concentration of reactant A and the inlet volumetric flow rate, using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -26155,7 +26155,7 @@
     "case_id": "ms_chemeng_re_001_rv6",
     "original_core_id": "ms_chemeng_re_001",
     "variant_type": "multisource_random_io",
-    "context": "Cross-validate the CSTR residence time using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations.",
+    "context": "Cross-validate the CSTR residence time using both the chemeng handbook (concentration-based) and reaction engineering handbook (conversion-based) formulations, given the outlet concentration of reactant A, determining the space time (mean residence time) and the rate of reaction for reactant A.",
     "input_variables": [
       "-r_A",
       "C_A",
@@ -26201,7 +26201,7 @@
     "case_id": "ms_steady_cstr_heat_001_rv2",
     "original_core_id": "ms_steady_cstr_heat_001",
     "variant_type": "multisource_random_io",
-    "context": "For a steady-state isothermal CSTR with cooling: compute residence time and the corresponding heat removal needed, given concentration and temperature differentials.",
+    "context": "For a steady-state isothermal CSTR with cooling: compute the heat transfer area and the inlet concentration of reactant A, given concentration and temperature differentials, the mean residence time, and the overall heat transfer rate.",
     "input_variables": [
       "-r_A",
       "U",
@@ -26225,7 +26225,7 @@
     "case_id": "ms_steady_cstr_heat_001_rv3",
     "original_core_id": "ms_steady_cstr_heat_001",
     "variant_type": "multisource_random_io",
-    "context": "For a steady-state isothermal CSTR with cooling: compute residence time and the corresponding heat removal needed, given concentration and temperature differentials.",
+    "context": "For a steady-state isothermal CSTR with cooling: compute the reactor volume and the corresponding heat removal needed, given concentration and temperature differentials and the mean residence time.",
     "input_variables": [
       "-r_A",
       "A",
@@ -26297,7 +26297,7 @@
     "case_id": "ms_steady_cstr_heat_001_rv6",
     "original_core_id": "ms_steady_cstr_heat_001",
     "variant_type": "multisource_random_io",
-    "context": "For a steady-state isothermal CSTR with cooling: compute residence time and the corresponding heat removal needed, given concentration and temperature differentials.",
+    "context": "For a steady-state isothermal CSTR with cooling: compute the inlet volumetric flow rate and the corresponding heat removal needed, given the mean residence time and concentration and temperature differentials.",
     "input_variables": [
       "-r_A",
       "A",
@@ -26348,7 +26348,7 @@
     "case_id": "ms_pfr_pid_001_rv2",
     "original_core_id": "ms_pfr_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a PFR with PID-controlled inlet flow rate, compute the required reactor volume and the PID controller output for setpoint tracking.",
+    "context": "For a PFR with PID-controlled inlet flow rate, given the reactor volume and the PID controller output for setpoint tracking, compute the rate of reaction of A as a function of conversion and the error signal.",
     "input_variables": [
       "F_{A0}",
       "K_d",
@@ -26375,7 +26375,7 @@
     "case_id": "ms_pfr_pid_001_rv3",
     "original_core_id": "ms_pfr_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a PFR with PID-controlled inlet flow rate, compute the required reactor volume and the PID controller output for setpoint tracking.",
+    "context": "For a PFR with PID-controlled inlet flow rate, given the reactor volume and the PID controller output, compute the molar feed rate of reactant A and the setpoint signal for setpoint tracking.",
     "input_variables": [
       "-r_A",
       "K_d",
@@ -26429,7 +26429,7 @@
     "case_id": "ms_pfr_pid_001_rv5",
     "original_core_id": "ms_pfr_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a PFR with PID-controlled inlet flow rate, compute the required reactor volume and the PID controller output for setpoint tracking.",
+    "context": "For a PFR with PID-controlled inlet flow rate, given the reactor volume and the PID controller output for setpoint tracking, determine the molar feed rate of reactant A and the integration variable for time.",
     "input_variables": [
       "-r_A",
       "K_d",
@@ -26456,7 +26456,7 @@
     "case_id": "ms_pfr_pid_001_rv6",
     "original_core_id": "ms_pfr_pid_001",
     "variant_type": "multisource_random_io",
-    "context": "For a PFR with PID-controlled inlet flow rate, compute the required reactor volume and the PID controller output for setpoint tracking.",
+    "context": "For a PFR with PID-controlled inlet flow rate and given reactor volume, compute the final conversion of reactant A at the outlet and the PID controller output for setpoint tracking.",
     "input_variables": [
       "-r_A",
       "F_{A0}",
@@ -26483,7 +26483,7 @@
     "case_id": "ms_batch_convection_001_rv1",
     "original_core_id": "ms_batch_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a jacketed batch reactor, compute the batch time required for a given conversion and the convective heat removal rate at the jacket.",
+    "context": "For a jacketed batch reactor with a given convective heat removal rate at the jacket, compute the batch time required for a given conversion and the convection heat transfer coefficient.",
     "input_variables": [
       "-r_A",
       "A_s",
@@ -26531,7 +26531,7 @@
     "case_id": "ms_batch_convection_001_rv3",
     "original_core_id": "ms_batch_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a jacketed batch reactor, compute the batch time required for a given conversion and the convective heat removal rate at the jacket.",
+    "context": "For a jacketed batch reactor with a given batch time and a given convective heat removal rate at the jacket, compute the conversion of reactant A and the convection heat transfer coefficient.",
     "input_variables": [
       "-r_A",
       "A_s",
@@ -26555,7 +26555,7 @@
     "case_id": "ms_batch_convection_001_rv4",
     "original_core_id": "ms_batch_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a jacketed batch reactor, compute the batch time required for a given conversion and the convective heat removal rate at the jacket.",
+    "context": "For a jacketed batch reactor, given the batch time required for a given conversion and the convective heat removal rate at the jacket, determine the bulk fluid temperature and the reactor volume.",
     "input_variables": [
       "-r_A",
       "A_s",
@@ -26579,7 +26579,7 @@
     "case_id": "ms_batch_convection_001_rv5",
     "original_core_id": "ms_batch_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a jacketed batch reactor, compute the batch time required for a given conversion and the convective heat removal rate at the jacket.",
+    "context": "For a jacketed batch reactor with a given conversion, a given batch time, and a given convective heat removal rate at the jacket, compute the rate of reaction of A and the surface area for convection at the jacket.",
     "input_variables": [
       "N_{A0}",
       "T_\\infty",
@@ -26603,7 +26603,7 @@
     "case_id": "ms_batch_convection_001_rv6",
     "original_core_id": "ms_batch_convection_001",
     "variant_type": "multisource_random_io",
-    "context": "For a jacketed batch reactor, compute the batch time required for a given conversion and the convective heat removal rate at the jacket.",
+    "context": "For a jacketed batch reactor, given the batch time required for a given conversion, compute the rate of reaction of A and the convective heat removal rate at the jacket.",
     "input_variables": [
       "A_s",
       "N_{A0}",
