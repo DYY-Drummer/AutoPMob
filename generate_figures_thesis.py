@@ -3,7 +3,7 @@
 
 出力: thesis/master_thesis/figures/*.{png,pdf}
 データ（2026-10-21 改訂。加藤先生の 2 回目のコメントによる再実験 c7c4feb の結果。日本語版 8/31 報告 4781cdd と同じ値）:
-    training_cases.json / experiments/kato1020/excluded_cases.json（評価と訓練から外した 91 件）/
+    training_cases.json / experiments/kato1020/excluded_cases_v3.json（評価と訓練から外した 92 件。2026-10-21(2) から）/
     experiments/kato1020/main.json（全体比較、正解式の数と入力変数の数で分けた値）/ mech.json（特徴量を足したときの上乗せ）/
     pfi.json / greedy.json / n1_coverage_w30-70.json
 方針: 10 通りの分割の比較は箱ひげ図（G7）。日本語フォント設定は入れない（英語ラベルのみ）。suptitle は付けない。
@@ -61,8 +61,12 @@ def _box(ax, data, positions, colors, widths=0.55):
 
 
 def _excluded_ids():
-    """未知の変数が決まらない出典横断の 91 件（kato1020_exclusions.py、analyze_kato_0831_followup.gt_checks と同じ判定）."""
-    return set(json.load(open(K20 / "excluded_cases.json"))["excluded_case_ids"])
+    """評価と訓練から外すケース（v3、92 件）: 未知の変数が決まらない出典横断の 91 件（kato1020_exclusions.py、
+    analyze_kato_0831_followup.gt_checks と同じ判定）と、2 冊の教科書の式から成る単一出典の core_019_v1（2026-10-21 の本人の決定）.
+
+    結果の図（method_comparison など）は、再計算が終わるまで 91 件を外した 1,732 件の JSON を読む.
+    """
+    return set(json.load(open(K20 / "excluded_cases_v3.json"))["excluded_case_ids"])
 
 
 def _family(c):
@@ -110,7 +114,7 @@ def dataset():
     ax1.legend(handles=[Patch(facecolor=C_PROP, edgecolor="black", label=f"Setting A: evaluation ({n_eval:,} cases)"),
                         Patch(facecolor=C_DAE, edgecolor="black", label=f"  of which synthesized = Setting B ({used['synth']:,})"),
                         Patch(facecolor="white", edgecolor="black", hatch="xx",
-                              label=f"Excluded: some unknowns undetermined ({sum(dropped.values()):,})"),
+                              label=f"Excluded from training and evaluation ({sum(dropped.values()):,})"),
                         Patch(facecolor="white", edgecolor="black", hatch="//",
                               label=f"Augmented: used for neither training nor testing ({used['aug']:,})")],
                fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=2, framealpha=1.0)

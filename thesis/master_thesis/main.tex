@@ -110,6 +110,8 @@
 % 2026-10-12 改訂: 結果を最良の重みの baseline との差に。「閉じた系」「閉包率がオラクルより高い」を撤回。
 % 2026-10-21 改訂（日本語版 8/31 報告の 2 回目の改訂 4781cdd・再実験 c7c4feb にそろえた）: 自由度ゼロ停止、LLM 直接生成の数値、
 %   二つの介入による因果の主張を削除し、N_1 = 2,000・Recall@20・検証用のケースで選んだ定数の結果で書き直した。評価は 1,732 件。
+% 2026-10-21(2) 改訂（報告 f1076cd にそろえた）: 単一出典の 1 件（core_019_v1）を除いて評価は 1,731 件。手法の設定値を
+%   hyperparameters とよぶ。結果の数値は、説明文の書き直しと 1 件の除外を入れた再計算が終わるまで 1,732 件での値のまま。
 \thispagestyle{empty}
 {\huge \bf Abstract}
 \\
@@ -125,7 +127,7 @@ Because an equation that contains a variable other than the inputs and outputs i
 We propose a two-stage retrieval method.
 The first stage narrows the database by text similarity and variable overlap, and the second stage reranks the candidates with a multilayer perceptron that reads, beside seven query--equation features, three set-aware features that compare each candidate with a reference set of equations: complementarity, coherence, and domain agreement.
 A learned greedy variant selects one equation at a time and compares each candidate with the equations already selected.
-To evaluate the method, we built a database of 11,146 equations from 361 sources and 1,732 evaluation cases, 1,000 of which a program synthesized by giving each equation an output variable of its own; we split the sources so that no document leaks between training and testing, and we chose the constants of the methods on validation cases.
+To evaluate the method, we built a database of 11,146 equations from 361 sources and 1,731 evaluation cases, 1,000 of which a program synthesized by giving each equation an output variable of its own; we split the sources so that no document leaks between training and testing, and we chose the hyperparameters of the methods, the values fixed before training, on validation cases.
 
 % source: experiments/kato1020/main.json（Recall@20 A 0.906 → 0.981・B 0.825 → 0.966、MAP A 0.690 → 0.860・B 0.626 → 0.832、
 %         wins 10）; mech.json; pfi.json; greedy.json（K>=8 train − static MAP +0.032）; case_outcomes_final.json
@@ -184,6 +186,8 @@ Every remaining miss arises in the second stage, where no present feature separa
 % 2026-10-21: LLM 直接生成の等価判定（Claude Opus 4.8・Claude Fable 5.1）の記述を削除したので、ClaudeOpus48 と ClaudeFable51 を
 %   外した。自由度ゼロ停止の節だけで引いていた Hangos も外した（37 件）。ClaudeSonnet45 は合成ケースの説明文（第 4 章）で
 %   初めて引くので、E5（第 5 章）の前に移した。
+% 2026-10-21(2): 出典横断の説明文 113 件の書き直し（第 4 章）で Claude Opus 4.8 を使ったので、ClaudeOpus48 を戻した（38 件。
+%   第 4 章の初出順で Gemini25 と ClaudeSonnet45 の間。書誌は 2026-09-07 に確認した版のまま）。
 \begin{thebibliography}{99}
 
 \bibitem{DigitalTwin}
@@ -360,6 +364,12 @@ D. E. Seborg, T. F. Edgar, D. A. Mellichamp, F. J. Doyle III.
 G. Comanici, E. Bieber, M. Schaekermann, et al.
 \ Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities.
 \ arXiv:2507.06261, 2025.
+
+\bibitem{ClaudeOpus48}
+Anthropic.
+\ Introducing Claude Opus 4.8.
+\ \url{https://www.anthropic.com/news/claude-opus-4-8}.
+\ (Accessed on 2026/09/07).
 
 \bibitem{ClaudeSonnet45}
 Anthropic.

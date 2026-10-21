@@ -10,18 +10,22 @@
 %   - 文献の収集（付録 D: 分野ごとの検索語と文献 329 件の一覧）を英語版で追加（scratchpad の make_appendix_tables.py で
 %     docs/appendix_materials から作った。数値・DOI・出典 ID は元の表と一致を確認）。
 %   - プロンプト（付録 E）を本文どおり転記した。合成のケースの例（dae_X3_016）を training_cases.json から転記した。
+% 2026-10-21(2)（報告 f1076cd にそろえた）: A.1 を Hyperparameters に改名。表 tab:weights の設定 A を 1,731 件に。
+%   A.7 に出典横断の説明文の書き直しのプロンプト（Claude Opus 4.8、v6）を加えた。
 % ============================================================
 \chapter{Supplementary Materials}
 
-\section{Constants and Reproducibility}
+\section{Hyperparameters and Reproducibility}
 \label{app:hyper}
-Table~\ref{tab:hyper} lists the constants of the methods. Section~\ref{sec:compared} explains which
-of them the validation cases chose.
+Table~\ref{tab:hyper} lists the hyperparameters of the methods, the values fixed before training,
+together with the other settings of the experiments. Section~\ref{sec:compared} explains which of
+them the validation cases chose.
 % source: experiments/kato1020/selected.json fixed / selected; set_aware_reranker.py（K_REF=5、greedy_cap=20、
 %         --greedy-train-cap 8）; external_baselines.py・kato1020_baselines.py; run_llm_db_baseline.py（版 3）
 
 \begin{table}[h]\centering
-\caption{Constants of the methods (identical across settings and splits unless noted).}
+\caption{Hyperparameters and other settings of the methods (identical across settings and splits
+unless noted).}
 \label{tab:hyper}
 \small
 \begin{tabular}{l>{\raggedright\arraybackslash}p{0.5\linewidth}}
@@ -75,7 +79,7 @@ with $\pm$ SD). The last three rows choose the weights per split on the validati
 \setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{@{}lccccccc@{}}
 \toprule
- & \multicolumn{3}{c}{Setting A (1,732 cases)} & & \multicolumn{3}{c}{Setting B (1,000 cases)} \\
+ & \multicolumn{3}{c}{Setting A (1,731 cases)} & & \multicolumn{3}{c}{Setting B (1,000 cases)} \\
 \cmidrule{2-4}\cmidrule{6-8}
  & Validation & \multicolumn{2}{c}{Test} & & Validation & \multicolumn{2}{c}{Test} \\
 \cmidrule{3-4}\cmidrule{7-8}
@@ -273,7 +277,8 @@ This section gives the prompts with which language models built the data and the
 for the comparison with LLMs. Braces mark the parts filled in for each call. No fixed prompt
 produced the 33 cross-source combinations, which the coding assistant Claude wrote directly into a
 program, and no language model took part in the descriptions of the augmented cases or of the
-program-built cross-source cases.
+program-built cross-source cases. Claude Opus 4.8 rewrote the descriptions of 113 cross-source cases
+with the prompt given below.
 
 \subsection*{Equation extraction (Gemini)}
 The prompt went with the PDF of a document, and \texttt{\{source\_id\}} received the file name.
@@ -414,6 +419,34 @@ Write a 2-3 sentence description of the physical modeling scenario. Focus on:
 - The physical meaning of the coupled equations
 
 Output only the description, no preamble or formatting.
+\end{Verbatim}
+
+\subsection*{Rewriting the descriptions of cross-source cases (Claude Opus 4.8)}
+For each of the 111 variants with reselected input and output variables and each of the two original
+combinations whose descriptions did not match their outputs, the model received in JSON the
+description of the original case, the original output variables, the new output variables, and the
+original outputs that the new choice makes inputs (\texttt{now\_given}); for the two original
+combinations, the original and the new outputs coincide. Each variable came with its symbol and its
+definitions in the ground-truth equations. The system prompt (version 6) reads as follows.
+% source: rewrite_reselected_io_contexts.py SYSTEM_PROMPT（PROMPT_VERSION v6、MODEL claude-opus-4-8、payload()）を ast で取り出して
+%         一字も変えずに転記した（experiments/reselected_io_contexts.json の meta.system_prompt と一致）
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+You edit the problem descriptions of an evaluation set for retrieving process-model equations.
+A description states, in plain words, a physical system and which quantities must be determined.
+
+You receive a description written for one choice of quantities to determine (original_outputs) and a new choice for the same system (new_outputs). "now_given" lists the quantities that the original asked to determine but that are now given. Each quantity comes with its symbol and its meaning taken from the source equations. Rewrite the description for the new choice.
+
+Rules:
+- Describe the same physical system and keep the original wording, changing only what the new choice requires.
+- State every quantity in new_outputs as a quantity to determine.
+- The original may ask, explicitly or implicitly, to determine quantities that are not in new_outputs, including quantities that are not variables of the system at all (for example, "size a reactor" asks for its volume). Remove or reword every such request, so that only the quantities in new_outputs are to be determined. This applies even when new_outputs equals original_outputs.
+- Present every quantity in now_given as given. Do not name any other quantity as given unless the original already names it.
+- Never present a quantity in new_outputs as given.
+- Refer to quantities in plain words by their meaning, as the original does. Do not write symbols or equations.
+- Do not add information beyond the original description and the meanings of the quantities.
+- Write one or two sentences in English, as short as the changes allow.
+
+Return JSON: {"context": "<the rewritten description>"}.
 \end{Verbatim}
 
 \subsection*{Comparison with LLMs (prepared for the four models)}

@@ -14,11 +14,13 @@
 %   (d) 主指標を Recall@20 にし、上位 K 件の指標を R-Precision とよぶ（旧 Recall@K）（R30）。別の出典の同じ式を正解と
 %       みなした値も出す（R29）。自由度ゼロ停止の集合の指標（完全一致率・集合 F1・停止条件の充足率）は削除した。
 %   (e) 検定をやめ、10 通りの分割のうち何通りで上回ったかを書く（旧 §5.5 Statistical Testing を削除）（R35）。
+% 2026-10-21(2)（報告 f1076cd にそろえた）: 設定 A は 1,731 件。手法の設定値を hyperparameters とよぶ（§5.2 の題も）。
+%   データ作成の LLM に、出典横断 113 件の説明文を書き直した Claude Opus 4.8 を加えた。
 % ============================================================
 \section{Evaluation Settings}
 \label{sec:settings}
 
-We evaluate the methods in two settings. Setting~A holds all 1,732 evaluation cases of the three
+We evaluate the methods in two settings. Setting~A holds all 1,731 evaluation cases of the three
 families. Setting~B holds the 1,000 synthesized cases alone, 100 cases for each number of
 ground-truth equations from 1 to 10. The cases hold 3.99 ground-truth equations on average in
 Setting~A and 5.50 in Setting~B. Neither setting uses the augmented cases
@@ -26,7 +28,7 @@ Setting~A and 5.50 in Setting~B. Neither setting uses the augmented cases
 Section~\ref{sec:split} with the same 10 random seeds.
 % source: Dataset.tex 表 tab:families と同じ実測（synthesized 平均 5.50、設定 A 平均 3.99）
 
-\section{Compared Methods and Constants}
+\section{Compared Methods and Hyperparameters}
 \label{sec:compared}
 
 We compare the proposed method with the classical information-retrieval baseline, two variants of
@@ -82,7 +84,7 @@ $N_1$ to the smallest number of candidates that holds every ground-truth equatio
 and validation cases, rounded up to the next thousand; under $(0.3, 0.7)$ this gives
 $N_1 = 2{,}000$ in all 10 splits, whereas the other pairs need 2,000 to 6,000. Between random and
 hard negatives, each split takes the one with the higher validation Recall@20, and hard negatives
-won in 19 of the 20 splits of the two settings. The remaining constants --- a reference set of
+won in 19 of the 20 splits of the two settings. The remaining hyperparameters --- a reference set of
 $m = 5$ equations, the margin $\gamma = 0.1$, $n_{\mathrm{neg}} = 8$ incorrect candidates, and 15
 epochs of AdamW with learning rate $10^{-3}$ and weight decay $10^{-4}$ --- are values we have used
 since the beginning of this work and have not compared with others.
@@ -143,9 +145,9 @@ initialization, and the choice of negatives, so a rerun reproduces the reported 
 The proposed method itself calls no language model at inference time. Language models appear only
 in building the data and in the comparison with LLMs: Gemini extracted the equations, Gemini 2.5
 Pro generated the reference sets and picked the single-source ground truths, the coding assistant
-Claude wrote 33 cross-source combinations into a program, and Claude Sonnet 4.5 wrote the
-descriptions of the synthesized cases. The scripts specify their models, but no record keeps the
-Gemini version used for the 9 earliest documents. \ref{app:hyper} lists every constant,
+Claude wrote 33 cross-source combinations into a program, Claude Opus 4.8 rewrote the descriptions
+of 113 cross-source cases, and Claude Sonnet 4.5 wrote the descriptions of the synthesized cases. The scripts specify their models, but no record keeps the
+Gemini version used for the 9 earliest documents. \ref{app:hyper} lists every hyperparameter,
 and the repository versions the scripts, the data, and the seeds.
 % source: 抽出は Dataset.tex §4.1 と同じ（すべて Gemini、本人確認 2026-10-21）; 合成ケースの説明文は claude-sonnet-4-5-20250929
 %         （dae_generation_report.json）

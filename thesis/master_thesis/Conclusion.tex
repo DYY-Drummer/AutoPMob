@@ -7,6 +7,8 @@
 %   自由度ゼロ停止・二つの介入（逐次選択、第 1 段の再設計）による因果の主張・LLM 直接生成の数値を削除し、
 %   N_1 = 2,000・Recall@20・検証用で選んだ定数の結果で書き直した。今後の課題に LLM との比較（準備済み・未実行）、
 %   データベースの重複の除去、記号の意味の食い違いの見直しを加えた（報告 §10 と同じ）。
+% 2026-10-21(2)（報告 f1076cd にそろえた）: 評価は 1,731 件、hyperparameters の語、説明文の書き直しで
+%   「説明文と入出力変数の食い違いの見直し」を今後の課題から外した。結果の数値は再計算まで据え置き。
 % ============================================================
 
 This thesis formulated one step of automated physical model building as a retrieval problem and
@@ -23,11 +25,11 @@ perceptron that reads three set-aware features --- complementarity, coherence, a
 learns, with teacher forcing, which equation to select next.
 
 The thesis makes three contributions. First, it provides a benchmark on which a failure can be
-attributed to the method: all 1,732 evaluation ground truths meet the first three requirements of
+attributed to the method: all 1,731 evaluation ground truths meet the first three requirements of
 Kato and Kano and let each unknown be assigned to an equation of its own, 1,000 of them are
 synthesized by a program that grows a ground truth from a differential equation, and stratified
 source-disjoint splits with 10 seeds measure generalization to unseen sources, with validation
-cases choosing the constants. Second, with a first stage that admits every ground-truth equation
+cases choosing the hyperparameters. Second, with a first stage that admits every ground-truth equation
 ($N_1 = 2{,}000$), the method raises Recall@20 over classical retrieval, whose weights the
 validation cases choose, from 0.906 to 0.981 in the mixed setting and from 0.825 to 0.966 in the
 synthesized-only setting, and MAP from 0.690 to 0.860 and from 0.626 to 0.832; it wins on every
@@ -47,9 +49,8 @@ the present features cannot repair these misses.
 Several directions follow from the limitations of Section~\ref{sec:limitations}. First, the
 comparison with large language models prepared in Section~\ref{sec:compared} should be run. Second,
 the data need cleaning: the database should be freed of duplicate sources and of identical equations
-taken from different documents, and the cases should be reviewed for descriptions that do not match
-their input and output variables and for symbols that denote different quantities in different
-equations. Third,
+taken from different documents, and the cases should be reviewed for symbols that denote different
+quantities in different equations. Third,
 the ranking errors that remain lie outside every current feature: an equation that determines the
 wrong variable calls for a feature that encodes which variable an equation determines, and the
 comparison between equations, which now reads only their variable sets, could borrow the tree-based

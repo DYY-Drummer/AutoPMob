@@ -13,6 +13,8 @@
 %   P5 のデータの記述を訂正（拡張ケースは訓練にも評価にも使っていない、抽出はすべて Gemini、91 件を除いた 1,732 件、
 %   定数は検証用のケースで選ぶ）。P6・貢献を N_1 = 2,000・Recall@20 の結果で書き直し、検定・LLM 直接生成・二つの介入による
 %   因果の主張を削除した。
+% 2026-10-21(2) 改訂（報告 f1076cd にそろえた）: 単一出典の 1 件（2 冊の教科書の式から成る core_019_v1）も除いて 1,731 件。
+%   手法の設定値を hyperparameters とよび、ここ（本文の初出）で「訓練の前に決めておく値」と説明した。結果の数値は再計算まで据え置き。
 % ============================================================
 
 Physical models --- systems of equations that describe how the material, energy, and momentum
@@ -93,15 +95,17 @@ between training and testing.
 %         1,732 件はすべて要件 1〜3 を満たし、未知の変数と式の 1 対 1 の割り当てがある）
 The database holds 11,146 equations from 361 sources: a large language model (LLM), Gemini,
 extracted 10,476 of them from 329 documents, and Gemini 2.5 Pro generated the other 670 as
-reference sets of textbook fundamentals. The 1,732 evaluation cases fall into three families by how
+reference sets of textbook fundamentals. The 1,731 evaluation cases fall into three families by how
 their ground truths were formed --- picked by an LLM, combined from two or three sources, or
 synthesized by a program. The 1,000 synthesized cases grow by a program that adds
 variable-sharing equations up to a target size and gives each equation an output variable of its
-own, so that, once the inputs are given, each unknown has an equation of its own. The 1,732 cases
-leave out 91 cross-source cases in which the inputs leave some unknowns undetermined. We assign every source wholly to
+own, so that, once the inputs are given, each unknown has an equation of its own. The 1,731 cases
+leave out 92 cases: 91 cross-source cases in which the inputs leave some unknowns undetermined and
+one case of the single-source family whose ground truth combines two textbooks. We assign every source wholly to
 training, validation, or testing, stratify the assignment so that the distributions of four case
 properties, such as the number of ground-truth equations, match between training and testing, and
-choose the constants of the methods on the validation cases. All experiments repeat over 10 random
+choose the hyperparameters of the methods --- the values fixed before training --- on the validation
+cases. All experiments repeat over 10 random
 splits and report the mean and the standard deviation.
 % source: unified_equations.json（11,146 式・361 source）; training_cases.json（original 92 / multisource_* 731 − 91 = 640 /
 %         dae_* 1,000 = 1,732。拡張 1,015 件は訓練にも評価にも使っていない）; 第 4 章 §4.1-4.4
@@ -127,10 +131,10 @@ database is prepared and remains to be run.
 
 The contributions of this thesis are threefold.
 \begin{enumerate}
-  \item A benchmark: an 11,146-equation database from 361 sources; 1,732 evaluation cases whose
+  \item A benchmark: an 11,146-equation database from 361 sources; 1,731 evaluation cases whose
     ground truths all meet the first three requirements of Kato and Kano and let each unknown be
     assigned to an equation of its own, including 1,000 synthesized cases; and a stratified
-    source-disjoint split with 10 seeds, whose validation cases choose the constants.
+    source-disjoint split with 10 seeds, whose validation cases choose the hyperparameters.
   \item A set-aware two-stage retrieval method that improves Recall@20 by $+0.075$ and $+0.141$ and
     MAP by $+0.170$ and $+0.205$ over classical information retrieval with weights chosen on the
     validation cases, on all 10 splits, and that also beats the variants with BM25 and E5.
@@ -144,7 +148,7 @@ AutoPMoB, equation discovery from numerical data, information retrieval and rera
 generation by LLMs, and mathematical information retrieval, and states how this study differs from
 each. Chapter~3 formulates the task and presents the two-stage method and its sequential variants.
 Chapter~4 describes the equation database, the construction of the test cases, and the stratified
-split. Chapter~5 defines the evaluation settings, the compared methods and their constants, and the
+split. Chapter~5 defines the evaluation settings, the compared methods and their hyperparameters, and the
 metrics. Chapter~6 reports the results and discusses them in the order performance, case
 characteristics, sources of the improvement, sequential selection, the null result for topic
 similarity, error analysis, and limitations. Chapter~7 concludes the thesis and outlines future

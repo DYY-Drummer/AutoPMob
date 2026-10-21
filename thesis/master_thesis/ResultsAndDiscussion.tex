@@ -10,7 +10,16 @@
 %   削除: 旧 §6.5 自由度ゼロ停止（2026-10-14 の方針 4）、旧 §6.8 第 1 段の重みの再設計（重みは検証用で比べ (0.3, 0.7) に固定、
 %         N_1 = 2,000 で被覆率 1.000 なので「介入」の前提がない）、LLM 直接生成の結果（本人の決定 2026-10-21）、
 %         「飽和を予測→介入で回復」の因果の主張（新しい結果では示されない）、出典数別の分析（新しい結果にない）。
+% 2026-10-21(2)（報告 f1076cd にそろえた）: 説明文 113 件の書き直しと単一出典 1 件の除外を入れた再計算が終わるまで、結果の数値は
+%   1,732 件での値のまま。その旨の注記を章の冒頭に置いた（報告 §1 と同じ趣旨）。設定 A の件数は 1,731 に直した。
+%   限界から「説明文が入出力変数と合っていない」を消し、定義の違う記号のあるケースを 1,299 件に数え直した。
 % ============================================================
+We are rerunning the experiments with the two changes to the data of Section~\ref{sec:cases}: the
+rewritten descriptions of 113 cross-source cases and the exclusion of one single-source case. Until
+those runs finish, the results in this chapter, in the appendix, and in the Abstract and
+Chapter~\ref{Introduction} are those of the 1,732 cases before the changes.
+% 再計算が終わったら数値を差し替える（親セッションから依頼が来る）。
+
 \section{Overall Comparison}
 \label{sec:overall}
 
@@ -43,7 +52,7 @@ Setting & Method & Recall@20 & MAP & R-Precision \\
 \midrule
 % source: main.json table.A / table_equiv.A（baseline_tfidf, proposed_static, proposed_train）
 A & Baseline (classical IR) & $0.906 \pm 0.020$ (0.908) & $0.690 \pm 0.060$ (0.705) & $0.605 \pm 0.058$ (0.618) \\
-(1,732 cases) & Proposed, static reranking & $0.981 \pm 0.010$ (0.983) & $0.860 \pm 0.053$ (0.879) & $0.779 \pm 0.073$ (0.805) \\
+(1,731 cases) & Proposed, static reranking & $0.981 \pm 0.010$ (0.983) & $0.860 \pm 0.053$ (0.879) & $0.779 \pm 0.073$ (0.805) \\
  & Proposed, learned greedy & $\mathbf{0.982 \pm 0.009}$ (0.989) & $\mathbf{0.874 \pm 0.050}$ (0.904) & $\mathbf{0.806 \pm 0.072}$ (0.848) \\
 \midrule
 % source: main.json table.B / table_equiv.B
@@ -257,7 +266,7 @@ within them. With $N_1 = 2{,}000$ both effects nearly vanish. We measured how we
 MLP, separates the ground-truth equations from the incorrect ones by the area under the
 receiver-operating-characteristic curve (AUC): within each case we formed every pair of a correct
 and an incorrect equation, took the fraction of pairs in which the correct equation has the higher
-value (a tie counting one half), and averaged over the 1,732 cases, with the incorrect equations
+value (a tie counting one half), and averaged over the 1,731 cases, with the incorrect equations
 drawn either from the whole database or from the 2,000 candidates (Table~\ref{tab:auc}). The latent
 similarity reaches an AUC of 0.948 against the whole database and 0.910 within the candidates, so
 it still separates the ground-truth equations inside the candidate set (0.594 with 50 candidates
@@ -282,7 +291,7 @@ both effects are small.
 
 \begin{table}[h]\centering
 \caption{How well one feature alone separates the ground-truth equations from the incorrect ones
-(AUC; mean $\pm$ standard error over the 1,732 cases of Setting~A). The columns differ in where the
+(AUC; mean $\pm$ standard error over the 1,731 cases of Setting~A). The columns differ in where the
 incorrect equations come from.}
 \label{tab:auc}
 \small
@@ -340,17 +349,16 @@ Nine limitations qualify these results. First, language models produced parts of
 wrote the descriptions of the synthesized cases, whose style may differ from requests written by
 engineers, although a program fixed the equations, inputs, and outputs of those cases
 (Section~\ref{sec:synth}). Another picked the ground truths of the single-source cases, which are
-the sets it judged minimal, and we have not verified their minimality (Section~\ref{sec:cases}).
-The 111 cross-source variants keep the descriptions of their originals, which do not match their
-input and output variables. Second, the method matches variables by symbol alone and ignores their
-definitions. In 1,300 of the evaluation ground truths, a symbol that appears in two or more
+the sets it judged minimal, and we have not verified their minimality (Section~\ref{sec:cases}). Second, the method matches
+variables by symbol alone and ignores their definitions. In 1,299 of the evaluation ground truths, a
+symbol that appears in two or more
 ground-truth equations carries definitions that differ between them. Most differences are
 paraphrases, but a language model (Claude Opus~5.5) that compared the definitions judged that in
 596 cases an input or output symbol denotes different quantities in different equations; no person
 has checked these judgments.
 % source: training_cases.json と unified_equations.json から実測（2026-10-21: 2 本以上の正解式に現れる記号の定義が完全一致で
-%         違うケース 1,300 / 1,732）; experiments/var_descriptions.json（claude-opus-5-5、meaning_conflict のあるケース
-%         596 / 1,732）
+%         違うケース 1,300 / 1,732。core_019_v1 を除くと 1,299 / 1,731）; experiments/var_descriptions.json（claude-opus-5-5、
+%         meaning_conflict のあるケース 596。core_019_v1 を除いても 596）
 Third, the evaluation is internal to the database: retrieval cannot find an equation that the
 database lacks. Fourth, the evaluation judges equations by their identifiers, so an identical
 equation from another source counts as an error, although we also reported the results with such
@@ -366,7 +374,7 @@ this, because every case takes its input and output variables from the symbols o
 equations, so the query and the answer share one notation; whether the method stays as accurate
 for queries written in another notation remains untested. Seventh, learned greedy selection trains
 with teacher forcing: the reference set holds ground-truth equations during training but the model's
-own selections, which may include mistakes, at inference. Eighth, we compared no alternative values
-of the reference-set size $m$, the margin $\gamma$, the number of incorrect candidates
-$n_{\mathrm{neg}}$, the number of epochs, or the learning rate. Ninth, the comparison with LLMs
+own selections, which may include mistakes, at inference. Eighth, among the hyperparameters, we
+compared no alternative values of the reference-set size $m$, the margin $\gamma$, the number of
+incorrect candidates $n_{\mathrm{neg}}$, the number of epochs, or the learning rate. Ninth, the comparison with LLMs
 has not yet produced results.

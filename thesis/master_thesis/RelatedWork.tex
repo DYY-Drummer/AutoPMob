@@ -44,6 +44,7 @@
 %   「文脈なしで絞れる」の根拠を N_1 = 50 の被覆率（旧 96.1%/96.7%）から、全 DB を並べる baseline の重み別の Recall@20
 %   （変数だけ 0.896、最良の混合 0.907、文章だけ 0.290。kato1020/baselines.json）と PFI に替えた。§2.4 を、LLM 直接生成を
 %   外部比較にする書き方から、DB を渡す比較の準備（第 5 章）に改め、データ作成の LLM の役割を訂正した（抽出はすべて Gemini）。
+% 2026-10-21(2): 単一出典は 91 件（core_019_v1 を除外）。Claude（Opus 4.8）が出典横断 113 件の説明文を書き直したことを加えた。
 % ============================================================
 \section{Component Technologies for Automated Physical Model Building}
 \label{sec:rw-autopmob}
@@ -161,9 +162,10 @@ multilayer perceptron without calling an LLM. An LLM can also select equations f
 instead of writing them, and Chapter~5 prepares such a comparison, in which LLMs read the whole
 database and answer with equation identifiers. LLMs still serve in data construction (Chapter~4):
 Gemini extracted the equations from the documents; Gemini 2.5 Pro generated the remaining 6\% as
-reference sets, which therefore have no source document, and picked the ground truths of the 92
-single-source cases; and Claude wrote 33 of the cross-source combinations and the natural-language
-descriptions of the synthesized cases, whose ground truths a program formed.
+reference sets, which therefore have no source document, and picked the ground truths of the 91
+single-source cases; and Claude wrote 33 of the cross-source combinations, rewrote the descriptions
+of 113 cross-source cases to match their input and output variables, and wrote the
+natural-language descriptions of the synthesized cases, whose ground truths a program formed.
 % source: unified_equations.json（文書由来 10,476/11,146 = 94.0\%、handbook_* 670 = 6.0\%）;
 %         generate_training_cases.py（single-source の正解集合、gemini-2.5-pro）; generate_multisource_cases.py（33 組、
 %         コーディング支援の Claude）; generate_dae_cases.py（合成ケースの説明文のみ claude-sonnet-4-5）。2026-09-28 訂正

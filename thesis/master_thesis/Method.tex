@@ -21,6 +21,8 @@
 %       ケースごとに n_neg 件を選び、候補に入った正解式のそれぞれと組にする）。
 %   (d) 逐次選択（訓練も逐次）が teacher forcing であることを、正解式が 3 本の例で示した（R6）。
 %   (e) 自由度ゼロ停止（旧 §3.5 Self-terminating Retrieval）は、報告と同じく削除した（2026-10-14 の方針 4）。
+% 2026-10-21(2)（報告 f1076cd にそろえた）: 手法の設定値（N_1、m、第 1 段の重み、gamma、n_neg、エポック数、学習率）を
+%   hyperparameters とよび、訓練で決まる MLP のパラメータと区別して定義した（旧 "constants"）。
 % ============================================================
 \section{Problem Formulation}
 \label{sec:formulation}
@@ -194,9 +196,12 @@ decide between them (Section~\ref{sec:compared}): (a) at random, and (b) the inc
 that the MLP, at that point of training, scores highest (hard negatives). We add (b) because, with
 a large $N_1$, most randomly chosen incorrect candidates already trail the correct ones by more
 than the margin and contribute no loss. Each update averages $\ell$ over all pairs of a batch of 16
-training cases. Chapter~\ref{Experiment} gives the values of $\gamma$, $n_{\mathrm{neg}}$, and the
-other constants, and \ref{app:hyper} lists them all. We call this configuration
-reranker-10S, and reranker-7 for the variant that drops the three set-aware features.
+training cases and adjusts the parameters of the MLP. The hyperparameters of the method --- the
+values fixed before training, as distinct from the parameters of the MLP, which training determines
+--- are $N_1$, $m$, the first-stage weights, $\gamma$, $n_{\mathrm{neg}}$, the number of epochs,
+and the learning rate; Section~\ref{sec:compared} gives their values, and \ref{app:hyper} lists them
+all. We call this configuration reranker-10S, and reranker-7 for the variant that drops the three
+set-aware features.
 % source: set_aware_reranker.py run_mode の訓練ループ（ケースごとに ns = min(n_neg_samples, |neg|) 件を無作為
 %         （rng.sample）または現在の点数の高い順（hard_neg）で選び、候補に入った正解式 pos_k のそれぞれと組にする。
 %         バッチ 16 ケースの組の損失を平均）
