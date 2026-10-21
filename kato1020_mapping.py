@@ -160,6 +160,19 @@ def build(tag="", selected="selected.json", choice_note=""):
             if k in C[S]:
                 L.append(f"\n設定 {S}：同じ式も正解とすると、提案（一括）− baseline は Recall@20 {wc(C[S][k])}、MAP {wc(C[S][k], 'MAP')}。")
         L.append("")
+    if bl:
+        L.append("### 付録 A：古典的情報検索手法の重み別の値（テストのケース、10 通りの分割の平均 ± 標準偏差）\n")
+        L.append("各分割では検証用のケースの Recall@20 で重みを選ぶ（選ばれた回数は上の「選ばれた定数」）。この表は、重みを 1 つに固定したときのテストの値。\n")
+        L.append(row("手法", "重み", "A Recall@20", "A MAP", "A R-Precision", "B Recall@20", "B MAP", "B R-Precision"))
+        L.append(row(*["---"] * 8))
+        for sc, nm in (("tfidf", "TF-IDF"), ("bm25", "BM25"), ("e5", "E5")):
+            for wl in bl["settings"]["A"]["scorers"][sc]["by_weight"]:
+                a = bl["settings"]["A"]["scorers"][sc]["by_weight"][wl]["test"]
+                b = bl["settings"]["B"]["scorers"][sc]["by_weight"][wl]["test"]
+                L.append(row(nm, wfmt(wl), ms(a["Recall@20"]), ms(a["MAP"]), ms(a["R-Precision"]),
+                             ms(b["Recall@20"]), ms(b["MAP"]), ms(b["R-Precision"])))
+        L.append("")
+    if main:
         L.append("### §4 の段落と付録 B（設定 A、正解式の数・入力変数の数で分けた値。分割のテストのケースを合わせた平均）\n")
         L.append(row("層", "件数", "提案（一括）R@20", "baseline R@20", "差", "提案 MAP", "baseline MAP", "差", "旧値（R@K の差）"))
         L.append(row(*["---"] * 9))
