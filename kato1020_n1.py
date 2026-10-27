@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 from pathlib import Path
 
@@ -19,7 +20,8 @@ import numpy as np
 from analyze_stage1_n1 import SEEDS, coverage_curve, jaccard_matrix, load_setting_A, split_for, worst_tie_ranks
 
 ROOT = Path(__file__).parent
-OUT = ROOT / "experiments" / "kato1020" / "n1_rule.json"
+# 出力先と外すケースの一覧は環境変数で切り替える（例 2026-10-21：KATO_OUT=experiments/kato1021、KATO_EXCLUDE=experiments/kato1020/excluded_cases.json。設定しなければ前回と同じ）
+OUT = Path(os.environ.get("KATO_OUT", ROOT / "experiments" / "kato1020")) / "n1_rule.json"
 WEIGHTS = {"w70-30": (0.7, 0.3), "w50-50": (0.5, 0.5), "w30-70": (0.3, 0.7), "w00-100": (0.0, 1.0)}
 
 
@@ -30,7 +32,7 @@ def round_up_thousand(n: int, n_eq: int | None = None) -> int:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--exclude", default=str(ROOT / "experiments" / "kato1020" / "excluded_cases.json"))
+    ap.add_argument("--exclude", default=str(Path(os.environ.get("KATO_EXCLUDE", Path(os.environ.get("KATO_OUT", ROOT / "experiments" / "kato1020")) / "excluded_cases.json"))))
     a = ap.parse_args()
     from sklearn.feature_extraction.text import TfidfVectorizer
     from sklearn.metrics.pairwise import cosine_similarity

@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -19,7 +20,8 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).parent
-OUT = ROOT / "experiments" / "kato1020"
+# 出力先と外すケースの一覧は環境変数で切り替える（例 2026-10-21：KATO_OUT=experiments/kato1021、KATO_EXCLUDE=experiments/kato1020/excluded_cases.json。設定しなければ前回と同じ）
+OUT = Path(os.environ.get("KATO_OUT", ROOT / "experiments" / "kato1020"))
 SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
 WEIGHTS = [(1.0, 0.0), (0.9, 0.1), (0.8, 0.2), (0.7, 0.3), (0.6, 0.4), (0.5, 0.5), (0.4, 0.6), (0.3, 0.7),
            (0.2, 0.8), (0.1, 0.9), (0.05, 0.95), (0.0, 1.0)]
@@ -66,7 +68,7 @@ def split_ids(cases, cl, ek, cs, seed):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--exclude", default=str(OUT / "excluded_cases.json"))
+    ap.add_argument("--exclude", default=str(Path(os.environ.get("KATO_EXCLUDE", OUT / "excluded_cases.json"))))
     a = ap.parse_args()
     from external_baselines import jaccard_matrix, load_setting, minmax_rows, text_scores
     from kato1014_common import METRIC_FNS, N_EQ

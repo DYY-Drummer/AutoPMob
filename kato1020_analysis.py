@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import glob
 import json
 from collections import defaultdict
@@ -24,7 +25,8 @@ import numpy as np
 from kato1014_common import METRIC_FNS, N_EQ, load_records, seed_means
 
 ROOT = Path(__file__).parent
-OUT = ROOT / "experiments" / "kato1020"
+# 出力先と外すケースの一覧は環境変数で切り替える（例 2026-10-21：KATO_OUT=experiments/kato1021、KATO_EXCLUDE=experiments/kato1020/excluded_cases.json。設定しなければ前回と同じ）
+OUT = Path(os.environ.get("KATO_OUT", ROOT / "experiments" / "kato1020"))
 RAW = OUT / "raw"
 SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
 M = ("Recall@20", "R-Precision", "MAP", "MAP@20")
@@ -33,6 +35,7 @@ NIN_BINS = [("1-3", lambda v: v <= 3), ("4-6", lambda v: 4 <= v <= 6), ("7-10", 
 NC_BINS = [(str(k), (lambda v, k=k: v == k)) for k in range(1, 11)]
 SELECTED = "selected.json"   # --selected で案 a/b/c を切り替える
 TAG = ""                     # --tag：final・sweep の入力先と出力名の接尾辞
+FIG_TAG = None               # --fig-tag：PFI の図の名前の接尾辞（既定は final<tag>。2026-10-21 は旧図を上書きしないよう final_1021）
 
 
 # ---------------------------------------------------------------------------
@@ -297,7 +300,7 @@ def cmd_pfi():
             c.pop("mannwhitney_p", None)   # 検定はしない（2026-10-20 本人の決定）
             out["cancellation"][f][m] = c
     dump(out, f"pfi{TAG}.json")
-    P.figure(out, f"final{TAG}")
+    P.figure(out, FIG_TAG or f"final{TAG}")
     m = "Recall@20"
     print(f"base {m} {out['base'][m]['mean']:.4f}±{out['base'][m]['std']:.4f}")
     for lab, v in sorted(out["targets"].items(), key=lambda kv: -kv[1][m]["drop_mean"]):
@@ -375,6 +378,7 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["main", "greedy", "mech", "pfi", "sweep"])
     ap.add_argument("--selected", default="selected.json")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--fig-tag", default=None, help="PFI の図 docs/figures/fig_pfi_recall20_ja_<fig-tag>.png の接尾辞（既定 final<tag>）")
     a = ap.parse_args()
-    SELECTED, TAG = a.selected, a.tag
+    SELECTED, TAG, FIG_TAG = a.selected, a.tag, a.fig_tag
     {"main": cmd_main, "greedy": cmd_greedy, "mech": cmd_mech, "pfi": cmd_pfi, "sweep": cmd_sweep}[a.cmd]()

@@ -367,7 +367,9 @@ if __name__ == "__main__":
     ap.add_argument("--figure-only", action="store_true", help="保存済み JSON から図だけ作る")
     ap.add_argument("--exclude", default=None, help="外すケースの一覧の JSON（2026-10-20）")
     ap.add_argument("--figure", default="docs/figures/fig_n1_full_coverage_ja.png")
+    ap.add_argument("--marks", default=None, help="比べた N1（点線）をコンマ区切りで（例 50,200,500,1000）")
+    ap.add_argument("--chosen", type=int, default=None, help="本研究で使う N1（実線）")
     a = ap.parse_args()
     if not a.figure_only:
         run(a.w_text, a.w_var, a.output, exclude=a.exclude)
-    make_figure(a.output, a.figure)
+    make_figure(a.output, a.figure, marks=[int(x) for x in a.marks.split(",")] if a.marks else None, chosen=a.chosen)

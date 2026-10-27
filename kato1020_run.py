@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import shlex
 import subprocess
@@ -21,9 +22,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-OUT = ROOT / "experiments" / "kato1020"
+# 出力先と外すケースの一覧は環境変数で切り替える（例 2026-10-21：KATO_OUT=experiments/kato1021、KATO_EXCLUDE=experiments/kato1020/excluded_cases.json。設定しなければ前回と同じ）
+OUT = Path(os.environ.get("KATO_OUT", ROOT / "experiments" / "kato1020"))
 RAW = OUT / "raw"
-EX = OUT / "excluded_cases.json"
+EX = Path(os.environ.get("KATO_EXCLUDE", OUT / "excluded_cases.json"))
+SETTINGS = os.environ.get("KATO_SETTINGS", "A,B").split(",")   # 設定 B が変わらない回は "A" だけ実行する
+# 重みごとに N1 を固定する（例 "w30-70=2000"）。2026-10-21：規則の値が分割で 1,000〜2,000 になったので、本人の決定どおり 2,000 にそろえる
+N1_FIX = {k: int(v) for k, v in (x.split("=") for x in os.environ.get("KATO_N1_FIX", "").split(",") if x)}
 SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
 WEIGHTS = {"w70-30": (0.7, 0.3), "w50-50": (0.5, 0.5), "w30-70": (0.3, 0.7), "w00-100": (0.0, 1.0)}
 NEGS = {"random": [], "hard": ["--hard-neg"]}
@@ -44,11 +49,11 @@ def sar(out, setting, seed, top_k, w, neg, extra=()):
 def jobs_select():
     rule = json.load(open(OUT / "n1_rule.json", encoding="utf-8"))["settings"]
     J = []
-    for S in ("A", "B"):
+    for S in [x for x in ("A", "B") if x in SETTINGS]:
         for seed in SEEDS:
             for w in WEIGHTS:
                 for neg in NEGS:
-                    n1 = rule[S][str(seed)][w]["N1"]
+                    n1 = N1_FIX.get(w, rule[S][str(seed)][w]["N1"])
                     out = RAW / "select" / f"{S}_{w}_{neg}__{seed}.json"
                     J.append((out, sar(out, S, seed, n1, w, neg, ["--modes", "reranker-10S", "--eval-val", "--equiv"])))
     return J
@@ -58,7 +63,7 @@ def jobs_final(selected="selected.json", tag=""):
     sel = json.load(open(OUT / selected, encoding="utf-8"))["selected"]
     FIN = RAW / f"final{tag}"
     J = []
-    for S in ("A", "B"):
+    for S in [x for x in ("A", "B") if x in SETTINGS]:
         for seed in SEEDS:
             c = sel[S][str(seed)]
             for kind, flag in (("infer", "--greedy"), ("train", "--train-greedy")):
@@ -95,7 +100,7 @@ def jobs_final(selected="selected.json", tag=""):
 def jobs_sweep(selected="selected.json", tag=""):
     sel = json.load(open(OUT / selected, encoding="utf-8"))["selected"]
     J = []
-    for S in ("A", "B"):
+    for S in [x for x in ("A", "B") if x in SETTINGS]:
         for seed in SEEDS:
             c = sel[S][str(seed)]
             for n1 in SWEEP_N1:
@@ -122,7 +127,8 @@ def run(jobs, P):
         for fut in as_completed([ex.submit(one, o, c) for o, c in todo]):
             o, rc, dt = fut.result()
             fails += rc != 0
-            print(f"{'done' if rc == 0 else 'FAIL'} {Path(o).relative_to(ROOT)} {dt:.0f}s", flush=True)
+            # KATO_OUT が相対パスでも表示できるように relpath を使う（relative_to は相対パスで止まる）
+            print(f"{'done' if rc == 0 else 'FAIL'} {os.path.relpath(o, ROOT)} {dt:.0f}s", flush=True)
     print(f"ALL JOBS FINISHED（失敗 {fails}）", flush=True)
 
 

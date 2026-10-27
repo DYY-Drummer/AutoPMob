@@ -134,3 +134,6 @@ experiments/kato1014/raw/
 
 # 2026-10-21 加藤先生の 2 回目のコメントによる再実験：分割ごとの実行の生データ（kato1020_run.py で再生成できる。統計 JSON のみコミット）
 experiments/kato1020/raw/
+
+# 2026-10-21（3 回目）出典横断の 113 件の説明文を書き直し、92 件を外した再実験：分割ごとの実行の生データ（KATO_OUT=experiments/kato1021 で kato1020_run.py を実行して再生成できる。統計 JSON のみコミット）
+experiments/kato1021/raw/

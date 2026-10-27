@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+import os
 from collections import Counter
 from pathlib import Path
 
@@ -17,11 +18,13 @@ import numpy as np
 from kato1014_common import METRIC_FNS, load_records
 
 ROOT = Path(__file__).parent
-OUT = ROOT / "experiments" / "kato1020"
+# 出力先と外すケースの一覧は環境変数で切り替える（例 2026-10-21：KATO_OUT=experiments/kato1021、KATO_EXCLUDE=experiments/kato1020/excluded_cases.json。設定しなければ前回と同じ）
+OUT = Path(os.environ.get("KATO_OUT", ROOT / "experiments" / "kato1020"))
 SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
 WEIGHTS = ["w70-30", "w50-50", "w30-70", "w00-100"]
 NEGS = ["random", "hard"]
 M = ("Recall@20", "MAP", "MAP@20", "R-Precision")
+N1_FIX = {k: int(v) for k, v in (x.split("=") for x in os.environ.get("KATO_N1_FIX", "").split(",") if x)}
 
 
 def choose(cands):
@@ -75,7 +78,7 @@ def main():
             w, neg, v = choose(cands)
             t, tq, nv, nt, n = tests[(w, neg)]
             all_tests[seed] = tests
-            assert n == rule[S][str(seed)][w]["N1"]
+            assert n == N1_FIX.get(w, rule[S][str(seed)][w]["N1"])
             doc["selected"][S][str(seed)] = {"w": w, "neg": neg, "N1": n, "val": v, "test": t, "test_equiv": tq,
                                              "n_val": nv, "n_test": nt}
         if a.pooled:

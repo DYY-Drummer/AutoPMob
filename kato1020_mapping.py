@@ -6,11 +6,13 @@
 from __future__ import annotations
 
 import json
+import os
 from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-K = ROOT / "experiments" / "kato1020"
+# 出力先と外すケースの一覧は環境変数で切り替える（例 2026-10-21：KATO_OUT=experiments/kato1021、KATO_EXCLUDE=experiments/kato1020/excluded_cases.json。設定しなければ前回と同じ）
+K = Path(os.environ.get("KATO_OUT", ROOT / "experiments" / "kato1020"))
 OUTMD = ROOT / "docs" / "加藤先生指示_2026-10-20_旧値新値対応表.md"
 
 

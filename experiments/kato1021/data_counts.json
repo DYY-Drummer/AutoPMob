@@ -1,0 +1,307 @@
+{
+ "note": "報告書の本文に出てくるデータの数。v1 は 91 件を外した 1,732 件（報告書 db21007 の値の確認）。",
+ "v1_check": {
+  "exclude": "/Users/kazuhiromiyamura/Projects/AutoPMob/experiments/kato1020/excluded_cases.json",
+  "n_cases": 1732,
+  "by_variant": {
+   "original": 92,
+   "multisource_original": 33,
+   "multisource_random_io": 111,
+   "multisource_v3": 496,
+   "dae": 1000
+  },
+  "gt_distinct_equations": 3132,
+  "gt_identical_latex_in_other_source": 386,
+  "cross_source_no_shared_symbol_by_variant": {
+   "multisource_original": 24,
+   "multisource_random_io": 81
+  },
+  "single_source_breakdown": {
+   "n": 92,
+   "K1": 67,
+   "handbook_only": 61,
+   "one_source": 91
+  },
+  "table2": {
+   "単一出典": {
+    "n": 92,
+    "mean_K": 1.34,
+    "max_K": 4,
+    "mean_sources": 1.01
+   },
+   "出典横断": {
+    "n": 640,
+    "mean_K": 2.01,
+    "max_K": 3,
+    "mean_sources": 2.01
+   },
+   "合成": {
+    "n": 1000,
+    "mean_K": 5.5,
+    "max_K": 10,
+    "mean_sources": 1.1
+   }
+  },
+  "requirements_1_3": {
+   "req1": 1732,
+   "req2": 1732,
+   "req3": 1732
+  },
+  "req3_trivial_no_intermediate": 1725,
+  "req3_nontrivial": 7,
+  "same_symbol_different_definition_cases": 1300,
+  "same_symbol_different_definition_cases_normalized": 1293,
+  "llm_meaning_conflict_cases": 596,
+  "setting_A_mean_K": 3.99,
+  "setting_A_share_K_ge_2": 0.904
+ },
+ "new": {
+  "exclude": "experiments/kato1020/excluded_cases_v3.json",
+  "n_cases": 1731,
+  "by_variant": {
+   "original": 91,
+   "multisource_original": 33,
+   "multisource_random_io": 111,
+   "multisource_v3": 496,
+   "dae": 1000
+  },
+  "gt_distinct_equations": 3132,
+  "gt_identical_latex_in_other_source": 386,
+  "cross_source_no_shared_symbol_by_variant": {
+   "multisource_original": 24,
+   "multisource_random_io": 81
+  },
+  "single_source_breakdown": {
+   "n": 91,
+   "K1": 67,
+   "handbook_only": 61,
+   "one_source": 91
+  },
+  "table2": {
+   "単一出典": {
+    "n": 91,
+    "mean_K": 1.33,
+    "max_K": 4,
+    "mean_sources": 1.0
+   },
+   "出典横断": {
+    "n": 640,
+    "mean_K": 2.01,
+    "max_K": 3,
+    "mean_sources": 2.01
+   },
+   "合成": {
+    "n": 1000,
+    "mean_K": 5.5,
+    "max_K": 10,
+    "mean_sources": 1.1
+   }
+  },
+  "requirements_1_3": {
+   "req1": 1731,
+   "req2": 1731,
+   "req3": 1731
+  },
+  "req3_trivial_no_intermediate": 1724,
+  "req3_nontrivial": 7,
+  "same_symbol_different_definition_cases": 1299,
+  "same_symbol_different_definition_cases_normalized": 1292,
+  "llm_meaning_conflict_cases": 596,
+  "setting_A_mean_K": 3.99,
+  "setting_A_share_K_ge_2": 0.904
+ },
+ "context_changes_vs_db21007": {
+  "rev": "db21007",
+  "n_changed": 113,
+  "fields": {
+   "context": 113
+  },
+  "by_variant": {
+   "multisource_original": 2,
+   "multisource_random_io": 111
+  },
+  "case_ids_not_random_io": [
+   "ms_pbr_chemeng_001",
+   "ms_pfr_arrhenius_001"
+  ],
+  "n_changed_excluded": 0,
+  "n_changed_setting_B": 0
+ },
+ "setting_B_splits_identical": true,
+ "split_sizes": {
+  "A_v1": {
+   "42": {
+    "train": 975,
+    "val": 349,
+    "test": 408
+   },
+   "123": {
+    "train": 1023,
+    "val": 251,
+    "test": 458
+   },
+   "456": {
+    "train": 1081,
+    "val": 247,
+    "test": 404
+   },
+   "789": {
+    "train": 1072,
+    "val": 319,
+    "test": 341
+   },
+   "1024": {
+    "train": 907,
+    "val": 341,
+    "test": 484
+   },
+   "2024": {
+    "train": 1028,
+    "val": 254,
+    "test": 450
+   },
+   "3141": {
+    "train": 961,
+    "val": 244,
+    "test": 527
+   },
+   "5926": {
+    "train": 988,
+    "val": 348,
+    "test": 396
+   },
+   "7777": {
+    "train": 1218,
+    "val": 216,
+    "test": 298
+   },
+   "9999": {
+    "train": 993,
+    "val": 272,
+    "test": 467
+   }
+  },
+  "A_new": {
+   "42": {
+    "train": 975,
+    "val": 349,
+    "test": 407
+   },
+   "123": {
+    "train": 1022,
+    "val": 251,
+    "test": 458
+   },
+   "456": {
+    "train": 1080,
+    "val": 247,
+    "test": 404
+   },
+   "789": {
+    "train": 1072,
+    "val": 319,
+    "test": 340
+   },
+   "1024": {
+    "train": 907,
+    "val": 341,
+    "test": 483
+   },
+   "2024": {
+    "train": 1027,
+    "val": 254,
+    "test": 450
+   },
+   "3141": {
+    "train": 960,
+    "val": 244,
+    "test": 527
+   },
+   "5926": {
+    "train": 987,
+    "val": 348,
+    "test": 396
+   },
+   "7777": {
+    "train": 1217,
+    "val": 216,
+    "test": 298
+   },
+   "9999": {
+    "train": 993,
+    "val": 272,
+    "test": 466
+   }
+  },
+  "B": {
+   "42": {
+    "train": 532,
+    "val": 239,
+    "test": 229
+   },
+   "123": {
+    "train": 537,
+    "val": 197,
+    "test": 266
+   },
+   "456": {
+    "train": 560,
+    "val": 151,
+    "test": 289
+   },
+   "789": {
+    "train": 524,
+    "val": 212,
+    "test": 264
+   },
+   "1024": {
+    "train": 581,
+    "val": 206,
+    "test": 213
+   },
+   "2024": {
+    "train": 544,
+    "val": 263,
+    "test": 193
+   },
+   "3141": {
+    "train": 603,
+    "val": 149,
+    "test": 248
+   },
+   "5926": {
+    "train": 581,
+    "val": 189,
+    "test": 230
+   },
+   "7777": {
+    "train": 609,
+    "val": 157,
+    "test": 234
+   },
+   "9999": {
+    "train": 550,
+    "val": 184,
+    "test": 266
+   }
+  }
+ },
+ "splits_match_kato1020_runs": {
+  "A": true,
+  "B": true
+ },
+ "newly_excluded_in_kato1020_runs": {
+  "core_019_v1": {
+   "42": "test",
+   "123": "train",
+   "456": "train",
+   "789": "test",
+   "1024": "test",
+   "2024": "train",
+   "3141": "train",
+   "5926": "train",
+   "7777": "train",
+   "9999": "test"
+  }
+ }
+}
