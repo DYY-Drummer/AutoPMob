@@ -12,6 +12,8 @@
 %   - プロンプト（付録 E）を本文どおり転記した。合成のケースの例（dae_X3_016）を training_cases.json から転記した。
 % 2026-10-21(2)（報告 f1076cd にそろえた）: A.1 を Hyperparameters に改名。表 tab:weights の設定 A を 1,731 件に。
 %   A.7 に出典横断の説明文の書き直しのプロンプト（Claude Opus 4.8、v6）を加えた。
+% 2026-10-27: 表 6〜10 と本文の数値を再計算（8b77e73、experiments/kato1021/。説明文 113 件の書き直し・core_019_v1 の除外、
+%   設定 A 1,731 件）の値に差し替えた。設定 A の列は JSON から直接書き出した（設定 B は前回と同じ値であることを確かめてある）。
 % ============================================================
 \chapter{Supplementary Materials}
 
@@ -20,7 +22,7 @@
 Table~\ref{tab:hyper} lists the hyperparameters of the methods, the values fixed before training,
 together with the other settings of the experiments. Section~\ref{sec:compared} explains which of
 them the validation cases chose.
-% source: experiments/kato1020/selected.json fixed / selected; set_aware_reranker.py（K_REF=5、greedy_cap=20、
+% source: experiments/kato1021/selected.json fixed / selected; set_aware_reranker.py（K_REF=5、greedy_cap=20、
 %         --greedy-train-cap 8）; external_baselines.py・kato1020_baselines.py; run_llm_db_baseline.py（版 3）
 
 \begin{table}[h]\centering
@@ -37,7 +39,7 @@ Loss / margin $\gamma$ & pairwise ranking / 0.1 \\
 Optimizer / epochs / batch & AdamW / 15 / 16 training cases \\
 Learning rate / weight decay & $10^{-3}$ / $10^{-4}$ \\
 Incorrect candidates $n_{\mathrm{neg}}$ & 8 per training case \\
-Choice of incorrect candidates & chosen on validation: hard negatives in 19 of 20 splits, random in 1 \\
+Choice of incorrect candidates & chosen on validation: hard negatives in all 20 splits \\
 Stage-1 weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & $(0.3, 0.7)$ \\
 Stage-1 candidates $N_1$ & 2,000 \\
 Reference set size $m$ & 5 \\
@@ -62,13 +64,13 @@ Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
 \label{app:weights}
 Table~\ref{tab:weights} lists the classical baseline under each of the 12 weight pairs. Its
 validation Recall@20 hardly changes for text weights $w_{\mathrm{t}} \le 0.5$ (0.889 to 0.906 in
-Setting~A), and the text term alone, $(1.0, 0.0)$, reaches only 0.351. The baseline of
+Setting~A), and the text term alone, $(1.0, 0.0)$, reaches only 0.362. The baseline of
 Chapter~\ref{ResultsAndDiscussion} takes, in each split, the pair with the highest validation
 Recall@20. When BM25 or E5 replaces the TF-IDF text similarity, rescaled to $[0, 1]$ over the
 database before it is mixed with the variable overlap, and the weights are again chosen per split,
-the test Recall@20 is 0.904 (Setting~A) and 0.819 (Setting~B) for BM25 and 0.892 and 0.806 for E5,
+the test Recall@20 is 0.905 (Setting~A) and 0.819 (Setting~B) for BM25 and 0.892 and 0.806 for E5,
 on a par with TF-IDF (0.906 and 0.825).
-% source: experiments/kato1020/baselines.json（by_weight の val / test、scorers.*.summary_test）
+% source: experiments/kato1021/baselines.json（by_weight の val / test、scorers.*.summary_test。設定 B は kato1020 と同じ値）
 
 \begin{table}[h]\centering
 \caption{The classical baseline under 12 weight pairs. ``Validation'' gives the Recall@20 of the
@@ -85,22 +87,22 @@ with $\pm$ SD). The last three rows choose the weights per split on the validati
 \cmidrule{3-4}\cmidrule{7-8}
 Weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@20 & Recall@20 & MAP & & Recall@20 & Recall@20 & MAP \\
 \midrule
-$(1.0, 0.0)$ & 0.351 & $0.290 \pm 0.046$ & $0.143 \pm 0.031$ & & 0.368 & $0.360 \pm 0.053$ & $0.170 \pm 0.030$ \\
-$(0.9, 0.1)$ & 0.531 & $0.479 \pm 0.063$ & $0.248 \pm 0.038$ & & 0.544 & $0.516 \pm 0.048$ & $0.289 \pm 0.033$ \\
-$(0.8, 0.2)$ & 0.748 & $0.711 \pm 0.052$ & $0.427 \pm 0.052$ & & 0.680 & $0.645 \pm 0.037$ & $0.423 \pm 0.034$ \\
-$(0.7, 0.3)$ & 0.833 & $0.827 \pm 0.025$ & $0.584 \pm 0.057$ & & 0.762 & $0.721 \pm 0.032$ & $0.512 \pm 0.035$ \\
-$(0.6, 0.4)$ & 0.875 & $0.876 \pm 0.021$ & $0.649 \pm 0.057$ & & 0.826 & $0.780 \pm 0.027$ & $0.574 \pm 0.036$ \\
-$(0.5, 0.5)$ & 0.898 & $0.897 \pm 0.020$ & $0.676 \pm 0.060$ & & 0.858 & $0.814 \pm 0.027$ & $0.608 \pm 0.037$ \\
-$(0.4, 0.6)$ & 0.906 & $0.905 \pm 0.020$ & $0.689 \pm 0.060$ & & 0.873 & $0.827 \pm 0.027$ & $0.627 \pm 0.036$ \\
-$(0.3, 0.7)$ & 0.906 & $0.907 \pm 0.020$ & $0.690 \pm 0.061$ & & 0.877 & $0.829 \pm 0.026$ & $0.630 \pm 0.037$ \\
-$(0.2, 0.8)$ & 0.901 & $0.906 \pm 0.018$ & $0.689 \pm 0.060$ & & 0.875 & $0.826 \pm 0.023$ & $0.626 \pm 0.036$ \\
-$(0.1, 0.9)$ & 0.893 & $0.901 \pm 0.017$ & $0.686 \pm 0.059$ & & 0.863 & $0.816 \pm 0.021$ & $0.620 \pm 0.035$ \\
-$(0.05, 0.95)$ & 0.891 & $0.899 \pm 0.016$ & $0.684 \pm 0.058$ & & 0.860 & $0.812 \pm 0.022$ & $0.617 \pm 0.033$ \\
+$(1.0, 0.0)$ & 0.362 & $0.300 \pm 0.052$ & $0.149 \pm 0.034$ & & 0.368 & $0.360 \pm 0.053$ & $0.170 \pm 0.030$ \\
+$(0.9, 0.1)$ & 0.536 & $0.484 \pm 0.066$ & $0.254 \pm 0.043$ & & 0.544 & $0.516 \pm 0.048$ & $0.289 \pm 0.033$ \\
+$(0.8, 0.2)$ & 0.748 & $0.710 \pm 0.052$ & $0.434 \pm 0.056$ & & 0.680 & $0.645 \pm 0.037$ & $0.423 \pm 0.034$ \\
+$(0.7, 0.3)$ & 0.833 & $0.827 \pm 0.025$ & $0.587 \pm 0.058$ & & 0.762 & $0.721 \pm 0.032$ & $0.512 \pm 0.035$ \\
+$(0.6, 0.4)$ & 0.875 & $0.877 \pm 0.021$ & $0.653 \pm 0.058$ & & 0.826 & $0.780 \pm 0.027$ & $0.574 \pm 0.036$ \\
+$(0.5, 0.5)$ & 0.898 & $0.898 \pm 0.020$ & $0.679 \pm 0.061$ & & 0.858 & $0.814 \pm 0.027$ & $0.608 \pm 0.037$ \\
+$(0.4, 0.6)$ & 0.906 & $0.905 \pm 0.020$ & $0.692 \pm 0.061$ & & 0.873 & $0.827 \pm 0.027$ & $0.627 \pm 0.036$ \\
+$(0.3, 0.7)$ & 0.906 & $0.907 \pm 0.020$ & $0.693 \pm 0.061$ & & 0.877 & $0.829 \pm 0.026$ & $0.630 \pm 0.037$ \\
+$(0.2, 0.8)$ & 0.901 & $0.906 \pm 0.018$ & $0.692 \pm 0.060$ & & 0.875 & $0.826 \pm 0.023$ & $0.626 \pm 0.036$ \\
+$(0.1, 0.9)$ & 0.893 & $0.901 \pm 0.017$ & $0.688 \pm 0.059$ & & 0.863 & $0.816 \pm 0.021$ & $0.620 \pm 0.035$ \\
+$(0.05, 0.95)$ & 0.891 & $0.899 \pm 0.016$ & $0.687 \pm 0.058$ & & 0.860 & $0.812 \pm 0.022$ & $0.617 \pm 0.033$ \\
 $(0.0, 1.0)$ & 0.889 & $0.896 \pm 0.016$ & $0.677 \pm 0.054$ & & 0.854 & $0.807 \pm 0.020$ & $0.605 \pm 0.029$ \\
 \midrule
-TF-IDF, chosen per split & --- & $0.906 \pm 0.020$ & $0.690 \pm 0.060$ & & --- & $0.825 \pm 0.024$ & $0.626 \pm 0.035$ \\
-BM25, chosen per split & --- & $0.904 \pm 0.019$ & $0.686 \pm 0.057$ & & --- & $0.819 \pm 0.023$ & $0.622 \pm 0.033$ \\
-E5, chosen per split & --- & $0.892 \pm 0.023$ & $0.675 \pm 0.058$ & & --- & $0.806 \pm 0.020$ & $0.610 \pm 0.029$ \\
+TF-IDF, chosen per split & --- & $0.906 \pm 0.020$ & $0.693 \pm 0.061$ & & --- & $0.825 \pm 0.024$ & $0.626 \pm 0.035$ \\
+BM25, chosen per split & --- & $0.905 \pm 0.019$ & $0.689 \pm 0.057$ & & --- & $0.819 \pm 0.023$ & $0.622 \pm 0.033$ \\
+E5, chosen per split & --- & $0.892 \pm 0.023$ & $0.677 \pm 0.058$ & & --- & $0.806 \pm 0.020$ & $0.610 \pm 0.029$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -114,7 +116,7 @@ Recall@20 is 0.980 to 0.983 in Setting~A and 0.974 to 0.975 in Setting~B. Only t
 $(0.3, 0.7)$ gave $N_1 = 2{,}000$ in every split and admitted every ground-truth equation of the
 test cases as well; under the other pairs, the $N_1$ fixed on the training and validation cases
 left a few ground-truth equations of the test cases out of the candidates in some splits.
-% source: experiments/kato1020/selected.json grid（val / test の平均）; n1_rule.json（重みと分割ごとの N_1）
+% source: experiments/kato1021/selected.json grid（val / test の平均）; n1_rule.json（重みと分割ごとの N_1）
 
 \begin{table}[h]\centering
 \caption{The proposed method (static reranking) for each combination of first-stage weights and
@@ -128,14 +130,14 @@ choice of incorrect candidates (means over 10 splits). $N_1$ gives the range ove
 \cmidrule{5-5}\cmidrule{6-7}
 Setting & Weights & Incorrect candidates & $N_1$ & Recall@20 & Recall@20 & MAP \\
 \midrule
-A & $(0.7, 0.3)$ & random & 4,000--6,000 & 0.974 & 0.974 & 0.828 \\
- & $(0.7, 0.3)$ & hard negatives & 4,000--6,000 & 0.980 & 0.981 & 0.844 \\
- & $(0.5, 0.5)$ & random & 2,000--4,000 & 0.975 & 0.975 & 0.838 \\
- & $(0.5, 0.5)$ & hard negatives & 2,000--4,000 & 0.981 & 0.981 & 0.857 \\
- & $(0.3, 0.7)$ & random & 2,000 & 0.978 & 0.975 & 0.843 \\
- & $(0.3, 0.7)$ & hard negatives & 2,000 & 0.982 & 0.981 & 0.861 \\
- & $(0.0, 1.0)$ & random & 2,000--3,000 & 0.979 & 0.976 & 0.844 \\
- & $(0.0, 1.0)$ & hard negatives & 2,000--3,000 & 0.983 & 0.981 & 0.863 \\
+A & $(0.7, 0.3)$ & random & 4,000--6,000 & 0.973 & 0.974 & 0.831 \\
+ & $(0.7, 0.3)$ & hard negatives & 4,000--6,000 & 0.980 & 0.980 & 0.849 \\
+ & $(0.5, 0.5)$ & random & 2,000--4,000 & 0.976 & 0.976 & 0.841 \\
+ & $(0.5, 0.5)$ & hard negatives & 2,000--4,000 & 0.981 & 0.981 & 0.860 \\
+ & $(0.3, 0.7)$ & random & 2,000 & 0.978 & 0.976 & 0.844 \\
+ & $(0.3, 0.7)$ & hard negatives & 2,000 & 0.982 & 0.981 & 0.862 \\
+ & $(0.0, 1.0)$ & random & 2,000--3,000 & 0.980 & 0.976 & 0.851 \\
+ & $(0.0, 1.0)$ & hard negatives & 2,000--3,000 & 0.983 & 0.980 & 0.861 \\
 \midrule
 B & $(0.7, 0.3)$ & random & 4,000--6,000 & 0.963 & 0.952 & 0.775 \\
  & $(0.7, 0.3)$ & hard negatives & 4,000--6,000 & 0.975 & 0.965 & 0.812 \\
@@ -152,8 +154,8 @@ B & $(0.7, 0.3)$ & random & 4,000--6,000 & 0.963 & 0.952 & 0.775 \\
 \section{Results by Case Characteristics}
 \label{app:bucket}
 Table~\ref{tab:bucket} gives the values behind Fig.~\ref{fig:characteristic} (Setting~A; means
-over the 4,233 test records of the 10 splits; the table does not show the spread across splits).
-% source: experiments/kato1020/main.json buckets.A（baseline_tfidf, proposed_static, proposed_train）
+over the 4,229 test records of the 10 splits; the table does not show the spread across splits).
+% source: experiments/kato1021/main.json buckets.A（baseline_tfidf, proposed_static, proposed_train）
 
 \begin{table}[h]\centering
 \caption{Results by the number of ground-truth equations and by the number of input variables
@@ -168,22 +170,22 @@ learned greedy selection.}
 \cmidrule(lr){3-5}\cmidrule(l){6-8}
  & Records & Baseline & Static & Learned & Baseline & Static & Learned \\
 \midrule
-1 ground-truth equation & 408 & 1.000 & 1.000 & 1.000 & 0.934 & 0.928 & 0.930 \\
-2 ground-truth equations & 1,888 & 0.992 & 0.999 & 0.999 & 0.730 & 0.886 & 0.893 \\
-3 ground-truth equations & 280 & 0.910 & 0.995 & 0.994 & 0.647 & 0.856 & 0.870 \\
-4 ground-truth equations & 244 & 0.895 & 0.991 & 0.991 & 0.624 & 0.833 & 0.826 \\
-5 ground-truth equations & 239 & 0.885 & 0.982 & 0.982 & 0.637 & 0.853 & 0.874 \\
-6 ground-truth equations & 249 & 0.811 & 0.973 & 0.962 & 0.623 & 0.827 & 0.860 \\
-7 ground-truth equations & 227 & 0.729 & 0.943 & 0.945 & 0.542 & 0.770 & 0.795 \\
-8 ground-truth equations & 238 & 0.739 & 0.934 & 0.947 & 0.566 & 0.806 & 0.828 \\
-9 ground-truth equations & 236 & 0.720 & 0.933 & 0.936 & 0.560 & 0.798 & 0.830 \\
-10 ground-truth equations & 224 & 0.663 & 0.900 & 0.917 & 0.493 & 0.750 & 0.792 \\
+1 ground-truth equation & 408 & 1.000 & 1.000 & 1.000 & 0.934 & 0.931 & 0.926 \\
+2 ground-truth equations & 1,884 & 0.992 & 0.999 & 0.999 & 0.735 & 0.888 & 0.900 \\
+3 ground-truth equations & 280 & 0.912 & 0.996 & 0.994 & 0.653 & 0.861 & 0.887 \\
+4 ground-truth equations & 244 & 0.895 & 0.990 & 0.993 & 0.624 & 0.833 & 0.827 \\
+5 ground-truth equations & 239 & 0.885 & 0.978 & 0.983 & 0.637 & 0.859 & 0.876 \\
+6 ground-truth equations & 249 & 0.811 & 0.975 & 0.964 & 0.623 & 0.828 & 0.857 \\
+7 ground-truth equations & 227 & 0.729 & 0.940 & 0.948 & 0.542 & 0.774 & 0.796 \\
+8 ground-truth equations & 238 & 0.739 & 0.937 & 0.947 & 0.566 & 0.805 & 0.826 \\
+9 ground-truth equations & 236 & 0.720 & 0.932 & 0.939 & 0.560 & 0.795 & 0.832 \\
+10 ground-truth equations & 224 & 0.663 & 0.901 & 0.917 & 0.493 & 0.752 & 0.792 \\
 \midrule
-5 or fewer input variables & 467 & 0.989 & 1.000 & 1.000 & 0.860 & 0.892 & 0.907 \\
-6--10 input variables & 1,096 & 0.971 & 0.998 & 0.997 & 0.739 & 0.869 & 0.872 \\
-11--15 input variables & 913 & 0.950 & 0.992 & 0.993 & 0.658 & 0.850 & 0.863 \\
-16--20 input variables & 761 & 0.893 & 0.978 & 0.980 & 0.678 & 0.875 & 0.886 \\
-21 or more input variables & 996 & 0.757 & 0.943 & 0.947 & 0.573 & 0.820 & 0.847 \\
+5 or fewer input variables & 463 & 0.989 & 1.000 & 1.000 & 0.862 & 0.892 & 0.906 \\
+6--10 input variables & 1,096 & 0.972 & 0.998 & 0.997 & 0.749 & 0.874 & 0.882 \\
+11--15 input variables & 913 & 0.950 & 0.992 & 0.993 & 0.659 & 0.854 & 0.869 \\
+16--20 input variables & 761 & 0.893 & 0.978 & 0.982 & 0.678 & 0.874 & 0.887 \\
+21 or more input variables & 996 & 0.757 & 0.943 & 0.947 & 0.573 & 0.819 & 0.846 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -195,10 +197,10 @@ every ground-truth equation among the candidates and the candidate coverage grow
 ground-truth equation of every case enters the candidates at $N_1 = 1{,}880$.
 Table~\ref{tab:n1} lists the proposed method (static reranking) trained and evaluated with
 different $N_1$. Beyond $N_1 = 500$, Recall@20 and MAP hardly change (in Setting~A, Recall@20 is
-0.980 at 500 and 0.981 at 2,000). Only $N_1 = 2{,}000$, however, admits every ground-truth
-equation of the test cases in every split, and one run of training and evaluation then takes about
-three times as long as at $N_1 = 50$ (162 against 54 seconds in Setting~A).
-% source: experiments/kato1020/n1_coverage_w30-70.json（max_min_n1 1,880）; sweep.json（N1 ごとの値と時間）
+0.981 at both 500 and 2,000). Only $N_1 = 2{,}000$, however, admits every ground-truth equation of
+the test cases in every split, and one run of training and evaluation then takes about 2.4 times as
+long as at $N_1 = 50$ (161 against 66 seconds in Setting~A).
+% source: experiments/kato1021/n1_coverage_w30-70.json（max_min_n1 1,880）; sweep.json（N1 ごとの値と時間）
 
 \begin{figure}[h]\centering
 \includegraphics[width=\linewidth]{figures/fig_n1_coverage.pdf}
@@ -221,11 +223,11 @@ time of one run of training and evaluation, with six runs in parallel.}
 \toprule
  & $N_1$ & Coverage & Recall@20 & MAP & R-Precision & Time (s) \\
 \midrule
-Setting A & 50 & 0.9645 & $0.959 \pm 0.013$ & $0.845 \pm 0.052$ & $0.775 \pm 0.065$ & 54 \\
- & 200 & 0.9918 & $0.978 \pm 0.011$ & $0.857 \pm 0.055$ & $0.780 \pm 0.073$ & 60 \\
- & 500 & 0.9982 & $0.980 \pm 0.010$ & $0.859 \pm 0.054$ & $0.780 \pm 0.069$ & 70 \\
- & 1,000 & 0.9998 & $0.981 \pm 0.010$ & $0.858 \pm 0.055$ & $0.776 \pm 0.072$ & 125 \\
- & 2,000 & 1.0000 & $0.981 \pm 0.010$ & $0.860 \pm 0.053$ & $0.779 \pm 0.073$ & 162 \\
+Setting A & 50 & 0.9644 & $0.959 \pm 0.013$ & $0.846 \pm 0.054$ & $0.778 \pm 0.069$ & 66 \\
+ & 200 & 0.9918 & $0.978 \pm 0.010$ & $0.858 \pm 0.055$ & $0.782 \pm 0.071$ & 73 \\
+ & 500 & 0.9982 & $0.981 \pm 0.010$ & $0.859 \pm 0.055$ & $0.781 \pm 0.070$ & 84 \\
+ & 1,000 & 0.9998 & $0.981 \pm 0.010$ & $0.860 \pm 0.054$ & $0.779 \pm 0.071$ & 128 \\
+ & 2,000 & 1.0000 & $0.981 \pm 0.010$ & $0.862 \pm 0.053$ & $0.782 \pm 0.070$ & 161 \\
 \midrule
 Setting B & 50 & 0.9335 & $0.924 \pm 0.020$ & $0.798 \pm 0.041$ & $0.745 \pm 0.042$ & 35 \\
  & 200 & 0.9834 & $0.959 \pm 0.015$ & $0.824 \pm 0.041$ & $0.754 \pm 0.042$ & 38 \\

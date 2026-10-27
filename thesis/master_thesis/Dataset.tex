@@ -23,6 +23,13 @@
 %   (j) 入出力を選び直した 111 件と元のケース 2 件の説明文を、入出力変数に合うように Claude Opus 4.8 で書き直した（e995ca0、
 %       experiments/reselected_io_contexts.json）。「説明文が入出力変数と合っていない」の記述を消した。
 %   (k) 拡張ケースの入れ替え 1 件は「入出力変数を選び直したもの」にまとめて 739 件と書いた。
+% 2026-10-27 改訂（加藤先生の 3 回目のコメントで「わからない」とされた説明を、コードで確かめた事実で書き直した。
+%   docs/加藤先生コメント対応_2026-08-31報告_3回目.md の返答案）:
+%   (l) 出典横断の 496 件（K6・K7）: 9 組の語の規則は列挙するときに当てた。分類の組ごとに DB の順で 4 条件を満たす最初の 200 組。
+%       候補を並べ替えて微分方程式を含む組を前へ。使った 101 組はすべて微分方程式を含み、496 件中 277 件は 2 式とも微分方程式
+%       （generate_multisource_v3.py 342-401 行。2026-10-27 に training_cases.json と unified_equations.json で数え直した）。
+%   (m) 分割（K10）: 種ごとに 400 通りの候補を作り、L1 距離は訓練とテストの間だけで比べる（set_aware_reranker.py
+%       stratified_src_split 50-88 行）。
 % ============================================================
 \section{Equation Database Construction}
 \label{sec:db}
@@ -145,17 +152,23 @@ program built 496 of these cases (500 built, minus 4 excluded below) in five ste
     of the words or is contained in one.
   \item A hand-written list fixed 15 pairs of categories that chemical engineering often combines,
     such as reactor with heat transfer and reactor with control; the program used 14 of them.
-  \item Within these pairs of categories, the program enumerated pairs of equations from different
-    sources that share at least two variable symbols. It compared the definitions of the shared
-    symbols only against nine fixed pairs of words, such as ``temperature'' and ``time constant,''
-    and dropped a pair of equations only when the two words of such a pair appeared in the two
-    definitions. In 471 of the 496 cases the shared symbols therefore carry definitions that differ
-    between the two equations: mostly paraphrases, but sometimes different quantities, as when the
-    symbol $y$ denotes an output in one equation and a spatial coordinate in the other.
-  \item It preferred pairs that contain a differential equation. From each selected pair it chose
-    as outputs one variable that appears only in the first equation and one that appears only in
-    the second, declared all other variables inputs, and built up to five cases from one pair with
-    different choices of outputs.
+  \item For each pair of categories, the program went through the equations in database order and
+    collected the first 200 pairs of equations that meet four conditions: the two equations come
+    from different sources; they share at least two variable symbols; no shared symbol has one word
+    of a hand-picked pair in its definition in one equation and the other word in its definition in
+    the other (the nine pairs include ``temperature'' and ``time constant''); and the pair repeats
+    neither a pair collected earlier nor an existing case. The third condition is the only one that
+    compares definitions, so it lets paraphrases and other differences pass: in 471 of the 496 cases
+    the shared symbols carry definitions that differ between the two equations, mostly paraphrases
+    but sometimes different quantities, as when the symbol $y$ denotes an output in one equation and
+    a spatial coordinate in the other.
+  \item It shuffled the collected pairs and moved to the front the pairs in which at least one
+    equation is a differential equation, judged by the differential symbols in its expression.
+    Going down this list, it built up to five cases from each pair, varying the choice of outputs:
+    one variable that appears only in the first equation and one that appears only in the second.
+    All other variables became inputs. It stopped at 500 cases. The pairs with a differential
+    equation sufficed to reach 500 cases, so all 101 pairs used contain one, and in 277 of the 496
+    cases both equations are differential equations.
   \item It wrote each description by inserting the shared symbols into an English template fixed
     for each pair of categories; no language model took part.
 \end{enumerate}
@@ -173,7 +186,8 @@ the inputs. A language model, Claude Opus 4.8\cite{ClaudeOpus48}, rewrote the de
 that did not match their own outputs (\ref{app:prompts} gives the prompt). In 105 of the 144 cases
 (24 of the 33 and 81 of the 111), no two ground-truth equations share a variable symbol.
 % source: generate_multisource_v3.py（DOMAIN_CATEGORIES 35-88 行、COMPATIBLE_PAIRS 15 組 107-247 行、
-%         INCOMPATIBLE_DEFINITIONS 9 組 264-280 行、微分の優先 398-401 行、出力の選び方 426-435 行、文型 447-453 行）;
+%         INCOMPATIBLE_DEFINITIONS 9 組 264-280 行、列挙と 4 条件・分類の組ごとに 200 組 342-392 行、微分の優先 398-401 行、
+%         出力の選び方 426-435 行、文型 447-453 行。使った 101 組はすべて微分方程式を含み、496 件中 277 件は 2 式とも微分方程式）;
 %         generate_multisource_cases.py（33 組、Claude がコードに直接書いた、check_solvability）;
 %         expand_multisource_variants.py（組合せ、乱数の種 42、前から 6 件、説明文は元のまま）;
 %         説明文の書き直し: rewrite_reselected_io_contexts.py（claude-opus-4-8、プロンプト v6）、記録
@@ -300,14 +314,17 @@ Source-disjoint assignment, however, introduces a new problem: a random assignme
 put the cases with many equations on one side and make the score depend on the draw rather than on
 the method.
 
-We therefore stratify the assignment. Among 400 random assignments of the sources we select the one
-that minimizes the summed $L_1$ distance between the training and test frequency distributions, as
-proportions, of four quantities per case: the number of ground-truth equations, the number of input
-variables, the number of output variables, and the number of sources spanned. Every experiment
-repeats over the same 10 random seeds and reports the mean and the standard deviation across them.
-A seed fixes the 400 candidate assignments, and hence the selected split, as well as the
-initialization of the model and the choice of negatives, so the 10 seeds yield 10 different
-splits. Results therefore measure generalization to unseen sources rather than memorization of
+We therefore stratify the assignment. For one split, a random number generator seeded with the
+split's seed draws 400 numbers. Each number seeds a shuffle of the list of sources, and the first
+20\% of the shuffled list go to testing, the next 20\% to validation, and the rest to training; this gives 400
+candidate splits. For each candidate we take four quantities per case --- the number of
+ground-truth equations, the number of input variables, the number of output variables, and the
+number of sources spanned --- compute for each quantity the $L_1$ distance between the training and
+test frequency distributions, as proportions, and select the candidate with the smallest sum of the
+four distances; the validation cases enter no comparison. Every experiment repeats this procedure
+over the same 10 random seeds and reports the mean and the standard deviation across them. Each
+seed draws its own 400 candidates, so the 10 splits come from 4,000 candidates in all; the seed
+also fixes the initialization of the model and the choice of negatives. Results therefore measure generalization to unseen sources rather than memorization of
 seen ones. Fig.~\ref{fig:dataset} summarizes the cases.
 
 \begin{figure}[H]\centering

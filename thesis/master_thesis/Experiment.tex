@@ -14,6 +14,7 @@
 %   (d) 主指標を Recall@20 にし、上位 K 件の指標を R-Precision とよぶ（旧 Recall@K）（R30）。別の出典の同じ式を正解と
 %       みなした値も出す（R29）。自由度ゼロ停止の集合の指標（完全一致率・集合 F1・停止条件の充足率）は削除した。
 %   (e) 検定をやめ、10 通りの分割のうち何通りで上回ったかを書く（旧 §5.5 Statistical Testing を削除）（R35）。
+% 2026-10-27: 再計算（kato1021）で、不正解の選び方は 20 通りの分割のすべてで hard negative（旧 19/20）。
 % 2026-10-21(2)（報告 f1076cd にそろえた）: 設定 A は 1,731 件。手法の設定値を hyperparameters とよぶ（§5.2 の題も）。
 %   データ作成の LLM に、出典横断 113 件の説明文を書き直した Claude Opus 4.8 を加えた。
 % ============================================================
@@ -84,14 +85,13 @@ $N_1$ to the smallest number of candidates that holds every ground-truth equatio
 and validation cases, rounded up to the next thousand; under $(0.3, 0.7)$ this gives
 $N_1 = 2{,}000$ in all 10 splits, whereas the other pairs need 2,000 to 6,000. Between random and
 hard negatives, each split takes the one with the higher validation Recall@20, and hard negatives
-won in 19 of the 20 splits of the two settings. The remaining hyperparameters --- a reference set of
+won in all 20 splits of the two settings. The remaining hyperparameters --- a reference set of
 $m = 5$ equations, the margin $\gamma = 0.1$, $n_{\mathrm{neg}} = 8$ incorrect candidates, and 15
 epochs of AdamW with learning rate $10^{-3}$ and weight decay $10^{-4}$ --- are values we have used
 since the beginning of this work and have not compared with others.
-% source: experiments/kato1020/selected.json（--fix-weight w30-70。A: w30-70・hard・2,000 が 9 分割、w30-70・random・2,000 が
-%         1 分割（7777）、B: w30-70・hard・2,000 が 10 分割。fixed: m 5, gamma 0.1, n_neg 8, epochs 15, hidden 64,
-%         lr 1e-3, weight_decay 1e-4, batch 16）; selected_persplit.json grid（hard の検証用 Recall@20: A 0.980〜0.983、
-%         B 0.974〜0.975）; n1_rule.json（(0.3, 0.7) は全分割で 2,000、ほかの重みは 2,000〜6,000）
+% source: experiments/kato1021/selected.json（--fix-weight w30-70。A・B とも w30-70・hard・2,000 が 10 分割。fixed: m 5, gamma 0.1,
+%         n_neg 8, epochs 15, hidden 64, lr 1e-3, weight_decay 1e-4, batch 16）; selected.json grid（hard の検証用 Recall@20:
+%         A 0.980〜0.983、B 0.974〜0.975）; n1_rule.json（(0.3, 0.7) は全分割で 2,000、ほかの重みは 2,000〜6,000）
 
 \section{Evaluation Metrics}
 \label{sec:metrics}

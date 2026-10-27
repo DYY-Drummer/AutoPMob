@@ -112,6 +112,7 @@
 %   二つの介入による因果の主張を削除し、N_1 = 2,000・Recall@20・検証用のケースで選んだ定数の結果で書き直した。評価は 1,732 件。
 % 2026-10-21(2) 改訂（報告 f1076cd にそろえた）: 単一出典の 1 件（core_019_v1）を除いて評価は 1,731 件。手法の設定値を
 %   hyperparameters とよぶ。結果の数値は、説明文の書き直しと 1 件の除外を入れた再計算が終わるまで 1,732 件での値のまま。
+% 2026-10-27: 再計算（8b77e73、experiments/kato1021/、1,731 件）の値に差し替えた（MAP 0.690 → 0.693、0.860 → 0.862）。
 \thispagestyle{empty}
 {\huge \bf Abstract}
 \\
@@ -129,9 +130,9 @@ The first stage narrows the database by text similarity and variable overlap, an
 A learned greedy variant selects one equation at a time and compares each candidate with the equations already selected.
 To evaluate the method, we built a database of 11,146 equations from 361 sources and 1,731 evaluation cases, 1,000 of which a program synthesized by giving each equation an output variable of its own; we split the sources so that no document leaks between training and testing, and we chose the hyperparameters of the methods, the values fixed before training, on validation cases.
 
-% source: experiments/kato1020/main.json（Recall@20 A 0.906 → 0.981・B 0.825 → 0.966、MAP A 0.690 → 0.860・B 0.626 → 0.832、
+% source: experiments/kato1021/main.json（Recall@20 A 0.906 → 0.981・B 0.825 → 0.966、MAP A 0.693 → 0.862・B 0.626 → 0.832、
 %         wins 10）; mech.json; pfi.json; greedy.json（K>=8 train − static MAP +0.032）; case_outcomes_final.json
-With a first stage that keeps every ground-truth equation among its 2,000 candidates, the method raises Recall@20 over classical retrieval from 0.906 to 0.981 in the mixed setting and from 0.825 to 0.966 in the synthesized-only setting, and mean average precision from 0.690 to 0.860 and from 0.626 to 0.832, on all 10 stratified splits.
+With a first stage that keeps every ground-truth equation among its 2,000 candidates, the method raises Recall@20 over classical retrieval from 0.906 to 0.981 in the mixed setting and from 0.825 to 0.966 in the synthesized-only setting, and mean average precision from 0.693 to 0.862 and from 0.626 to 0.832, on all 10 stratified splits.
 Analyses attribute most of the accuracy to the features that read the variables equations share, the specificity of an equation to the query variables above all; the set-aware features mainly raise the correct equations within the top 20, and topical similarity adds little.
 Selecting the equations one at a time with learned greedy selection raises mean average precision by a further 0.032 on the cases with eight or more ground-truth equations.
 Every remaining miss arises in the second stage, where no present feature separates the missed equations from the incorrect ones ranked above them.

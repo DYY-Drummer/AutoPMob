@@ -13,13 +13,11 @@
 % 2026-10-21(2)（報告 f1076cd にそろえた）: 説明文 113 件の書き直しと単一出典 1 件の除外を入れた再計算が終わるまで、結果の数値は
 %   1,732 件での値のまま。その旨の注記を章の冒頭に置いた（報告 §1 と同じ趣旨）。設定 A の件数は 1,731 に直した。
 %   限界から「説明文が入出力変数と合っていない」を消し、定義の違う記号のあるケースを 1,299 件に数え直した。
+% 2026-10-27 改訂: 再計算（8b77e73、experiments/kato1021/。説明文 113 件を書き直し core_019_v1 を外した 1,731 件）の値に差し替え、
+%   冒頭の注記を消した。旧値と新値は docs/加藤先生指示_2026-10-21_説明文書き直しと92件除外_旧値新値対応表.md（設定 B は変わらない）。
+%   主張の直し: §6.3 (i) は 3/10、(iii) の Recall@20 は 9/10、x10 の MAP は 9/10、§6.4 の設定 A の (3)−(2) は 7/10、
+%   §6.5 の差は x7 −0.008 と合併の値、限界の重複は「除く必要がある」と言い切らず事実だけ（加藤先生の 3 回目のコメント K12）。
 % ============================================================
-We are rerunning the experiments with the two changes to the data of Section~\ref{sec:cases}: the
-rewritten descriptions of 113 cross-source cases and the exclusion of one single-source case. Until
-those runs finish, the results in this chapter, in the appendix, and in the Abstract and
-Chapter~\ref{Introduction} are those of the 1,732 cases before the changes.
-% 再計算が終わったら数値を差し替える（親セッションから依頼が来る）。
-
 \section{Overall Comparison}
 \label{sec:overall}
 
@@ -27,15 +25,14 @@ Table~\ref{tab:overall} and Fig.~\ref{fig:comparison} compare the proposed metho
 classical baseline. With $N_1 = 2{,}000$, the first stage admitted every ground-truth equation of
 every test case in all 10 splits (candidate coverage 1.000). The proposed method beat the baseline
 on every metric, in both settings, and in all 10 splits. Static reranking raised Recall@20 from
-0.906 to 0.981 ($+0.075$) and MAP from 0.690 to 0.860 ($+0.170$) in Setting~A, and Recall@20 from
+0.906 to 0.981 ($+0.075$) and MAP from 0.693 to 0.862 ($+0.169$) in Setting~A, and Recall@20 from
 0.825 to 0.966 ($+0.141$) and MAP from 0.626 to 0.832 ($+0.205$) in Setting~B. Learned greedy
-selection raised MAP further, to 0.874 and 0.849 (Section~\ref{sec:greedyresults}). The variants of
-the baseline with BM25 and E5 ranked no better than the TF-IDF baseline --- Recall@20 of 0.904 and
+selection raised MAP further, to 0.877 and 0.849 (Section~\ref{sec:greedyresults}). The variants of
+the baseline with BM25 and E5 ranked no better than the TF-IDF baseline --- Recall@20 of 0.905 and
 0.892 in Setting~A and 0.819 and 0.806 in Setting~B --- and the proposed method beat them, too, on
 every metric in all 10 splits (\ref{app:weights}).
-% source: experiments/kato1020/main.json table / compare（proposed_static vs baseline_tfidf: A Recall@20 +0.0749・MAP +0.1702、
-%         B +0.1412・+0.2053、いずれも wins 10・losses 0。BM25・E5 との比較もすべての指標で wins 10）; sweep.json N1 2000 coverage 1.0。
-%         日本語版報告 §4 は B の MAP の差を丸めた平均の差から +0.206 と書くが、分割で対にした差の平均は +0.2053（+0.205）
+% source: experiments/kato1021/main.json table / compare（proposed_static vs baseline_tfidf: A Recall@20 +0.0749・MAP +0.1695、
+%         B +0.1412・+0.2053、いずれも wins 10・losses 0。BM25・E5 との比較もすべての指標で wins 10）; sweep.json N1 2000 coverage 1.0
 
 \begin{table}[h]\centering
 \caption{Overall comparison (mean $\pm$ SD over 10 stratified splits). The baseline ranks the whole
@@ -50,12 +47,12 @@ equations of other sources as correct.}
 \toprule
 Setting & Method & Recall@20 & MAP & R-Precision \\
 \midrule
-% source: main.json table.A / table_equiv.A（baseline_tfidf, proposed_static, proposed_train）
-A & Baseline (classical IR) & $0.906 \pm 0.020$ (0.908) & $0.690 \pm 0.060$ (0.705) & $0.605 \pm 0.058$ (0.618) \\
-(1,731 cases) & Proposed, static reranking & $0.981 \pm 0.010$ (0.983) & $0.860 \pm 0.053$ (0.879) & $0.779 \pm 0.073$ (0.805) \\
- & Proposed, learned greedy & $\mathbf{0.982 \pm 0.009}$ (0.989) & $\mathbf{0.874 \pm 0.050}$ (0.904) & $\mathbf{0.806 \pm 0.072}$ (0.848) \\
+% source: experiments/kato1021/main.json table.A / table_equiv.A（baseline_tfidf, proposed_static, proposed_train）
+A & Baseline (classical IR) & $0.906 \pm 0.020$ (0.908) & $0.693 \pm 0.061$ (0.707) & $0.607 \pm 0.059$ (0.620) \\
+(1,731 cases) & Proposed, static reranking & $0.981 \pm 0.010$ (0.983) & $0.862 \pm 0.053$ (0.880) & $0.782 \pm 0.070$ (0.804) \\
+ & Proposed, learned greedy & $\mathbf{0.983 \pm 0.009}$ (0.989) & $\mathbf{0.877 \pm 0.048}$ (0.906) & $\mathbf{0.811 \pm 0.070}$ (0.848) \\
 \midrule
-% source: main.json table.B / table_equiv.B
+% source: experiments/kato1021/main.json table.B / table_equiv.B（説明文が変わらないので前回と同じ値）
 B & Baseline (classical IR) & $0.825 \pm 0.024$ (0.827) & $0.626 \pm 0.035$ (0.636) & $0.555 \pm 0.036$ (0.568) \\
 (1,000 cases) & Proposed, static reranking & $0.966 \pm 0.016$ (0.969) & $0.832 \pm 0.041$ (0.846) & $0.755 \pm 0.042$ (0.769) \\
  & Proposed, learned greedy & $\mathbf{0.971 \pm 0.014}$ (0.981) & $\mathbf{0.849 \pm 0.035}$ (0.879) & $\mathbf{0.793 \pm 0.039}$ (0.826) \\
@@ -72,11 +69,11 @@ splits, and dots the individual splits.}
 \end{figure}
 
 Counting the identical equations of other sources as correct (Section~\ref{sec:metrics}) raises
-every method, but only a little. In Setting~A, MAP rises from 0.690 to 0.705 for the baseline,
-from 0.860 to 0.879 for static reranking, and from 0.874 to 0.904 for learned greedy selection.
-The gain of static reranking over the baseline in MAP hardly depends on the judgment: $+0.170$ by
-identifiers and $+0.175$ with identical equations counted as correct.
-% source: main.json compare.A「proposed_static vs baseline_tfidf (equiv)」MAP +0.1747（wins 10）
+every method, but only a little. In Setting~A, MAP rises from 0.693 to 0.707 for the baseline,
+from 0.862 to 0.880 for static reranking, and from 0.877 to 0.906 for learned greedy selection.
+The gain of static reranking over the baseline in MAP hardly depends on the judgment: $+0.169$ by
+identifiers and $+0.173$ with identical equations counted as correct.
+% source: kato1021/main.json compare.A「proposed_static vs baseline_tfidf (equiv)」MAP +0.1731（wins 10）
 
 The comparison with LLMs (Section~\ref{sec:compared}) has not yet run, and its results remain to
 be added.
@@ -85,22 +82,22 @@ be added.
 \label{sec:bycharacteristics}
 
 Fig.~\ref{fig:characteristic} breaks the comparison down by the number of ground-truth equations
-and by the number of input variables in Setting~A, pooling the test cases of the 10 splits: 4,233
-records of 1,587 distinct cases (Table~\ref{tab:bucket} in \ref{app:bucket}). On the
+and by the number of input variables in Setting~A, pooling the test cases of the 10 splits: 4,229
+records of 1,586 distinct cases (Table~\ref{tab:bucket} in \ref{app:bucket}). On the
 cases with one ground-truth equation, both methods reach a Recall@20 of 1.000, and their MAP is
-nearly the same: 0.928 for static reranking and 0.934 for the baseline. From two equations on, the
-gap grows with the number of equations: Recall@20 differs by $+0.007$ at two equations, $+0.097$
-at five, and $+0.237$ at ten. By the number of input variables, the gap in Recall@20 grows from
+nearly the same: 0.931 for static reranking and 0.934 for the baseline. From two equations on, the
+gap grows with the number of equations: Recall@20 differs by $+0.007$ at two equations, $+0.094$
+at five, and $+0.238$ at ten. By the number of input variables, the gap in Recall@20 grows from
 $+0.011$ at five or fewer to $+0.186$ at 21 or more. A variable-weighted ranking finds a single
 equation as well as the proposed method does, and the lead of the proposed method grows with the
 numbers of ground-truth equations and input variables.
-% source: main.json buckets.A（n_correct・n_input、延べ 4,233 件。異なるケース 1,587 件は pfi.json cancellation.gDom n_cases）
+% source: kato1021/main.json buckets.A（n_correct・n_input、延べ 4,229 件。異なるケース 1,586 件は pfi.json cancellation.gDom n_cases）
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.95\linewidth]{figures/fig_characteristic.pdf}
 \caption{Recall@20 (a, b) and MAP (c, d) in Setting~A by the number of ground-truth equations
 (a, c) and by the number of input variables (b, d). Each point pools the test cases of the 10
-splits (4,233 records) and carries no error bar; Fig.~\ref{fig:comparison} shows the spread across
+splits (4,229 records) and carries no error bar; Fig.~\ref{fig:comparison} shows the spread across
 splits of the overall values.}
 \label{fig:characteristic}
 \end{figure}
@@ -109,39 +106,39 @@ splits of the overall values.}
 \label{sec:mechanism}
 
 This section decomposes the gain of static reranking over the baseline with the same weights
-$(0.3, 0.7)$ --- $+0.074$ in Recall@20 and $+0.170$ in MAP in Setting~A --- by growing the feature
+$(0.3, 0.7)$ --- $+0.074$ in Recall@20 and $+0.169$ in MAP in Setting~A --- by growing the feature
 set of the reranker, retraining it at every step, and evaluating it on the same 10 splits.
-% source: experiments/kato1020/mech.json steps / summary（baseline_same_w = 重み (0.3, 0.7) の baseline: Recall@20 0.9069・
-%         MAP 0.6902; total baseline_same_w → reranker-10S: +0.0741・+0.1699、wins 10）
+% source: experiments/kato1021/mech.json steps / summary（baseline_same_w = 重み (0.3, 0.7) の baseline: Recall@20 0.9072・
+%         MAP 0.6930; total baseline_same_w → reranker-10S: +0.0738・+0.1692、wins 10）
 \begin{enumerate}
   \item Learning the weights: a reranker that reads only the two Stage-1 terms, the text
-    similarity $f_1$ and the I/O Jaccard $f_2$ (reranker-2), lowers Recall@20 from 0.907 to 0.892
-    and MAP from 0.690 to 0.680, beating the baseline in only 4 and 3 of the 10 splits. Relearning
-    how to weight the two terms does not raise the accuracy.
+    similarity $f_1$ and the I/O Jaccard $f_2$ (reranker-2), lowers Recall@20 from 0.907 to 0.904
+    and MAP from 0.693 to 0.691, beating the baseline in only 3 of the 10 splits on each metric.
+    Relearning how to weight the two terms does not raise the accuracy.
   \item Per-equation features: adding the other five query--equation features ($f_3$ to $f_7$)
-    raises Recall@20 from 0.892 to 0.975 ($+0.083$) and MAP from 0.680 to 0.787 ($+0.107$), in all
+    raises Recall@20 from 0.904 to 0.975 ($+0.071$) and MAP from 0.691 to 0.789 ($+0.098$), in all
     10 splits. Specificity $f_6$ alone carries nearly all of this step: adding it alone reaches a
-    Recall@20 of 0.972 ($+0.080$) and a MAP of 0.786 ($+0.106$).
+    Recall@20 of 0.973 ($+0.068$) and a MAP of 0.790 ($+0.099$).
   \item Set-aware features: adding the three set-aware features to the seven raises Recall@20
-    from 0.975 to 0.981 ($+0.006$) and MAP from 0.787 to 0.860 ($+0.073$), in all 10 splits.
-    Recall@20 leaves little room at 0.975, so the set-aware features mainly raise the
+    from 0.975 to 0.981 ($+0.006$, in 9 of the 10 splits) and MAP from 0.789 to 0.862 ($+0.073$, in
+    all 10). Recall@20 leaves little room at 0.975, so the set-aware features mainly raise the
     ground-truth equations within the top 20.
 \end{enumerate}
-% source: mech.json steps（(i) Recall@20 −0.0146 wins 4・MAP −0.0105 wins 3; (ii) +0.0826・+0.1071 wins 10;
-%         (ii') +0.0799・+0.1062 wins 10; (iii) +0.0061・+0.0733 wins 10）
+% source: kato1021/mech.json steps（(i) Recall@20 −0.0029 wins 3・MAP −0.0022 wins 3; (ii) +0.0711・+0.0984 wins 10;
+%         (ii') +0.0684・+0.0990 wins 10; (iii) Recall@20 +0.0057 wins 9・MAP +0.0729 wins 10）
 Adding the set-aware features one at a time to the seven raises MAP by $+0.073$ for
-complementarity, $+0.071$ for coherence, and $+0.013$ for domain agreement, each in all 10 splits.
-All three together add $+0.073$, no more than complementarity or coherence alone, so the effects of
-these two features overlap.
-% source: mech.json single_set_additions（MAP: Comp +0.0731・Coh +0.0711・Dom +0.0126、いずれも wins 10）
+complementarity and $+0.074$ for coherence, each in all 10 splits, and by $+0.011$ for domain
+agreement, in 9 of the 10. All three together add $+0.073$, no more than complementarity or
+coherence alone, so the effects of these two features overlap.
+% source: kato1021/mech.json single_set_additions（MAP: Comp +0.0731 wins 10・Coh +0.0736 wins 10・Dom +0.0111 wins 9）
 
 Fig.~\ref{fig:mechanism} shows how the MAP gain of the set-aware features depends on the case. It
-is $+0.003$ on the cases with one ground-truth equation, which give a candidate no other equation
-to relate to, and $+0.064$ to $+0.098$ at every larger number of equations, in all 10 splits. By
-the number of input variables, it is $+0.007$ at three or fewer, $+0.038$ at four to six, and
-$+0.074$ to $+0.090$ at seven or more.
-% source: mech.json lift_by_n_correct / lift_by_n_input reranker-10S MAP（K=1 +0.003; K=2〜10 +0.064〜+0.098 wins 10;
-%         入力 1-3 +0.007、4-6 +0.038（wins 9）、7-10 +0.090、11-15 +0.087、16+ +0.074）
+is $+0.007$ on the cases with one ground-truth equation, which give a candidate no other equation
+to relate to, and $+0.068$ to $+0.095$ at every larger number of equations, in all 10 splits. By
+the number of input variables, it is $+0.014$ at three or fewer, $+0.030$ at four to six, and
+$+0.075$ to $+0.090$ at seven or more.
+% source: kato1021/mech.json lift_by_n_correct / lift_by_n_input reranker-10S MAP（K=1 +0.007; K=2〜10 +0.068〜+0.095 wins 10;
+%         入力 1-3 +0.014、4-6 +0.030（wins 9）、7-10 +0.087、11-15 +0.090、16+ +0.075）
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.95\linewidth]{figures/fig_mechanism.pdf}
@@ -157,14 +154,13 @@ relies on each feature. We fixed the trained ten-feature model (static reranking
 values of one feature among the candidates of each test case, and measured the drop in Recall@20
 and MAP, averaging over 20 shuffles. Fig.~\ref{fig:pfi} shows Recall@20 after the shuffle.
 Shuffling the six variable-overlap features ($f_2$, $f_4$--$f_6$, $g_{\mathrm{Comp}}$,
-$g_{\mathrm{Coh}}$) together lowers Recall@20 from 0.981 to 0.020 and MAP from 0.860 to 0.010, in
+$g_{\mathrm{Coh}}$) together lowers Recall@20 from 0.981 to 0.018 and MAP from 0.862 to 0.009, in
 all 10 splits. Among single features, specificity matters most: shuffling it alone lowers
-Recall@20 to 0.127. Shuffling the four topic features ($f_1$, $f_3$, $f_7$, $g_{\mathrm{Dom}}$)
-together leaves Recall@20 at 0.973 and MAP at 0.846; the drops, 0.008 and 0.014, are small but
+Recall@20 to 0.089. Shuffling the four topic features ($f_1$, $f_3$, $f_7$, $g_{\mathrm{Dom}}$)
+together leaves Recall@20 at 0.974 and MAP at 0.847; the drops, 0.007 and 0.015, are small but
 appear in all 10 splits.
-% source: experiments/kato1020/pfi.json（base Recall@20 0.9810・MAP 0.8601; GROUP_var → 0.0199・0.0099（低下 0.9611±0.0098・
-%         0.8502、正 10/10）; specificity → 0.1269（低下 0.8541±0.1287）; GROUP_topic → 0.9732・0.8460（低下 0.0078±0.0023・
-%         0.0142、正 10/10））
+% source: experiments/kato1021/pfi.json（base Recall@20 0.9810・MAP 0.8622; GROUP_var → 0.0180・0.0088（低下 0.9630・0.8534、
+%         正 10/10）; specificity → 0.0893（低下 0.8917）; GROUP_topic → 0.9737・0.8470（低下 0.0073・0.0152、正 10/10））
 The two analyses differ in size because they answer different questions --- ablation asks what a
 feature adds when the model is retrained with it, and PFI asks how much a fixed model relies on it
 --- but they reach the same conclusion: the features that read variable overlap decide most of the
@@ -192,19 +188,19 @@ selection (Section~\ref{sec:seq}), training and evaluating each on the same 10 s
 Recall@20 hardly differs among the three: about 0.98 in Setting~A and 0.97 in Setting~B. Because
 the top 20 already hold nearly every ground-truth equation, the strategies differ in how they order
 the equations within the top 20. MAP follows the order (1) $<$ (2) $<$ (3). Greedy selection at
-inference beats static reranking by $+0.012$ in both settings, in all 10 splits of each. Learned
-greedy selection adds little to it: $+0.002$ in Setting~A and $+0.005$ in Setting~B, in 9 of the 10
-splits of each.
-% source: experiments/kato1020/greedy.json compare（all: infer − static MAP A +0.0119・B +0.0123 wins 10;
-%         train − infer MAP A +0.0016・B +0.0054 wins 9）
+inference beats static reranking by $+0.013$ in Setting~A and $+0.012$ in Setting~B, in all 10
+splits of each. Learned greedy selection adds little to it: $+0.002$ in Setting~A (7 of the 10
+splits) and $+0.005$ in Setting~B (9 of the 10).
+% source: experiments/kato1021/greedy.json compare（all: infer − static MAP A +0.0127・B +0.0123 wins 10;
+%         train − infer MAP A +0.0022 wins 7・B +0.0054 wins 9）
 
 The differences grow on the cases with eight or more ground-truth equations, 698 test records in
 Setting~A and 753 in Setting~B over the 10 splits. On these cases, learned greedy selection beats
-static reranking in MAP by $+0.032$ in both settings (all 10 splits), in R-Precision by $+0.053$
-and $+0.057$ (all 10 splits), and in Recall@20 by $+0.011$ and $+0.014$ (9 of 10 splits each).
+static reranking in MAP by $+0.032$ in both settings (all 10 splits), in R-Precision by $+0.056$
+and $+0.057$ (all 10 splits), and in Recall@20 by $+0.010$ and $+0.014$ (9 of 10 splits each).
 Sequential selection thus pays off on the cases with many ground-truth equations, the cases that
 motivated it.
-% source: greedy.json compare K>=8（train − static: A MAP +0.0318 wins 10・R-Precision +0.0530 wins 10・Recall@20 +0.0110
+% source: kato1021/greedy.json compare K>=8（train − static: A MAP +0.0321 wins 10・R-Precision +0.0561 wins 10・Recall@20 +0.0102
 %         wins 9; B +0.0319・+0.0570・+0.0136, wins 10・10・9）; 延べ件数は main.json buckets（A 698、B 753）
 
 \begin{table}[h]\centering
@@ -217,10 +213,10 @@ or more'' average only the cases with eight or more ground-truth equations.}
 \toprule
  & & (1) Static & (2) Greedy at inference & (3) Learned greedy \\
 \midrule
-% source: greedy.json summary.A / summary.B（all, K>=8）
-Setting A & Recall@20 & 0.981 & 0.982 & 0.982 \\
- & MAP & 0.860 & 0.872 & 0.874 \\
- & R-Precision & 0.779 & 0.801 & 0.806 \\
+% source: experiments/kato1021/greedy.json summary.A / summary.B（all, K>=8）
+Setting A & Recall@20 & 0.981 & 0.982 & 0.983 \\
+ & MAP & 0.862 & 0.875 & 0.877 \\
+ & R-Precision & 0.782 & 0.805 & 0.811 \\
  & MAP, eight or more & 0.790 & 0.816 & 0.822 \\
 \midrule
 Setting B & Recall@20 & 0.966 & 0.970 & 0.971 \\
@@ -244,18 +240,22 @@ and on the cases with eight or more ground-truth equations. Boxes show the 10 sp
 Four of the ten features read topical closeness: the text similarity $f_1$, the latent similarity
 $f_3$, the domain match $f_7$, and the domain agreement $g_{\mathrm{Dom}}$
 (Table~\ref{tab:features}). They rest on a reasonable expectation --- the equations of one model
-should share a topic --- yet adding them barely raised the accuracy in Setting~A. Adding the domain
-match to reranker-2 changed Recall@20 by $+0.004$, beating reranker-2 in only 3 of the 10 splits,
-and adding the latent similarity changed it by $-0.012$ (2 of 10). Adding the domain agreement to
-reranker-7 changed Recall@20 by $-0.0005$ (5 of 10) and MAP by $+0.013$ (all 10).
-% source: mech.json topic_additions（x7 Recall@20 +0.0043 wins 3; x3 −0.0122 wins 2; x10 Recall@20 −0.0005 wins 5・
-%         MAP +0.0126 wins 10）
+should share a topic --- yet adding them did not raise the accuracy consistently in Setting~A.
+Adding the domain match to reranker-2 changed Recall@20 by $-0.008$, beating reranker-2 in 5 of the
+10 splits, and adding the latent similarity changed it by $-0.021$ (3 of 10). Adding the domain
+agreement to reranker-7 changed Recall@20 by $-0.001$ (3 of 10) and MAP by $+0.011$ (9 of 10).
+% source: kato1021/mech.json topic_additions（x7 Recall@20 −0.0076 wins 5; x3 −0.0209 wins 3; x10 Recall@20 −0.0010 wins 3・
+%         MAP +0.0111 wins 9）
 Coarser domain labels did not help either. We merged the labels in three ways: by unifying case,
 symbols, and plural forms, which leaves 1,958 labels, and by clustering the TF-IDF vectors of the
 labels with $k$-means into 100 and into 40 groups; the domain match then fires when the
 description contains a label of the equation's group. Adding the domain match changed Recall@20 by
-$+0.007$, $+0.001$, and $-0.008$, beating reranker-2 in only 3 or 4 of the 10 splits.
-% source: mech.json domain_merge（L1 +0.0068 wins 3; K100 +0.0007 wins 3; K40 −0.0084 wins 4）; kato1014_domain_merge.py
+$-0.023$, $-0.028$, and $-0.030$, beating reranker-2 in 5, 4, and 3 of the 10 splits. A model with
+only two or three features can lose much Recall@20 in a single split --- 0.798, against 0.931
+without the domain match, in one split with the unified labels --- and such a split sways the mean
+difference.
+% source: kato1021/mech.json domain_merge（L1 −0.0228 wins 5; K100 −0.0275 wins 4; K40 −0.0297 wins 3）; summary の per_seed
+%         （Dom@L1 の種 789 が 0.798、reranker-2 の種 789 が 0.931）; kato1014_domain_merge.py
 %         （x7 を群で数える: 説明文が式の群のどれかの元のラベルを含めば 1）。2026-10-12 版の k-means の実験は、式のラベルを群の
 %         名前に置き換えてから比べたため x7 がほとんど常に 0 で、合併の効果を測れていなかった（作り直した）
 
@@ -268,25 +268,25 @@ receiver-operating-characteristic curve (AUC): within each case we formed every 
 and an incorrect equation, took the fraction of pairs in which the correct equation has the higher
 value (a tie counting one half), and averaged over the 1,731 cases, with the incorrect equations
 drawn either from the whole database or from the 2,000 candidates (Table~\ref{tab:auc}). The latent
-similarity reaches an AUC of 0.948 against the whole database and 0.910 within the candidates, so
+similarity reaches an AUC of 0.948 against the whole database and 0.909 within the candidates, so
 it still separates the ground-truth equations inside the candidate set (0.594 with 50 candidates
 under the first-stage weights $(0.7, 0.3)$). The correlation between the text similarity and the
-variable overlap within the candidates is $-0.026$ (the 408 test cases of the split with seed 42;
+variable overlap within the candidates is $-0.028$ (the 407 test cases of the split with seed 42;
 $-0.404$ with 50 candidates).
-% source: experiments/kato1020/topic_diag_final.json（auc_full_db / auc_within_candidates、
-%         corr_text_jaccard_within_candidates_seed42_test −0.0261, n 408）; 50 件の値は kato1014_topic_diag.py を (0.7, 0.3)・
+% source: experiments/kato1021/topic_diag_final.json（auc_full_db / auc_within_candidates、
+%         corr_text_jaccard_within_candidates_seed42_test −0.0281, n 407）; 50 件の値は kato1014_topic_diag.py を (0.7, 0.3)・
 %         N_1 = 50 で回した旧 AUC 表（x3 0.594、corr −0.404。91 件を除く前の 1,823 件。
 %         docs/加藤先生指示_2026-10-20_旧値新値対応表.md §8 の表 4）
 
 The topic features still add little because the variable-overlap features alone nearly separate
 the correct candidates from the incorrect ones: within the candidates, the AUC is 0.995 for the
-I/O Jaccard and 0.994 for specificity, above the 0.910 of the latent similarity and the 0.848 of
+I/O Jaccard and 0.994 for specificity, above the 0.909 of the latent similarity and the 0.849 of
 the text similarity. Nor do opposing effects cancel out. Splitting the cases by whether the domain
 agreement is higher on the correct or on the incorrect candidates, shuffling it lowers MAP by
-0.003 in the 1,332 cases of the first kind and raises it by 0.002 in the 255 cases of the second;
-both effects are small.
-% source: topic_diag_final.json auc_within_candidates（x2 0.9952、x6 0.9945、x3 0.9096、x1 0.8482）; pfi.json
-%         cancellation.gDom.MAP（n_sep_pos 1,332: 低下 +0.0034、n_sep_neg 255: 低下 −0.0018。sep = 候補の中の正解式の平均 −
+0.003 in the 1,335 cases of the first kind and changes it by less than 0.001 in the 251 cases of
+the second.
+% source: kato1021/topic_diag_final.json auc_within_candidates（x2 0.9952、x6 0.9945、x3 0.9094、x1 0.8491）; kato1021/pfi.json
+%         cancellation.gDom.MAP（n_sep_pos 1,335: 低下 +0.0026、n_sep_neg 251: 低下 −0.0001。sep = 候補の中の正解式の平均 −
 %         不正解式の平均を、ケースが現れた分割で平均）
 
 \begin{table}[h]\centering
@@ -299,12 +299,12 @@ incorrect equations come from.}
 \toprule
 Feature & Whole database (11,146 equations) & Within the 2,000 candidates \\
 \midrule
-% source: topic_diag_final.json（mean ± sem、n 1,732）
+% source: experiments/kato1021/topic_diag_final.json（mean ± sem、n 1,731）
 I/O Jaccard $f_2$ & $0.999 \pm 0.000$ & $0.995 \pm 0.000$ \\
 Specificity $f_6$ & $0.999 \pm 0.000$ & $0.994 \pm 0.000$ \\
-Latent similarity $f_3$ & $0.948 \pm 0.003$ & $0.910 \pm 0.003$ \\
-Text similarity $f_1$ & $0.909 \pm 0.004$ & $0.848 \pm 0.005$ \\
-Domain agreement $g_{\mathrm{Dom}}$ & $0.770 \pm 0.004$ & $0.764 \pm 0.004$ \\
+Latent similarity $f_3$ & $0.948 \pm 0.003$ & $0.909 \pm 0.003$ \\
+Text similarity $f_1$ & $0.909 \pm 0.004$ & $0.849 \pm 0.005$ \\
+Domain agreement $g_{\mathrm{Dom}}$ & $0.769 \pm 0.004$ & $0.764 \pm 0.004$ \\
 Domain match $f_7$ & $0.577 \pm 0.003$ & $0.573 \pm 0.003$ \\
 \bottomrule
 \end{tabular}
@@ -313,19 +313,19 @@ Domain match $f_7$ & $0.577 \pm 0.003$ & $0.573 \pm 0.003$ \\
 \section{Error Analysis}
 \label{sec:erroranalysis}
 
-We examined one split, that with seed 42: its 408 test cases hold 1,624 ground-truth equations,
-and its Recall@20 of 0.974 lies below the 10-split mean of 0.981. Static reranking left 85 of the
+We examined one split, that with seed 42: its 407 test cases hold 1,622 ground-truth equations,
+and its Recall@20 of 0.974 lies below the 10-split mean of 0.981. Static reranking left 84 of the
 ground-truth equations out of its top 20. The 2,000 candidates contained every ground-truth
-equation, so the second stage, not the first, missed all 85. The 368 cases with every ground-truth
-equation in the top 20 average 3.55 ground-truth equations and 14.1 input variables, against 7.90
-and 25.8 for the 40 cases with misses. We paired each missed equation with each incorrect equation
+equation, so the second stage, not the first, missed all 84. The 365 cases with every ground-truth
+equation in the top 20 average 3.55 ground-truth equations and 14.1 input variables, against 7.81
+and 25.8 for the 42 cases with misses. We paired each missed equation with each incorrect equation
 ranked above it and counted the pairs in which the missed equation has the higher value of a
-feature: 0.46 of the pairs for the latent similarity, 0.48 for the text similarity, 0.52 for
+feature: 0.46 of the pairs for the latent similarity, 0.47 for the text similarity, 0.52 for
 specificity, and 0.33 for the I/O Jaccard. Every fraction lies near or below one half, so the
 present features cannot repair these errors.
-% source: experiments/kato1020/case_outcomes_final.json top20（n_cases 408、n_gt 1,624、mean_recall 0.9740、missed 85 =
-%         stage1 0 + stage2 85、solved 368 / unsolved 40、n_correct 3.55 / 7.90、n_input 14.09 / 25.82、rescue_fraction
-%         svd 0.465・text 0.479・specificity 0.521・io_jaccard 0.334）
+% source: experiments/kato1021/case_outcomes_final.json top20（n_cases 407、n_gt 1,622、mean_recall 0.9739、missed 84 =
+%         stage1 0 + stage2 84、solved 365 / unsolved 42、n_correct 3.545 / 7.81、n_input 14.05 / 25.83、rescue_fraction
+%         svd 0.456・text 0.470・specificity 0.523・io_jaccard 0.328）
 
 Two types of error recur among the misses of the second stage. The first is an identical equation
 from another source. Standard equations appear in many documents, so the model may present an
@@ -333,7 +333,7 @@ identical copy from another source: in one batch-fermentation case, the same gro
 $\mathrm{d}X/\mathrm{d}t = \mu X$ from another document ranked above the ground-truth one. The
 evaluation identifies equations by their identifiers and counts such a copy as incorrect, although
 it serves the engineer just as well. Counting the copies as correct raises the MAP of Setting~A from
-0.860 to 0.879 for static reranking and from 0.874 to 0.904 for learned greedy selection
+0.862 to 0.880 for static reranking and from 0.877 to 0.906 for learned greedy selection
 (Section~\ref{sec:overall}). The second type is the direction of an equation. The features read
 only sets of variables, so two equations that determine different variables from the same
 variables --- the equations for $\mathrm{d}C_A'/\mathrm{d}t$ and $\mathrm{d}T'/\mathrm{d}t$ of a
@@ -363,13 +363,14 @@ Third, the evaluation is internal to the database: retrieval cannot find an equa
 database lacks. Fourth, the evaluation judges equations by their identifiers, so an identical
 equation from another source counts as an error, although we also reported the results with such
 equations counted as correct (Section~\ref{sec:overall}). The database holds the same document as
-several sources (36 documents) and identical equations from different documents; a database built
-for real use must remove such duplicates. Fifth, nobody screened the documents by hand, so some
+several sources (36 documents) and identical equations from different documents, and identical
+equations can take up several of the top 20 places. Fifth, nobody screened the documents by hand,
+so some
 have little to do with physical models, and a Gemini version that no record keeps extracted the
 equations of the 9 earliest documents (Section~\ref{sec:db}).
 % source: docs/appendix_materials/duplicate_works.csv（36 文献）
 Sixth, the six variable-overlap features alone decide most of the accuracy: shuffling them costs
-0.961 of Recall@20 (Section~\ref{sec:mechanism}). The construction of the data contributes to
+0.963 of Recall@20 (Section~\ref{sec:mechanism}). The construction of the data contributes to
 this, because every case takes its input and output variables from the symbols of its ground-truth
 equations, so the query and the answer share one notation; whether the method stays as accurate
 for queries written in another notation remains untested. Seventh, learned greedy selection trains

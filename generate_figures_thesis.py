@@ -2,9 +2,10 @@
 """修士論文用の英語ラベル図を一括生成する.
 
 出力: thesis/master_thesis/figures/*.{png,pdf}
-データ（2026-10-21 改訂。加藤先生の 2 回目のコメントによる再実験 c7c4feb の結果。日本語版 8/31 報告 4781cdd と同じ値）:
+データ（2026-10-27 改訂。説明文を書き直し core_019_v1 を外した再計算 8b77e73 の結果。日本語版 8/31 報告 8a0de85 と同じ値）:
     training_cases.json / experiments/kato1020/excluded_cases_v3.json（評価と訓練から外した 92 件。2026-10-21(2) から）/
-    experiments/kato1020/main.json（全体比較、正解式の数と入力変数の数で分けた値）/ mech.json（特徴量を足したときの上乗せ）/
+    experiments/kato1021/main.json（全体比較、正解式の数と入力変数の数で分けた値。2026-10-27 から、説明文 113 件を書き直し
+    core_019_v1 を外した 1,731 件の再計算 8b77e73）/ mech.json（特徴量を足したときの上乗せ）/
     pfi.json / greedy.json / n1_coverage_w30-70.json
 方針: 10 通りの分割の比較は箱ひげ図（G7）。日本語フォント設定は入れない（英語ラベルのみ）。suptitle は付けない。
 2026-10-21: 自由度ゼロ停止（fig_dof_stop）と第 1 段の重みの再設計（fig_stage1_redesign）の図は、報告書と同じく
@@ -23,7 +24,8 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent
 EXP = ROOT / "experiments"
-K20 = EXP / "kato1020"
+K20 = EXP / "kato1020"   # 除外の一覧（excluded_cases_v3.json）
+K21 = EXP / "kato1021"   # 結果（2026-10-27 の再計算。設定 A 1,731 件）
 FIG = ROOT / "thesis" / "master_thesis" / "figures"
 FIG.mkdir(parents=True, exist_ok=True)
 
@@ -64,7 +66,7 @@ def _excluded_ids():
     """評価と訓練から外すケース（v3、92 件）: 未知の変数が決まらない出典横断の 91 件（kato1020_exclusions.py、
     analyze_kato_0831_followup.gt_checks と同じ判定）と、2 冊の教科書の式から成る単一出典の core_019_v1（2026-10-21 の本人の決定）.
 
-    結果の図（method_comparison など）は、再計算が終わるまで 91 件を外した 1,732 件の JSON を読む.
+    結果の図（method_comparison など）は、同じ 92 件を外した 1,731 件の再計算（experiments/kato1021/）の JSON を読む.
     """
     return set(json.load(open(K20 / "excluded_cases_v3.json"))["excluded_case_ids"])
 
@@ -81,7 +83,7 @@ def _family(c):
 
 
 # ----------------------------------------------------------------------
-# dataset() — 評価に使う 1,732 件と、使わない 91 件・拡張 1,015 件
+# dataset() — 評価に使う 1,731 件と、使わない 92 件・拡張 1,015 件
 # ----------------------------------------------------------------------
 def dataset():
     cases = json.load(open(ROOT / "training_cases.json"))
@@ -201,7 +203,7 @@ MODES_MAIN = [("baseline_tfidf", "Baseline (classical IR)", C_BASE),
 
 
 def method_comparison():
-    tab = json.load(open(K20 / "main.json"))["table"]
+    tab = json.load(open(K21 / "main.json"))["table"]
     fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.4))
     centers = np.array([0.0, 3.4])
     for ax, metric, tag in ((axes[0], "Recall@20", "(a)"), (axes[1], "MAP", "(b)")):
@@ -210,7 +212,7 @@ def method_comparison():
             _box(ax, data, [centers[i] - 0.9, centers[i], centers[i] + 0.9], [c for _, _, c in MODES_MAIN],
                  widths=0.62)
         ax.set_xticks(centers)
-        ax.set_xticklabels(["Setting A\n(1,732 cases)", "Setting B\n(synthesized, 1,000 cases)"], fontsize=10)
+        ax.set_xticklabels(["Setting A\n(1,731 cases)", "Setting B\n(synthesized, 1,000 cases)"], fontsize=10)
         ax.set_ylabel(metric, fontsize=11)
         ax.set_title(f"{tag} {metric}", fontsize=12)
         ax.grid(axis="y", alpha=0.3)
@@ -229,7 +231,7 @@ MARK = {"baseline_tfidf": "o-", "proposed_static": "s-", "proposed_train": "^-"}
 
 
 def characteristic():
-    b = json.load(open(K20 / "main.json"))["buckets"]["A"]
+    b = json.load(open(K21 / "main.json"))["buckets"]["A"]
     nc_order = [str(k) for k in range(1, 11)]
     fig, axes = plt.subplots(2, 2, figsize=(11.5, 7.6), sharey="row")
     for col, (key, order, ticklabels, xlabel) in enumerate((
@@ -263,7 +265,7 @@ MODES_MECH = [("reranker-7_Comp", "+ Complementarity", "#1a73e8"),
 
 
 def mechanism():
-    me = json.load(open(K20 / "mech.json"))
+    me = json.load(open(K21 / "mech.json"))
     fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.3), sharey=True)
     for ax, key, xlabel, tag in ((axes[0], "lift_by_n_correct", "Number of ground-truth equations", "(a)"),
                                  (axes[1], "lift_by_n_input", "Number of input variables", "(b)")):
@@ -281,7 +283,9 @@ def mechanism():
         ax.set_title(f"{tag} By {xlabel.lower()}", fontsize=11)
         ax.grid(alpha=0.3)
     axes[0].set_ylabel("MAP gain over the seven-feature reranker", fontsize=10)
-    axes[0].legend(fontsize=9, loc="lower right")
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, fontsize=10, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.06),
+               framealpha=1.0)   # 図の外（下）に置き、線を隠さない
     fig.tight_layout()
     save(fig, "fig_mechanism")
 
@@ -294,7 +298,7 @@ GREEDY_CONFIGS = [("static", "Static reranking", C_PROP), ("infer", "Greedy at i
 
 
 def greedy_3way():
-    g = json.load(open(K20 / "greedy.json"))["summary"]
+    g = json.load(open(K21 / "greedy.json"))["summary"]
     fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.3), sharey=True)
     centers = np.array([0.0, 3.4])
     for ax, S, title in ((axes[0], "A", "(a) Setting A"), (axes[1], "B", "(b) Setting B (synthesized)")):
@@ -314,7 +318,7 @@ def greedy_3way():
 
 
 # ----------------------------------------------------------------------
-# pfi() — 日本語版 docs/figures/fig_pfi_recall20_ja_final（analyze_kato1014_pfi.figure）の英語版。同じ構成・同じ値。
+# pfi() — 日本語版 docs/figures/fig_pfi_recall20_ja_final_1021（analyze_kato1014_pfi.figure）の英語版。同じ構成・同じ値。
 # 棒 = シャッフル前の平均 − 低下量の平均（10 分割、各 20 回）、誤差棒 = 低下量の分割間の標準偏差。
 # ----------------------------------------------------------------------
 EN_FEAT = {
@@ -330,7 +334,7 @@ C_TOP_G, C_TOP_M = "#a63603", "#fdae6b"   # topic: whole group / single feature
 
 
 def pfi():
-    out = json.load(open(K20 / "pfi.json"))
+    out = json.load(open(K21 / "pfi.json"))
     m = "Recall@20"
     base = out["base"][m]["mean"]
     res = out["targets"]
@@ -380,10 +384,11 @@ def pfi():
 
 # ----------------------------------------------------------------------
 # n1_coverage() — 日本語版 docs/figures/fig_n1_full_coverage_ja_1020.png（analyze_stage1_n1.make_figure、
-# marks = 50・200・500・1,000、chosen = 2,000）の英語版。同じ値（experiments/kato1020/n1_coverage_w30-70.json）。
+# marks = 50・200・500・1,000、chosen = 2,000）の英語版。2026-10-27 から fig_n1_full_coverage_ja_1021 と同じ値
+# （experiments/kato1021/n1_coverage_w30-70.json）。
 # ----------------------------------------------------------------------
 def n1_coverage(marks=(50, 200, 500, 1000), chosen=2000):
-    d = json.load(open(K20 / "n1_coverage_w30-70.json"))
+    d = json.load(open(K21 / "n1_coverage_w30-70.json"))
     col = {"A": "#2a78d6", "B": "#eb6834"}
     lab = {"A": f"Setting A ({d['settings']['A']['n_cases']:,} cases)",
            "B": f"Setting B (synthesized, {d['settings']['B']['n_cases']:,} cases)"}

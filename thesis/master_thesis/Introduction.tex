@@ -15,6 +15,7 @@
 %   因果の主張を削除した。
 % 2026-10-21(2) 改訂（報告 f1076cd にそろえた）: 単一出典の 1 件（2 冊の教科書の式から成る core_019_v1）も除いて 1,731 件。
 %   手法の設定値を hyperparameters とよび、ここ（本文の初出）で「訓練の前に決めておく値」と説明した。結果の数値は再計算まで据え置き。
+% 2026-10-27: 結果の数値を再計算（kato1021、1,731 件）の値に差し替えた。
 % ============================================================
 
 Physical models --- systems of equations that describe how the material, energy, and momentum
@@ -115,19 +116,19 @@ stronger text scorers, and the analyses explain why. With a first stage that adm
 ground-truth equation, Recall@20 --- the fraction of the ground-truth equations among the 20
 equations presented --- rises from 0.906 for classical retrieval, whose weights the validation cases
 choose, to 0.981 in the mixed setting and from 0.825 to 0.966 in the synthesized-only setting, and
-mean average precision (MAP) rises from 0.690 to 0.860 and from 0.626 to 0.832, on all 10 splits.
+mean average precision (MAP) rises from 0.693 to 0.862 and from 0.626 to 0.832, on all 10 splits.
 Variants of the classical retrieval with BM25 and with a dense sentence encoder (E5) rank no better
 than the original. The gain grows with the numbers of ground-truth equations and input variables.
-% source: experiments/kato1020/main.json（table / compare、wins 10）; baselines.json（BM25 0.904・0.819、E5 0.892・0.806）
+% source: experiments/kato1021/main.json（table / compare、wins 10）; baselines.json（BM25 0.905・0.819、E5 0.892・0.806）
 The analyses locate the cause of the gain in the variables that equations share rather than in
 their topic. The features that read variable overlap carry the improvement, and among them the
 set-aware features mainly raise the ground-truth equations within the top 20; permuting the
-variable-overlap features of the trained model collapses Recall@20 from 0.981 to 0.020, whereas
-permuting the topic features leaves it at 0.973. Learned greedy selection raises MAP over static reranking by
+variable-overlap features of the trained model collapses Recall@20 from 0.981 to 0.018, whereas
+permuting the topic features leaves it at 0.974. Learned greedy selection raises MAP over static reranking by
 $+0.032$ on the cases with eight or more ground-truth equations. A comparison with LLMs that read the whole
 database is prepared and remains to be run.
-% source: mech.json; pfi.json（GROUP_var → 0.0199、GROUP_topic → 0.9732）; greedy.json（K>=8 train − static MAP
-%         A +0.0318・B +0.0319）
+% source: kato1021/mech.json; kato1021/pfi.json（GROUP_var → 0.0180、GROUP_topic → 0.9737）; kato1021/greedy.json（K>=8 train −
+%         static MAP A +0.0321・B +0.0319）
 
 The contributions of this thesis are threefold.
 \begin{enumerate}
@@ -136,7 +137,7 @@ The contributions of this thesis are threefold.
     assigned to an equation of its own, including 1,000 synthesized cases; and a stratified
     source-disjoint split with 10 seeds, whose validation cases choose the hyperparameters.
   \item A set-aware two-stage retrieval method that improves Recall@20 by $+0.075$ and $+0.141$ and
-    MAP by $+0.170$ and $+0.205$ over classical information retrieval with weights chosen on the
+    MAP by $+0.169$ and $+0.205$ over classical information retrieval with weights chosen on the
     validation cases, on all 10 splits, and that also beats the variants with BM25 and E5.
   \item An empirical account of the method --- which features cause the improvement, where
     sequential selection helps, why topical similarity adds little, and where the remaining errors
