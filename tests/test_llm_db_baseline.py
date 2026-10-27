@@ -246,9 +246,10 @@ def test_pending_cases_skips_answered_and_retries_failed_calls():
 def test_fixed_splits_are_disjoint_and_cover_each_setting():
     d = json.loads(SPLITS.read_text(encoding="utf-8"))
     excluded = set(d["provenance"].get("excluded_case_ids", []))
-    # 2026-10-20：未知の変数が決まらない出典横断の 91 件を外してから分割した（設定 A 1,823 → 1,732、B は 1,000 のまま）
-    assert len(excluded) == 91
-    assert d["n_cases"] == {"A": 1823 - 91, "B": 1000}
+    # 2026-10-21：外す一覧 v3（92 件 = 未知の変数が決まらない出典横断の 91 件と、2 冊の教科書の式から成る単一出典の
+    # core_019_v1）を外してから分割した（設定 A 1,823 → 1,731、B は 1,000 のまま）
+    assert len(excluded) == 92 and "core_019_v1" in excluded
+    assert d["n_cases"] == {"A": 1823 - 92, "B": 1000}
     for setting, by_seed in d["splits"].items():
         assert len(by_seed) == 10
         for seed, sp in by_seed.items():
@@ -473,7 +474,7 @@ def test_v3_cases_are_all_setting_a_cases_including_setting_b():
     d = json.loads(SPLITS.read_text(encoding="utf-8"))["splits"]
     cases = json.loads((ROOT / "training_cases.json").read_text(encoding="utf-8"))
     ids = v3_case_ids({c["case_id"]: c for c in cases}, d)
-    assert len(ids) == len(set(ids)) == 1732
+    assert len(ids) == len(set(ids)) == 1731
     b = set(d["B"]["42"]["train"]) | set(d["B"]["42"]["val"]) | set(d["B"]["42"]["test"])
     assert len(b) == 1000 and b <= set(ids)
 

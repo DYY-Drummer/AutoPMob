@@ -1219,19 +1219,22 @@ def cmd_run(args) -> None:
 
 # ---- evaluate：判定・指標・既存の手法との比較 ----------------------------------------------
 
-def _selected_kato1020(setting: str, seed: int) -> dict:
-    """第 1 段のやり直しのセッション（commit c7c4feb）が検証用のケースで選んだ、提案手法の設定（重み・不正解の選び方）."""
-    return json.loads((EXP / "kato1020" / "selected.json").read_text(encoding="utf-8"))["selected"][setting][str(seed)]
+REF_RUN = EXP / "kato1021"   # 比べる相手の出力：第 1 段のやり直しのセッションの最終の実行（commit 8b77e73。92 件を外し、説明文 113 件を書き直したデータ）
 
 
-# 比べる相手：91 件を外した分割での最終の設定（commit c7c4feb、報告書 4781cdd の §4 の主結果と同じ出力）。
-# 出力は experiments/kato1020/raw/（非追跡。run_kato1020 の手順で作り直せる）。ranks は各正解式の順位。
+def _selected_ref(setting: str, seed: int) -> dict:
+    """第 1 段のやり直しのセッションが検証用のケースで選んだ、提案手法の設定（重み・不正解の選び方）."""
+    return json.loads((REF_RUN / "selected.json").read_text(encoding="utf-8"))["selected"][setting][str(seed)]
+
+
+# 比べる相手：同じ分割（外す一覧 v3 の 92 件を外したもの）での最終の設定。値は experiments/kato1021/main.json と一致する。
+# 出力は REF_RUN/raw/（非追跡）。ranks は各正解式の順位。並びが splits.json と違えば reference_rows が外す。
 REFERENCE = {
     "proposed (N1 = 2,000, (0.3, 0.7), validation-selected negatives)": lambda s, seed: (
-        EXP / "kato1020" / "raw" / "select"
-        / f"{s}_{_selected_kato1020(s, seed)['w']}_{_selected_kato1020(s, seed)['neg']}__{seed}.json", "reranker-10S"),
+        REF_RUN / "raw" / "select"
+        / f"{s}_{_selected_ref(s, seed)['w']}_{_selected_ref(s, seed)['neg']}__{seed}.json", "reranker-10S"),
     "baseline TF-IDF (validation-selected weights)": lambda s, seed: (
-        EXP / "kato1020" / "raw" / f"baselines_percase_{s}.json", "baseline"),
+        REF_RUN / "raw" / f"baselines_percase_{s}.json", "baseline"),
 }
 
 
@@ -1244,7 +1247,11 @@ def reference_rows(settings: list, seeds: list, splits: dict) -> dict:
         for s in settings:
             rows, reason = [], None
             for seed in seeds:
-                f, mode = where(s, seed)
+                try:
+                    f, mode = where(s, seed)
+                except (FileNotFoundError, KeyError) as e:   # 選んだ設定の一覧（selected.json）がまだない など
+                    reason = f"出力の場所が決まらない（{e}）"
+                    break
                 if not f.exists():
                     reason = f"{f} がない"
                     break
@@ -1364,8 +1371,12 @@ def _params3(args, eqs, cases):
         return build_params(args.model, args.effort, db_block, None, task_text(cases[t[0]], "v3"),
                             fmt="eqd", ttl=args.ttl, max_tokens=args.max_tokens, version="v3")
 
+    cases_sha = sha256(CASES_JSON)   # 説明文は training_cases.json の context をそのまま使う。どの版で解いたかを記録する
+
     def meta_of(t):
-        return {"ttl": args.ttl, "max_tokens": args.max_tokens, "order_seed": V3_ORDER_SEED}
+        return {"ttl": args.ttl, "max_tokens": args.max_tokens, "order_seed": V3_ORDER_SEED,
+                "training_cases_sha256": cases_sha,
+                "task_sha256": hashlib.sha256(task_text(cases[t[0]], "v3").encode("utf-8")).hexdigest()}
     return params_of, meta_of
 
 

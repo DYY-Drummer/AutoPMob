@@ -1341,7 +1341,6 @@
      "core_105_v1",
      "core_002_v1",
      "core_006_v1",
-     "core_019_v1",
      "ms_arrhenius_001",
      "ms_pfr_arrhenius_001",
      "ms_pid_arrhenius_001",
@@ -1789,7 +1788,6 @@
      "core_070_v1",
      "core_098_v1",
      "core_075_v1",
-     "core_019_v1",
      "core_108_v1",
      "core_011_v1",
      "core_036_v1",
@@ -3537,7 +3535,6 @@
      "core_122_v1",
      "core_006_v1",
      "core_061_v1",
-     "core_019_v1",
      "core_011_v1",
      "core_036_v1",
      "ms_cstr_heat_001",
@@ -6640,7 +6637,6 @@
      "core_043_v1",
      "core_006_v1",
      "core_061_v1",
-     "core_019_v1",
      "core_011_v1",
      "ms_bioreactor_001",
      "ms_arrhenius_001",
@@ -8229,7 +8225,6 @@
      "core_093_v1",
      "core_096_v1",
      "core_089_v1",
-     "core_019_v1",
      "core_106_v1",
      "core_036_v1",
      "core_018_v1",
@@ -8762,7 +8757,6 @@
      "core_123_v1",
      "core_122_v1",
      "core_061_v1",
-     "core_019_v1",
      "core_011_v1",
      "core_106_v1",
      "core_036_v1",
@@ -10504,7 +10498,6 @@
      "core_122_v1",
      "core_006_v1",
      "core_061_v1",
-     "core_019_v1",
      "core_108_v1",
      "core_011_v1",
      "core_036_v1",
@@ -12233,7 +12226,6 @@
      "core_123_v1",
      "core_122_v1",
      "core_061_v1",
-     "core_019_v1",
      "core_108_v1",
      "core_011_v1",
      "core_106_v1",
@@ -13983,7 +13975,6 @@
      "core_075_v1",
      "core_006_v1",
      "core_061_v1",
-     "core_019_v1",
      "core_108_v1",
      "core_011_v1",
      "core_106_v1",
@@ -16949,7 +16940,6 @@
      "core_052_v1",
      "core_010_v1",
      "core_061_v1",
-     "core_019_v1",
      "core_011_v1",
      "core_036_v1",
      "ms_bioreactor_001",
@@ -27486,108 +27476,118 @@
   }
  },
  "n_cases": {
-  "A": 1732,
+  "A": 1731,
   "B": 1000
  },
  "check": {
   "A": {
    "42": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "123": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "456": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "789": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "1024": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "2024": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "3141": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "5926": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "7777": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    },
    "9999": {
-    "experiments/kato1020/raw/final/infer_A__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_A.json": true
+    "experiments/kato1021/raw/final/infer_A__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_A__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_A.json": true
    }
   },
   "B": {
    "42": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "123": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "456": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "789": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "1024": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "2024": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "3141": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "5926": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "7777": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    },
    "9999": {
-    "experiments/kato1020/raw/final/infer_B__{seed}.json": true,
-    "experiments/kato1020/raw/baselines_percase_B.json": true,
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json": true
+    "experiments/kato1021/raw/final/infer_B__{seed}.json": true,
+    "experiments/kato1021/raw/final/train_B__{seed}.json": true,
+    "experiments/kato1021/raw/baselines_percase_B.json": true
    }
   }
  },
  "provenance": {
-  "created": "2026-10-20T18:30:37+00:00",
-  "git_head": "eacf640d6a77278b256d04aab0a1914298d5d01a",
+  "created": "2026-10-27T10:33:00+00:00",
+  "git_head": "8b77e73976f9189ff4ddd5465941e4b5df485e6c",
   "code_blob": {
    "set_aware_reranker.py": "a1e2885d384da9e591b7ed240f2b00a77d1b8afb",
    "two_stage_query_conditioned.py": "9bc29040f28418db434860a9f05f9744e4974073"
@@ -27597,7 +27597,7 @@
    "two_stage_query_conditioned.py": false
   },
   "data_sha256": {
-   "training_cases.json": "8a1413156f635e4ad4b988d1429d30a7596f31c3b20e088e25031aececfd71d3",
+   "training_cases.json": "3fe50a52313690da76cc52fdd8fd7fdc18a822f7ba5b8202f1cf1b784bf3b089",
    "unified_equations.json": "76ac100a2f6dbc464bbecdb4608455187c98216f763cb5c475b5ca92a4fc218c"
   },
   "rule": "set_aware_reranker.run_mode(split_mode='stratified') と同じ特徴量タプル（正解式数・入力変数数・出力変数数・正解式の出典数）で stratified_src_split を呼んだ。train/val/test は正解式が DB にあるケースだけ（run_mode の tr/te と同じ）。",
@@ -27611,9 +27611,10 @@
     "dae_"
    ]
   },
-  "exclude_file": "experiments/kato1020/excluded_cases.json",
-  "exclude_sha256": "f655a51e65cd0213ce59d20794bf95cf5888cf8f6b9fb8dfa40142d4ca3868ad",
+  "exclude_file": "experiments/kato1020/excluded_cases_v3.json",
+  "exclude_sha256": "90c489a75effc695256046ab41736a43793abe0846bc05aae7dec0c5f040f38a",
   "excluded_case_ids": [
+   "core_019_v1",
    "ms3_0215",
    "ms3_0216",
    "ms3_0217",
@@ -27708,13 +27709,14 @@
   ],
   "checked_against": {
    "A": [
-    "experiments/kato1020/raw/final/infer_A__{seed}.json",
-    "experiments/kato1020/raw/baselines_percase_A.json"
+    "experiments/kato1021/raw/final/infer_A__{seed}.json",
+    "experiments/kato1021/raw/final/train_A__{seed}.json",
+    "experiments/kato1021/raw/baselines_percase_A.json"
    ],
    "B": [
-    "experiments/kato1020/raw/final/infer_B__{seed}.json",
-    "experiments/kato1020/raw/baselines_percase_B.json",
-    "experiments/xs1_B/reranker-10S_w30-70__{seed}.json"
+    "experiments/kato1021/raw/final/infer_B__{seed}.json",
+    "experiments/kato1021/raw/final/train_B__{seed}.json",
+    "experiments/kato1021/raw/baselines_percase_B.json"
    ]
   }
  }
