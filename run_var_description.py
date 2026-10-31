@@ -174,10 +174,39 @@ def summarize(label, aggs, per_case=None) -> dict:
     return out
 
 
+def make_tfidf(eq_texts):
+    """第 1 段・f0 用の TF-IDF（全式に当てはめる）と式の行列 X_eq（seed によらない）."""
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    tfidf = TfidfVectorizer(lowercase=True, max_features=50000, ngram_range=(1, 2), min_df=1)
+    return tfidf, tfidf.fit_transform(eq_texts)
+
+
+def seed_svd_sim(seed, tfidf, X_eq):
+    """seed の SVD（256 成分）を当てはめ、view の列から SVD 類似度 (ケース × 式) を返す関数を返す（f2 用）."""
+    from sklearn.decomposition import TruncatedSVD
+    svd = TruncatedSVD(n_components=256, random_state=seed)
+    E = svd.fit_transform(X_eq)
+    E = E / (np.linalg.norm(E, axis=1, keepdims=True) + 1e-12)
+
+    def svd_sim_of(vs_):
+        Q = svd.transform(tfidf.transform([v.io_text for v in vs_]))
+        Q = Q / (np.linalg.norm(Q, axis=1, keepdims=True) + 1e-12)
+        return Q @ E.T
+
+    return svd_sim_of
+
+
+def split_cases(data, seed) -> dict:
+    """層化分割（ソース単位）の train・val・test ごとに、正解式のあるケースの添字（昇順）を返す."""
+    cs, cl = data["case_srcs"], data["correct_lists"]
+    split = stratified_src_split(cs, data["feats"], seed)
+    return {part: [i for i, s in enumerate(cs) if s in split[part] and cl[i]]
+            for part in ("train", "val", "test")}
+
+
 def run_condition(cond, data, vd, seeds, renames, tau_delta, w_text, w_var, save_per_case,
                   tfidf, X_eq):
-    from sklearn.decomposition import TruncatedSVD
-    cs, cl = data["case_srcs"], data["correct_lists"]
+    cl = data["correct_lists"]
     inc = occurrence_incidence(data["eq_ptr"])
     views = build_views(cond, data, vd)
     matcher = make_matcher(cond, data, views)
@@ -191,18 +220,9 @@ def run_condition(cond, data, vd, seeds, renames, tau_delta, w_text, w_var, save
     taus, mism = {}, {}
     for seed in seeds:
         t0 = time.time()
-        split = stratified_src_split(cs, data["feats"], seed)
-        tr = [i for i, s in enumerate(cs) if s in split["train"] and cl[i]]
-        te = [i for i, s in enumerate(cs) if s in split["test"] and cl[i]]
-        svd = TruncatedSVD(n_components=256, random_state=seed)
-        E = svd.fit_transform(X_eq)
-        E = E / (np.linalg.norm(E, axis=1, keepdims=True) + 1e-12)
-
-        def svd_sim_of(vs_):
-            Q = svd.transform(tfidf.transform([v.io_text for v in vs_]))
-            Q = Q / (np.linalg.norm(Q, axis=1, keepdims=True) + 1e-12)
-            return Q @ E.T
-
+        idx = split_cases(data, seed)
+        tr, te = idx["train"], idx["test"]
+        svd_sim_of = seed_svd_sim(seed, tfidf, X_eq)
         tau = tau_for(matcher, views, data, tr, tau_delta)
         taus[str(seed)] = tau
         prep, mism[str(seed)] = prepare(tr + te, views, matcher, tau, X_ctx, X_eq,
@@ -275,7 +295,6 @@ def main():
     ap.add_argument("--save-per-case", action="store_true")
     ap.add_argument("--output", required=True)
     args = ap.parse_args()
-    from sklearn.feature_extraction.text import TfidfVectorizer
 
     conds = [c.strip() for c in args.conds.split(",") if c.strip()]
     assert all(c in CONDITIONS for c in conds), conds
@@ -283,8 +302,7 @@ def main():
     renames = [float(p) for p in args.renames.split(",") if p.strip()]
     data = load_data(args.setting)
     vd = load_var_descriptions() if any(c != "S0" for c in conds) else None
-    tfidf = TfidfVectorizer(lowercase=True, max_features=50000, ngram_range=(1, 2), min_df=1)
-    X_eq = tfidf.fit_transform(data["eq_texts"])
+    tfidf, X_eq = make_tfidf(data["eq_texts"])
     config = {**vars(args), **HP, "spec": SPEC, "n_cases": len(data["cases"])}
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     if args.coverage:

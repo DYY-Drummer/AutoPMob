@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""変数の説明による照合の分析: 本実験の前の確認（precheck）、検定（stats）、図（figure）.
+"""変数の説明による照合の分析: 本実験の前の確認（precheck）、検定（stats）、図（figure）、追加実験の検定（tuned-stats）.
 
 仕様: docs/superpowers/specs/2026-10-01-variable-description-matching-design.md §3.3, §3.6, §5
   python3 analyze_var_description.py precheck   # E5 が同じ変数と同じ式の中の別の変数を分ける AUC（< 0.80 なら終了コード 2）
   python3 analyze_var_description.py stats      # 対応あり検定・95% 信頼区間・判定・族別の内訳・QC を通らなかったケースを除いた比較 → var_desc_stats.json
   python3 analyze_var_description.py figure     # figures/fig_var_description.pdf / .png
+  python3 analyze_var_description.py tuned-stats  # 追加実験（仕様 §7）: 検証用ケースで選び直した結果を本実験と比べる・選ばれた設定の回数 → var_desc_tuned_stats.json
 出力先は各コマンドの中で、モジュールの EXP / FIG_DIR から決める（テストでは両方を差し替える）。
 """
 from __future__ import annotations
@@ -36,6 +37,15 @@ COMPARISONS = [  # (a, b, 目的): a − b を検定する
     ("D0", "D1", "漏れの大きさ"),
     ("S1", "S0", "説明文から記号を消した影響"),
 ]
+TUNED_COMPARISONS = [  # 追加実験（仕様 §7）。a − b を検定する。*-tuned は tune_var_description.py の結果、D1・S1 は本実験の結果
+    ("D1-tuned", "S1-tuned", "置き換え"),
+    ("S1-tuned-r50", "S1-tuned", "頑健性（半分を替える）"),
+    ("S1-tuned-r100", "S1-tuned", "頑健性（全部替える）"),
+    ("D1-tuned", "S1-tuned-r50", "半分替えた記号版と説明版"),
+    ("D1-tuned", "D1", "選び直しの効果"),
+    ("S1-tuned", "S1", "選び直しの効果（記号版）"),
+]
+TUNED_CONDS = ("S1", "D1")
 QC_COMPARISONS = [  # (a, b): QC を通らなかったケース（qc_failed）を除いて a − b を検定し直す対。D1・S1-r の結果に効く 4 つ
     ("D1", "S1"), ("S1-r50", "S1"), ("S1-r100", "S1"), ("D1", "S1-r100"),
 ]
@@ -323,11 +333,10 @@ def excluding_qc_failed(setting: str, res: dict, qc_failed: set) -> dict:
     return out
 
 
-def setting_stats(setting: str, doc: dict, conflict: set, exclusion: bool, qc_failed: set) -> dict:
-    """設定 1 つ分: 比較（指標ごと）・族別・meaning_conflict を除いた比較・qc_failed を除いた比較。比較ごとに 1 行を出力する."""
-    res = doc["results"]
+def run_comparisons(setting: str, res: dict, comparisons: list) -> dict:
+    """comparisons の対（a, b, 目的）ごとに compare で a − b を検定し、1 行を出力する。ラベルが足りない対は error にする."""
     comps = {}
-    for a, b, purpose in COMPARISONS:
+    for a, b, purpose in comparisons:
         key, tag = f"{a}_vs_{b}", f"[{setting}] {a} − {b}"
         missing = [lab for lab in (a, b) if lab not in res]
         if missing:  # 黙って落とさず、何が足りないかを出す
@@ -336,7 +345,13 @@ def setting_stats(setting: str, doc: dict, conflict: set, exclusion: bool, qc_fa
             continue
         comps[key] = compare(res, a, b, purpose)  # seed が合わなければ ValueError（握りつぶさない）
         print(result_line(tag, comps[key]["Recall@K_correct"]))
-    out = {"comparisons": comps, "family": family_table(res), "family_tests": {},
+    return comps
+
+
+def setting_stats(setting: str, doc: dict, conflict: set, exclusion: bool, qc_failed: set) -> dict:
+    """設定 1 つ分: 比較（指標ごと）・族別・meaning_conflict を除いた比較・qc_failed を除いた比較。比較ごとに 1 行を出力する."""
+    res = doc["results"]
+    out = {"comparisons": run_comparisons(setting, res, COMPARISONS), "family": family_table(res), "family_tests": {},
            "tau": doc["tau"], "approx_mismatch": doc["approx_mismatch"]}
     if "D1" not in res or "S1" not in res:
         print(f"[{setting}] D1 − S1 の族別・meaning_conflict を除いた比較: missing label（D1 か S1）")
@@ -383,6 +398,62 @@ def cmd_stats(args) -> None:
         out[setting] = setting_stats(setting, doc, conflict, exclusion, qc_failed)
     out["A"]["tau_sensitivity_seed42"] = tau_sensitivity(docs["A"]["results"])
     stats_json = EXP / "var_desc_stats.json"
+    write_json(stats_json, out)
+    print(f"Saved: {stats_json}")
+
+
+def weights_label(w_text: float, w_var: float) -> str:
+    return f"{w_text:g}:{w_var:g}"
+
+
+def selection_stats(setting: str, tuned: dict) -> dict:
+    """条件（S1・D1）ごとに、選ばれた (Δτ, 重み) の回数（格子の全点。一度も選ばれなかった点は 0 回）と、選んだ Δτ が格子の最大か.
+
+    格子は結果ファイルの grid から、選んだ点は selected から読む。selected の点が、同じ seed の grid にあることを確かめる。
+    S1 は τ = 1 のままで Δτ を動かさない（格子の Δτ が 1 通り）ので、格子の端という見方がない:
+    tau_delta_varied = False、端の項目は None（True にも False にもしない）。条件ごとに 1〜2 行を出力する."""
+    out = {}
+    for cond in TUNED_CONDS:
+        grid, selected = tuned["grid"][cond], tuned["selected"][cond]
+        if set(grid) != set(selected):
+            raise ValueError(f"{cond}: grid と selected の seed が違う: {sorted(set(grid) ^ set(selected))}")
+        count = {}  # (Δτ, 文章の重み, 変数の重み) → 選ばれた回数。格子の評価順
+        for entries in grid.values():
+            for e in entries:
+                count.setdefault((e["tau_delta"], e["w_text"], e["w_var"]), 0)
+        for seed, sel in selected.items():
+            pt = (sel["tau_delta"], sel["w_text"], sel["w_var"])
+            if pt not in {(e["tau_delta"], e["w_text"], e["w_var"]) for e in grid[seed]}:
+                raise ValueError(f"{cond}: seed {seed} の selected {pt} が、その seed の grid にない")
+            count[pt] += 1
+        n_seeds = len(selected)
+        varied = len({pt[0] for pt in count}) > 1
+        gmax = max(pt[0] for pt in count) if varied else None
+        n_max = sum(n for pt, n in count.items() if pt[0] == gmax) if varied else None
+        out[cond] = {"n_seeds": n_seeds,
+                     "counts": [{"tau_delta": d, "w_text": wt, "w_var": wv, "n_selected": n}
+                                for (d, wt, wv), n in count.items()],
+                     "tau_delta_varied": varied, "tau_delta_grid_max": gmax,
+                     "n_selected_at_grid_max": n_max, "any_selected_at_grid_max": None if n_max is None else n_max > 0}
+        picked = "; ".join(f"dtau={d:+.2f} w={weights_label(wt, wv)} ×{n}" for (d, wt, wv), n in count.items() if n)
+        print(f"[{setting}] {cond}-tuned selected ({n_seeds} seeds): {picked}")
+        if varied:
+            print(f"[{setting}] {cond}-tuned selected at the grid maximum dtau={gmax:+.2f}: {n_max} of {n_seeds} seeds")
+    return out
+
+
+def cmd_tuned_stats(args) -> None:
+    """追加実験（仕様 §7）: 検証用ケースで τ と重みを選び直した結果（*-tuned）を、本実験の結果と並べて比べる.
+
+    比較は run_comparisons（= compare。判定は §5 と同じ）。res は本実験の results に選び直しの results を足したもの（ラベルは重ならない）."""
+    docs = {setting: (load_json(EXP / f"var_desc_{setting}.json"), load_json(EXP / f"var_desc_tuned_{setting}.json"))
+            for setting in ("A", "B")}
+    out = {"spec": SPEC}
+    for setting, (main, tuned) in docs.items():
+        res = {**main["results"], **tuned["results"]}
+        out[setting] = {"comparisons": run_comparisons(setting, res, TUNED_COMPARISONS),
+                        "selection": selection_stats(setting, tuned)}
+    stats_json = EXP / "var_desc_tuned_stats.json"
     write_json(stats_json, out)
     print(f"Saved: {stats_json}")
 
@@ -440,10 +511,10 @@ def cmd_figure(args):
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("precheck", "stats", "figure"):
+    for name in ("precheck", "stats", "figure", "tuned-stats"):
         sub.add_parser(name)
     args = ap.parse_args()
-    {"precheck": cmd_precheck, "stats": cmd_stats, "figure": cmd_figure}[args.cmd](args)
+    {"precheck": cmd_precheck, "stats": cmd_stats, "figure": cmd_figure, "tuned-stats": cmd_tuned_stats}[args.cmd](args)
 
 
 if __name__ == "__main__":

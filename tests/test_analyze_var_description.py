@@ -646,6 +646,275 @@ def test_cmd_stats_requires_the_qc_failed_flag_in_every_description_record():
     assert not (avd.EXP / "var_desc_stats.json").exists()
 
 
+# ---- cmd_tuned_stats: 検証用ケースで τ と重みを選び直した結果（仕様 §7）。本実験の結果ファイルと並べて比べる ----
+
+TUNED_LABELS = ["S1-tuned", "S1-tuned-r50", "S1-tuned-r100", "D1-tuned"]
+# 選び直しの水準（本実験 LEVEL: S1 0.742・S1-r50 0.700・S1-r100 0.660・D1 0.737）: S1 は少し上、D1 は大きく上
+TUNED_LEVEL = {"S1-tuned": 0.750, "S1-tuned-r50": 0.690, "S1-tuned-r100": 0.640, "D1-tuned": 0.800}
+TUNED_AMP = {"S1-tuned": 0.003, "S1-tuned-r50": 0.002, "S1-tuned-r100": 0.002, "D1-tuned": 0.002}
+D1_GRID = [(d, w) for d in (0.0, 0.02, 0.04, 0.06, 0.08) for w in (0.7, 0.5, 0.3)]  # (Δτ, 文章の重み)
+S1_GRID = [(0.0, w) for w in (0.7, 0.5, 0.3)]
+# seed ごとに選んだ点（SEEDS10 の順）。設定 A の D1 は Δτ = +0.08（格子の最大）が 2 回、設定 B は 0 回
+PICKS = {
+    "A": {"D1": [(0.04, 0.5), (0.04, 0.5), (0.02, 0.3), (0.08, 0.3), (0.04, 0.5),
+                 (0.0, 0.3), (0.02, 0.3), (0.08, 0.7), (0.04, 0.5), (0.06, 0.3)],
+          "S1": [(0.0, 0.3)] * 6 + [(0.0, 0.5)] * 3 + [(0.0, 0.7)]},
+    "B": {"D1": [(0.0, 0.3)] * 3 + [(0.02, 0.5)] * 4 + [(0.04, 0.7)] * 3,
+          "S1": [(0.0, 0.5)] * 10},
+}
+
+
+def synthetic_tuned_results(shift: float = 0.0) -> dict:
+    """results[label] = {per_seed（10 seed）}。seed ごとのゆらぎ 0.01·sin(si + 1) は本実験の合成データと共通."""
+    out = {}
+    for li, lab in enumerate(TUNED_LABELS):
+        per_seed = []
+        for si, seed in enumerate(SEEDS10):
+            rk = TUNED_LEVEL[lab] + shift + 0.01 * math.sin(si + 1) + TUNED_AMP[lab] * math.sin(2.3 * si + 1.9 * li)
+            per_seed.append({"seed": seed, "Recall@K_correct": rk,
+                             "MAP": rk - 0.20 + 0.002 * math.cos(1.3 * si + li),
+                             "Recall@20": rk + 0.12 + 0.002 * math.cos(0.7 * si + 2 * li)})
+        out[lab] = {"mode": lab, "per_seed": per_seed}
+    return out
+
+
+def tuned_entry(dtau: float, w_text: float) -> dict:
+    scores = {"Recall@K_correct": 0.5, "MAP": 0.6, "Recall@20": 0.7, "n_cases": 20}
+    return {"tau_delta": dtau, "tau": 0.85 + dtau, "w_text": w_text, "w_var": round(1 - w_text, 10),
+            "val": dict(scores), "test": dict(scores)}
+
+
+def tuned_doc(setting: str, shift: float, drop=(), picks=None) -> dict:
+    """tune_var_description.py merge の出力と同じ形（config・tau・grid・selected・results）."""
+    picks = picks or PICKS[setting]
+    res = synthetic_tuned_results(shift)
+    for lab in drop:
+        res.pop(lab)
+    grids = {"D1": D1_GRID, "S1": S1_GRID}
+    return {"config": {"setting": setting, "seed_list": SEEDS10},
+            "tau": {"D1": {str(s): 0.85 for s in SEEDS10}},
+            "grid": {c: {str(s): [tuned_entry(*pt) for pt in grids[c]] for s in SEEDS10} for c in grids},
+            "selected": {c: {str(s): tuned_entry(*pick) for s, pick in zip(SEEDS10, picks[c])} for c in grids},
+            "results": res}
+
+
+def write_tuned_files(exp, drop_b=(), picks=None) -> None:
+    """var_desc_tuned_{A,B}.json を exp に書く（本実験の var_desc_{A,B}.json は write_experiment_files が書く）."""
+    for setting, shift in SETTING_SHIFT.items():
+        dump(exp / f"var_desc_tuned_{setting}.json",
+             tuned_doc(setting, shift, drop_b if setting == "B" else (), picks and picks.get(setting)))
+
+
+def level_mean(res: dict, label: str) -> float:
+    return statistics.fmean(p["Recall@K_correct"] for p in res[label]["per_seed"])
+
+
+TUNED_KEYS = ["D1-tuned_vs_S1-tuned", "S1-tuned-r50_vs_S1-tuned", "S1-tuned-r100_vs_S1-tuned",
+              "D1-tuned_vs_S1-tuned-r50", "D1-tuned_vs_D1", "S1-tuned_vs_S1"]
+
+
+def test_cmd_tuned_stats_end_to_end(capsys):
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    avd.cmd_tuned_stats(None)
+    printed = capsys.readouterr().out
+    stats = load_strict(avd.EXP / "var_desc_tuned_stats.json")  # NaN があればここで落ちる
+
+    assert [f"{a}_vs_{b}" for a, b, _ in avd.TUNED_COMPARISONS] == TUNED_KEYS
+    assert [p for _, _, p in avd.TUNED_COMPARISONS][4] == "選び直しの効果"
+    for setting, shift in SETTING_SHIFT.items():
+        comps = stats[setting]["comparisons"]
+        assert list(comps) == TUNED_KEYS  # 6 つ全部、決めた順で
+        main, tuned = synthetic_results(shift), synthetic_tuned_results(shift)
+        res = {**main, **tuned}
+        for (a, b, purpose), key in zip(avd.TUNED_COMPARISONS, TUNED_KEYS):
+            assert (comps[key]["a"], comps[key]["b"], comps[key]["purpose"]) == (a, b, purpose)
+            assert f"[{setting}] {a} − {b}:" in printed  # 比較ごとに 1 行
+            for m in avd.METRICS:
+                assert comps[key][m]["verdict"] and comps[key][m]["significant"] in (True, False)
+                assert len(comps[key][m]["ci95"]) == 2
+            # a − b。a は rer、b は base（本実験のラベル D1・S1 は本実験の結果ファイルから、*-tuned は選び直しの結果から）
+            st = comps[key]["Recall@K_correct"]
+            assert st["mean_rer"] == pytest.approx(level_mean(res, a), abs=1e-4)
+            assert st["mean_base"] == pytest.approx(level_mean(res, b), abs=1e-4)
+            assert st["mean_delta"] == pytest.approx(level_mean(res, a) - level_mean(res, b), abs=1e-4)
+        v = {k: comps[k]["Recall@K_correct"]["verdict"] for k in TUNED_KEYS}
+        assert v["D1-tuned_vs_S1-tuned"] == "a higher (significant)"
+        assert v["S1-tuned-r50_vs_S1-tuned"] == "a lower (significant)"
+        assert v["S1-tuned-r100_vs_S1-tuned"] == "a lower (significant)"
+        assert v["D1-tuned_vs_S1-tuned-r50"] == "a higher (significant)"
+        assert v["D1-tuned_vs_D1"] == "a higher (significant)"
+        assert v["S1-tuned_vs_S1"] == "equivalent: 95% CI within ±0.02; significant (a higher)"
+    # 設定 B は A より 0.03 低い（ファイルの取り違えがあれば平均が合わない）
+    for key in TUNED_KEYS:
+        diff = {s: stats[s]["comparisons"][key]["Recall@K_correct"] for s in "AB"}
+        assert diff["A"]["mean_base"] - diff["B"]["mean_base"] == pytest.approx(0.03, abs=1e-3)
+    assert not (avd.EXP / "var_desc_stats.json").exists()  # 本実験の stats は書かない
+
+
+def test_cmd_tuned_stats_pairs_by_seed_and_matches_scipy():
+    """D1-tuned の per_seed を逆順に書いても seed で対にする。p 値は scipy の対応あり検定（5 桁に丸めた値）と一致する."""
+    from scipy import stats as sps
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    path = avd.EXP / "var_desc_tuned_A.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    noise = [0.004, -0.003, 0.002, -0.004, 0.003, -0.002, 0.001, -0.001, 0.0035, -0.0025]  # p 値が 0 や 1 に張り付かない差
+    s1 = {p["seed"]: p["Recall@K_correct"] for p in doc["results"]["S1-tuned"]["per_seed"]}
+    rows = [{**p, "Recall@K_correct": s1[p["seed"]] + n} for p, n in zip(doc["results"]["D1-tuned"]["per_seed"], noise)]
+    doc["results"]["D1-tuned"]["per_seed"] = rows[::-1]
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    avd.cmd_tuned_stats(None)
+    st = load_strict(avd.EXP / "var_desc_tuned_stats.json")["A"]["comparisons"]["D1-tuned_vs_S1-tuned"]["Recall@K_correct"]
+    va, vb = [s1[s] + n for s, n in zip(SEEDS10, noise)], [s1[s] for s in SEEDS10]  # seed の昇順で対にした a と b
+    assert 0.05 < sps.ttest_rel(va, vb).pvalue < 0.95  # 前提: 検定が張り付いていない
+    assert st["p_ttest"] == pytest.approx(sps.ttest_rel(va, vb).pvalue, abs=1e-5)
+    assert st["p_wilcoxon"] == pytest.approx(sps.wilcoxon(va, vb).pvalue, abs=1e-5)
+    assert st["mean_delta"] == pytest.approx(statistics.fmean(noise), abs=1e-4) and st["n"] == 10
+    assert st["significant"] is False and st["verdict"] == "equivalent: 95% CI within ±0.02"
+
+
+def selection_of(stats_cond: dict) -> dict:
+    """selection.counts を {(Δτ, 文章の重み): 回数} にする."""
+    return {(c["tau_delta"], c["w_text"]): c["n_selected"] for c in stats_cond["counts"]}
+
+
+def test_cmd_tuned_stats_counts_how_often_each_point_was_selected(capsys):
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    avd.cmd_tuned_stats(None)
+    printed = capsys.readouterr().out
+    sel = load_strict(avd.EXP / "var_desc_tuned_stats.json")
+    expected = {("A", "D1"): {(0.04, 0.5): 4, (0.02, 0.3): 2, (0.08, 0.3): 1, (0.0, 0.3): 1, (0.08, 0.7): 1, (0.06, 0.3): 1},
+                ("A", "S1"): {(0.0, 0.3): 6, (0.0, 0.5): 3, (0.0, 0.7): 1},
+                ("B", "D1"): {(0.0, 0.3): 3, (0.02, 0.5): 4, (0.04, 0.7): 3},
+                ("B", "S1"): {(0.0, 0.5): 10}}
+    for (setting, cond), picks in expected.items():
+        s = sel[setting]["selection"][cond]
+        grid = D1_GRID if cond == "D1" else S1_GRID
+        got = selection_of(s)
+        assert sorted(got) == sorted(grid)  # 格子の全点を載せる（一度も選ばれなかった点は 0 回）
+        assert got == {pt: picks.get(pt, 0) for pt in grid}
+        assert [(c["tau_delta"], c["w_text"]) for c in s["counts"]] == grid  # 格子の評価順
+        assert sum(got.values()) == s["n_seeds"] == 10
+        for c in s["counts"]:
+            assert c["w_var"] == pytest.approx(1 - c["w_text"])
+    # 表示: 条件ごとに 1 行。選ばれた点だけを、格子の順に
+    assert "[A] D1-tuned selected (10 seeds): dtau=+0.00 w=0.3:0.7 ×1; dtau=+0.02 w=0.3:0.7 ×2; " \
+           "dtau=+0.04 w=0.5:0.5 ×4; dtau=+0.06 w=0.3:0.7 ×1; dtau=+0.08 w=0.7:0.3 ×1; dtau=+0.08 w=0.3:0.7 ×1" in printed
+    assert "[B] S1-tuned selected (10 seeds): dtau=+0.00 w=0.5:0.5 ×10" in printed
+
+
+def test_cmd_tuned_stats_flags_a_selection_at_the_grid_maximum(capsys):
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    avd.cmd_tuned_stats(None)
+    printed = capsys.readouterr().out
+    stats = load_strict(avd.EXP / "var_desc_tuned_stats.json")
+    a, b = stats["A"]["selection"]["D1"], stats["B"]["selection"]["D1"]
+    assert (a["tau_delta_varied"], a["tau_delta_grid_max"], a["n_selected_at_grid_max"],
+            a["any_selected_at_grid_max"]) == (True, 0.08, 2, True)  # 設定 A は 10 seed のうち 2 つが格子の端
+    assert (b["tau_delta_varied"], b["tau_delta_grid_max"], b["n_selected_at_grid_max"],
+            b["any_selected_at_grid_max"]) == (True, 0.08, 0, False)
+    for setting in "AB":  # S1 は τ = 1 のままなので、Δτ の端という見方がない（True にも False にもしない）
+        s1 = stats[setting]["selection"]["S1"]
+        assert (s1["tau_delta_varied"], s1["tau_delta_grid_max"], s1["n_selected_at_grid_max"],
+                s1["any_selected_at_grid_max"]) == (False, None, None, None)
+    assert "[A] D1-tuned selected at the grid maximum dtau=+0.08: 2 of 10 seeds" in printed
+    assert "[B] D1-tuned selected at the grid maximum dtau=+0.08: 0 of 10 seeds" in printed
+
+
+def test_cmd_tuned_stats_grid_maximum_comes_from_the_grid_in_the_file():
+    """格子が既定と違っても（--tau-deltas 0,0.04）、ファイルの格子の最大が基準になる."""
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    path = avd.EXP / "var_desc_tuned_A.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    for s in doc["grid"]["D1"]:
+        doc["grid"]["D1"][s] = [e for e in doc["grid"]["D1"][s] if e["tau_delta"] <= 0.04]
+    doc["selected"]["D1"] = {s: tuned_entry(0.04, 0.5) if int(s) in (42, 123, 456) else tuned_entry(0.0, 0.3)
+                             for s in doc["selected"]["D1"]}
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    avd.cmd_tuned_stats(None)
+    a = load_strict(avd.EXP / "var_desc_tuned_stats.json")["A"]["selection"]["D1"]
+    assert (a["tau_delta_grid_max"], a["n_selected_at_grid_max"], a["any_selected_at_grid_max"]) == (0.04, 3, True)
+    assert len(a["counts"]) == 3 * 3  # 格子は Δτ 3 通り × 重み 3 通り
+
+
+def test_cmd_tuned_stats_rejects_a_selection_that_is_not_in_the_grid():
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    path = avd.EXP / "var_desc_tuned_A.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    doc["selected"]["D1"]["42"] = tuned_entry(0.10, 0.5)  # 格子にない Δτ
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    with pytest.raises(ValueError, match="D1.*42"):
+        avd.cmd_tuned_stats(None)
+    assert not (avd.EXP / "var_desc_tuned_stats.json").exists()
+    doc["selected"]["D1"].pop("42")  # seed の集合が grid と違う
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    with pytest.raises(ValueError, match="seed"):
+        avd.cmd_tuned_stats(None)
+
+
+def test_cmd_tuned_stats_reports_a_missing_label(capsys):
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP, drop_b=("S1-tuned-r100",))
+    avd.cmd_tuned_stats(None)
+    printed = capsys.readouterr().out
+    stats = load_strict(avd.EXP / "var_desc_tuned_stats.json")
+    assert "[B] S1-tuned-r100 − S1-tuned: missing label (S1-tuned-r100)" in printed
+    assert "[A] S1-tuned-r100 − S1-tuned: Δ=" in printed
+    assert "[B] D1-tuned − S1-tuned: Δ=" in printed  # ほかの比較は続ける
+    entry = stats["B"]["comparisons"]["S1-tuned-r100_vs_S1-tuned"]
+    assert entry["error"] == "missing label: S1-tuned-r100" and entry["a"] == "S1-tuned-r100"
+    assert all("error" not in stats["A"]["comparisons"][k] for k in TUNED_KEYS)
+    assert "error" not in stats["B"]["comparisons"]["D1-tuned_vs_D1"]
+
+
+def test_cmd_tuned_stats_writes_null_for_a_zero_variance_difference():
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    path = avd.EXP / "var_desc_tuned_B.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    main = json.loads((avd.EXP / "var_desc_B.json").read_text(encoding="utf-8"))
+    doc["results"]["S1-tuned"]["per_seed"] = main["results"]["S1"]["per_seed"]  # S1-tuned − S1 は全 seed で差が 0
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    avd.cmd_tuned_stats(None)
+    st = load_strict(avd.EXP / "var_desc_tuned_stats.json")["B"]["comparisons"]["S1-tuned_vs_S1"]["Recall@K_correct"]
+    assert st["p_ttest"] is None and st["p_wilcoxon"] is None and st["significant"] is None
+    assert st["verdict"] == "equivalent: 95% CI within ±0.02"
+
+
+def test_cmd_tuned_stats_does_not_swallow_a_seed_mismatch():
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    path = avd.EXP / "var_desc_tuned_B.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    doc["results"]["D1-tuned"]["per_seed"][0]["seed"] = 43
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    with pytest.raises(ValueError, match="seed の集合"):
+        avd.cmd_tuned_stats(None)
+    assert not (avd.EXP / "var_desc_tuned_stats.json").exists()  # 壊れた入力から出力を作らない
+
+
+def test_cmd_tuned_stats_needs_both_result_files():
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    (avd.EXP / "var_desc_tuned_B.json").unlink()
+    with pytest.raises(FileNotFoundError):
+        avd.cmd_tuned_stats(None)
+    assert not (avd.EXP / "var_desc_tuned_stats.json").exists()
+
+
+def test_main_tuned_stats_subcommand(monkeypatch):
+    write_experiment_files(avd.EXP)
+    write_tuned_files(avd.EXP)
+    monkeypatch.setattr(sys, "argv", ["analyze_var_description.py", "tuned-stats"])
+    assert avd.main() is None
+    assert (avd.EXP / "var_desc_tuned_stats.json").exists()
+
+
 # ---- cmd_figure ----
 
 @pytest.fixture
