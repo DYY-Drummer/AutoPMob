@@ -35,6 +35,7 @@
 %   試しの 0.600/0.800/0.000 は experiments/llm_db_baseline/variability_claude-haiku-5-5__eqd__ex-none__high__v3.json（dae_X5_000）。
 % 本人の指示（2026-11-04）: Haiku 5.5 の出力は試しの実測（種類の割合で重みを付けた平均 972 トークン）で見積もる。ほかは 2,000 の仮定。
 %   値は experiments/llm_db_baseline/costs_v3_runs3.json の claude-haiku-5-5.measured_output_tokens と 10splits_out_measured。
+% 本人の指示（2026-11-04）: 今後の計画は「ゼミでの議論を受けて…流す」の 1 項目だけを残す。
 %   - 出力 70 トークン: 2026-10-14 の試しの呼び出し 2 件（Opus 5.5、effort medium、思考 0、出力 71 と 64）。
 \documentclass[a4j,dvipdfmx,10pt]{jresume}
 \usepackage[T1]{fontenc} % タイプライターの一部文字（_等）が数式フォントになることを避ける
@@ -202,8 +203,6 @@ Claude Fable 5.1 & 1{,}194.8 & 11.9 & 17.8 & 501.9 & 1{,}726.3 & 69\% & 1{,}242�
 \section{今後の計画}\label{sec:plan}
 \begin{itemize}[leftmargin=1.5em]
   \item ゼミでの議論を受けて、比べ方と使う 2 つのモデルを決め、加藤先生の承認を得てから流す。
-  \item データベースを変える作業（研究の初期に抽出した 9 報の式の抽出し直しと、LLM が作ったケースと式の人手による確認）の方針を、流す前に決める。LLM には毎回データベース全体を渡すので、データベースが変わると、もう一度費用がかかる。
-  \item 流す前に、各モデルで数件だけ試し、答えの形と出力のトークン数を確かめる。
 \end{itemize}
 
 
