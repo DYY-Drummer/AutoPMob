@@ -35,6 +35,7 @@
 %   試しの 0.600/0.800/0.000 は experiments/llm_db_baseline/variability_claude-haiku-5-5__eqd__ex-none__high__v3.json（dae_X5_000）。
 % 本人の指示（2026-11-04）: Haiku 5.5 の出力は試しの実測（種類の割合で重みを付けた平均 972 トークン）で見積もる。ほかは 2,000 の仮定。
 %   値は experiments/llm_db_baseline/costs_v3_runs3.json の claude-haiku-5-5.measured_output_tokens と 10splits_out_measured。
+% 本人の指示（2026-11-04）: LLM に与えたプロンプトだけは付録に載せる（Appendix A）。
 % 本人の指示（2026-11-04）: 付録はいったん無くす（全体ゼミなので、具体的すぎる部分は議論しない）。
 % 本人の指示（2026-11-04）: 今後の計画は「ゼミでの議論を受けて…流す」の 1 項目だけを残す。
 %   - 出力 70 トークン: 2026-10-14 の試しの呼び出し 2 件（Opus 5.5、effort medium、思考 0、出力 71 と 64）。
@@ -52,8 +53,9 @@
 \usepackage[numbers,square,sort&compress]{natbib}
 \usepackage{hyperref}
 \usepackage{doi}
-% 本報告で追加したパッケージ（箇条書きの間隔）
+% 本報告で追加したパッケージ（箇条書きの間隔と、Appendix の指示文の表示）
 \usepackage{enumitem}
+\usepackage{fvextra}
 
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{4pt}
@@ -115,7 +117,7 @@
 LLM は多くの文献を学習しており、データベースを渡せば、作りたいモデルに使う式を自ら選べる可能性がある。そこで、LLM にも提案手法と同じデータベースとクエリを渡して式を選ばせ、提案手法と同じ規則で判定して、提案手法と古典的な情報検索手法（以下 baseline）と比べる。評価用の各ケースには、クエリと、作りたいモデルを構成する式の集合（正解集合。その式を正解式とよぶ）を決めてある。ケースは出典の単位で訓練用、検証用、テスト用に分け、分け方を 10 通り変えて評価する。これまでの比較では、LLM に式を書かせ、書かれた式が正解式と同じかを別の LLM に判定させていた。そのため、LLM と提案手法は別の問題を解いており、判定の方法も違っていた。10 月 14 日に加藤先生と議論し、データベースから式を選ばせて式の ID で判定する方法に改めた。
 
 \subsection{LLM に渡すもの}
-1 回の呼び出しで、LLM に、指示文、データベース、テストケース 1 件のクエリを渡す。各手法が使う情報を Table~\ref{tab:inputs} にまとめる。
+1 回の呼び出しで、LLM に、指示文、データベース、テストケース 1 件のクエリを渡す（指示文と入力の形は Appendix~A）。各手法が使う情報を Table~\ref{tab:inputs} にまとめる。
 \begin{itemize}[leftmargin=1.5em]
   \item \textbf{データベース}：各式を、ID、式の表記、分野ラベル（式が扱う分野の名前）の 3 つだけで渡す。使う LLM の入力の上限は 100 万トークンであり、この形でも、指示文とデータベースで 952{,}185 トークンになる。変数記号とその定義を加えると約 199 万トークンになって上限を超えるため、変数記号の一覧と定義、式周辺の文章は渡さない。ただし、式の表記には変数が記号で書かれている。
   \item \textbf{出典}：渡さない。式の並びを無作為にし、ID も 1〜11{,}146 の番号に振り直す（元の ID は出典の名前を含む）。提案手法は出典を使わないためである。また、合成のケース（微分方程式から始め、プログラムで式を足して作った 1{,}000 件）の正解集合は、同じ出典の式を優先して作ったので、出典が分かると、LLM だけが答えの手がかりを持つことになる。
@@ -211,6 +213,49 @@ Claude Fable 5.1 & 1{,}194.8 & 11.9 & 17.8 & 501.9 & 1{,}726.3 & 69\% & 1{,}242�
 \bibliographystyle{unsrtnat}
 \bibliography{progress_report_2026-11-04_llm_comparison}
 
+
+%======================================================================
+\appendix
+\def\thesection{Appendix \Alph{section}}
+%======================================================================
+\section{LLM に与える指示文と入力の形}\label{app:prompt}
+system として指示文を、user の 1 つ目のブロックとしてデータベースを、2 つ目のブロックとしてテストケースを、この順に送る。データベースのブロックの末尾にキャッシュの区切りを置くので、2 回目以降の呼び出しでは、指示文とデータベースをキャッシュから読み出す。どのモデルにも同じ指示文を使う。\texttt{<TAB>} はタブ文字を表す。データベースは、11{,}146 行のうち先頭の 1 行だけを示す。テストケースの \texttt{< >} の部分には、そのケースの説明文と変数記号を入れる。
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+[system]
+You are an expert in physical modeling. You select equations from an equation database for building a physical model.
+
+# Task
+An engineer wants to build a physical model: a set of equations with which the output variables can be computed once the input variables are given. The engineer describes the model and lists its input variables and output variables. Choose, from the equation database, the equations that the engineer should use.
+
+The set of equations that forms the model satisfies these conditions:
+1. Every input variable and every output variable appears in at least one equation of the set.
+2. The number of equations equals the number of variables of the set that are not input variables.
+3. Every variable of the set that is neither an input nor an output variable appears in at least two equations of the set.
+
+# Equation database
+<equation_database> lists equations extracted from the literature, in no particular order. Each line has three fields separated by tabs: the equation ID, the domain label of the equation, and the equation in LaTeX.
+
+# Answer
+For the task in <task>, list up to 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. If they are fewer than 20, continue with the other equations most likely to be needed for this model, until the list has 20 IDs. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
+
+[user, block 1: equation database, cached]
+<equation_database count="11146">
+1<TAB>Educational Psychology Time-Series Analysis<TAB>MSSD = \frac{1}{N-1} \sum_{t=2}^{N} (x_t - x_{t-1})^2
+...
+</equation_database>
+
+[user, block 2: test case]
+<task>
+Description: <description of the model>
+Input variables: <symbol> ; <symbol> ; ...
+Output variables: <symbol> ; ...
+</task>
+
+List the IDs of the database equations for this task.
+
+[output format (JSON schema)]
+{"type": "object", "properties": {"equation_ids": {"type": "array", "items": {"type": "integer"}}}, "required": ["equation_ids"], "additionalProperties": false}
+\end{Verbatim}
 
 %=============================%
 \end{document}
