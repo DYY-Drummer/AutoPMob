@@ -1,0 +1,25 @@
+{
+  "source_id": "WJET_2015040715405408.pdf",
+  "pdf_sha256": "ffc250f2b1314fa915569d2e129dd53fc271058d349f978bf8b0bcb873b07941",
+  "pdf_bytes": 2858346,
+  "pages": 16,
+  "started": "2026-11-04T20:21:14+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T20:21:56+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 4414,
+    "candidates_token_count": 1199,
+    "thoughts_token_count": 3540,
+    "total_token_count": 9153
+  },
+  "usd": 0.0529,
+  "n_equations": 6,
+  "returned_source_ids": {
+    "WJET_2015040715405408.pdf": 6
+  }
+}

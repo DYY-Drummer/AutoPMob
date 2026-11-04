@@ -1,0 +1,25 @@
+{
+  "source_id": "energies-17-01344.pdf",
+  "pdf_sha256": "d229f8217ae68682ddafe4f0d2328299b667f4eb97198cbcbee1e5aec332229a",
+  "pdf_bytes": 7087846,
+  "pages": 19,
+  "started": "2026-11-04T20:25:01+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T20:26:26+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 5180,
+    "candidates_token_count": 5448,
+    "thoughts_token_count": 5792,
+    "total_token_count": 16420
+  },
+  "usd": 0.1189,
+  "n_equations": 23,
+  "returned_source_ids": {
+    "energies-17-01344.pdf": 23
+  }
+}

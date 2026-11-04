@@ -1,0 +1,135 @@
+[
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_1",
+    "equation": "v_p = \\frac{d[P]_i}{dt} = \\frac{K[E]}{1+(K_{IA}/[A]_i) [1 + ([S]_i/K_S)] + (K_{IS}/[S]_i) [1 + ([A]_i/K_A)]}",
+    "variables": {
+      "v_p": "Initial reaction rate (mol m⁻³ min⁻¹)",
+      "[P]_i": "Product concentration at the interface (mol m⁻³)",
+      "t": "time (min)",
+      "K": "Reaction rate constant (mol m⁻³ min⁻¹ LU⁻¹)",
+      "[E]": "Total enzyme activity (LU m⁻³)",
+      "K_{IA}": "Inhibition constant for the alcohol (mol m⁻³)",
+      "[A]_i": "Alcohol concentration at the interface (mol m⁻³)",
+      "[S]_i": "Substrate concentration at the interface (mol m⁻³)",
+      "K_S": "Dissociation constant for the substrate (mol m⁻³)",
+      "K_{IS}": "Inhibition constant for the substrate (mol m⁻³)",
+      "K_A": "Binding constants for the alcohol (mol m⁻³)"
+    },
+    "context_text": "The kineitcs of the transesterification of oil with methanol catalyzed by soluble lipase in n-hexane microaqueous system was thoroughly investigated in our previous paper [8]. The reaction was decribed by a Ping-Pong Bi Bi model with competitive inhibition by both reactants. From the proposed kineitc mechanism, the initial reaction rate at the interface of the enzyme, presented in Eq. (1) was derived.",
+    "domain": "Enzyme Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_2",
+    "equation": "OF = \\sum (v_{pred} - v_{expt})^2",
+    "variables": {
+      "OF": "objective function",
+      "v_{pred}": "predicted rate of reaction",
+      "v_{expt}": "measured rate of reaction"
+    },
+    "context_text": "The values were then optimized using Excel solver to find the minimum objective function (Eq. (2)) that compares the measured rate of reaction with those predicted by the proposed kinetic equation (Eq. (1)).",
+    "domain": "Kinetic Modeling"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_3",
+    "equation": "v = \\frac{0.0098[E]}{1 + ((3.8 \\times 10^4)/[A]_i) \\cdot [1 + ([S]_i/250)] + ((2.5 \\times 10^4)/[S]_i)[1+([A]_i/110)]}",
+    "variables": {
+      "v": "interfacial reaction rate",
+      "[E]": "Total enzyme activity (LU m⁻³)",
+      "[A]_i": "Alcohol concentration at the interface (mol m⁻³)",
+      "[S]_i": "Substrate concentration at the interface (mol m⁻³)"
+    },
+    "context_text": "The model equation (Eq. (1)), with the evaluated kinetic parameters, is presented in Eq. (3), and its effectiveness in predicting the experimental data is evaluated from the standard deviation value shown in the equation.",
+    "domain": "Enzyme Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_4",
+    "equation": "\\frac{d[S]}{dt} = -\\sigma k_S a ([S] - [S]_i)",
+    "variables": {
+      "[S]": "Bulk concentration of substrate (mol m⁻³)",
+      "t": "time",
+      "\\sigma": "parameter introduced to correct for drop in mass transfer coefficients with time",
+      "k_S": "average mass-transfer coefficients of the substrate [S]",
+      "a": "specific interfacial area of the ceramic beads (total surface area per volume of liquid)",
+      "[S]_i": "Substrate concentration at the interface (mol m⁻³)"
+    },
+    "context_text": "The rate of biodiesel production using immobilized lipase may not be governed solely by the reaction of substrates at the interface of the enzyme. The substrate diffusion from the bulk of the ceramic bead may play a significant role, and the limited transport rate may lead to a concentration difference across a stagnant film surrounding the ceramic bead. In this situation, the rate of the drop in substrate and alcohol concentrations in the bulk can be expressed by Eqs. (4) and (5), respectively.",
+    "domain": "Immobilized Enzyme Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_5",
+    "equation": "\\frac{d[A]}{dt} = -\\sigma k_A a ([A] - [A]_i)",
+    "variables": {
+      "[A]": "Bulk alcohol concentration (mol m⁻³)",
+      "t": "time",
+      "\\sigma": "parameter introduced to correct for drop in mass transfer coefficients with time",
+      "k_A": "average mass-transfer coefficients of the alcohol [A]",
+      "a": "specific interfacial area of the ceramic beads (total surface area per volume of liquid)",
+      "[A]_i": "Alcohol concentration at the interface (mol m⁻³)"
+    },
+    "context_text": "The rate of biodiesel production using immobilized lipase may not be governed solely by the reaction of substrates at the interface of the enzyme. The substrate diffusion from the bulk of the ceramic bead may play a significant role, and the limited transport rate may lead to a concentration difference across a stagnant film surrounding the ceramic bead. In this situation, the rate of the drop in substrate and alcohol concentrations in the bulk can be expressed by Eqs. (4) and (5), respectively.",
+    "domain": "Immobilized Enzyme Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_6",
+    "equation": "\\sigma = e^{-at}",
+    "variables": {
+      "\\sigma": "parameter that corrects for the drop in mass transfer coefficients with time",
+      "a": "a parameter related to operating conditions",
+      "t": "time"
+    },
+    "context_text": "The value of the mass transfer coefficients should drop with time, as the glycerol concentration increases. To correct for that, a parameter, σ, is introduced to Eqs. (4) and (5). The value of σ is assumed to drop with time, from a value of 1 to a value of zero after infinity time, according to Eq. (6).",
+    "domain": "Immobilized Enzyme Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_7",
+    "equation": "\\frac{d[S]_i}{dt} = \\sigma k_S a ([S] - [S]_i) - v",
+    "variables": {
+      "[S]_i": "Substrate concentration at the interface (mol m⁻³)",
+      "t": "time",
+      "\\sigma": "parameter that corrects for the drop in mass transfer coefficients with time",
+      "k_S": "average mass-transfer coefficients of the substrate [S]",
+      "a": "specific interfacial area of the ceramic beads",
+      "[S]": "Bulk concentration of substrate (mol m⁻³)",
+      "v": "surface reaction rate"
+    },
+    "context_text": "At the surface of the immobilized lipase, the surface reaction, similar to the one described by Eq. (3) takes place. The rates of the drop in substrates concentrations at solid-liquid interface are presented by Eqs. (7) and (8).",
+    "domain": "Immobilized Enzyme Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_8",
+    "equation": "\\frac{d[A]_i}{dt} = \\sigma k_A a ([A] - [A]_i) - v",
+    "variables": {
+      "[A]_i": "Alcohol concentration at the interface (mol m⁻³)",
+      "t": "time",
+      "\\sigma": "parameter that corrects for the drop in mass transfer coefficients with time",
+      "k_A": "average mass-transfer coefficients of the alcohol [A]",
+      "a": "specific interfacial area of the ceramic beads",
+      "[A]": "Bulk alcohol concentration (mol m⁻³)",
+      "v": "surface reaction rate"
+    },
+    "context_text": "At the surface of the immobilized lipase, the surface reaction, similar to the one described by Eq. (3) takes place. The rates of the drop in substrates concentrations at solid-liquid interface are presented by Eqs. (7) and (8). As described in Eqs. (7) and (8), at the interface, the rate of reaction of the substrate is equal to that of the alcohol and equal to that of the product formation.",
+    "domain": "Immobilized Enzyme Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+    "eq_id": "eq_9",
+    "equation": "[S]_0 - [S] = [A]_0 - [A] = [P]",
+    "variables": {
+      "[S]_0": "initial bulk concentrations of substrate",
+      "[S]": "Bulk concentration of substrate (mol m⁻³)",
+      "[A]_0": "initial bulk concentrations of alcohol",
+      "[A]": "Bulk alcohol concentration (mol m⁻³)",
+      "[P]": "Bulk concentration of the product (mol m⁻³)"
+    },
+    "context_text": "This also agrees with the stoichiometric relationship given in Eq. (9), where [S]₀ and [A]₀ are the initial bulk concentrations of substrate and alcohol, respectively.",
+    "domain": "Stoichiometry"
+  }
+]

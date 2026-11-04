@@ -1,0 +1,79 @@
+[
+  {
+    "source_id": "kinetics_soybean_oil.pdf",
+    "eq_id": "eq_1",
+    "equation": "N_{RE} = \\frac{n D_a^2 \\rho}{\\mu}",
+    "variables": {
+      "N_{RE}": "Reynolds number (denoted N_Re in text)",
+      "n": "the rotational speed of the impeller",
+      "D_a": "the impeller diameter",
+      "\\rho": "the fluid density",
+      "\\mu": "the fluid viscosity"
+    },
+    "context_text": "The mixing intensity may also be presented by Reynolds number (N_Re). The impeller rotational speed and the N_Re are related in Equation 1.",
+    "domain": "Kinetics of Transesterification"
+  },
+  {
+    "source_id": "kinetics_soybean_oil.pdf",
+    "eq_id": "eq_2",
+    "equation": "\\begin{align*} TG + CH_3OH & \\underset{k_2}{\\stackrel{k_1}{\\rightleftharpoons}} DG + R_1COOCH_3 \\\\ DG + CH_3OH & \\underset{k_4}{\\stackrel{k_3}{\\rightleftharpoons}} MG + R_2COOCH_3 \\\\ MG + CH_3OH & \\underset{k_6}{\\stackrel{k_5}{\\rightleftharpoons}} GL + R_3COOCH_3 \\\\ \\text{Overall reaction:} \\\\ TG + 3CH_3OH & \\rightleftharpoons 3RCOOCH_3 + GL \\end{align*}",
+    "variables": {
+      "TG": "Triglyceride",
+      "CH_3OH": "Methanol",
+      "DG": "Diglyceride",
+      "MG": "Monoglyceride",
+      "GL": "Glycerol",
+      "R_1COOCH_3": "Fatty acid methyl ester",
+      "R_2COOCH_3": "Fatty acid methyl ester",
+      "R_3COOCH_3": "Fatty acid methyl ester",
+      "RCOOCH_3": "Fatty acid methyl ester",
+      "k_1": "Forward rate constant for TG to DG reaction",
+      "k_2": "Reverse rate constant for DG to TG reaction",
+      "k_3": "Forward rate constant for DG to MG reaction",
+      "k_4": "Reverse rate constant for MG to DG reaction",
+      "k_5": "Forward rate constant for MG to GL reaction",
+      "k_6": "Reverse rate constant for GL to MG reaction"
+    },
+    "context_text": "Transesterification of TG with methanol, in the presence of an alkaline catalyst, yields esters of fatty acids and GL. MG and DG are the intermediates. The reaction steps are in Equation 2 where k_1-6 are rate constants.",
+    "domain": "Kinetics of Transesterification"
+  },
+  {
+    "source_id": "kinetics_soybean_oil.pdf",
+    "eq_id": "eq_3",
+    "equation": "\\begin{align*} \\frac{d[TG]}{dt} &= -k_1[TG][A] + k_2[DG][E] - k_7[TG][A]^3 + k_8[GL][E]^3 \\\\ \\frac{d[DG]}{dt} &= k_1[TG][A] - k_2[DG][E] - k_3[DG][A] + k_4[MG][E] \\\\ \\frac{d[MG]}{dt} &= k_3[DG][A] - k_4[MG][E] - k_5[MG][A] + k_6[GL][E] \\\\ \\frac{d[E]}{dt} &= k_1[TG][A] - k_2[DG][E] + k_3[DG][A] - k_4[MG][E] + k_5[MG][A] - k_6[GL][E] + k_7[TG][A]^3 - k_8[GL][E]^3 \\\\ \\frac{d[A]}{dt} &= -\\frac{d[E]}{dt} \\\\ \\frac{d[GL]}{dt} &= k_5[MG][A] - k_6[GL][E] + k_7[TG][A]^3 - k_8[GL][E]^3 \\end{align*}",
+    "variables": {
+      "[TG]": "Concentration of triglyceride",
+      "[DG]": "Concentration of diglyceride",
+      "[MG]": "Concentration of monoglyceride",
+      "[A]": "Alcohol concentration",
+      "[E]": "Ester concentration",
+      "[GL]": "Glycerol concentration",
+      "k_1": "Forward rate constant for TG to DG reaction",
+      "k_2": "Reverse rate constant for DG to TG reaction",
+      "k_3": "Forward rate constant for DG to MG reaction",
+      "k_4": "Reverse rate constant for MG to DG reaction",
+      "k_5": "Forward rate constant for MG to GL reaction",
+      "k_6": "Reverse rate constant for GL to MG reaction",
+      "k_7": "Forward rate constant for shunt reaction",
+      "k_8": "Reverse rate constant for shunt reaction",
+      "t": "time"
+    },
+    "context_text": "The general form of the governing set of differential equations characterizing the stepwise reactions involved in the transesterification TG is in Equation 3. where A and E denote the alcohol and ester concentrations, respectively. In Equation 3, for the case without the shunt-reaction scheme, k_7 and k_8 are set equal to zero.",
+    "domain": "Kinetics of Transesterification"
+  },
+  {
+    "source_id": "kinetics_soybean_oil.pdf",
+    "eq_id": "eq_4",
+    "equation": "k(T) = AT^n e^{-E/RT}",
+    "variables": {
+      "k(T)": "reaction rate constant",
+      "A": "Pre-exponential factor",
+      "T": "Temperature",
+      "n": "Exponent for temperature dependency",
+      "E": "Activation energy",
+      "R": "Gas constant"
+    },
+    "context_text": "Activation energies were estimated by an expression similar to the Arrhenius equation (Equation 4). This expression, derived from the transition state theory, shows the temperature dependency of the reaction rate constant. For n = 0, this relationship reduces to the Arrhenius equation.",
+    "domain": "Kinetics of Transesterification"
+  }
+]

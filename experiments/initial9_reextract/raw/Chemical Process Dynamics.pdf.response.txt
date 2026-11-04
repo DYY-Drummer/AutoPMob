@@ -1,0 +1,301 @@
+[
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_1",
+    "equation": "r_i = f_1(\\text{temperature}) \\cdot f_2(\\text{composition})",
+    "variables": {
+      "r_i": "rate expression"
+    },
+    "context_text": "For many reaction, and particularly elementary reaction, the rate expression can be written as a product of a temperature-dependent term and composition dependent term.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_2",
+    "equation": "k = \\alpha \\exp(-E/(RT))",
+    "variables": {
+      "k": "reaction rate constant",
+      "\\alpha": "Frequency factor or pre-exponential factor",
+      "E": "Activation energy",
+      "R": "Universal gas constant",
+      "T": "temperature"
+    },
+    "context_text": "For such reactions the temperature-dependent term, the reaction rate constant, has been found in practically all cases to be well represented by Arrhenius's law",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_3",
+    "equation": "\\ln(k_2/k_1) = E/R(1/T_1 - 1/T_2)",
+    "variables": {
+      "k_1": "reaction rate constant at temperature T_1",
+      "k_2": "reaction rate constant at temperature T_2",
+      "E": "Activation energy",
+      "R": "Universal gas constant",
+      "T_1": "temperature 1",
+      "T_2": "temperature 2"
+    },
+    "context_text": "At the same concentration, but at two different temperatures, Arrhenius's law indicates that In (k_2/k_1)=E/R(1/T_1-1/T_2)",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_4",
+    "equation": "\\frac{d(VC_A)}{dt} = F_{A0}C_{A0} - FC_A - (-r_A)V",
+    "variables": {
+      "V": "volume of the reactor",
+      "C_A": "concentration of component A",
+      "t": "time",
+      "F_{A0}": "Flow rate of component A into the reactor",
+      "C_{A0}": "molar concentration of component A at inlet",
+      "F": "volumetric flow rate out",
+      "-r_A": "rate of disappearance of species A"
+    },
+    "context_text": "Rate of accumulation of component A within the reactor = d((VC_A))/dt. Here, (-rA) is the rate of disappearance of species A. V is the volume of the reactor. From equation (1), we obtain this equation.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_5",
+    "equation": "\\frac{dC_A}{dt} = \\frac{(F_{A0}C_{A0} - FC_A)}{V} - (-r_A)",
+    "variables": {
+      "C_A": "concentration of component A",
+      "t": "time",
+      "F_{A0}": "Flow rate of component A into the reactor",
+      "C_{A0}": "molar concentration of component A at inlet",
+      "F": "volumetric flow rate out",
+      "V": "volume of the reactor",
+      "-r_A": "rate of disappearance of species A"
+    },
+    "context_text": "This equation is a simplified form of the component continuity equation for reactant A.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_6",
+    "equation": "(-r_A) = k(C_A C_B - \\frac{C_C C_D}{K_C})",
+    "variables": {
+      "-r_A": "the rate of disappearance",
+      "k": "reaction rate constant",
+      "C_A": "concentration of component A",
+      "C_B": "concentration of component B",
+      "C_C": "concentration of component C",
+      "C_D": "concentration of component D",
+      "K_C": "equilibrium constant"
+    },
+    "context_text": "For the given second order reaction, the rate of disappearance is given by this equation.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_7",
+    "equation": "k = 39178 \\exp[5472.7(1/273 - 1/T)]",
+    "variables": {
+      "k": "reaction rate constant",
+      "T": "temperature"
+    },
+    "context_text": "The temperature dependency of the reaction rate constant, k, is given by the Arrhenius equation.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_8",
+    "equation": "K_c = \\exp(1698/T)",
+    "variables": {
+      "K_c": "equilibrium constant",
+      "T": "temperature"
+    },
+    "context_text": "The temperature dependency of the equilibrium constant, Kc, is given by this equation.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_9",
+    "equation": "\\frac{dC_A}{dt} = \\frac{(F_{A0}C_{A0} - FC_A)}{V} - 3918\\exp[5472.7(1/273-1/T)] - (C_A C_B - \\frac{C_C C_D}{\\exp(1698/T)})",
+    "variables": {
+      "C_A": "concentration of component A",
+      "t": "time",
+      "F_{A0}": "Flow rate of component A into the reactor",
+      "C_{A0}": "molar concentration of component A at inlet",
+      "F": "volumetric flow rate out",
+      "V": "volume of the reactor",
+      "T": "temperature",
+      "C_B": "concentration of component B",
+      "C_C": "concentration of component C",
+      "C_D": "concentration of component D"
+    },
+    "context_text": "Substituting the rate law into the component balance for A yields this overall differential equation for the concentration of A.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_10",
+    "equation": "\\frac{d(VC_B)}{dt} = F_{B0}C_{B0} - FC_B - (-r_A)V",
+    "variables": {
+      "V": "volume of the reactor",
+      "C_B": "concentration of component B",
+      "t": "time",
+      "F_{B0}": "Flow rate of component B into the reactor",
+      "C_{B0}": "molar concentration of component B at inlet",
+      "F": "volumetric flow rate out",
+      "-r_A": "rate of disappearance of species A"
+    },
+    "context_text": "Component balance for reactant B. Here, (-rB) is the rate of disappearance of species B and (-rA)=(-rB).",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_11",
+    "equation": "\\frac{dC_B}{dt} = \\frac{(F_{B0}C_{B0} - FC_B)}{V} - 3918\\exp[5472.7(1/273-1/T)] - (C_A C_B - \\frac{C_C C_D}{\\exp(1698/T)})",
+    "variables": {
+      "C_B": "concentration of component B",
+      "t": "time",
+      "F_{B0}": "Flow rate of component B into the reactor",
+      "C_{B0}": "molar concentration of component B at inlet",
+      "F": "volumetric flow rate out",
+      "V": "volume of the reactor",
+      "T": "temperature",
+      "C_A": "concentration of component A",
+      "C_C": "concentration of component C",
+      "C_D": "concentration of component D"
+    },
+    "context_text": "Substituting the rate law into the component balance for B yields this overall differential equation for the concentration of B.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_12",
+    "equation": "\\frac{d(VC_C)}{dt} = -FC_C + (-r_A)V",
+    "variables": {
+      "V": "volume of the reactor",
+      "C_C": "concentration of component C",
+      "t": "time",
+      "F": "volumetric flow rate out",
+      "-r_A": "rate of disappearance of species A",
+      "r_C": "Rate of generation of component C"
+    },
+    "context_text": "Component balance for product C. Rate of generation of component C by chemical reaction = (rc)V. Here, -(-rA)=(rc).",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_13",
+    "equation": "\\frac{dC_C}{dt} = \\frac{-FC_C}{V} + 39178\\exp[5472.7(1/273-1/T)] - (C_A C_B - \\frac{C_C C_D}{\\exp(1698/T)})",
+    "variables": {
+      "C_C": "concentration of component C",
+      "t": "time",
+      "F": "volumetric flow rate out",
+      "V": "volume of the reactor",
+      "T": "temperature",
+      "C_A": "concentration of component A",
+      "C_B": "concentration of component B",
+      "C_D": "concentration of component D"
+    },
+    "context_text": "Substituting the rate law into the component balance for C yields this overall differential equation for the concentration of C.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_14",
+    "equation": "\\frac{d(V \\rho C_P T)}{dt} = F \\rho C_p T_0 - UA(T - T_j) + (-\\Delta H)V(-r_A)",
+    "variables": {
+      "V": "volume of the reactor",
+      "\\rho": "mixture density",
+      "C_P": "heat capacity",
+      "T": "reactor temperature",
+      "t": "time",
+      "F": "volumetric flow rate",
+      "T_0": "Feed temperature",
+      "U": "overall heat transfer coefficient",
+      "A": "heat transfer area",
+      "T_j": "jacket temperature",
+      "-\\Delta H": "the heat of reaction",
+      "-r_A": "rate of disappearance of species A"
+    },
+    "context_text": "The energy balance equation for the reactor, combining rates of energy accumulation, input, output, and generation by reaction.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_15",
+    "equation": "\\frac{dT}{dt} = \\frac{F}{V}(T_0 - T) - \\frac{\\Delta H (-r_A)}{\\rho C_P} - \\frac{UA(T - T_j)}{V \\rho C_P}",
+    "variables": {
+      "T": "reactor temperature",
+      "t": "time",
+      "F": "volumetric flow rate",
+      "V": "volume of the reactor",
+      "T_0": "Feed temperature",
+      "-\\Delta H": "the heat of reaction",
+      "-r_A": "rate of disappearance of species A",
+      "\\rho": "mixture density",
+      "C_P": "heat capacity",
+      "U": "overall heat transfer coefficient",
+      "A": "heat transfer area",
+      "T_j": "jacket temperature"
+    },
+    "context_text": "Simplifying the reactor energy balance equation, assuming constant volume, density, and heat capacity.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_16",
+    "equation": "\\frac{dT}{dt} = \\frac{F}{V}(T_0 - T) - \\frac{(\\Delta H)39178\\exp[5472.7(1/273-1/T)] - (C_A C_B - \\frac{C_C C_D}{\\exp(1698/T)})}{\\rho C_P} - \\frac{UA(T - T_j)}{V \\rho C_P}",
+    "variables": {
+      "T": "reactor temperature",
+      "t": "time",
+      "F": "volumetric flow rate",
+      "V": "volume of the reactor",
+      "T_0": "Feed temperature",
+      "\\Delta H": "the heat of reaction",
+      "C_A": "concentration of component A",
+      "C_B": "concentration of component B",
+      "C_C": "concentration of component C",
+      "C_D": "concentration of component D",
+      "\\rho": "mixture density",
+      "C_P": "heat capacity",
+      "U": "overall heat transfer coefficient",
+      "A": "heat transfer area",
+      "T_j": "jacket temperature"
+    },
+    "context_text": "Substituting the specific rate law expression into the simplified energy balance equation for the reactor.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_17",
+    "equation": "\\frac{d(V_j \\rho_j C_{pj} T_j)}{dt} = F_j \\rho_j C_{pj} T_{j0} - F_j \\rho_j C_{pj} T_j + UA(T - T_j)",
+    "variables": {
+      "V_j": "volume of the jacket",
+      "\\rho_j": "density of jacket fluid",
+      "C_{pj}": "heat capacity of jacket fluid",
+      "T_j": "jacket temperature",
+      "t": "time",
+      "F_j": "Jacket flow rate",
+      "T_{j0}": "Inlet jacket temperature",
+      "U": "overall heat transfer coefficient",
+      "A": "heat transfer area",
+      "T": "reactor temperature"
+    },
+    "context_text": "The energy balance equation for the cooling jacket around the reactor.",
+    "domain": "Continuous Stirred Tank Reactor"
+  },
+  {
+    "source_id": "Chemical Process Dynamics.pdf",
+    "eq_id": "eq_18",
+    "equation": "\\frac{dT_j}{dt} = \\frac{F_j}{V_j}(T_{j0} - T_j) + \\frac{UA(T - T_j)}{V_j \\rho_j C_{pj}}",
+    "variables": {
+      "T_j": "jacket temperature",
+      "t": "time",
+      "F_j": "Jacket flow rate",
+      "V_j": "volume of the jacket",
+      "T_{j0}": "Inlet jacket temperature",
+      "U": "overall heat transfer coefficient",
+      "A": "heat transfer area",
+      "T": "reactor temperature",
+      "\\rho_j": "density of jacket fluid",
+      "C_{pj}": "heat capacity of jacket fluid"
+    },
+    "context_text": "A simplified form of the jacket energy balance equation, assuming constant volume, density, and heat capacity for the jacket fluid.",
+    "domain": "Continuous Stirred Tank Reactor"
+  }
+]

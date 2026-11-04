@@ -1,0 +1,33 @@
+source_id                              PDF  pages    USD 下限    USD 上限
+Chemical Process Dynamics.pdf          あり       4     0.045     0.420
+PDF のある 1 報の見積もり：0.04〜0.42 USD（1 回ずつ。失敗して呼び直すと増える）
+抽出: Chemical Process Dynamics.pdf
+  18 式、model_version=gemini-2.5-pro、{'prompt_token_count': 1302, 'candidates_token_count': 4138, 'thoughts_token_count': 9766, 'total_token_count': 15206}、約 0.141 USD
+source_id                              PDF  pages    USD 下限    USD 上限
+038.pdf                                あり       6     0.045     0.420
+WJET_2015040715405408.pdf              あり      16     0.013     0.363
+applsci-10-00992-v2.pdf                あり      24     0.118     0.577
+energies-17-01344.pdf                  あり      19     0.059     0.457
+kinetics_soybean_oil.pdf               あり       8     0.019     0.369
+matecconf_cscc2019_01027.pdf           あり       5     0.030     0.389
+PDF のある 6 報の見積もり：0.28〜2.58 USD（1 回ずつ。失敗して呼び直すと増える）
+抽出: 038.pdf
+  13 式、model_version=gemini-2.5-pro、{'prompt_token_count': 1818, 'candidates_token_count': 3534, 'thoughts_token_count': 9293, 'total_token_count': 14645}、約 0.131 USD
+抽出: WJET_2015040715405408.pdf
+  6 式、model_version=gemini-2.5-pro、{'prompt_token_count': 4414, 'candidates_token_count': 1199, 'thoughts_token_count': 3540, 'total_token_count': 9153}、約 0.053 USD
+抽出: applsci-10-00992-v2.pdf
+  42 式、model_version=gemini-2.5-pro、{'prompt_token_count': 6473, 'candidates_token_count': 10322, 'thoughts_token_count': 14645, 'total_token_count': 31440}、約 0.258 USD
+抽出: energies-17-01344.pdf
+  23 式、model_version=gemini-2.5-pro、{'prompt_token_count': 5180, 'candidates_token_count': 5448, 'thoughts_token_count': 5792, 'total_token_count': 16420}、約 0.119 USD
+抽出: kinetics_soybean_oil.pdf
+  4 式、model_version=gemini-2.5-pro、{'prompt_token_count': 2338, 'candidates_token_count': 1548, 'thoughts_token_count': 5195, 'total_token_count': 9081}、約 0.070 USD
+抽出: matecconf_cscc2019_01027.pdf
+  9 式、model_version=gemini-2.5-pro、{'prompt_token_count': 1573, 'candidates_token_count': 2876, 'thoughts_token_count': 5907, 'total_token_count': 10356}、約 0.090 USD
+source_id                              PDF  pages    USD 下限    USD 上限
+1-s2.0-0009250974800898-main.pdf       あり      19     0.078     0.495
+1-s2.0-S1369703X09000059-main.pdf      あり       7     0.031     0.392
+PDF のある 2 報の見積もり：0.11〜0.89 USD（1 回ずつ。失敗して呼び直すと増える）
+抽出: 1-s2.0-0009250974800898-main.pdf
+  31 式、model_version=gemini-2.5-pro、{'prompt_token_count': 5194, 'candidates_token_count': 8134, 'thoughts_token_count': 14378, 'total_token_count': 27706}、約 0.232 USD
+抽出: 1-s2.0-S1369703X09000059-main.pdf
+  9 式、model_version=gemini-2.5-pro、{'prompt_token_count': 2099, 'candidates_token_count': 2566, 'thoughts_token_count': 3653, 'total_token_count': 8318}、約 0.065 USD

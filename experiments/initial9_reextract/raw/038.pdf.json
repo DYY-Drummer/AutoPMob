@@ -1,0 +1,227 @@
+[
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_1",
+    "equation": "c_p \\rho V \\frac{dT}{dt} = c_p \\rho F(T_{in}-T) - UA(T-T_j) + E_r",
+    "variables": {
+      "c_p": "specific heat of the fluid inside the reactor [kJ/kg/K]",
+      "\\rho": "density of the fluid inside the reactor [kg/L]",
+      "V": "reactor vessel volume [L]",
+      "T": "temperature inside the reactor vessel [K]",
+      "t": "time [min]",
+      "F": "flow rate through the reactor vessel [L/min]",
+      "T_{in}": "input temperature of the fluid inside the reactor [K]",
+      "UA": "overall heat transfer coefficient [kJ/min/K]",
+      "T_j": "temperature inside the jacket [K]",
+      "E_r": "the reaction heat [kJ/min]",
+      "\\Delta H": "enthalpy of the reaction [kJ/mol]",
+      "r": "reaction rate [mol/L/min]"
+    },
+    "context_text": "Based on energy and mass balances for the hybrid reactor, the lumped parameter model can be described by the following equations. This equation represents the energy balance for the reactor vessel.",
+    "domain": "CSTR Heat and Mass Balance"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_2",
+    "equation": "c_{pj} \\rho_j V_j \\frac{dT_j}{dt} = c_{pj} \\rho_j F_j(T_{jin}-T_j) + UA(T-T_j)",
+    "variables": {
+      "c_{pj}": "specific heat of the fluid inside the jacket [kJ/kg/K]",
+      "\\rho_j": "density of the fluid inside the jacket [kg/L]",
+      "V_j": "jacket volume [L]",
+      "T_j": "temperature inside the jacket [K]",
+      "t": "time [min]",
+      "F_j": "flow rate through the jacket [L/min]",
+      "T_{jin}": "input temperature of the fluid inside the jacket [K]",
+      "UA": "overall heat transfer coefficient [kJ/min/K]",
+      "T": "temperature inside the reactor vessel [K]"
+    },
+    "context_text": "Based on energy and mass balances for the hybrid reactor, the lumped parameter model can be described by the following equations. This equation represents the energy balance for the cooling jacket.",
+    "domain": "CSTR Heat and Mass Balance"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_3",
+    "equation": "V \\frac{dc_A}{dt} = F(C_{Ain}-C_A) - r V",
+    "variables": {
+      "V": "reactor vessel volume [L]",
+      "c_A": "substrate concentration in the output [mol/L]",
+      "C_A": "substrate concentration in the output [mol/L]",
+      "t": "time [min]",
+      "F": "flow rate through the reactor vessel [L/min]",
+      "C_{Ain}": "substrate concentration in the input [mol/L]",
+      "r": "reaction rate [mol/L/min]"
+    },
+    "context_text": "We further assume that the exothermic reaction A→B is of the first order and the product B do not influence the reaction rate. Hence, the reaction rate can be described by the well-known Arrhenius equation. The mass balance for the substrate A leads us to the following equations:",
+    "domain": "CSTR Heat and Mass Balance"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_4",
+    "equation": "r = k_0 \\cdot \\exp(-\\frac{E}{RT}) c_A",
+    "variables": {
+      "r": "reaction rate [mol/L/min]",
+      "k_0": "pre-exponential Arrhenius factor [1/min]",
+      "E": "activation energy [kJ/mol]",
+      "R": "gas constant [kJ/mol/K]",
+      "T": "temperature inside the reactor vessel [K]",
+      "c_A": "substrate concentration in the output [mol/L]"
+    },
+    "context_text": "The reaction rate can be described by the well-known Arrhenius equation.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_5",
+    "equation": "T_o = \\frac{(\\rho c_w(T_{jin}F_j + T_{in}F) + E_r) UA + \\rho c_w F_j (T_{jin}\\rho c_w F + E_r)}{\\rho c_w(F_j + F)UA + \\rho^2 c_w^2 F F_j}",
+    "variables": {
+      "T_o": "equilibrium point (steady-state) temperature inside the reactor vessel",
+      "\\rho": "density of the fluid",
+      "c_w": "specific heat of water",
+      "T_{jin}": "inlet jacket temperature",
+      "F_j": "jacket flow rate",
+      "T_{in}": "inlet reactor temperature",
+      "F": "reactor flow rate",
+      "E_r": "reaction heat",
+      "UA": "overall heat transfer coefficient"
+    },
+    "context_text": "By setting the derivatives in (1) and (2) equal to zero, one can find the equilibrium point for the reactor temperature.",
+    "domain": "CSTR Steady-State Analysis"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_6",
+    "equation": "T_{jo} = \\frac{(\\rho c_w(T_{jin}F_j + T_{in}F) + E_r) UA + \\rho^2 c_w^2 F F_j T_{jin}}{\\rho c_w(F_j + F)UA + \\rho^2 c_w^2 F F_j}",
+    "variables": {
+      "T_{jo}": "equilibrium point (steady-state) temperature inside the jacket",
+      "\\rho": "density of the fluid",
+      "c_w": "specific heat of water",
+      "T_{jin}": "inlet jacket temperature",
+      "F_j": "jacket flow rate",
+      "T_{in}": "inlet reactor temperature",
+      "F": "reactor flow rate",
+      "E_r": "reaction heat",
+      "UA": "overall heat transfer coefficient"
+    },
+    "context_text": "By setting the derivatives in (1) and (2) equal to zero, one can find the equilibrium point for the jacket temperature.",
+    "domain": "CSTR Steady-State Analysis"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_7",
+    "equation": "f(UA) = \\sum_{i=1}^{N} (\\hat{T}_i - T_{oi})^2 + \\sum_{i=1}^{N} (\\hat{T}_{ji} - T_{joi})^2",
+    "variables": {
+      "f(UA)": "objective function for parameter estimation",
+      "N": "number of steady-state conditions",
+      "\\hat{T}_i": "measured reactor temperature at steady-state condition i",
+      "T_{oi}": "model output for reactor temperature at steady-state condition i",
+      "\\hat{T}_{ji}": "measured jacket temperature at steady-state condition i",
+      "T_{joi}": "model output for jacket temperature at steady-state condition i"
+    },
+    "context_text": "The value of the UA parameter is obtained by minimizing the sum of squared differences between the model outputs (5)-(6) and the measured temperatures at N steady-state conditions.",
+    "domain": "Parameter Estimation"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_8",
+    "equation": "e = \\sqrt{\\frac{1}{M} \\sum_{i=1}^{M} (T_i - T_{sym,i})^2} + \\sqrt{\\frac{1}{M} \\sum_{i=1}^{M} (T_{j,i} - T_{j,sym,i})^2}",
+    "variables": {
+      "e": "modeling error",
+      "M": "number of time series samples in experimental data set",
+      "T_i": "measured reactor temperature at sample i",
+      "T_{sym,i}": "simulated reactor temperature at sample i",
+      "T_{j,i}": "measured jacket temperature at sample i",
+      "T_{j,sym,i}": "simulated jacket temperature at sample i"
+    },
+    "context_text": "In order to evaluate the accuracy of the model 1, the following error was defined and calculated:",
+    "domain": "Model Validation"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_9",
+    "equation": "P_{HL} = E_{ro} + c_p \\rho F_o(T_{ino} - T_o) + c_p \\rho F_{jo}(T_{jino} - T_{jo})",
+    "variables": {
+      "P_{HL}": "total heat flow to the environment (due to heat losses) in steady-state [kJ/min]",
+      "E_{ro}": "reaction heat at steady-state",
+      "c_p": "specific heat of the fluid",
+      "\\rho": "density of the fluid",
+      "F_o": "reactor flow rate at steady-state",
+      "T_{ino}": "reactor inlet temperature at steady-state",
+      "T_o": "reactor temperature at steady-state",
+      "F_{jo}": "jacket flow rate at steady-state",
+      "T_{jino}": "jacket inlet temperature at steady-state",
+      "T_{jo}": "jacket temperature at steady-state",
+      "0": "index that denotes the steady-state conditions"
+    },
+    "context_text": "By setting the derivatives in (1) and (2) equal to zero, the total heat flow PHL to the environment (due to heat losses) in steady-state can be estimated as follows:",
+    "domain": "CSTR Heat Loss Analysis"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_10",
+    "equation": "c_p \\rho V \\frac{dT}{dt} = c_p \\rho F(T_{in}-T) - UA(T-T_j) + E_r - Q_{ra}",
+    "variables": {
+      "c_p": "specific heat of the fluid",
+      "\\rho": "density of the fluid",
+      "V": "reactor vessel volume",
+      "T": "temperature inside the reactor vessel",
+      "t": "time",
+      "F": "flow rate through the reactor vessel",
+      "T_{in}": "input temperature of the fluid inside the reactor",
+      "UA": "overall heat transfer coefficient",
+      "T_j": "temperature inside the jacket",
+      "E_r": "reaction heat",
+      "Q_{ra}": "heat flow from the reactor vessel to the ambient air"
+    },
+    "context_text": "A modified form of the reactor energy balance model that includes heat exchange with the ambient air from the reactor vessel.",
+    "domain": "CSTR Heat Balance"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_11",
+    "equation": "c_p \\rho V_j \\frac{dT_j}{dt} = c_p \\rho F_j(T_{jin}-T_j) + UA(T-T_j) - Q_{ja}",
+    "variables": {
+      "c_p": "specific heat of the fluid",
+      "\\rho": "density of the fluid",
+      "V_j": "jacket volume",
+      "T_j": "temperature inside the jacket",
+      "t": "time",
+      "F_j": "flow rate through the jacket",
+      "T_{jin}": "input temperature of the fluid inside the jacket",
+      "UA": "overall heat transfer coefficient",
+      "T": "temperature inside the reactor vessel",
+      "Q_{ja}": "heat flow from the jacket to the ambient air"
+    },
+    "context_text": "A modified form of the jacket energy balance model that includes heat exchange with the ambient air from the jacket.",
+    "domain": "CSTR Heat Balance"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_12",
+    "equation": "P_{HLa} = UA_{ra} \\cdot (T_o - T_{ao}) + UA_{ja} \\cdot (T_{jo} - T_{ao})",
+    "variables": {
+      "P_{HLa}": "estimated heat flow to the environment",
+      "UA_{ra}": "heat transfer coefficient from reactor to ambient",
+      "T_o": "steady-state reactor temperature",
+      "T_{ao}": "steady-state ambient temperature",
+      "UA_{ja}": "heat transfer coefficient from jacket to ambient",
+      "T_{jo}": "steady-state jacket temperature"
+    },
+    "context_text": "By using UAra and UAja parameters it is possible to estimate the heat flow PHLa to the environment.",
+    "domain": "CSTR Heat Loss Analysis"
+  },
+  {
+    "source_id": "038.pdf",
+    "eq_id": "eq_13",
+    "equation": "UA = p_0 + p_1 \\cdot F_j + p_2 \\cdot T_j",
+    "variables": {
+      "UA": "overall heat transfer coefficient",
+      "p_0": "empirical parameter with value -55.88",
+      "p_1": "empirical parameter with value 0.73",
+      "p_2": "empirical parameter with value 0.20",
+      "F_j": "jacket flow rate",
+      "T_j": "jacket temperature"
+    },
+    "context_text": "An affine function to empirically model the overall heat transfer coefficient UA as a function of jacket flow rate and temperature, based on observations rather than physical laws.",
+    "domain": "Empirical Heat Transfer Model"
+  }
+]

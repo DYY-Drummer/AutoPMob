@@ -1,0 +1,166 @@
+{
+  "made": "2026-11-04",
+  "n_setting_a": 1731,
+  "n_equations_9": 162,
+  "n_db_equations": 11146,
+  "n_gt_equations_9": 76,
+  "n_cases_9": 146,
+  "cases_by_family": {
+    "単一出典": 1,
+    "出典横断": 114,
+    "合成": 31
+  },
+  "cases_by_variant": {
+    "original": 1,
+    "multisource_v3": 114,
+    "dae": 31
+  },
+  "cases_with_two_or_more_of_9": [
+    "dae_X6_080"
+  ],
+  "per_source": [
+    {
+      "source_id": "038.pdf",
+      "availability": "open",
+      "n_equations": 13,
+      "n_gt_equations": 12,
+      "n_cases": 55,
+      "cases_by_family": {
+        "単一出典": 1,
+        "出典横断": 48,
+        "合成": 6
+      },
+      "n_equations_with_rule_s_t": 0,
+      "old_output_chars": 12589
+    },
+    {
+      "source_id": "1-s2.0-0009250974800898-main.pdf",
+      "availability": "university",
+      "n_equations": 33,
+      "n_gt_equations": 5,
+      "n_cases": 36,
+      "cases_by_family": {
+        "出典横断": 35,
+        "合成": 1
+      },
+      "n_equations_with_rule_s_t": 10,
+      "old_output_chars": 21423
+    },
+    {
+      "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+      "availability": "university",
+      "n_equations": 9,
+      "n_gt_equations": 8,
+      "n_cases": 3,
+      "cases_by_family": {
+        "合成": 3
+      },
+      "n_equations_with_rule_s_t": 0,
+      "old_output_chars": 8249
+    },
+    {
+      "source_id": "Chemical Process Dynamics.pdf",
+      "availability": "on_hand",
+      "n_equations": 23,
+      "n_gt_equations": 17,
+      "n_cases": 19,
+      "cases_by_family": {
+        "出典横断": 10,
+        "合成": 9
+      },
+      "n_equations_with_rule_s_t": 0,
+      "old_output_chars": 12915
+    },
+    {
+      "source_id": "WJET_2015040715405408.pdf",
+      "availability": "open",
+      "n_equations": 6,
+      "n_gt_equations": 6,
+      "n_cases": 12,
+      "cases_by_family": {
+        "出典横断": 11,
+        "合成": 1
+      },
+      "n_equations_with_rule_s_t": 1,
+      "old_output_chars": 2240
+    },
+    {
+      "source_id": "applsci-10-00992-v2.pdf",
+      "availability": "open",
+      "n_equations": 42,
+      "n_gt_equations": 9,
+      "n_cases": 13,
+      "cases_by_family": {
+        "出典横断": 10,
+        "合成": 3
+      },
+      "n_equations_with_rule_s_t": 1,
+      "old_output_chars": 32851
+    },
+    {
+      "source_id": "energies-17-01344.pdf",
+      "availability": "open",
+      "n_equations": 23,
+      "n_gt_equations": 12,
+      "n_cases": 3,
+      "cases_by_family": {
+        "合成": 3
+      },
+      "n_equations_with_rule_s_t": 1,
+      "old_output_chars": 15651
+    },
+    {
+      "source_id": "kinetics_soybean_oil.pdf",
+      "availability": "on_hand",
+      "n_equations": 4,
+      "n_gt_equations": 0,
+      "n_cases": 0,
+      "cases_by_family": {},
+      "n_equations_with_rule_s_t": 0,
+      "old_output_chars": 4561
+    },
+    {
+      "source_id": "matecconf_cscc2019_01027.pdf",
+      "availability": "open_browser",
+      "n_equations": 9,
+      "n_gt_equations": 7,
+      "n_cases": 6,
+      "cases_by_family": {
+        "合成": 6
+      },
+      "n_equations_with_rule_s_t": 0,
+      "old_output_chars": 8171
+    }
+  ],
+  "by_availability": {
+    "on_hand": {
+      "sources": [
+        "Chemical Process Dynamics.pdf",
+        "kinetics_soybean_oil.pdf"
+      ],
+      "n_cases_touching": 19
+    },
+    "open": {
+      "sources": [
+        "038.pdf",
+        "WJET_2015040715405408.pdf",
+        "applsci-10-00992-v2.pdf",
+        "energies-17-01344.pdf",
+        "matecconf_cscc2019_01027.pdf"
+      ],
+      "n_cases_touching": 89
+    },
+    "university": {
+      "sources": [
+        "1-s2.0-0009250974800898-main.pdf",
+        "1-s2.0-S1369703X09000059-main.pdf"
+      ],
+      "n_cases_touching": 39
+    }
+  },
+  "cases_fully_reextractable": {
+    "on_hand": 19,
+    "on_hand+open": 107,
+    "all": 146
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "made": "2026-11-04T22:47:40+09:00",
+  "n_works": 32,
+  "n_pairs": 46,
+  "n_equations_a": 1512,
+  "n_equations_b": 1382,
+  "equations_total": {
+    "same": 347,
+    "same_cosmetic": 286,
+    "same_symbols": 202,
+    "diff_symbols": 367,
+    "old_only": 310,
+    "new_only": 180
+  },
+  "share_of_a_same_or_cosmetic": 0.419,
+  "share_of_a_matched": 0.795,
+  "pairs_equal_count": 27,
+  "pairs_all_same": 9,
+  "match_threshold": 0.45,
+  "case_units": 283,
+  "case_distinct": 221,
+  "case_status": {
+    "A": 44,
+    "B": 59,
+    "C": 124,
+    "D": 56
+  },
+  "case_status_by_family": {
+    "A:出典横断": 30,
+    "A:合成": 14,
+    "B:出典横断": 25,
+    "B:合成": 34,
+    "C:出典横断": 30,
+    "C:合成": 94,
+    "D:合成": 56
+  },
+  "case_old_not_ok": 0,
+  "small_sources_le50": {
+    "n_pairs": 31,
+    "n_equations_a": 343,
+    "same_or_cosmetic": 175,
+    "matched": 335,
+    "pairs_all_same": 9,
+    "case_units": 153,
+    "case_distinct": 150,
+    "case_status": {
+      "A": 40,
+      "B": 40,
+      "C": 67,
+      "D": 6
+    },
+    "case_status_by_family": {
+      "A:出典横断": 30,
+      "A:合成": 10,
+      "B:出典横断": 25,
+      "B:合成": 15,
+      "C:出典横断": 30,
+      "C:合成": 37,
+      "D:合成": 6
+    }
+  }
+}

@@ -1,0 +1,147 @@
+﻿case_id,family,variant,n_gt,sources_9,gt_9,gt_other
+core_079_v1,単一出典,original,1,038.pdf,038.pdf__eq_4,
+ms3_0000,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0001,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0002,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0003,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0004,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0010,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf__eq_11
+ms3_0011,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf__eq_11
+ms3_0012,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf__eq_11
+ms3_0013,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf__eq_11
+ms3_0014,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf__eq_11
+ms3_0020,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2018_Book_ProcessControl_Chapter1_6.pdf__1.41
+ms3_0021,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2018_Book_ProcessControl_Chapter1_6.pdf__1.41
+ms3_0022,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2018_Book_ProcessControl_Chapter1_6.pdf__1.41
+ms3_0023,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2018_Book_ProcessControl_Chapter1_6.pdf__1.41
+ms3_0024,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,2018_Book_ProcessControl_Chapter1_6.pdf__1.41
+ms3_0035,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf__eq_3
+ms3_0036,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf__eq_3
+ms3_0037,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf__eq_3
+ms3_0038,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf__eq_3
+ms3_0039,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf__eq_3
+ms3_0055,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter4.pdf__4.69
+ms3_0056,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter4.pdf__4.69
+ms3_0057,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter4.pdf__4.69
+ms3_0058,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter4.pdf__4.69
+ms3_0059,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter4.pdf__4.69
+ms3_0060,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0481-0560_eq_B-12
+ms3_0061,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0481-0560_eq_B-12
+ms3_0062,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0481-0560_eq_B-12
+ms3_0063,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0481-0560_eq_B-12
+ms3_0064,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,SEBORG_3rd_Edition_Process_Dynamics_and.pdf__p0481-0560_eq_B-12
+ms3_0080,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_18,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0081,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_18,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0082,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_18,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0083,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_18,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0084,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_18,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0110,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,2018_Book_ProcessControl_Chapter1.pdf__1.41
+ms3_0111,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,2018_Book_ProcessControl_Chapter1.pdf__1.41
+ms3_0112,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,2018_Book_ProcessControl_Chapter1.pdf__1.41
+ms3_0113,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,2018_Book_ProcessControl_Chapter1.pdf__1.41
+ms3_0114,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,2018_Book_ProcessControl_Chapter1.pdf__1.41
+ms3_0145,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,ChemicalProcessDynamicsAndControls.pdf__p0481-0560_eq_69
+ms3_0146,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,ChemicalProcessDynamicsAndControls.pdf__p0481-0560_eq_69
+ms3_0147,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,ChemicalProcessDynamicsAndControls.pdf__p0481-0560_eq_69
+ms3_0148,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,ChemicalProcessDynamicsAndControls.pdf__p0481-0560_eq_69
+ms3_0149,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_10,ChemicalProcessDynamicsAndControls.pdf__p0481-0560_eq_69
+ms3_0150,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,handbook_polymer__eq_9
+ms3_0151,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,handbook_polymer__eq_9
+ms3_0152,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,handbook_polymer__eq_9
+ms3_0153,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,handbook_polymer__eq_9
+ms3_0154,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,handbook_polymer__eq_9
+ms3_0160,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_19,Process_Control_Chapter4.pdf__4.69
+ms3_0161,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_19,Process_Control_Chapter4.pdf__4.69
+ms3_0162,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_19,Process_Control_Chapter4.pdf__4.69
+ms3_0163,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_19,Process_Control_Chapter4.pdf__4.69
+ms3_0164,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_19,Process_Control_Chapter4.pdf__4.69
+ms3_0200,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter3.pdf__eq_3_68
+ms3_0201,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter3.pdf__eq_3_68
+ms3_0202,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter3.pdf__eq_3_68
+ms3_0203,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter3.pdf__eq_3_68
+ms3_0204,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_1,Process_Control_Chapter3.pdf__eq_3_68
+ms3_0205,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_1,FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_17
+ms3_0206,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_1,FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_17
+ms3_0207,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_1,FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_17
+ms3_0208,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_1,FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_17
+ms3_0209,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_1,FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf__eq_17
+ms3_0218,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.1,2018_Book_ProcessControl.pdf__eq_1.5
+ms3_0273,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf__eq_4
+ms3_0274,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf__eq_4
+ms3_0275,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf__eq_4
+ms3_0276,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf__eq_4
+ms3_0277,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_2,FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf__eq_4
+ms3_0293,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0294,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0295,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0296,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0297,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0343,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_3,Process_Control_Chapter4.pdf__4.69
+ms3_0344,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_3,Process_Control_Chapter4.pdf__4.69
+ms3_0345,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_3,Process_Control_Chapter4.pdf__4.69
+ms3_0346,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_3,Process_Control_Chapter4.pdf__4.69
+ms3_0347,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_3,Process_Control_Chapter4.pdf__4.69
+ms3_0368,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_22,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0369,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_22,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0370,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_22,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0371,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_22,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0372,出典横断,multisource_v3,2,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_22,FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf__eq_51
+ms3_0397,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0398,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0399,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0400,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0401,出典横断,multisource_v3,2,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2,2018_Book_ProcessControl_Chapter1.pdf__1.6
+ms3_0422,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl.pdf__eq_1.47
+ms3_0423,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl.pdf__eq_1.47
+ms3_0424,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl.pdf__eq_1.47
+ms3_0425,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl.pdf__eq_1.47
+ms3_0426,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_17,2018_Book_ProcessControl.pdf__eq_1.47
+ms3_0452,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_4,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0453,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_4,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0454,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_4,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0455,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_4,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0456,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_4,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_73
+ms3_0462,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21,2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf__eq_2
+ms3_0463,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21,2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf__eq_2
+ms3_0464,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21,2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf__eq_2
+ms3_0465,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21,2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf__eq_2
+ms3_0466,出典横断,multisource_v3,2,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21,2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf__eq_2
+ms3_0492,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_15,2018_Book_ProcessControl_Chapter1.pdf__1.5
+ms3_0493,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_15,2018_Book_ProcessControl_Chapter1.pdf__1.5
+ms3_0494,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_15,2018_Book_ProcessControl_Chapter1.pdf__1.5
+ms3_0495,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_15,2018_Book_ProcessControl_Chapter1.pdf__1.5
+ms3_0496,出典横断,multisource_v3,2,1-s2.0-0009250974800898-main.pdf,1-s2.0-0009250974800898-main.pdf__eq_15,2018_Book_ProcessControl_Chapter1.pdf__1.5
+ms3_0497,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_5,Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_8.31
+ms3_0498,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_5,Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_8.31
+ms3_0499,出典横断,multisource_v3,2,038.pdf,038.pdf__eq_5,Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_8.31
+dae_X1_055,合成,dae_X1,1,038.pdf,038.pdf__eq_10,
+dae_X2_024,合成,dae_X2,2,038.pdf,038.pdf__eq_11 | 038.pdf__eq_4,
+dae_X2_062,合成,dae_X2,2,1-s2.0-S1369703X09000059-main.pdf,1-s2.0-S1369703X09000059-main.pdf__eq_5 | 1-s2.0-S1369703X09000059-main.pdf__eq_6,
+dae_X3_019,合成,dae_X3,3,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_24 | applsci-10-00992-v2.pdf__eq_23 | applsci-10-00992-v2.pdf__eq_25,
+dae_X3_073,合成,dae_X3,3,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_13 | Chemical Process Dynamics.pdf__eq_17 | Chemical Process Dynamics.pdf__eq_22,
+dae_X4_020,合成,dae_X4,4,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_11 | Chemical Process Dynamics.pdf__eq_19 | Chemical Process Dynamics.pdf__eq_9 | Chemical Process Dynamics.pdf__eq_8,
+dae_X4_057,合成,dae_X4,4,matecconf_cscc2019_01027.pdf,matecconf_cscc2019_01027.pdf__eq_7 | matecconf_cscc2019_01027.pdf__eq_2 | matecconf_cscc2019_01027.pdf__eq_5 | matecconf_cscc2019_01027.pdf__eq_3,
+dae_X5_017,合成,dae_X5,5,matecconf_cscc2019_01027.pdf,matecconf_cscc2019_01027.pdf__eq_2 | matecconf_cscc2019_01027.pdf__eq_5 | matecconf_cscc2019_01027.pdf__eq_4 | matecconf_cscc2019_01027.pdf__eq_3 | matecconf_cscc2019_01027.pdf__eq_7,
+dae_X5_049,合成,dae_X5,5,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_12,FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf__eq_92 | FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf__eq_89 | FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf__eq_90 | FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf__eq_91
+dae_X5_074,合成,dae_X5,5,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21 | Chemical Process Dynamics.pdf__eq_11 | Chemical Process Dynamics.pdf__eq_10 | Chemical Process Dynamics.pdf__eq_17 | Chemical Process Dynamics.pdf__eq_23,
+dae_X6_014,合成,dae_X6,6,WJET_2015040715405408.pdf,WJET_2015040715405408.pdf__eq_1.2 | WJET_2015040715405408.pdf__eq_1.3 | WJET_2015040715405408.pdf__eq_1.5 | WJET_2015040715405408.pdf__eq_1.6 | WJET_2015040715405408.pdf__eq_1.4 | WJET_2015040715405408.pdf__eq_1.1,
+dae_X6_050,合成,dae_X6,6,038.pdf,038.pdf__eq_7,FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf__eq_2 | FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf__eq_1 | FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf__eq_3 | FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf__eq_unnumbered_p12_1 | FB2_05_Redox_flow_batteries_a_review_2011.pdf__eq_21
+dae_X6_057,合成,dae_X6,6,applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_24 | applsci-10-00992-v2.pdf__eq_17 | applsci-10-00992-v2.pdf__eq_23 | applsci-10-00992-v2.pdf__eq_19 | applsci-10-00992-v2.pdf__eq_20 | applsci-10-00992-v2.pdf__eq_36,
+dae_X6_068,合成,dae_X6,6,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_14 | Chemical Process Dynamics.pdf__eq_12 | Chemical Process Dynamics.pdf__eq_15 | Chemical Process Dynamics.pdf__eq_13 | Chemical Process Dynamics.pdf__eq_10 | Chemical Process Dynamics.pdf__eq_11,
+dae_X6_080,合成,dae_X6,6,1-s2.0-0009250974800898-main.pdf | applsci-10-00992-v2.pdf,applsci-10-00992-v2.pdf__eq_23 | 1-s2.0-0009250974800898-main.pdf__eq_3,FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf__eq_2 | FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf__eq_6 | FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf__eq_1 | Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_8.41
+dae_X7_008,合成,dae_X7,7,energies-17-01344.pdf,energies-17-01344.pdf__eq_22 | energies-17-01344.pdf__eq_20 | energies-17-01344.pdf__eq_23 | energies-17-01344.pdf__eq_21 | energies-17-01344.pdf__eq_18 | energies-17-01344.pdf__eq_7,2018_Book_ProcessControl_Chapter1_6.pdf__1.29
+dae_X7_031,合成,dae_X7,7,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21 | Chemical Process Dynamics.pdf__eq_22 | Chemical Process Dynamics.pdf__eq_20 | Chemical Process Dynamics.pdf__eq_16 | Chemical Process Dynamics.pdf__eq_19 | Chemical Process Dynamics.pdf__eq_7 | Chemical Process Dynamics.pdf__eq_23,
+dae_X7_035,合成,dae_X7,7,1-s2.0-S1369703X09000059-main.pdf,1-s2.0-S1369703X09000059-main.pdf__eq_8 | 1-s2.0-S1369703X09000059-main.pdf__eq_5 | 1-s2.0-S1369703X09000059-main.pdf__eq_3 | 1-s2.0-S1369703X09000059-main.pdf__eq_4 | 1-s2.0-S1369703X09000059-main.pdf__eq_1 | 1-s2.0-S1369703X09000059-main.pdf__eq_9 | 1-s2.0-S1369703X09000059-main.pdf__eq_7,
+dae_X7_080,合成,dae_X7,7,matecconf_cscc2019_01027.pdf,matecconf_cscc2019_01027.pdf__eq_4 | matecconf_cscc2019_01027.pdf__eq_5 | matecconf_cscc2019_01027.pdf__eq_2 | matecconf_cscc2019_01027.pdf__eq_6 | matecconf_cscc2019_01027.pdf__eq_3 | matecconf_cscc2019_01027.pdf__eq_7,2018_Book_ProcessControl.pdf__eq_1.217
+dae_X8_020,合成,dae_X8,8,038.pdf,038.pdf__eq_11 | 038.pdf__eq_1 | 038.pdf__eq_10 | 038.pdf__eq_13 | 038.pdf__eq_9 | 038.pdf__eq_5 | 038.pdf__eq_7 | 038.pdf__eq_2,
+dae_X8_063,合成,dae_X8,8,038.pdf,038.pdf__eq_10 | 038.pdf__eq_11 | 038.pdf__eq_2 | 038.pdf__eq_7 | 038.pdf__eq_9 | 038.pdf__eq_5 | 038.pdf__eq_6 | 038.pdf__eq_12,
+dae_X8_066,合成,dae_X8,8,matecconf_cscc2019_01027.pdf,matecconf_cscc2019_01027.pdf__eq_7 | matecconf_cscc2019_01027.pdf__eq_4 | matecconf_cscc2019_01027.pdf__eq_2 | matecconf_cscc2019_01027.pdf__eq_5 | matecconf_cscc2019_01027.pdf__eq_3 | matecconf_cscc2019_01027.pdf__eq_6,Process_Control_Chapter4.pdf__4.39 | SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-71
+dae_X9_006,合成,dae_X9,9,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21 | Chemical Process Dynamics.pdf__eq_20 | Chemical Process Dynamics.pdf__eq_6 | Chemical Process Dynamics.pdf__eq_17 | Chemical Process Dynamics.pdf__eq_11 | Chemical Process Dynamics.pdf__eq_22 | Chemical Process Dynamics.pdf__eq_12 | Chemical Process Dynamics.pdf__eq_10 | Chemical Process Dynamics.pdf__eq_16,
+dae_X9_053,合成,dae_X9,9,matecconf_cscc2019_01027.pdf,matecconf_cscc2019_01027.pdf__eq_6 | matecconf_cscc2019_01027.pdf__eq_2 | matecconf_cscc2019_01027.pdf__eq_4 | matecconf_cscc2019_01027.pdf__eq_5 | matecconf_cscc2019_01027.pdf__eq_3 | matecconf_cscc2019_01027.pdf__eq_7,FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf__eq_6 | 04_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf__eq_19 | FB3_06_Mathematics_of_thermoacoustic_tomography_2008.pdf__5.7c
+dae_X9_087,合成,dae_X9,9,energies-17-01344.pdf,energies-17-01344.pdf__eq_9,FB2_13_A_review_of_operational_regional-scale_chemical_weather_fore_2012.pdf__eq_7 | 2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf__eq_8 | 04_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf__eq_154 | 02_Analytic_Models_of_Oxygen_and_Nutrient_Diffusion_Metabolism__2015.pdf__eq_35 | 06_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf__eq_43 | FB3_01_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf__eq_2-29b | 04_A_novel_process-based_model_of_microbial_growth_self-inhibit_2015.pdf__eq_2 | Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0881-0960_C.16
+dae_X9_090,合成,dae_X9,9,1-s2.0-S1369703X09000059-main.pdf,1-s2.0-S1369703X09000059-main.pdf__eq_4 | 1-s2.0-S1369703X09000059-main.pdf__eq_3 | 1-s2.0-S1369703X09000059-main.pdf__eq_6 | 1-s2.0-S1369703X09000059-main.pdf__eq_1 | 1-s2.0-S1369703X09000059-main.pdf__eq_8 | 1-s2.0-S1369703X09000059-main.pdf__eq_5 | 1-s2.0-S1369703X09000059-main.pdf__eq_7 | 1-s2.0-S1369703X09000059-main.pdf__eq_9,Process_Control_Chapter3.pdf__eq_3_75
+dae_X9_098,合成,dae_X9,9,038.pdf,038.pdf__eq_11 | 038.pdf__eq_5 | 038.pdf__eq_10 | 038.pdf__eq_4 | 038.pdf__eq_6 | 038.pdf__eq_7 | 038.pdf__eq_13 | 038.pdf__eq_3 | 038.pdf__eq_12,
+dae_X10_014,合成,dae_X10,10,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_11 | Chemical Process Dynamics.pdf__eq_20 | Chemical Process Dynamics.pdf__eq_6 | Chemical Process Dynamics.pdf__eq_19 | Chemical Process Dynamics.pdf__eq_15 | Chemical Process Dynamics.pdf__eq_22 | Chemical Process Dynamics.pdf__eq_8 | Chemical Process Dynamics.pdf__eq_16 | Chemical Process Dynamics.pdf__eq_12 | Chemical Process Dynamics.pdf__eq_23,
+dae_X10_060,合成,dae_X10,10,Chemical Process Dynamics.pdf,Chemical Process Dynamics.pdf__eq_21 | Chemical Process Dynamics.pdf__eq_17 | Chemical Process Dynamics.pdf__eq_15 | Chemical Process Dynamics.pdf__eq_22 | Chemical Process Dynamics.pdf__eq_7 | Chemical Process Dynamics.pdf__eq_12 | Chemical Process Dynamics.pdf__eq_13 | Chemical Process Dynamics.pdf__eq_16 | Chemical Process Dynamics.pdf__eq_23 | Chemical Process Dynamics.pdf__eq_19,
+dae_X10_077,合成,dae_X10,10,matecconf_cscc2019_01027.pdf,matecconf_cscc2019_01027.pdf__eq_6 | matecconf_cscc2019_01027.pdf__eq_5 | matecconf_cscc2019_01027.pdf__eq_4 | matecconf_cscc2019_01027.pdf__eq_7 | matecconf_cscc2019_01027.pdf__eq_2 | matecconf_cscc2019_01027.pdf__eq_3 | matecconf_cscc2019_01027.pdf__eq_8,ChemicalProcessDynamicsAndControls.pdf__p0641-0720_eq_process_reaction_R | ChemicalProcessDynamicsAndControls.pdf__p1281-1360_eq_44 | Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf__p0241-0320_eq_10.19
+dae_X10_080,合成,dae_X10,10,energies-17-01344.pdf,energies-17-01344.pdf__eq_23 | energies-17-01344.pdf__eq_20 | energies-17-01344.pdf__eq_21 | energies-17-01344.pdf__eq_22 | energies-17-01344.pdf__eq_13 | energies-17-01344.pdf__eq_19 | energies-17-01344.pdf__eq_15 | energies-17-01344.pdf__eq_1 | energies-17-01344.pdf__eq_3,SEBORG_Process_Dynamic_and_Control_Chap_2.pdf__eq_2-18

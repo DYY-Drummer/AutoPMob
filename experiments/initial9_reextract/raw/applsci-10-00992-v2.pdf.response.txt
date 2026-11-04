@@ -1,0 +1,611 @@
+[
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_1",
+    "equation": "TG_i + 3AL \\rightleftharpoons_{k_{r,i}}^{k_{f,i}} 3ME_i + GL",
+    "variables": {
+      "TG_i": "Triglyceride for a type-i vegetable oil",
+      "AL": "Methanol (short chain alcohol)",
+      "ME_i": "Fatty acid methyl ester molecules from type-i oil",
+      "GL": "Glycerol molecule",
+      "k_f,i": "Forward reaction rate constant for type-i oil",
+      "k_r,i": "Reverse reaction rate constant for type-i oil"
+    },
+    "context_text": "As transesterification is a reversible process, part of the total product formed in the forward reaction then reacts to form reactants again via a reverse reaction. The chemical Equation (1) presents the general transesterification process for a type-i vegetable oil reaction with methanol:",
+    "domain": "Biodiesel Production"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_2",
+    "equation": "TG_i + AL \\rightleftharpoons_{k_{2,i}}^{k_{1,i}} DG_i + ME_i",
+    "variables": {
+      "TG_i": "Triglyceride",
+      "AL": "Methanol (alcohol)",
+      "DG_i": "Diglyceride",
+      "ME_i": "Fatty acid methyl ester",
+      "k_1,i": "Forward reaction rate constant for the first step",
+      "k_2,i": "Reverse reaction rate constant for the first step"
+    },
+    "context_text": "The decomposition of triglycerides into three simple esters requires a three-step reversible mechanism (i.e., six elemental steps), with diglycerides (DG) and nonoglycerides (MG) formed as by-products during the intermediate steps. Monoglycerides and diglycerides are glycerol molecules esterified by one and two fatty acids, respectively. As in the triglyceride molecule, the fatty acids in diglyceride can be either different or identical. The chemical Equations (2)–(4) define the reaction mechanism occurring in vegetable oil transesterification [26].",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_3",
+    "equation": "DG_i + AL \\rightleftharpoons_{k_{4,i}}^{k_{3,i}} MG_i + ME_i",
+    "variables": {
+      "DG_i": "Diglyceride",
+      "AL": "Methanol (alcohol)",
+      "MG_i": "Monoglyceride (nonoglyceride)",
+      "ME_i": "Fatty acid methyl ester",
+      "k_3,i": "Forward reaction rate constant for the second step",
+      "k_4,i": "Reverse reaction rate constant for the second step"
+    },
+    "context_text": "The chemical Equations (2)–(4) define the reaction mechanism occurring in vegetable oil transesterification [26].",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_4",
+    "equation": "MG_i + AL \\rightleftharpoons_{k_{6,i}}^{k_{5,i}} GL + ME_i",
+    "variables": {
+      "MG_i": "Monoglyceride (nonoglyceride)",
+      "AL": "Methanol (alcohol)",
+      "GL": "Glycerol",
+      "ME_i": "Fatty acid methyl ester",
+      "k_5,i": "Forward reaction rate constant for the third step",
+      "k_6,i": "Reverse reaction rate constant for the third step"
+    },
+    "context_text": "The chemical Equations (2)–(4) define the reaction mechanism occurring in vegetable oil transesterification [26].",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_5",
+    "equation": "r_{n,i} = k_{n,i} C_{x1} C_{x2}",
+    "variables": {
+      "r_n,i": "Rate of the n-th elementary reaction",
+      "k_n,i": "Rate constant for an elementary reaction, defined by the Arrhenius equation k_{n,i} = A_{n,i} exp(-E_{a,n,i}/RT)",
+      "C_x1": "Concentration of the first component involved in the reaction",
+      "C_x2": "Concentration of the second component involved in the reaction",
+      "A_n,i": "Frequency of collisions",
+      "E_a,n,i": "Activation energy",
+      "R": "Universal gas constant",
+      "T": "Reaction mixture temperature"
+    },
+    "context_text": "With a 6:1 alcohol to oil molar ratio and using homogeneous base catalysts at atmospheric pressure, the transesterification reaction presents a second-order kinetic behavior; therefore, the elementary reactions in the transesterification mechanism can be modeled by second-order rate equations such that:",
+    "domain": "Reaction Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_6",
+    "equation": "v_{TG,i} = -r_{1,i} + r_{2,i}",
+    "variables": {
+      "v_TG,i": "Velocity of reaction of the triglycerides component",
+      "r_1,i": "Rate of the first forward elementary reaction",
+      "r_2,i": "Rate of the first reverse elementary reaction"
+    },
+    "context_text": "Thus, the velocity of reaction of the components in the transesterification of a single oil is defined as:",
+    "domain": "Reaction Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_7",
+    "equation": "v_{DG,i} = r_{1,i} - r_{2,i} - r_{3,i} + r_{4,i}",
+    "variables": {
+      "v_DG,i": "Velocity of reaction of the diglycerides component",
+      "r_1,i": "Rate of the first forward elementary reaction",
+      "r_2,i": "Rate of the first reverse elementary reaction",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction"
+    },
+    "context_text": "Thus, the velocity of reaction of the components in the transesterification of a single oil is defined as:",
+    "domain": "Reaction Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_8",
+    "equation": "v_{MG,i} = r_{3,i} - r_{4,i} - r_{5,i} + r_{6,i}",
+    "variables": {
+      "v_MG,i": "Velocity of reaction of the monoglycerides component",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "Thus, the velocity of reaction of the components in the transesterification of a single oil is defined as:",
+    "domain": "Reaction Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_9",
+    "equation": "v_{ME,i} = r_{1,i} - r_{2,i} + r_{3,i} - r_{4,i} + r_{5,i} - r_{6,i}",
+    "variables": {
+      "v_ME,i": "Velocity of reaction of the methyl esters component",
+      "r_1,i": "Rate of the first forward elementary reaction",
+      "r_2,i": "Rate of the first reverse elementary reaction",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "Thus, the velocity of reaction of the components in the transesterification of a single oil is defined as:",
+    "domain": "Reaction Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_10",
+    "equation": "v_{GL} = r_{5,i} - r_{6,i}",
+    "variables": {
+      "v_GL": "Velocity of reaction of the glycerol component",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "Thus, the velocity of reaction of the components in the transesterification of a single oil is defined as:",
+    "domain": "Reaction Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_11",
+    "equation": "v_{AL} = -r_{1,i} + r_{2,i} - r_{3,i} + r_{4,i} - r_{5,i} + r_{6,i}",
+    "variables": {
+      "v_AL": "Velocity of reaction of the alcohol component",
+      "r_1,i": "Rate of the first forward elementary reaction",
+      "r_2,i": "Rate of the first reverse elementary reaction",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "Thus, the velocity of reaction of the components in the transesterification of a single oil is defined as:",
+    "domain": "Reaction Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_12",
+    "equation": "DG_i + ME_j \\rightleftharpoons_{k_{1,j}}^{k_{2,j}} TG_{ij} + AL",
+    "variables": {
+      "DG_i": "Diglyceride from type-i oil",
+      "ME_j": "Methyl ester from type-j oil",
+      "TG_ij": "Complex triglyceride formed from fatty acids characteristic of both oils",
+      "AL": "Alcohol",
+      "k_1,j": "Reverse reaction rate constant for the cross-linking reaction",
+      "k_2,j": "Forward reaction rate constant for the cross-linking reaction"
+    },
+    "context_text": "These 'cross-linking reactions' that occur between glycerides and esters from two different oils lead to the synthesis of a more complex glyceride formed by fatty acids characteristic of both oils and reacting reversibly to form diglycerides and monoglycerides again.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_13",
+    "equation": "MG_i + ME_j \\rightleftharpoons_{k_{3,j}}^{k_{4,j}} DG_{ij} + AL",
+    "variables": {
+      "MG_i": "Monoglyceride from type-i oil",
+      "ME_j": "Methyl ester from type-j oil",
+      "DG_ij": "Complex diglyceride formed from fatty acids characteristic of both oils",
+      "AL": "Alcohol",
+      "k_3,j": "Reverse reaction rate constant for the cross-linking reaction",
+      "k_4,j": "Forward reaction rate constant for the cross-linking reaction"
+    },
+    "context_text": "These 'cross-linking reactions' that occur between glycerides and esters from two different oils lead to the synthesis of a more complex glyceride formed by fatty acids characteristic of both oils and reacting reversibly to form diglycerides and monoglycerides again.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_14",
+    "equation": "DG_j + ME_i \\rightleftharpoons_{k_{1,i}}^{k_{2,i}} TG_{ji} + AL",
+    "variables": {
+      "DG_j": "Diglyceride from type-j oil",
+      "ME_i": "Methyl ester from type-i oil",
+      "TG_ji": "Complex triglyceride formed from fatty acids characteristic of both oils",
+      "AL": "Alcohol",
+      "k_1,i": "Reverse reaction rate constant for the cross-linking reaction",
+      "k_2,i": "Forward reaction rate constant for the cross-linking reaction"
+    },
+    "context_text": "These 'cross-linking reactions' that occur between glycerides and esters from two different oils lead to the synthesis of a more complex glyceride formed by fatty acids characteristic of both oils and reacting reversibly to form diglycerides and monoglycerides again.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_15",
+    "equation": "MG_j + ME_i \\rightleftharpoons_{k_{3,i}}^{k_{4,i}} DG_{ji} + AL",
+    "variables": {
+      "MG_j": "Monoglyceride from type-j oil",
+      "ME_i": "Methyl ester from type-i oil",
+      "DG_ji": "Complex diglyceride formed from fatty acids characteristic of both oils",
+      "AL": "Alcohol",
+      "k_3,i": "Reverse reaction rate constant for the cross-linking reaction",
+      "k_4,i": "Forward reaction rate constant for the cross-linking reaction"
+    },
+    "context_text": "These 'cross-linking reactions' that occur between glycerides and esters from two different oils lead to the synthesis of a more complex glyceride formed by fatty acids characteristic of both oils and reacting reversibly to form diglycerides and monoglycerides again.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_16",
+    "equation": "V \\frac{d C_{TG,i}}{dt} = F (C_{TG,in,i} - C_{TG,i}) + V G_{TG,i}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_TG,i": "Concentration of triglyceride of type-i",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "C_TG,in,i": "Inlet concentration of triglyceride of type-i",
+      "G_TG,i": "Net rate of generation of triglyceride of type-i"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_17",
+    "equation": "V \\frac{d C_{TG,ij}}{dt} = -F C_{TG,ij} + V G_{TG,ij}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_TG,ij": "Concentration of complex triglyceride",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "G_TG,ij": "Net rate of generation of complex triglyceride"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_18",
+    "equation": "V \\frac{d C_{DG,i}}{dt} = F (C_{DG,in,i} - C_{DG,i}) + V G_{DG,i,i} + \\sum V G_{DG,i,ij}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_DG,i": "Concentration of diglyceride of type-i",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "C_DG,in,i": "Inlet concentration of diglyceride of type-i",
+      "G_DG,i,i": "Net rate of generation of DG from type-i oil transesterification",
+      "G_DG,i,ij": "Net rate of generation of DG from cross-linking reactions"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_19",
+    "equation": "V \\frac{d C_{DG,ij}}{dt} = -F C_{DG,ij} + V G_{DG,ij}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_DG,ij": "Concentration of complex diglyceride",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "G_DG,ij": "Net rate of generation of complex diglyceride"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_20",
+    "equation": "V \\frac{d C_{MG,i}}{dt} = -F C_{MG,i} + V G_{MG,i,i} + \\sum V G_{MG,i,ij}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_MG,i": "Concentration of monoglyceride of type-i",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "G_MG,i,i": "Net rate of generation of MG from type-i oil transesterification",
+      "G_MG,i,ij": "Net rate of generation of MG from cross-linking reactions"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_21",
+    "equation": "V \\frac{d C_{ME,i}}{dt} = -F C_{ME,i} + V G_{ME,i,i} + \\sum V G_{ME,i,ji}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_ME,i": "Concentration of methyl ester of type-i",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "G_ME,i,i": "Net rate of generation of ME from type-i oil transesterification",
+      "G_ME,i,ji": "Net rate of generation of ME from cross-linking reactions"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_22",
+    "equation": "V \\frac{d C_{GL}}{dt} = -F C_{GL} + \\sum V G_{GL,i}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_GL": "Concentration of glycerol",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "G_GL,i": "Net rate of generation of glycerol"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_23",
+    "equation": "V \\frac{d C_{AL}}{dt} = F (C_{AL,in} - C_{AL}) + \\sum V G_{AL,i} + \\sum V G_{AL,ij}",
+    "variables": {
+      "V": "Total volume of the reaction mixture",
+      "C_AL": "Concentration of alcohol",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "C_AL,in": "Inlet concentration of alcohol",
+      "G_AL,i": "Net rate of generation of alcohol from transesterification",
+      "G_AL,ij": "Net rate of generation of alcohol from cross-linking reactions"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_24",
+    "equation": "\\rho c_p V \\frac{dT}{dt} = F (T_{in} - T) - \\sum V \\Delta H_{k,i} r_{k,i} - \\sum V \\Delta H_{k,ij} r_{k,ij} - U_t A_t (T - T_c)",
+    "variables": {
+      "\\rho": "Density by reaction mixture",
+      "c_p": "Specific heat of the mixture in the tank",
+      "V": "Total volume of the reaction mixture",
+      "T": "Temperature of the reaction mixture",
+      "t": "Time",
+      "F": "Volumetric flow rate of the feed stream",
+      "T_in": "Inlet temperature of the feed stream",
+      "\\Delta H_{k,i}": "Enthalpy of the k-th elementary reaction",
+      "r_k,i": "Rate of the k-th elementary reaction",
+      "\\Delta H_{k,ij}": "Enthalpy of the k-th cross-linking reaction",
+      "r_k,ij": "Rate of the k-th cross-linking reaction",
+      "U_t": "Heat transfer coefficient",
+      "A_t": "Area of heat transfer",
+      "T_c": "Temperature of the cooling coil stream"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_25",
+    "equation": "\\rho_c c_{p,c} V_c \\frac{dT_c}{dt} = F_c (T_{in,c} - T_c) + U_t A_t (T - T_c)",
+    "variables": {
+      "\\rho_c": "Density of cooling coil fluid",
+      "c_{p,c}": "Specific heat of the water in the cooling coil",
+      "V_c": "Volume of the cooling coil",
+      "T_c": "Temperature of the cooling coil stream",
+      "t": "Time",
+      "F_c": "Volumetric flow rate of the cooling coil stream",
+      "T_{in,c}": "Inlet temperature of the cooling coil stream",
+      "U_t": "Heat transfer coefficient",
+      "A_t": "Area of heat transfer",
+      "T": "Temperature of the reaction mixture"
+    },
+    "context_text": "Equations (16)–(25) present a compact form of the reactor model developed from mass and energy balances:",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_26",
+    "equation": "G_{TG,i} = -r_{1,i} + r_{2,i}",
+    "variables": {
+      "G_TG,i": "Generation term for triglyceride of type i",
+      "r_1,i": "Rate of the first forward elementary reaction for oil i",
+      "r_2,i": "Rate of the first reverse elementary reaction for oil i"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_27",
+    "equation": "G_{TG,ij} = r_{1,ij} + r_{2,ij}",
+    "variables": {
+      "G_TG,ij": "Generation term for complex triglyceride",
+      "r_1,ij": "Rate of the first cross-linking reaction",
+      "r_2,ij": "Rate of the second cross-linking reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_28",
+    "equation": "G_{DG,i,i} = r_{1,i} - r_{2,i} - r_{3,i} + r_{4,i}",
+    "variables": {
+      "G_DG,i,i": "Generation term for diglyceride of type i from its own transesterification",
+      "r_1,i": "Rate of the first forward elementary reaction",
+      "r_2,i": "Rate of the first reverse elementary reaction",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_29",
+    "equation": "G_{DG,i,ij} = -r_{1,ij} + r_{2,ij}",
+    "variables": {
+      "G_DG,i,ij": "Generation term for diglyceride of type i from cross-linking reactions",
+      "r_1,ij": "Rate of a forward cross-linking reaction",
+      "r_2,ij": "Rate of a reverse cross-linking reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_30",
+    "equation": "G_{DG,ij} = r_{3,ij} - r_{4,ij}",
+    "variables": {
+      "G_DG,ij": "Generation term for complex diglyceride",
+      "r_3,ij": "Rate of a forward cross-linking reaction",
+      "r_4,ij": "Rate of a reverse cross-linking reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_31",
+    "equation": "G_{MG,i,i} = r_{3,i} - r_{4,i} - r_{5,i} + r_{6,i}",
+    "variables": {
+      "G_MG,i,i": "Generation term for monoglyceride of type i from its own transesterification",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_32",
+    "equation": "G_{MG,i,ij} = -r_{3,ij} + r_{4,ij}",
+    "variables": {
+      "G_MG,i,ij": "Generation term for monoglyceride of type i from cross-linking reactions",
+      "r_3,ij": "Rate of a forward cross-linking reaction",
+      "r_4,ij": "Rate of a reverse cross-linking reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_33",
+    "equation": "G_{ME,i,i} = r_{1,i} - r_{2,i} + r_{3,i} - r_{4,i} + r_{5,i} - r_{6,i}",
+    "variables": {
+      "G_ME,i,i": "Generation term for methyl ester of type i from its own transesterification",
+      "r_1,i": "Rate of the first forward elementary reaction",
+      "r_2,i": "Rate of the first reverse elementary reaction",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_34",
+    "equation": "G_{ME,i,ji} = -r_{1,ji} + r_{2,ji} - r_{3,ji} + r_{4,ji}",
+    "variables": {
+      "G_ME,i,ji": "Generation term for methyl ester of type i from cross-linking reactions",
+      "r_1,ji": "Rate of a forward cross-linking reaction",
+      "r_2,ji": "Rate of a reverse cross-linking reaction",
+      "r_3,ji": "Rate of a forward cross-linking reaction",
+      "r_4,ji": "Rate of a reverse cross-linking reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_35",
+    "equation": "G_{GL,i} = r_{5,i} - r_{6,i}",
+    "variables": {
+      "G_GL,i": "Generation term for glycerol",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_36",
+    "equation": "G_{AL,i} = -r_{1,i} + r_{2,i} - r_{3,i} + r_{4,i} - r_{5,i} + r_{6,i}",
+    "variables": {
+      "G_AL,i": "Generation term for alcohol from transesterification",
+      "r_1,i": "Rate of the first forward elementary reaction",
+      "r_2,i": "Rate of the first reverse elementary reaction",
+      "r_3,i": "Rate of the second forward elementary reaction",
+      "r_4,i": "Rate of the second reverse elementary reaction",
+      "r_5,i": "Rate of the third forward elementary reaction",
+      "r_6,i": "Rate of the third reverse elementary reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_37",
+    "equation": "G_{AL,ij} = r_{1,ij} - r_{2,ij} - r_{3,ij} - r_{4,ij}",
+    "variables": {
+      "G_AL,ij": "Generation term for alcohol from cross-linking reactions",
+      "r_1,ij": "Rate of a forward cross-linking reaction",
+      "r_2,ij": "Rate of a reverse cross-linking reaction",
+      "r_3,ij": "Rate of a forward cross-linking reaction",
+      "r_4,ij": "Rate of a reverse cross-linking reaction"
+    },
+    "context_text": "In the model, the terms G_n,i (generation term) represent the net rates of the n-th component inside the tank and are defined by Equations (26)–(37):",
+    "domain": "CSTR Modeling"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_38",
+    "equation": "\\rho = \\sum X_{n,i} \\rho_{n,i}",
+    "variables": {
+      "\\rho": "Density of the mixture",
+      "X_n,i": "Mass fraction of n-th component in the mixture",
+      "\\rho_n,i": "Density of each reaction component"
+    },
+    "context_text": "The properties of the mixture were calculated from the properties of each reaction component using the ideal mixing rule based on the mass fractions according to Equations (38) and (39):",
+    "domain": "Thermophysical Properties"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_39",
+    "equation": "c_p = \\sum X_{n,i} c_{p,n,i}",
+    "variables": {
+      "c_p": "Specific heat of the mixture",
+      "X_n,i": "Mass fraction of n-th component in the mixture",
+      "c_p,n,i": "Heat capacity of each reaction component"
+    },
+    "context_text": "The properties of the mixture were calculated from the properties of each reaction component using the ideal mixing rule based on the mass fractions according to Equations (38) and (39):",
+    "domain": "Thermophysical Properties"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_40",
+    "equation": "\\Delta H_{k,i} = \\Delta H_{k,i}^0 + \\int_{T0}^{T} \\left( \\sum^{N_p} c_p^{products} - \\sum^{N_r} c_p^{reactives} \\right) dT",
+    "variables": {
+      "\\Delta H_{k,i}": "Heat of the k-th reaction",
+      "\\Delta H_{k,i}^0": "Heat of the k-th reaction at T0 = 298.15 K",
+      "T0": "Standard temperature (298.15 K)",
+      "T": "Reaction temperature",
+      "N_p": "Number of products",
+      "c_p^{products}": "Heat capacities of products",
+      "N_r": "Number of reactants",
+      "c_p^{reactives}": "Heat capacities of reactants"
+    },
+    "context_text": "The enthalpies for the reactions in the mixture were calculated from Hess’s law using the standard enthalpies of formation, such as those described by [4]:",
+    "domain": "Reaction Enthalpy"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_41",
+    "equation": "X_{ME} = \\frac{m_{ME}}{m_{TG} + m_{DG} + m_{MG} + m_{ME}}",
+    "variables": {
+      "X_ME": "Mass fraction of esters",
+      "m_ME": "Mass of methyl esters",
+      "m_TG": "Mass of triglycerides",
+      "m_DG": "Mass of diglycerides",
+      "m_MG": "Mass of monoglycerides"
+    },
+    "context_text": "Accuracy evaluations of the kinetic models for palm, mustard, and sunflower oils were carried out. The mass fraction of esters estimated by assuming the complete separation of the glycerol and alcohol was used an indicator of biodiesel production (Equation (41)).",
+    "domain": "Biodiesel Production"
+  },
+  {
+    "source_id": "applsci-10-00992-v2.pdf",
+    "eq_id": "eq_42",
+    "equation": "\\epsilon = \\frac{|x_{r,i} - x_{s,i}|}{x_{r,i}} \\times 100\\%",
+    "variables": {
+      "\\epsilon": "Relative error",
+      "x_r,i": "Experimental data value",
+      "x_s,i": "Simulation result value"
+    },
+    "context_text": "The average relative error of the models was calculated, respectively, as 4.39%, 5.54%, and 3.25% for the transesterification of palm, mustard, and sunflower oils for a 30-min reaction time. These errors are slow. However, the results also show that the model for palm transesterification shows a considerable deviation between the second and fourth minute of the simulation. Furthermore, the kinetic model for mustard oil transesterification shows a considerable error in the reaction equilibrium. This means that the kinetic parameters for palm transesterification could present model uncertainties for the reactor operation with short resident time. In contrast, the kinetic parameters for the mustard oil could present estimation mismatch with high resident times. The kinetic parameters for the sunflower oil show an adequate estimation throughout the reaction simulation.",
+    "domain": "Model Validation"
+  }
+]

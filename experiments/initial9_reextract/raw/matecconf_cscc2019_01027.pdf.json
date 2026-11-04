@@ -1,0 +1,160 @@
+[
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_1",
+    "equation": "r_i = k_i c_j^{\\alpha} c_k^{\\beta}",
+    "variables": {
+      "r_i": "rate of the i-th chemical reaction",
+      "k_i": "rate constant of the i-th reaction",
+      "c_j": "molar concentration of the j-th reactant",
+      "c_k": "molar concentration of the k-th reactant",
+      "\\alpha": "stoichiometric coefficient of the j-th reactant in the i-th reaction",
+      "\\beta": "stoichiometric coefficient of the k-th reactant in the i-th reaction"
+    },
+    "context_text": "The law of mass action for two reactants is expressed by the following general relationship (1), when the rate of a chemical reaction is directly proportional to the product of the molar concentrations of the initial compounds.",
+    "domain": "Chemical Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_2",
+    "equation": "\\frac{d c_{TG}}{d\\tau} = k_{1-} c_{DG} c_{FAME} - k_{1+} c_{TG} c_{MeOH}",
+    "variables": {
+      "c_{TG}": "Molar concentration of Triglyceride",
+      "c_{DG}": "Molar concentration of Diglyceride",
+      "c_{FAME}": "Molar concentration of Fatty Acid Methyl Ester",
+      "c_{MeOH}": "Molar concentration of Methanol",
+      "k_{1+}": "Forward reaction rate constant for the conversion of TG to DG",
+      "k_{1-}": "Reverse reaction rate constant for the conversion of DG to TG",
+      "\\tau": "time"
+    },
+    "context_text": "Consequently, the reaction rate for a particular component can be expressed by a series of 6 differential equations (2 - 7). This equation represents the rate of change of triglyceride concentration.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_3",
+    "equation": "\\frac{d c_{DG}}{d\\tau} = k_{1+} c_{TG} c_{MeOH} + k_{2-} c_{MG} c_{FAME} - k_{1-} c_{DG} c_{FAME} - k_{2+} c_{DG} c_{MeOH}",
+    "variables": {
+      "c_{DG}": "Molar concentration of Diglyceride",
+      "c_{TG}": "Molar concentration of Triglyceride",
+      "c_{MG}": "Molar concentration of Monoglyceride",
+      "c_{FAME}": "Molar concentration of Fatty Acid Methyl Ester",
+      "c_{MeOH}": "Molar concentration of Methanol",
+      "k_{1+}": "Forward reaction rate constant for the conversion of TG to DG",
+      "k_{1-}": "Reverse reaction rate constant for the conversion of DG to TG",
+      "k_{2+}": "Forward reaction rate constant for the conversion of DG to MG",
+      "k_{2-}": "Reverse reaction rate constant for the conversion of MG to DG",
+      "\\tau": "time"
+    },
+    "context_text": "Consequently, the reaction rate for a particular component can be expressed by a series of 6 differential equations (2 - 7). This equation represents the rate of change of diglyceride concentration.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_4",
+    "equation": "\\frac{d c_{MG}}{d\\tau} = k_{2+} c_{DG} c_{MeOH} + k_{3-} c_{GL} c_{FAME} - k_{2-} c_{MG} c_{FAME} - k_{3+} c_{MG} c_{MeOH}",
+    "variables": {
+      "c_{MG}": "Molar concentration of Monoglyceride",
+      "c_{DG}": "Molar concentration of Diglyceride",
+      "c_{GL}": "Molar concentration of Glycerol",
+      "c_{FAME}": "Molar concentration of Fatty Acid Methyl Ester",
+      "c_{MeOH}": "Molar concentration of Methanol",
+      "k_{2+}": "Forward reaction rate constant for the conversion of DG to MG",
+      "k_{2-}": "Reverse reaction rate constant for the conversion of MG to DG",
+      "k_{3+}": "Forward reaction rate constant for the conversion of MG to GL",
+      "k_{3-}": "Reverse reaction rate constant for the conversion of GL to MG",
+      "\\tau": "time"
+    },
+    "context_text": "Consequently, the reaction rate for a particular component can be expressed by a series of 6 differential equations (2 - 7). This equation represents the rate of change of monoglyceride concentration.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_5",
+    "equation": "\\frac{d c_{MeOH}}{d\\tau} = k_{1-} c_{DG} c_{FAME} + k_{2-} c_{MG} c_{FAME} + k_{3-} c_{GL} c_{FAME} - k_{1+} c_{TG} c_{MeOH} - k_{2+} c_{DG} c_{MeOH} - k_{3+} c_{MG} c_{MeOH}",
+    "variables": {
+      "c_{MeOH}": "Molar concentration of Methanol",
+      "c_{DG}": "Molar concentration of Diglyceride",
+      "c_{MG}": "Molar concentration of Monoglyceride",
+      "c_{GL}": "Molar concentration of Glycerol",
+      "c_{TG}": "Molar concentration of Triglyceride",
+      "c_{FAME}": "Molar concentration of Fatty Acid Methyl Ester",
+      "k_{1+}": "Forward reaction rate constant for step 1",
+      "k_{1-}": "Reverse reaction rate constant for step 1",
+      "k_{2+}": "Forward reaction rate constant for step 2",
+      "k_{2-}": "Reverse reaction rate constant for step 2",
+      "k_{3+}": "Forward reaction rate constant for step 3",
+      "k_{3-}": "Reverse reaction rate constant for step 3",
+      "\\tau": "time"
+    },
+    "context_text": "Consequently, the reaction rate for a particular component can be expressed by a series of 6 differential equations (2 - 7). This equation represents the rate of change of methanol concentration.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_6",
+    "equation": "\\frac{d c_{FAME}}{d\\tau} = k_{1+} c_{TG} c_{MeOH} + k_{2+} c_{DG} c_{MeOH} + k_{3+} c_{MG} c_{MeOH} - k_{1-} c_{DG} c_{FAME} - k_{2-} c_{MG} c_{FAME} - k_{3-} c_{GL} c_{FAME}",
+    "variables": {
+      "c_{FAME}": "Molar concentration of Fatty Acid Methyl Ester",
+      "c_{TG}": "Molar concentration of Triglyceride",
+      "c_{DG}": "Molar concentration of Diglyceride",
+      "c_{MG}": "Molar concentration of Monoglyceride",
+      "c_{GL}": "Molar concentration of Glycerol",
+      "c_{MeOH}": "Molar concentration of Methanol",
+      "k_{1+}": "Forward reaction rate constant for step 1",
+      "k_{1-}": "Reverse reaction rate constant for step 1",
+      "k_{2+}": "Forward reaction rate constant for step 2",
+      "k_{2-}": "Reverse reaction rate constant for step 2",
+      "k_{3+}": "Forward reaction rate constant for step 3",
+      "k_{3-}": "Reverse reaction rate constant for step 3",
+      "\\tau": "time"
+    },
+    "context_text": "Consequently, the reaction rate for a particular component can be expressed by a series of 6 differential equations (2 - 7). This equation represents the rate of change of fatty acid methyl ester (FAME) concentration.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_7",
+    "equation": "\\frac{d c_{GL}}{d\\tau} = k_{3+} c_{MG} c_{MeOH} - k_{3-} c_{GL} c_{FAME}",
+    "variables": {
+      "c_{GL}": "Molar concentration of Glycerol",
+      "c_{MG}": "Molar concentration of Monoglyceride",
+      "c_{MeOH}": "Molar concentration of Methanol",
+      "c_{FAME}": "Molar concentration of Fatty Acid Methyl Ester",
+      "k_{3+}": "Forward reaction rate constant for the conversion of MG to GL",
+      "k_{3-}": "Reverse reaction rate constant for the conversion of GL to MG",
+      "\\tau": "time"
+    },
+    "context_text": "Consequently, the reaction rate for a particular component can be expressed by a series of 6 differential equations (2 - 7). This equation represents the rate of change of glycerol concentration.",
+    "domain": "Transesterification Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_8",
+    "equation": "k = k_0 e^{-E_a/RT}",
+    "variables": {
+      "k": "reaction rate",
+      "k_0": "frequency factor of the reaction",
+      "E_a": "activation energy of the reaction",
+      "R": "ideal gas constant",
+      "T": "thermodynamic temperature"
+    },
+    "context_text": "In the study of transesterification reaction kinetics, the effect of reaction temperature on the reaction rate of consecutive and reversible reactions was modelled using the Arrhenius equation (8).",
+    "domain": "Chemical Kinetics"
+  },
+  {
+    "source_id": "matecconf_cscc2019_01027.pdf",
+    "eq_id": "eq_9",
+    "equation": "O = \\sum_{j=1}^{j=n} \\sum_{k=1}^{k=l} w_j \\frac{(c_{jk}^{pre} - c_{jk}^{exp})^2}{(c_{jk}^{exp})^2}",
+    "variables": {
+      "O": "total relative deviation",
+      "c_{jk}^{pre}": "predicted concentration of the j-th component at k-th time",
+      "c_{jk}^{exp}": "concentration obtained from the experimental measurement of the j-th component, at the k-the time",
+      "w_j": "weight (significance level) of j-th component",
+      "n": "number of components",
+      "l": "number of time points"
+    },
+    "context_text": "To calculate the deviation between the predicted concentration and the concentration obtained from the experimental measurement, the following objective function was used. Specifically, the sum of the squares of differences between experimental and predicted concentrations divided by the component concentration in the reaction system obtained experimentally – squared relative error was used (9).",
+    "domain": "Mathematical Modeling"
+  }
+]

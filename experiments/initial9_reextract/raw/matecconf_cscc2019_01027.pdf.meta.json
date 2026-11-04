@@ -1,0 +1,25 @@
+{
+  "source_id": "matecconf_cscc2019_01027.pdf",
+  "pdf_sha256": "8f5424e5dd0938936ccce4c4a0dc68291f6bb4b9ac443670cfec537ee9e48d3a",
+  "pdf_bytes": 1638377,
+  "pages": 5,
+  "started": "2026-11-04T20:27:25+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T20:28:28+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 1573,
+    "candidates_token_count": 2876,
+    "thoughts_token_count": 5907,
+    "total_token_count": 10356
+  },
+  "usd": 0.0898,
+  "n_equations": 9,
+  "returned_source_ids": {
+    "matecconf_cscc2019_01027.pdf": 9
+  }
+}

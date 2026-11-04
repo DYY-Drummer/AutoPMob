@@ -1,0 +1,78 @@
+[
+  {
+    "source_id": "WJET_2015040715405408.pdf",
+    "eq_id": "eq_1.1",
+    "equation": "\\int_{0}^{\\infty} E dt = 1",
+    "variables": {
+      "E": "The residence time distribution (RTD) of the fluid, represented by the E(t) curve",
+      "t": "exit time"
+    },
+    "context_text": "In order to analyze the residence time distribution of the fluid in a reactor the following relationships have been developed. Fluid elements may require differing lengths of time to travel through the reactor. The distribution of the exit times, defined as the E(t) curve, is the residence time distribution (RTD) of the fluid. This equation represents the normalization of the distribution.",
+    "domain": "CSTR Residence Time Distribution"
+  },
+  {
+    "source_id": "WJET_2015040715405408.pdf",
+    "eq_id": "eq_1.2",
+    "equation": "V_r \\frac{dC}{dt} + V'C = V'C_f",
+    "variables": {
+      "V_r": "Reactor volume",
+      "C": "Tracer concentration",
+      "t": "Time",
+      "V'": "Volumetric flow rate",
+      "C_f": "Magnitude of the step input concentration"
+    },
+    "context_text": "With a step input of magnitude C_f, this equation represents the unsteady material balance for a CSTR. The ODE is linear, allowing for solutions by Laplace transforms.",
+    "domain": "CSTR Residence Time Distribution"
+  },
+  {
+    "source_id": "WJET_2015040715405408.pdf",
+    "eq_id": "eq_1.3",
+    "equation": "\\frac{C}{C_f} = F(t_r) = 1 - \\exp(-t_r)",
+    "variables": {
+      "C": "Tracer concentration",
+      "C_f": "Step input concentration",
+      "F(t_r)": "Cumulative distribution function of residence time",
+      "t_r": "Dimensionless time"
+    },
+    "context_text": "This equation is the integral of the unsteady material balance (Equation 1.2) for a step input. It represents the normalized concentration response over time, also known as the F-curve.",
+    "domain": "CSTR Residence Time Distribution"
+  },
+  {
+    "source_id": "WJET_2015040715405408.pdf",
+    "eq_id": "eq_1.4",
+    "equation": "\\frac{dC}{dt_r} + C = 0 \\text{ when } C = C^0, t = 0",
+    "variables": {
+      "C": "Tracer concentration",
+      "t_r": "Dimensionless time",
+      "C^0": "Initial mean concentration",
+      "t": "Time"
+    },
+    "context_text": "With an impulse input of magnitude m or an initial mean concentration C^0 = m/V_r, this equation represents the material balance for the tracer in the CSTR.",
+    "domain": "CSTR Residence Time Distribution"
+  },
+  {
+    "source_id": "WJET_2015040715405408.pdf",
+    "eq_id": "eq_1.5",
+    "equation": "\\frac{C}{C^0} = E(t_r) = \\exp(-t_r)",
+    "variables": {
+      "C": "Tracer concentration",
+      "C^0": "Initial mean concentration",
+      "E(t_r)": "Residence time distribution function (E-curve)",
+      "t_r": "Dimensionless time"
+    },
+    "context_text": "This equation is the solution to the material balance for a pulse input (Equation 1.4) and represents the ideal Residence Time Distribution (E-curve) for a CSTR.",
+    "domain": "CSTR Residence Time Distribution"
+  },
+  {
+    "source_id": "WJET_2015040715405408.pdf",
+    "eq_id": "eq_1.6",
+    "equation": "E(t_r) = dF(t_r)/dt_r",
+    "variables": {
+      "E(t_r)": "Residence time distribution function (E-curve)",
+      "F(t_r)": "Cumulative distribution function (F-curve)",
+      "t_r": "Dimensionless time"
+    },
+    "context_text": "This equation shows the relationship between the residence time distribution function (E-curve), which is the response to a pulse input, and the cumulative distribution function (F-curve), which is the response to a step input.",
+    "domain": "CSTR Residence Time Distribution"
+  }
+]

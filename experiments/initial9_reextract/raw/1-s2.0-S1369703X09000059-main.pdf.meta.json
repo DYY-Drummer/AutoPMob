@@ -1,0 +1,25 @@
+{
+  "source_id": "1-s2.0-S1369703X09000059-main.pdf",
+  "pdf_sha256": "1d9f4f7a3a9021d61afdaa9924f68d022066b37c08adacfa3e44fe25ec967226",
+  "pdf_bytes": 530060,
+  "pages": 7,
+  "started": "2026-11-04T22:43:30+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T22:44:22+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 2099,
+    "candidates_token_count": 2566,
+    "thoughts_token_count": 3653,
+    "total_token_count": 8318
+  },
+  "usd": 0.0648,
+  "n_equations": 9,
+  "returned_source_ids": {
+    "1-s2.0-S1369703X09000059-main.pdf": 9
+  }
+}

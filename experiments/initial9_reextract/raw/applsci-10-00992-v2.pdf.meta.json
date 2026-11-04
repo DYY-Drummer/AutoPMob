@@ -1,0 +1,25 @@
+{
+  "source_id": "applsci-10-00992-v2.pdf",
+  "pdf_sha256": "5ea7f3161bd3ed89c39fa6dead25bd250d9ecfa97c8f82331f3c9251bf6c4210",
+  "pdf_bytes": 1076366,
+  "pages": 24,
+  "started": "2026-11-04T20:21:56+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T20:25:01+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 6473,
+    "candidates_token_count": 10322,
+    "thoughts_token_count": 14645,
+    "total_token_count": 31440
+  },
+  "usd": 0.2578,
+  "n_equations": 42,
+  "returned_source_ids": {
+    "applsci-10-00992-v2.pdf": 42
+  }
+}

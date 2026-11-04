@@ -1,0 +1,25 @@
+{
+  "source_id": "Chemical Process Dynamics.pdf",
+  "pdf_sha256": "22958fad8cb1243d5f463f0405ca68ae903f2fdad9ff1cf9860aa9b8662e44bd",
+  "pdf_bytes": 259477,
+  "pages": 4,
+  "started": "2026-11-04T20:17:52+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T20:19:30+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 1302,
+    "candidates_token_count": 4138,
+    "thoughts_token_count": 9766,
+    "total_token_count": 15206
+  },
+  "usd": 0.1407,
+  "n_equations": 18,
+  "returned_source_ids": {
+    "Chemical Process Dynamics.pdf": 18
+  }
+}

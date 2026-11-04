@@ -1,0 +1,446 @@
+[
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_1",
+    "equation": "V \\frac{dC_A}{dt'} = \\lambda F C_{Af} + F(1-\\lambda)C_A - F C_A - V k_0 \\exp\\left\\{-\\frac{E}{RT}\\right\\} C_A",
+    "variables": {
+      "V": "reactor volume",
+      "C_A": "concentration of species A",
+      "t'": "time",
+      "\\lambda": "coefficient of recirculation",
+      "F": "volumetric feed rate",
+      "C_{Af}": "feed concentration of species A",
+      "k_0": "reaction rate constant",
+      "E": "activation energy",
+      "R": "universal gas constant",
+      "T": "temperature"
+    },
+    "context_text": "In order to illustrate more clearly the ideas we shall present let us consider the first order, exothermic, irreversible reaction A -> B carried out in a well mixed stirred tank reactor. If we allow a fresh feed of pure A to be mixed with a perfect undelayed) recycle stream with recycle flow rate (1-λ) F, the material and energy balances become...",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_2",
+    "equation": "V\\rho C_p \\frac{dT}{dt'} = \\rho C_p F(\\lambda T_f + (1-\\lambda)T - T) + V(-\\Delta H) k_0 \\exp\\left\\{-\\frac{E}{RT}\\right\\} C_A - hA(T-T_c)",
+    "variables": {
+      "V": "reactor volume",
+      "\\rho": "density",
+      "C_p": "specific heat",
+      "T": "temperature",
+      "t'": "time",
+      "F": "volumetric feed rate",
+      "\\lambda": "coefficient of recirculation",
+      "T_f": "feed state temperature",
+      "-\\Delta H": "heat of reaction",
+      "k_0": "reaction rate constant",
+      "E": "activation energy",
+      "R": "universal gas constant",
+      "C_A": "concentration of species A",
+      "h": "heat transfer coefficient",
+      "A": "heat transfer area",
+      "T_c": "cooling medium temperature"
+    },
+    "context_text": "The material and energy balances for a first-order, exothermic, irreversible reaction A -> B in a CSTR. The last term in (2) accounts for the heat removed from a cooling jacket maintained at temperature Tc.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_3",
+    "equation": "\\frac{dx_1}{dt} = -x_1 + Da(1-x_1) \\exp\\left\\{\\frac{x_2}{1+x_2/\\gamma}\\right\\} = f_1(x_1, x_2)",
+    "variables": {
+      "x_1": "dimensionless conversion, (C_{Af}-C_A)/C_{Af}",
+      "t": "dimensionless time, t'F\\lambda/V",
+      "Da": "Damköhler number, (k_0 e^{-\\gamma} V)/(F\\lambda)",
+      "x_2": "dimensionless temperature, [(T-T_f)/T_f](E/RT_f)",
+      "\\gamma": "dimensionless activation energy, E/RT_f",
+      "f_1": "function defining the rate of change of x_1"
+    },
+    "context_text": "By defining dimensionless variables, Equations (1) and (2) become the dimensionless material balance shown.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_4",
+    "equation": "\\frac{dx_2}{dt} = -x_2 + BDa(1-x_1) \\exp\\left\\{\\frac{x_2}{1+x_2/\\gamma}\\right\\} - \\beta(x_2-x_{2c}) = f_2(x_1, x_2)",
+    "variables": {
+      "x_2": "dimensionless temperature, [(T-T_f)/T_f](E/RT_f)",
+      "t": "dimensionless time, t'F\\lambda/V",
+      "B": "dimensionless adiabatic temperature rise, [(-\\Delta H)C_{Af}/(\\rho C_p T_f)](E/RT_f)",
+      "Da": "Damköhler number, (k_0 e^{-\\gamma} V)/(F\\lambda)",
+      "x_1": "dimensionless conversion, (C_{Af}-C_A)/C_{Af}",
+      "\\gamma": "dimensionless activation energy, E/RT_f",
+      "\\beta": "dimensionless heat transfer coefficient, hA\\tau/(V\\rho C_p)",
+      "x_{2c}": "dimensionless cooling medium temperature, [(T_c-T_f)/T_f](E/RT_f)",
+      "f_2": "function defining the rate of change of x_2"
+    },
+    "context_text": "By defining dimensionless variables, Equations (1) and (2) become the dimensionless energy balance shown.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_5",
+    "equation": "x_{1s} = Da(1-x_{1s}) \\exp\\left\\{\\frac{x_{2s}}{1+x_{2s}/\\gamma}\\right\\}",
+    "variables": {
+      "x_{1s}": "steady state dimensionless conversion",
+      "Da": "Damköhler number",
+      "x_{2s}": "steady state dimensionless temperature",
+      "\\gamma": "dimensionless activation energy"
+    },
+    "context_text": "By setting the LHS of Eqs. (3) and (4) to zero one obtains the steady states, x1s, x2s, which satisfy the given material balance at steady state.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_6",
+    "equation": "(1+\\beta)x_{2s} = BDa(1-x_{1s}) \\exp\\left\\{\\frac{x_{2s}}{1+x_{2s}/\\gamma}\\right\\} + \\beta x_{2c}",
+    "variables": {
+      "\\beta": "dimensionless heat transfer coefficient",
+      "x_{2s}": "steady state dimensionless temperature",
+      "B": "dimensionless adiabatic temperature rise",
+      "Da": "Damköhler number",
+      "x_{1s}": "steady state dimensionless conversion",
+      "\\gamma": "dimensionless activation energy",
+      "x_{2c}": "dimensionless cooling medium temperature"
+    },
+    "context_text": "By setting the LHS of Eqs. (3) and (4) to zero one obtains the steady states, x1s, x2s, which satisfy the given energy balance at steady state.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_7",
+    "equation": "x_{2s} = \\frac{Bx_{1s} + \\beta x_{2c}}{1+\\beta}",
+    "variables": {
+      "x_{2s}": "steady state dimensionless temperature",
+      "B": "dimensionless adiabatic temperature rise",
+      "x_{1s}": "steady state dimensionless conversion",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "x_{2c}": "dimensionless cooling medium temperature"
+    },
+    "context_text": "One can combine (5) and (6) to obtain this relationship between steady state temperature and conversion.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_8",
+    "equation": "Da = \\frac{x_{1s}}{1-x_{1s}} \\exp\\left\\{-\\frac{Bx_{1s} + \\beta x_{2c}}{(1+\\beta)+(1/\\gamma)(Bx_{1s} + \\beta x_{2c})}\\right\\}",
+    "variables": {
+      "Da": "Damköhler number",
+      "x_{1s}": "steady state dimensionless conversion",
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "x_{2c}": "dimensionless cooling medium temperature",
+      "\\gamma": "dimensionless activation energy"
+    },
+    "context_text": "Combining equations (5) and (7) to express the Damköhler number as a function of steady state conversion.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_11",
+    "equation": "D_m = B\\left\\{B\\left[\\frac{2\\beta x_{2c}}{\\gamma} + \\left(\\frac{B}{\\gamma}-1\\right)(1+\\beta)\\right]^2 - 4\\left[1+\\beta+\\frac{\\beta x_{2c}}{\\gamma}\\right]\\left[\\frac{\\gamma^2}{B}+(1+\\beta)\\right]\\right\\}",
+    "variables": {
+      "D_m": "discriminant for the multiplicity condition",
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "x_{2c}": "dimensionless cooling medium temperature",
+      "\\gamma": "dimensionless activation energy"
+    },
+    "context_text": "The discriminant used to determine if the roots m1, m2, which define the region of multiplicity, are real. For m1, m2 to have real values, Dm >= 0 must hold.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_12",
+    "equation": "B \\ge \\frac{4[1+\\beta+(\\beta x_{2c}/\\gamma)]^2}{1+\\beta - (4/\\gamma)[1+\\beta+(\\beta x_{2c}/\\gamma)]}",
+    "variables": {
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "x_{2c}": "dimensionless cooling medium temperature",
+      "\\gamma": "dimensionless activation energy"
+    },
+    "context_text": "In order for m1, m2 to have real values, Dm >= 0 must hold, and this produces a criterion for the existence of multiple steady states.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_13",
+    "equation": "B > \\frac{4(1+\\beta)\\gamma}{\\gamma-4}",
+    "variables": {
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "\\gamma": "dimensionless activation energy"
+    },
+    "context_text": "An approximation of the multiplicity criterion (12) assuming the feed and coolant temperatures are nearly the same (x2c = 0).",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_14",
+    "equation": "B \\ge 4(1+\\beta)",
+    "variables": {
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient"
+    },
+    "context_text": "An approximation of the multiplicity criterion (12) for large activation energy (γ -> ∞).",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_15",
+    "equation": "\\frac{dy}{dt} = Ay",
+    "variables": {
+      "y": "vector of deviations from steady state, [x_1 - x_{1s}, x_2 - x_{2s}]^T",
+      "t": "dimensionless time",
+      "A": "Jacobian matrix of the system evaluated at the steady state"
+    },
+    "context_text": "The local stability character of the steady states of the reactor can be determined by examining the properties of Eqs. (3) and (4) linearized about the steady state. This set of linearized equations can be represented by this equation.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_16",
+    "equation": "y = \\begin{bmatrix} x_1 - x_{1s} \\\\ x_2 - x_{2s} \\end{bmatrix}, A = \\begin{bmatrix} \\frac{\\partial f_1}{\\partial x_1} & \\frac{\\partial f_1}{\\partial x_2} \\\\ \\frac{\\partial f_2}{\\partial x_1} & \\frac{\\partial f_2}{\\partial x_2} \\end{bmatrix}_{x_1=x_{1s}, x_2=x_{2s}}",
+    "variables": {
+      "y": "vector of deviations from steady state",
+      "x_1": "dimensionless conversion",
+      "x_{1s}": "steady state dimensionless conversion",
+      "x_2": "dimensionless temperature",
+      "x_{2s}": "steady state dimensionless temperature",
+      "A": "Jacobian matrix of the system evaluated at the steady state",
+      "f_1": "function defining the rate of change of x_1",
+      "f_2": "function defining the rate of change of x_2"
+    },
+    "context_text": "Definition of the deviation vector y and the Jacobian matrix A for the linearized system.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_17",
+    "equation": "A = \\begin{bmatrix} -\\frac{1}{1-x_{1s}} & \\frac{x_{1s}}{[1+(x_{2s}/\\gamma)]^2} \\\\ \\frac{B x_{1s}}{1-x_{1s}} & -(1+\\beta) + \\frac{B x_{1s}}{[1+(x_{2s}/\\gamma)]^2} \\end{bmatrix}",
+    "variables": {
+      "A": "Jacobian matrix for the CSTR system",
+      "x_{1s}": "steady state dimensionless conversion",
+      "x_{2s}": "steady state dimensionless temperature",
+      "\\gamma": "dimensionless activation energy",
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient"
+    },
+    "context_text": "The specific form of the Jacobian matrix A for the CSTR system described by equations (3) and (4).",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_18",
+    "equation": "\\lambda^2 - (\\text{tr } A)\\lambda + \\det A = 0",
+    "variables": {
+      "\\lambda": "eigenvalue of matrix A",
+      "\\text{tr } A": "trace of matrix A",
+      "\\det A": "determinant of matrix A"
+    },
+    "context_text": "The local stability is determined by the sign of the real part of the eigenvalues of A. These eigenvalues, λ1, λ2, are given by the roots of the characteristic equation.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_19",
+    "equation": "\\det A = \\frac{1}{(1-x_{1s})(1+x_{2s}/\\gamma)^2(1+\\beta)} \\left\\{ \\left(\\frac{B^2}{\\gamma^2}+B(1+\\beta)\\right)x_{1s}^2 + \\left[\\frac{2B}{\\gamma}\\left(1+\\beta+\\frac{\\beta x_{2c}}{\\gamma}\\right)-B(1+\\beta)\\right]x_{1s} + \\left(1+\\beta+\\frac{\\beta x_{2c}}{\\gamma}\\right)^2 \\right\\}",
+    "variables": {
+      "\\det A": "determinant of the Jacobian matrix A",
+      "x_{1s}": "steady state dimensionless conversion",
+      "x_{2s}": "steady state dimensionless temperature",
+      "\\gamma": "dimensionless activation energy",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "B": "dimensionless adiabatic temperature rise",
+      "x_{2c}": "dimensionless cooling medium temperature"
+    },
+    "context_text": "The determinant of the Jacobian matrix A, det A, is given by this expression.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_20",
+    "equation": "\\text{tr } A = \\frac{1}{(1-x_{1s})(1+x_{2s}/\\gamma)^2} \\left[ -\\frac{B^2}{\\gamma^2(1+\\beta)}x_{1s}^2 - \\left\\{B+\\frac{(2+\\beta)B^2}{\\gamma^2(1+\\beta)^2} - \\frac{2B}{\\gamma(1+\\beta)} - \\frac{2\\beta x_{2c} B(2+\\beta)}{\\gamma^2(1+\\beta)^2} + \\frac{2Bx_{2c}}{\\gamma} + \\frac{(\\beta x_{2c})^2}{\\gamma^2(1+\\beta)}\\right\\}x_{1s} -\\left\\{(2+\\beta)+\\frac{2(2+\\beta)\\beta x_{2c}}{\\gamma(1+\\beta)} + \\frac{(\\beta x_{2c})^2}{\\gamma(1+\\beta)}\\right\\} \\right]",
+    "variables": {
+      "\\text{tr } A": "trace of the Jacobian matrix A",
+      "x_{1s}": "steady state dimensionless conversion",
+      "x_{2s}": "steady state dimensionless temperature",
+      "\\gamma": "dimensionless activation energy",
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "x_{2c}": "dimensionless cooling medium temperature"
+    },
+    "context_text": "The trace of the Jacobian matrix A, tr A, can be similarly expressed as this polynomial in x1s.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_21",
+    "equation": "\\det A > 0",
+    "variables": {
+      "\\det A": "determinant of the Jacobian matrix A"
+    },
+    "context_text": "First necessary and sufficient condition for the steady state to be locally asymptotically stable (the 'slope condition').",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_22",
+    "equation": "\\text{tr } A < 0",
+    "variables": {
+      "\\text{tr } A": "trace of the Jacobian matrix A"
+    },
+    "context_text": "Second necessary and sufficient condition for the steady state to be locally asymptotically stable (the 'dynamic' stability condition).",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_23",
+    "equation": "f(x_{1s}) \\equiv \\frac{\\gamma^2(1+\\beta)(1-x_{1s})(1+x_{2s}/\\gamma)^2}{B^2} \\text{tr } A = x_{1s}^3 + a_2 x_{1s}^2 + a_1 x_{1s} + a_0",
+    "variables": {
+      "f(x_{1s})": "a cubic polynomial in x_{1s} whose roots determine dynamic stability",
+      "\\gamma": "dimensionless activation energy",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "x_{1s}": "steady state dimensionless conversion",
+      "x_{2s}": "steady state dimensionless temperature",
+      "B": "dimensionless adiabatic temperature rise",
+      "\\text{tr } A": "trace of the Jacobian matrix",
+      "a_0": "coefficient of the polynomial",
+      "a_1": "coefficient of the polynomial",
+      "a_2": "coefficient of the polynomial"
+    },
+    "context_text": "The second stability condition, Eq. (22), is violated for those values of x1s at which this function (defined by Eq. (20)) takes on non-negative values. The equation defines a cubic polynomial whose roots s1, s2 determine the region of instability.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_24",
+    "equation": "\\frac{(2a_2^3 - 9a_1 a_2 + 27a_0)^2}{4} + (3a_1-a_2^2)^3 = 0",
+    "variables": {
+      "a_0": "coefficient of the polynomial in Eq. (23)",
+      "a_1": "coefficient of the polynomial in Eq. (23)",
+      "a_2": "coefficient of the polynomial in Eq. (23)"
+    },
+    "context_text": "The point where tr A = 0 defines the onset of instability. From well known formulae for the solution of cubic equations, this occurs when the discriminant of the cubic polynomial f(x1s) is zero, which gives this condition.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_25",
+    "equation": "a_0 = -\\frac{\\gamma^2(1+\\beta)}{B^2}\\left[(2+\\beta)+\\frac{2(2+\\beta)\\beta x_{2c}}{\\gamma(1+\\beta)}+\\frac{(\\beta x_{2c})^2}{\\gamma^2(1+\\beta)}\\right]",
+    "variables": {
+      "a_0": "constant coefficient of the cubic polynomial in Eq. (23)",
+      "\\gamma": "dimensionless activation energy",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "B": "dimensionless adiabatic temperature rise",
+      "x_{2c}": "dimensionless cooling medium temperature"
+    },
+    "context_text": "The coefficient a0 of the cubic polynomial f(x1s) from Eq. (23).",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_26",
+    "equation": "a_1 = \\frac{\\gamma^2(1+\\beta)}{B} - \\frac{\\gamma^2(1+\\beta)^2}{B^2} + \\frac{2(2+\\beta)\\gamma}{B} - \\frac{2\\gamma\\beta x_{2c}(2+\\beta)}{B(1+\\beta)} - \\frac{2\\gamma\\beta x_{2c}(1+\\beta)}{B} + \\frac{(\\beta x_{2c})^2}{B^2}",
+    "variables": {
+      "a_1": "coefficient of x_{1s} in the cubic polynomial in Eq. (23)",
+      "\\gamma": "dimensionless activation energy",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "B": "dimensionless adiabatic temperature rise",
+      "x_{2c}": "dimensionless cooling medium temperature"
+    },
+    "context_text": "The coefficient a1 of the cubic polynomial f(x1s) from Eq. (23).",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_27",
+    "equation": "a_2 = -\\left[\\frac{\\gamma^2(1+\\beta)}{B}-(2+\\beta)-\\frac{2(1+\\beta)\\gamma}{B}-\\frac{2\\beta x_{2c}}{B}\\right]",
+    "variables": {
+      "a_2": "coefficient of x_{1s}^2 in the cubic polynomial in Eq. (23)",
+      "\\gamma": "dimensionless activation energy",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "B": "dimensionless adiabatic temperature rise",
+      "x_{2c}": "dimensionless cooling medium temperature"
+    },
+    "context_text": "The coefficient a2 of the cubic polynomial f(x1s) from Eq. (23).",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_28",
+    "equation": "B = 3+\\beta+2\\sqrt{2+\\beta}",
+    "variables": {
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient"
+    },
+    "context_text": "The case when γ -> ∞ yields [34] the condition for s1, s2 real and 0 < s1 < s2 < 1.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_29",
+    "equation": "B = \\frac{(1+\\beta)^2}{\\beta}",
+    "variables": {
+      "B": "dimensionless adiabatic temperature rise",
+      "\\beta": "dimensionless heat transfer coefficient"
+    },
+    "context_text": "The results for the special case γ -> ∞ for the condition s1=m2 or s2=m2.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_30",
+    "equation": "\\frac{dy}{ds} = Ay + \\mu G(y, \\mu)",
+    "variables": {
+      "y": "deviation from the steady state",
+      "s": "scaled time",
+      "A": "linearized matrix about the steady state with det A > 0 and tr A = 0",
+      "\\mu G(y, \\mu)": "remaining non-linear terms in equations (3) and (4)",
+      "\\mu": "a small parameter related to the deviation from the bifurcation point"
+    },
+    "context_text": "To arrive at the results to follow, Poore [34] made use of a perturbation technique developed from Friedrichs' Bifurcation Theorem [36] in which the system equations (3) and (4) can be written in the form shown.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_31",
+    "equation": "\\delta_1 = \\{\\omega_1^2(b_1-1) + (2b_1 - Bs_1) - (2b_1 - Bs_1)^3\\}",
+    "variables": {
+      "\\delta_1": "function predicting direction and stability of bifurcation at point s1",
+      "\\omega_1": "frequency of oscillation at bifurcation point s1",
+      "b_1": "parameter defined as Bs_1 - (1+\\beta)",
+      "B": "dimensionless adiabatic temperature rise",
+      "s_1": "root of tr A = 0, a bifurcation point"
+    },
+    "context_text": "For the case where γ -> ∞, Poore[34] derived expressions for δ1 and δ2, i.e. this equation for δ1. These functions predict the direction of bifurcation and stability character of the periodic solutions close to s1 and s2.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_32",
+    "equation": "\\delta_2 = -\\{\\omega_2^2(b_2-1) + (2b_2 - Bs_2) - (2b_2-Bs_2)^2\\}",
+    "variables": {
+      "\\delta_2": "function predicting direction and stability of bifurcation at point s2",
+      "\\omega_2": "frequency of oscillation at bifurcation point s2",
+      "b_2": "parameter defined as Bs_2 - (1+\\beta)",
+      "B": "dimensionless adiabatic temperature rise",
+      "s_2": "root of tr A = 0, a bifurcation point"
+    },
+    "context_text": "For the case where γ -> ∞, Poore[34] derived expressions for δ1 and δ2, i.e. this equation for δ2. These functions predict the direction of bifurcation and stability character of the periodic solutions close to s1 and s2.",
+    "domain": "CSTR Kinetics"
+  },
+  {
+    "source_id": "1-s2.0-0009250974800898-main.pdf",
+    "eq_id": "eq_33",
+    "equation": "b_i = Bs_i - (1+\\beta) \\quad i=1,2 \\\\ \\omega_i^2 = (B(s_i)^2-b_i)b_i",
+    "variables": {
+      "b_i": "parameter used in bifurcation analysis",
+      "B": "dimensionless adiabatic temperature rise",
+      "s_i": "steady state conversion at bifurcation point i (i=1,2)",
+      "\\beta": "dimensionless heat transfer coefficient",
+      "\\omega_i^2": "square of the frequency of oscillation at bifurcation point i"
+    },
+    "context_text": "Definitions of parameters b_i and ω_i^2 used in the bifurcation analysis for the case where γ -> ∞.",
+    "domain": "CSTR Kinetics"
+  }
+]

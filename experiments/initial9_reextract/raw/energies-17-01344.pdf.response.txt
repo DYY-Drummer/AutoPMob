@@ -1,0 +1,304 @@
+[
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_1",
+    "equation": "y(x_1, x_2, x_3, x_4) = \\beta_0 + \\sum_{i=1}^{4} \\beta_i x_i + \\sum_{i=1}^{4} \\sum_{j=i+1}^{4} \\beta_{ij} x_i x_j + \\sum_{i=1}^{4} \\sum_{j=i+1}^{4} \\sum_{k=j+1}^{4} \\beta_{ijk} x_i x_j x_k + \\beta_{1234} x_1 x_2 x_3 x_4",
+    "variables": {
+      "y": "a response",
+      "x_i": "dimensionless process factors",
+      "\\beta_0": "regression coefficient (intercept)",
+      "\\beta_i": "linear regression coefficients",
+      "\\beta_{ij}": "two-factor interaction regression coefficients",
+      "\\beta_{ijk}": "three-factor interaction regression coefficients",
+      "\\beta_{1234}": "four-factor interaction regression coefficient"
+    },
+    "context_text": "For a 2^4 factorial experimental design, a response y dependent on the four factors was expressed according to Equation (1), where x_i are the dimensionless process factors. These dimensionless factors are defined by Equation (2), where they have the values +1 and −1.",
+    "domain": "Catalyst Testing in Transesterification"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_2",
+    "equation": "x_i = \\frac{Z_i - Z_{iC}}{\\Delta Z_i} = \\frac{Z_i - \\frac{Z_{i,max} + Z_{i,min}}{2}}{\\frac{Z_{i,max} - Z_{i,min}}{2}}, \\quad i=1...4",
+    "variables": {
+      "x_i": "dimensionless process factors",
+      "Z_i": "dimensional process factor",
+      "Z_{iC}": "central value of the dimensional process factor",
+      "\\Delta Z_i": "variation interval of the dimensional process factor",
+      "Z_{i,max}": "maximum value of the dimensional process factor",
+      "Z_{i,min}": "minimum value of the dimensional process factor"
+    },
+    "context_text": "These dimensionless factors are defined by Equation (2), where they have the values +1 and −1.",
+    "domain": "Catalyst Testing in Transesterification"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_3",
+    "equation": "\\beta_0 = \\frac{\\sum_{i=1}^{N} y_i}{N}, N=16, i=1,2...N",
+    "variables": {
+      "\\beta_0": "regression coefficient (intercept)",
+      "y_i": "response value for experiment i",
+      "N": "number of experiments"
+    },
+    "context_text": "Considering the orthogonality of the data matrix, calculate the β coefficients in Equation (1) with Equations (3)–(7).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_4",
+    "equation": "\\beta_j = \\frac{\\sum_{i=1}^{N} y_i x_{ji}}{N}, N=16, j=1,2...4, i=1,2...N",
+    "variables": {
+      "\\beta_j": "linear regression coefficient for factor j",
+      "y_i": "response value for experiment i",
+      "x_{ji}": "value of dimensionless factor j in experiment i",
+      "N": "number of experiments"
+    },
+    "context_text": "Considering the orthogonality of the data matrix, calculate the β coefficients in Equation (1) with Equations (3)–(7).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_5",
+    "equation": "\\beta_{jk} = \\frac{\\sum_{i=1}^{N} y_i x_{ji} x_{ki}}{N}, N=16, k > j, j=1,2,3, k=2,3,4",
+    "variables": {
+      "\\beta_{jk}": "two-factor interaction regression coefficient for factors j and k",
+      "y_i": "response value for experiment i",
+      "x_{ji}": "value of dimensionless factor j in experiment i",
+      "x_{ki}": "value of dimensionless factor k in experiment i",
+      "N": "number of experiments"
+    },
+    "context_text": "Considering the orthogonality of the data matrix, calculate the β coefficients in Equation (1) with Equations (3)–(7).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_6",
+    "equation": "\\beta_{jkl} = \\frac{\\sum_{i=1}^{N} y_i x_{ji} x_{ki} x_{li}}{N}, N=16, l > k > j, j=1,2, k=2,3, l=3,4",
+    "variables": {
+      "\\beta_{jkl}": "three-factor interaction regression coefficient for factors j, k, and l",
+      "y_i": "response value for experiment i",
+      "x_{ji}": "value of dimensionless factor j in experiment i",
+      "x_{ki}": "value of dimensionless factor k in experiment i",
+      "x_{li}": "value of dimensionless factor l in experiment i",
+      "N": "number of experiments"
+    },
+    "context_text": "Considering the orthogonality of the data matrix, calculate the β coefficients in Equation (1) with Equations (3)–(7).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_7",
+    "equation": "\\beta_{jklm} = \\frac{\\sum_{i=1}^{N} y_i x_{ji} x_{ki} x_{li} x_{mi}}{N}, N=16, m > l > k > j, j=1, k=2, l=3, m=4",
+    "variables": {
+      "\\beta_{jklm}": "four-factor interaction regression coefficient for factors j, k, l and m",
+      "y_i": "response value for experiment i",
+      "x_{ji}": "value of dimensionless factor j in experiment i",
+      "x_{ki}": "value of dimensionless factor k in experiment i",
+      "x_{li}": "value of dimensionless factor l in experiment i",
+      "x_{mi}": "value of dimensionless factor m in experiment i",
+      "N": "number of experiments"
+    },
+    "context_text": "Considering the orthogonality of the data matrix, calculate the β coefficients in Equation (1) with Equations (3)–(7).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_8",
+    "equation": "y_{mc} = \\frac{\\sum_{i=1}^{N_c} y_{ci}}{N_c}",
+    "variables": {
+      "y_{mc}": "mean response of reproducibility measurements",
+      "y_{ci}": "response of the i-th experiment in the center of the experimental plan",
+      "N_c": "number of experiments in the center of the experimental plan"
+    },
+    "context_text": "From the matrix containing experimental data, extract the matrix containing data referring to experiments characterizing the reproducibility measurements and compute their variance (Equations (8) and (9)) and the standard deviation of β coefficients (Equation (10)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_9",
+    "equation": "s_r^2 = \\frac{\\sum_{i=1}^{N_c} (y_{ci} - y_{mc})^2}{N_c - 1}",
+    "variables": {
+      "s_r^2": "variance of reproducibility measurements",
+      "y_{ci}": "response of the i-th experiment in the center of the experimental plan",
+      "y_{mc}": "mean response of reproducibility measurements",
+      "N_c": "number of experiments in the center of the experimental plan"
+    },
+    "context_text": "From the matrix containing experimental data, extract the matrix containing data referring to experiments characterizing the reproducibility measurements and compute their variance (Equations (8) and (9)) and the standard deviation of β coefficients (Equation (10)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_10",
+    "equation": "s_{\\beta} = \\frac{s_r^{0.5}}{\\sqrt{N}}",
+    "variables": {
+      "s_{\\beta}": "standard deviation of β coefficients",
+      "s_r": "standard deviation of reproducibility measurements",
+      "N": "number of experiments in the factorial plan"
+    },
+    "context_text": "From the matrix containing experimental data, extract the matrix containing data referring to experiments characterizing the reproducibility measurements and compute their variance (Equations (8) and (9)) and the standard deviation of β coefficients (Equation (10)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_11",
+    "equation": "v = N_c - 1",
+    "variables": {
+      "v": "number of freedom degrees",
+      "N_c": "number of experiences in the center of the experimental plan"
+    },
+    "context_text": "Establish the number of freedom degrees characterizing the experiences in the center of the experimental plan (Equation (11)), choose the confidence interval (Equation (12)) for β coefficients, and calculate the theoretical value of the Student variable (tva), by solving Equation (13).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_12",
+    "equation": "1 - \\alpha = 0.95",
+    "variables": {
+      "1 - \\alpha": "confidence interval",
+      "\\alpha": "significance level"
+    },
+    "context_text": "Establish the number of freedom degrees characterizing the experiences in the center of the experimental plan (Equation (11)), choose the confidence interval (Equation (12)) for β coefficients, and calculate the theoretical value of the Student variable (tva), by solving Equation (13).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_13",
+    "equation": "\\int_{-t_{va}}^{t_{va}} \\frac{\\Gamma(\\frac{v+1}{2})}{(\\pi v)^{0.5} \\Gamma(\\frac{v}{2})} (1 + \\frac{t^2}{v})^{-(v+1)/2} dt = 1 - \\alpha",
+    "variables": {
+      "t_{va}": "theoretical value of the Student variable",
+      "\\Gamma": "Gamma function",
+      "v": "number of freedom degrees",
+      "t": "Student's t-distribution variable",
+      "1 - \\alpha": "confidence interval"
+    },
+    "context_text": "Establish the number of freedom degrees characterizing the experiences in the center of the experimental plan (Equation (11)), choose the confidence interval (Equation (12)) for β coefficients, and calculate the theoretical value of the Student variable (tva), by solving Equation (13).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_14",
+    "equation": "t_0 = \\beta_0 / s_{\\beta}",
+    "variables": {
+      "t_0": "Student variable value associated to β0 coefficient",
+      "\\beta_0": "regression coefficient (intercept)",
+      "s_{\\beta}": "standard deviation of β coefficients"
+    },
+    "context_text": "Evaluate the Student variable value associated to each β coefficient (Equations (14)–(18)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_15",
+    "equation": "t_j = \\beta_j / s_{\\beta}, j=1,2...4",
+    "variables": {
+      "t_j": "Student variable value associated to βj coefficient",
+      "\\beta_j": "linear regression coefficient",
+      "s_{\\beta}": "standard deviation of β coefficients"
+    },
+    "context_text": "Evaluate the Student variable value associated to each β coefficient (Equations (14)–(18)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_16",
+    "equation": "t_{jk} = \\beta_{jk} / s_{\\beta}, k > j, j=1,2,3, k=2,3,4",
+    "variables": {
+      "t_{jk}": "Student variable value associated to βjk coefficient",
+      "\\beta_{jk}": "two-factor interaction regression coefficient",
+      "s_{\\beta}": "standard deviation of β coefficients"
+    },
+    "context_text": "Evaluate the Student variable value associated to each β coefficient (Equations (14)–(18)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_17",
+    "equation": "t_{jkl} = \\beta_{jkl} / s_{\\beta}, l > k > j, j=1,2, k=2,3, l=3,4",
+    "variables": {
+      "t_{jkl}": "Student variable value associated to βjkl coefficient",
+      "\\beta_{jkl}": "three-factor interaction regression coefficient",
+      "s_{\\beta}": "standard deviation of β coefficients"
+    },
+    "context_text": "Evaluate the Student variable value associated to each β coefficient (Equations (14)–(18)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_18",
+    "equation": "t_{jklm} = \\frac{\\beta_{jklm}}{s_{\\beta}}, m > l > k > j, j=1, k=2, l=3, m=4",
+    "variables": {
+      "t_{jklm}": "Student variable value associated to βjklm coefficient",
+      "\\beta_{jklm}": "four-factor interaction regression coefficient",
+      "s_{\\beta}": "standard deviation of β coefficients"
+    },
+    "context_text": "Evaluate the Student variable value associated to each β coefficient (Equations (14)–(18)).",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_19",
+    "equation": "\\beta_0, \\beta_j, \\beta_{jk}, \\beta_{jkl}, \\beta_{jklm} = \\beta_0, \\beta_j, \\beta_{jk}, \\beta_{jkl}, \\beta_{jklm} \\text{ for } t_0, t_j, t_{jk}, t_{jkl}, t_{jklm} \\ge t_{va}, 0 \\text{ otherwise}",
+    "variables": {
+      "\\beta": "any regression coefficient",
+      "t": "computed Student variable value for a coefficient",
+      "t_{va}": "theoretical value of the Student variable"
+    },
+    "context_text": "Verify the significance of each β coefficient by comparing its computed Student variable value with tva, as follows:",
+    "domain": "Statistical Model Valorization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_20",
+    "equation": "\\eta_E = 0.941 - 0.0057x_2 + 0.0043x_1x_2 + 0.00093x_3x_4 - 0.00575x_1x_2x_3x_4",
+    "variables": {
+      "\\eta_E": "Biodiesel yield after esters",
+      "x_1": "dimensionless KOH concentration in Gu-KOH/BC (%)",
+      "x_2": "dimensionless catalyst dose (g/100 g)",
+      "x_3": "dimensionless methanol/oil molar ratio",
+      "x_4": "dimensionless drying temperature of BC-KOH in Gu-KOH/BC catalyst"
+    },
+    "context_text": "Equations (20) and (21), linking process responses to dimensionless factors, were obtained by processing the data from Table 2. An analysis of the dependence of transesterification yield expressed after esters on process factors (Equation (20)) shows that all factors have an influence and this influence appears preponderantly as a result of factor interaction.",
+    "domain": "Transesterification Yield Model"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_21",
+    "equation": "\\eta_G = 0.859 + 0.038x_1 + 0.016x_2 + 0.017x_3 + 0.06x_4 - 0.0058x_1x_2 - 0.023x_1x_4 + 0.014x_3x_4 - 0.0095x_1x_2x_4 - 0.0076x_1x_3x_4 - 0.0066x_2x_3x_4 - 0.015x_1x_2x_3x_4",
+    "variables": {
+      "\\eta_G": "Biodiesel yield after glycerin",
+      "x_1": "dimensionless KOH concentration in Gu-KOH/BC (%)",
+      "x_2": "dimensionless catalyst dose (g/100 g)",
+      "x_3": "dimensionless methanol/oil molar ratio",
+      "x_4": "dimensionless drying temperature of BC-KOH in Gu-KOH/BC catalyst"
+    },
+    "context_text": "Equations (20) and (21), linking process responses to dimensionless factors, were obtained by processing the data from Table 2.",
+    "domain": "Transesterification Yield Model"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_22",
+    "equation": "\\frac{\\partial \\eta_E}{\\partial x_1} = \\frac{\\partial \\eta_E}{\\partial x_2} = \\frac{\\partial \\eta_E}{\\partial x_3} = \\frac{\\partial \\eta_E}{\\partial x_4} = 0",
+    "variables": {
+      "\\eta_E": "Biodiesel yield after esters",
+      "x_1": "dimensionless KOH concentration in Gu-KOH/BC (%)",
+      "x_2": "dimensionless catalyst dose (g/100 g)",
+      "x_3": "dimensionless methanol/oil molar ratio",
+      "x_4": "dimensionless drying temperature of BC-KOH in Gu-KOH/BC catalyst"
+    },
+    "context_text": "To maximize the transesterification yield, the system of Equations (22) and (23) was solved, where Equations (20) and (21) were used to express ηE and ηG, respectively, and the solutions are given in Table 3.",
+    "domain": "Transesterification Yield Optimization"
+  },
+  {
+    "source_id": "energies-17-01344.pdf",
+    "eq_id": "eq_23",
+    "equation": "\\frac{\\partial \\eta_G}{\\partial x_1} = \\frac{\\partial \\eta_G}{\\partial x_2} = \\frac{\\partial \\eta_G}{\\partial x_3} = \\frac{\\partial \\eta_G}{\\partial x_4} = 0",
+    "variables": {
+      "\\eta_G": "Biodiesel yield after glycerin",
+      "x_1": "dimensionless KOH concentration in Gu-KOH/BC (%)",
+      "x_2": "dimensionless catalyst dose (g/100 g)",
+      "x_3": "dimensionless methanol/oil molar ratio",
+      "x_4": "dimensionless drying temperature of BC-KOH in Gu-KOH/BC catalyst"
+    },
+    "context_text": "To maximize the transesterification yield, the system of Equations (22) and (23) was solved, where Equations (20) and (21) were used to express ηE and ηG, respectively, and the solutions are given in Table 3.",
+    "domain": "Transesterification Yield Optimization"
+  }
+]

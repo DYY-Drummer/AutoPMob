@@ -1,0 +1,25 @@
+{
+  "source_id": "038.pdf",
+  "pdf_sha256": "c64fc013bd989fdcf77d7fc776271a1a0e32670e5cd536a3801491e5258dc96c",
+  "pdf_bytes": 693414,
+  "pages": 6,
+  "started": "2026-11-04T20:19:39+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T20:21:14+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 1818,
+    "candidates_token_count": 3534,
+    "thoughts_token_count": 9293,
+    "total_token_count": 14645
+  },
+  "usd": 0.1305,
+  "n_equations": 13,
+  "returned_source_ids": {
+    "038.pdf": 13
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "source_id": "kinetics_soybean_oil.pdf",
+  "pdf_sha256": "4d0def1edc556683eb0b5a17e1df8a659c49b664b45fe6f88efe0063fbd4aa3a",
+  "pdf_bytes": 332428,
+  "pages": 8,
+  "started": "2026-11-04T20:26:26+09:00",
+  "script": "extract_equations.extract_equations",
+  "google_genai": "1.66.0",
+  "prompt_sha256": "71cbde318404197efee857cd1a8c79fbc35a11ac8d7eed16a6d780ff808581c8",
+  "finished": "2026-11-04T20:27:25+09:00",
+  "model_requested": "gemini-2.5-pro",
+  "model_version": "gemini-2.5-pro",
+  "model_ok": true,
+  "usage": {
+    "prompt_token_count": 2338,
+    "candidates_token_count": 1548,
+    "thoughts_token_count": 5195,
+    "total_token_count": 9081
+  },
+  "usd": 0.0704,
+  "n_equations": 4,
+  "returned_source_ids": {
+    "kinetics_soybean_oil.pdf": 4
+  }
+}

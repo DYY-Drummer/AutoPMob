@@ -1,0 +1,144 @@
+{
+  "made": "2026-11-04T22:47:43+09:00",
+  "raw_subdir": "raw",
+  "match_threshold": 0.45,
+  "weights": {
+    "tex": 0.5,
+    "var": 0.35,
+    "ctx": 0.15
+  },
+  "per_source": {
+    "038.pdf": {
+      "n_old": 13,
+      "n_new": 13,
+      "same": 2,
+      "same_cosmetic": 2,
+      "same_symbols": 2,
+      "diff_symbols": 7,
+      "old_only": 0,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "1-s2.0-0009250974800898-main.pdf": {
+      "n_old": 33,
+      "n_new": 31,
+      "same": 10,
+      "same_cosmetic": 4,
+      "same_symbols": 1,
+      "diff_symbols": 15,
+      "old_only": 3,
+      "new_only": 1,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "1-s2.0-S1369703X09000059-main.pdf": {
+      "n_old": 9,
+      "n_new": 9,
+      "same": 1,
+      "same_cosmetic": 0,
+      "same_symbols": 0,
+      "diff_symbols": 8,
+      "old_only": 0,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "Chemical Process Dynamics.pdf": {
+      "n_old": 23,
+      "n_new": 18,
+      "same": 7,
+      "same_cosmetic": 0,
+      "same_symbols": 3,
+      "diff_symbols": 8,
+      "old_only": 5,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "WJET_2015040715405408.pdf": {
+      "n_old": 6,
+      "n_new": 6,
+      "same": 0,
+      "same_cosmetic": 1,
+      "same_symbols": 1,
+      "diff_symbols": 4,
+      "old_only": 0,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "applsci-10-00992-v2.pdf": {
+      "n_old": 42,
+      "n_new": 42,
+      "same": 1,
+      "same_cosmetic": 1,
+      "same_symbols": 23,
+      "diff_symbols": 17,
+      "old_only": 0,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "energies-17-01344.pdf": {
+      "n_old": 23,
+      "n_new": 23,
+      "same": 6,
+      "same_cosmetic": 0,
+      "same_symbols": 0,
+      "diff_symbols": 17,
+      "old_only": 0,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "kinetics_soybean_oil.pdf": {
+      "n_old": 4,
+      "n_new": 4,
+      "same": 1,
+      "same_cosmetic": 0,
+      "same_symbols": 1,
+      "diff_symbols": 2,
+      "old_only": 0,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    },
+    "matecconf_cscc2019_01027.pdf": {
+      "n_old": 9,
+      "n_new": 9,
+      "same": 0,
+      "same_cosmetic": 0,
+      "same_symbols": 1,
+      "diff_symbols": 8,
+      "old_only": 0,
+      "new_only": 0,
+      "model_version": "gemini-2.5-pro",
+      "model_ok": true
+    }
+  },
+  "equations_total": {
+    "same": 28,
+    "same_cosmetic": 8,
+    "same_symbols": 32,
+    "diff_symbols": 86,
+    "old_only": 8,
+    "new_only": 1
+  },
+  "cases_by_status": {
+    "B": 34,
+    "C": 86,
+    "A": 19,
+    "D": 7
+  },
+  "cases_by_status_family": {
+    "A:出典横断": 19,
+    "B:出典横断": 25,
+    "B:単一出典": 1,
+    "B:合成": 8,
+    "C:出典横断": 70,
+    "C:合成": 16,
+    "D:合成": 7
+  },
+  "cases_old_not_ok": []
+}
