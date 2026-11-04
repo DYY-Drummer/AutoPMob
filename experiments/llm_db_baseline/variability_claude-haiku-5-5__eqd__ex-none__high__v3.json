@@ -1,0 +1,72 @@
+{
+ "config": {
+  "model": "claude-haiku-5-5",
+  "effort": "high",
+  "db_format": "eqd",
+  "examples": "none",
+  "prompt_version": "v3"
+ },
+ "runs": 3,
+ "case_ids": [
+  "core_032_v1",
+  "ms_pfr_kin_001",
+  "dae_X5_000"
+ ],
+ "cost_usd_all_calls": 0.99,
+ "variability": {
+  "n_cases": 3,
+  "jaccard_mean": 0.22107743445892739,
+  "same_list_share": 0.0,
+  "recall@20_sd_mean": 0.13877773329774218,
+  "recall@20_sd_max": 0.41633319989322654,
+  "AP@20_sd_mean": 0.16630982847652148,
+  "AP@20_sd_max": 0.3800894989484508,
+  "per_case": {
+   "core_032_v1": {
+    "n_runs": 3,
+    "recall@20": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "AP@20": [
+     0.25,
+     0.2,
+     0.125
+    ],
+    "jaccard_mean": 0.2911297852474323,
+    "same_list": false
+   },
+   "ms_pfr_kin_001": {
+    "n_runs": 3,
+    "recall@20": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "AP@20": [
+     0.05555555555555555,
+     0.16666666666666666,
+     0.1
+    ],
+    "jaccard_mean": 0.2131445170660857,
+    "same_list": false
+   },
+   "dae_X5_000": {
+    "n_runs": 3,
+    "recall@20": [
+     0.6,
+     0.8,
+     0.0
+    ],
+    "AP@20": [
+     0.3657142857142857,
+     0.76,
+     0.0
+    ],
+    "jaccard_mean": 0.15895800106326421,
+    "same_list": false
+   }
+  }
+ }
+}

@@ -574,3 +574,26 @@ def test_reference_equiv_summary_matches_the_reported_table():
             got = refs[ref]["summary_equiv"][st]
             assert got["recall@20"]["mean"] == pytest.approx(main[st][mkey]["Recall@20"]["mean"], abs=1e-9)
             assert got["MAP@20"]["mean"] == pytest.approx(main[st][mkey]["MAP@20"]["mean"], abs=1e-9)
+
+
+# ---- 同じケースを繰り返し解かせたときのぶれ（2026-11-04、本人の指示：3 件 × 3 回を Haiku 5.5 で試す） --------------
+
+from run_llm_db_baseline import run_variability  # noqa: E402
+
+
+def test_pending_cases_keeps_each_run_separate():
+    cfg = {"model": "m", "effort": "high", "db_format": "eqd", "examples": "none", "prompt_version": "v3"}
+    recs = [{**cfg, "case_id": "c1", "run": 1, "error": None}, {**cfg, "case_id": "c1", "run": 2, "error": "api 500"}]
+    plan = [("c1", 1), ("c1", 2), ("c1", 3)]
+    assert pending_cases(recs, plan, cfg, fields=("case_id", "run")) == [("c1", 2), ("c1", 3)]
+
+
+def test_run_variability_counts_agreement_and_spread():
+    a = {"ranked_keys": ["x", "y"], "recall@20": 1.0, "AP@20": 1.0}
+    b = {"ranked_keys": ["x", "z"], "recall@20": 0.5, "AP@20": 0.5}
+    v = run_variability({"same": [a, dict(a), dict(a)], "diff": [a, b], "one": [a]})
+    assert v["n_cases"] == 2                                   # 1 回しかないケースは使わない
+    assert v["per_case"]["same"]["same_list"] and v["per_case"]["same"]["jaccard_mean"] == 1.0
+    assert v["per_case"]["diff"]["jaccard_mean"] == pytest.approx(1 / 3)
+    assert v["same_list_share"] == 0.5
+    assert v["recall@20_sd_max"] == pytest.approx(math.sqrt(0.125))

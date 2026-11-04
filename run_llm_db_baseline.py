@@ -1491,15 +1491,59 @@ def cmd_count3(args) -> None:
     (OUT_DIR / "token_counts_v3.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
 
 
+def run_variability(per_run: dict) -> dict:
+    """同じケースを独立に何回か解かせたときの、回の間のぶれ.
+
+    per_run[case_id] = [回ごとの score_record の結果, ...]（2 回以上答えのあるケースだけ使う）。
+    - 上位 20 件の答えの集合の Jaccard 係数（回の組ごと）の平均と、全回で答えの並びまで同じケースの割合
+    - Recall@20 と AP@20 の、ケースごとの回の間の標準偏差（ddof=1）の平均と最大
+    """
+    jac, same, sd_r, sd_ap, per_case = [], [], [], [], {}
+    for cid, runs in per_run.items():
+        if len(runs) < 2:
+            continue
+        sets = [set(k for k in r["ranked_keys"] if k is not None) for r in runs]
+        pair = [len(a & b) / len(a | b) if (a | b) else 1.0
+                for i, a in enumerate(sets) for b in sets[i + 1:]]
+        r20 = [r["recall@20"] for r in runs]
+        ap = [r["AP@20"] for r in runs]
+        jac.append(float(np.mean(pair)))
+        same.append(all(r["ranked_keys"] == runs[0]["ranked_keys"] for r in runs))
+        sd_r.append(float(np.std(r20, ddof=1)))
+        sd_ap.append(float(np.std(ap, ddof=1)))
+        per_case[cid] = {"n_runs": len(runs), "recall@20": r20, "AP@20": ap, "jaccard_mean": jac[-1],
+                         "same_list": same[-1]}
+    if not jac:
+        return {"n_cases": 0}
+    return {"n_cases": len(jac), "jaccard_mean": float(np.mean(jac)), "same_list_share": float(np.mean(same)),
+            "recall@20_sd_mean": float(np.mean(sd_r)), "recall@20_sd_max": float(np.max(sd_r)),
+            "AP@20_sd_mean": float(np.mean(sd_ap)), "AP@20_sd_max": float(np.max(sd_ap)), "per_case": per_case}
+
+
 def cmd_pilot3(args) -> None:
-    """承認後、本実行の前に各モデルで数件だけ流して出力の形を確かめる（3 分割で解かせるケースの先頭 n 件。本実行で再利用される）."""
+    """承認後、本実行の前に各モデルで数件だけ流して出力の形を確かめる（3 分割で解かせるケースの先頭 n 件。本実行で再利用される）.
+
+    --case-ids で解かせるケースを選べる。--runs 2 以上なら、同じケースを独立に何回か解かせ（記録に "run" を残す）、
+    回の間のぶれ（答えの一致、Recall@20 と AP@20 の標準偏差）を集計して experiments/llm_db_baseline/ に書く。
+    """
     eqs, id_to_key, key_to_id = load_db_v3()
+    equiv = equiv_maps(eqs, id_to_key)
     cases, splits = load_case_index(), load_splits()
     cfg = _cfg3(args)
-    plan = [(cid,) for cid in v3_plan(splits, [42, 123, 456], cases)[: args.n]]
-    todo = pending_cases(load_raw(cfg), plan, cfg, fields=("case_id",))
+    ids = (args.case_ids.split(",") if args.case_ids else v3_plan(splits, [42, 123, 456], cases)[: args.n])
+    unknown = [c for c in ids if c not in cases]
+    if unknown:
+        sys.exit(f"ケースがない: {unknown}")
+    if args.runs > 1:
+        fields = ("case_id", "run")
+        plan = [(cid, k) for k in range(1, args.runs + 1) for cid in ids]
+    else:
+        fields = ("case_id",)
+        plan = [(cid,) for cid in ids]
+    todo = pending_cases(load_raw(cfg), plan, cfg, fields=fields)
     params_of, meta_of = _params3(args, eqs, cases)
     client, spent = client_(max_retries=0), [_spent_so_far(cfg)]
+    print(f"{cfg_name(cfg)}: plan {len(plan)}, todo {len(todo)}, spent so far ${spent[0]:.2f}, budget {args.budget_usd}")
     if todo:
         p = params_of(todo[0])
         n_in = client.messages.count_tokens(**{k: p[k] for k in ("model", "system", "messages", "output_config",
@@ -1508,17 +1552,28 @@ def cmd_pilot3(args) -> None:
         if n_in + args.max_tokens > CONTEXT_LIMIT[args.model]:
             sys.exit("入力と出力の上限の和が、入力の上限を超えるので送らない")
     _run_cases(client, cfg, todo, params_of, "pilot", 1, args.budget_usd, spent, attempts=1, meta_of=meta_of,
-               fields=("case_id",), group_of=lambda t: "all", stream=True)
+               fields=fields, group_of=lambda t: "all", stream=True)
+    per_run = {}
     for r in load_raw(cfg):
-        if (r.get("case_id"),) in plan:
-            correct = [norm(m) for m in cases[r["case_id"]]["correct_model_ids"] if norm(m) in key_to_id]
-            sc = score_record(r, id_to_key, correct)
-            u = r.get("usage") or {}
-            print(f"{r['case_id']}: served={r.get('model_served')} stop={r.get('stop_reason')} "
-                  f"out={u.get('output_tokens')} thinking={(u.get('output_tokens_details') or {}).get('thinking_tokens')} "
-                  f"sec={r.get('seconds')} cost=${cost_usd(u, cfg['model']) if u else 0:.3f} "
-                  f"n={len(sc['ranked_ids'])} invalid={sc['n_invalid']} dup={sc['n_duplicates']} "
-                  f"K={sc['K']} R@20={sc['recall@20']:.3f} AP@20={sc['AP@20']:.3f} parse_error={sc['parse_error']}")
+        if r.get("error") is not None or tuple(r.get(f) for f in fields) not in plan:
+            continue
+        correct = [norm(m) for m in cases[r["case_id"]]["correct_model_ids"] if norm(m) in key_to_id]
+        sc = score_record(r, id_to_key, correct, equiv=equiv)
+        per_run.setdefault(r["case_id"], []).append(sc)
+        u = r.get("usage") or {}
+        print(f"{r['case_id']} run={r.get('run')}: served={r.get('model_served')} stop={r.get('stop_reason')} "
+              f"out={u.get('output_tokens')} sec={r.get('seconds')} cost=${cost_usd(u, cfg['model']) if u else 0:.3f} "
+              f"n={len(sc['ranked_ids'])} invalid={sc['n_invalid']} dup={sc['n_duplicates']} "
+              f"K={sc['K']} R@20={sc['recall@20']:.3f} AP@20={sc['AP@20']:.3f} "
+              f"(同じ式も正解: R@20={sc['recall@20_equiv']:.3f}) parse_error={sc['parse_error']}")
+    if args.runs > 1:
+        var = run_variability(per_run)
+        out = {"config": cfg, "runs": args.runs, "case_ids": ids, "cost_usd_all_calls": round(_spent_so_far(cfg), 3),
+               "variability": var}
+        f = OUT_DIR / f"variability_{cfg_name(cfg)}.json"
+        f.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+        print(json.dumps({k: v for k, v in var.items() if k != "per_case"}, ensure_ascii=False, indent=1))
+        print(f"wrote {f}")
 
 
 def cmd_run3(args) -> None:
@@ -1696,6 +1751,9 @@ def main() -> None:
     p = sub.add_parser("pilot3")
     common3(p)
     p.add_argument("--n", type=int, default=3)
+    p.add_argument("--case-ids", default=None, help="解かせるケース（カンマ区切り）。与えると --n より優先")
+    p.add_argument("--runs", type=int, default=1,
+                   help="同じケースを独立に解かせる回数。2 以上なら回ごとに記録し、回の間のぶれを集計する")
     p.set_defaults(fn=cmd_pilot3)
     p = sub.add_parser("run3")
     common3(p)
