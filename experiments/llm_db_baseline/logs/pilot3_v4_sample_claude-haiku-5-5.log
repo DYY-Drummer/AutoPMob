@@ -1,0 +1,376 @@
+claude-haiku-5-5__eqd__ex-none__high__v4: plan 200, todo 200, spent so far $0.00, budget 10.0
+1 件目の入力 952,497 トークン（max_tokens 32,000、上限 1,000,000）
+  dae_X5_043/1: err=None stop=end_turn in=358 write=952139 read=0 out=1466 total=$0.60
+  dae_X2_016/1: err=None stop=end_turn in=296 write=0 read=952139 out=1231 total=$0.65
+  ms3_0335/1: err=None stop=end_turn in=121 write=0 read=952139 out=1294 total=$0.70
+  dae_X6_068/1: err=None stop=end_turn in=296 write=0 read=952139 out=89 total=$0.75
+  dae_X10_043/1: err=None stop=end_turn in=746 write=0 read=952139 out=1955 total=$0.80
+  dae_X10_016/1: err=None stop=end_turn in=559 write=0 read=952139 out=1253 total=$0.85
+  dae_X2_022/1: err=None stop=end_turn in=303 write=0 read=952139 out=91 total=$0.90
+  dae_X7_051/1: err=None stop=end_turn in=483 write=0 read=952139 out=1560 total=$0.95
+  dae_X3_069/1: err=None stop=end_turn in=335 write=0 read=952139 out=881 total=$1.00
+  dae_X9_044/1: err=None stop=end_turn in=441 write=0 read=952139 out=259 total=$1.05
+  dae_X1_024/1: err=None stop=end_turn in=214 write=0 read=952139 out=1261 total=$1.10
+  dae_X4_042/1: err=None stop=end_turn in=367 write=0 read=952139 out=2501 total=$1.16
+  dae_X4_039/1: err=None stop=end_turn in=402 write=0 read=952139 out=91 total=$1.20
+  ms3_0203/1: err=None stop=end_turn in=200 write=0 read=952139 out=83 total=$1.25
+  dae_X4_086/1: err=None stop=end_turn in=392 write=0 read=952139 out=2362 total=$1.31
+  ms3_0223/1: err=None stop=end_turn in=187 write=0 read=952139 out=90 total=$1.35
+  dae_X1_082/1: err=None stop=end_turn in=258 write=0 read=952139 out=77 total=$1.40
+  ms_reactor_heat_arrhenius_001_rv2/1: err=None stop=end_turn in=197 write=0 read=952139 out=992 total=$1.45
+  ms_cstr_heat_001_rv4/1: err=None stop=end_turn in=152 write=0 read=952139 out=134 total=$1.50
+  dae_X4_013/1: err=None stop=end_turn in=248 write=0 read=952139 out=74 total=$1.55
+  ms3_0127/1: err=None stop=end_turn in=101 write=0 read=952139 out=1322 total=$1.60
+  dae_X2_033/1: err=None stop=end_turn in=306 write=0 read=952139 out=91 total=$1.65
+  ms_pfr_masstransfer_001_rv3/1: err=None stop=end_turn in=158 write=0 read=952139 out=91 total=$1.69
+  dae_X4_081/1: err=None stop=refusal in=411 write=0 read=952139 out=0 total=$1.74
+  dae_X2_043/1: err=None stop=end_turn in=401 write=0 read=952139 out=86 total=$1.79
+  dae_X6_017/1: err=None stop=end_turn in=412 write=0 read=952139 out=88 total=$1.84
+  dae_X5_006/1: err=None stop=end_turn in=468 write=0 read=952139 out=2216 total=$1.89
+  dae_X9_001/1: err=None stop=end_turn in=477 write=0 read=952139 out=1633 total=$1.94
+  ms3_0403/1: err=None stop=end_turn in=166 write=0 read=952139 out=1644 total=$2.00
+  ms3_0174/1: err=None stop=end_turn in=208 write=0 read=952139 out=2116 total=$2.05
+  dae_X3_031/1: err=None stop=end_turn in=379 write=0 read=952139 out=1610 total=$2.10
+  dae_X1_048/1: err=None stop=end_turn in=260 write=0 read=952139 out=1211 total=$2.15
+  ms3_0087/1: err=None stop=end_turn in=178 write=0 read=952139 out=94 total=$2.20
+  dae_X4_057/1: err=None stop=end_turn in=394 write=0 read=952139 out=141 total=$2.25
+  dae_X10_092/1: err=None stop=end_turn in=737 write=0 read=952139 out=1795 total=$2.30
+  dae_X9_085/1: err=None stop=end_turn in=460 write=0 read=952139 out=1646 total=$2.35
+  dae_X2_012/1: err=None stop=end_turn in=264 write=0 read=952139 out=860 total=$2.40
+  ms_arrhenius_001_rv6/1: err=None stop=end_turn in=145 write=0 read=952139 out=87 total=$2.45
+  ms_bio_pid_001_rv3/1: err=None stop=end_turn in=169 write=0 read=952139 out=1497 total=$2.50
+  dae_X3_006/1: err=None stop=end_turn in=267 write=0 read=952139 out=70 total=$2.55
+  dae_X4_054/1: err=None stop=end_turn in=349 write=0 read=952139 out=1753 total=$2.60
+  dae_X5_066/1: err=None stop=end_turn in=386 write=0 read=952139 out=1745 total=$2.65
+  dae_X3_008/1: err=None stop=end_turn in=344 write=0 read=952139 out=2101 total=$2.71
+  dae_X10_074/1: err=None stop=end_turn in=412 write=0 read=952139 out=1375 total=$2.76
+  ms_batch_cstr_001_rv5/1: err=None stop=end_turn in=141 write=0 read=952139 out=112 total=$2.80
+  dae_X9_096/1: err=None stop=end_turn in=647 write=0 read=952139 out=2750 total=$2.86
+  dae_X7_036/1: err=None stop=end_turn in=421 write=0 read=952139 out=88 total=$2.91
+  dae_X4_076/1: err=None stop=end_turn in=323 write=0 read=952139 out=105 total=$2.96
+  dae_X5_037/1: err=None stop=end_turn in=425 write=0 read=952139 out=1762 total=$3.01
+  dae_X2_036/1: err=None stop=end_turn in=306 write=0 read=952139 out=963 total=$3.06
+  ms3_0324/1: err=None stop=end_turn in=139 write=0 read=952139 out=1484 total=$3.11
+  dae_X6_006/1: err=None stop=end_turn in=309 write=0 read=952139 out=1245 total=$3.16
+  ms3_0001/1: err=None stop=end_turn in=153 write=0 read=952139 out=84 total=$3.21
+  ms_pid_arrhenius_001/1: err=None stop=end_turn in=152 write=0 read=952139 out=68 total=$3.26
+  ms3_0414/1: err=None stop=end_turn in=166 write=0 read=952139 out=1900 total=$3.31
+  ms3_0400/1: err=None stop=end_turn in=137 write=0 read=952139 out=1354 total=$3.36
+  core_058_v1/1: err=None stop=end_turn in=133 write=0 read=952139 out=91 total=$3.41
+  dae_X2_097/1: err=None stop=end_turn in=264 write=0 read=952139 out=53 total=$3.46
+  ms3_0275/1: err=None stop=end_turn in=227 write=0 read=952139 out=1485 total=$3.51
+  dae_X1_074/1: err=None stop=end_turn in=202 write=0 read=952139 out=72 total=$3.55
+  dae_X10_013/1: err=None stop=end_turn in=449 write=0 read=952139 out=2710 total=$3.61
+  dae_X6_089/1: err=None stop=refusal in=395 write=0 read=952139 out=708 total=$3.66
+  ms_pfr_kin_001_rv4/1: err=None stop=end_turn in=157 write=0 read=952139 out=75 total=$3.71
+  dae_X1_052/1: err=None stop=end_turn in=258 write=0 read=952139 out=1638 total=$3.76
+  dae_X4_001/1: err=None stop=end_turn in=383 write=0 read=952139 out=136 total=$3.81
+  dae_X3_025/1: err=None stop=end_turn in=453 write=0 read=952139 out=2396 total=$3.86
+  dae_X4_024/1: err=None stop=end_turn in=361 write=0 read=952139 out=51 total=$3.91
+  dae_X6_055/1: err=None stop=end_turn in=390 write=0 read=952139 out=2095 total=$3.96
+  ms_pfr_convection_001/1: err=None stop=end_turn in=147 write=0 read=952139 out=97 total=$4.01
+  ms3_0361/1: err=None stop=end_turn in=163 write=0 read=952139 out=94 total=$4.06
+  ms_pfr_kin_001_rv3/1: err=None stop=end_turn in=158 write=0 read=952139 out=90 total=$4.11
+  dae_X4_030/1: err=None stop=end_turn in=342 write=0 read=952139 out=1563 total=$4.16
+  ms_chemeng_re_001_rv4/1: err=None stop=end_turn in=163 write=0 read=952139 out=1522 total=$4.21
+  dae_X7_078/1: err=None stop=end_turn in=478 write=0 read=952139 out=2311 total=$4.26
+  dae_X10_026/1: err=None stop=end_turn in=524 write=0 read=952139 out=2451 total=$4.32
+  dae_X8_031/1: err=None stop=end_turn in=528 write=0 read=952139 out=1649 total=$4.37
+  dae_X6_002/1: err=None stop=end_turn in=461 write=0 read=952139 out=3270 total=$4.42
+  dae_X6_025/1: err=None stop=end_turn in=430 write=0 read=952139 out=1753 total=$4.48
+  dae_X8_094/1: err=None stop=end_turn in=533 write=0 read=952139 out=1785 total=$4.53
+  ms3_0063/1: err=None stop=end_turn in=176 write=0 read=952139 out=2254 total=$4.58
+  dae_X10_079/1: err=None stop=end_turn in=532 write=0 read=952139 out=2794 total=$4.64
+  dae_X10_083/1: err=None stop=end_turn in=623 write=0 read=952139 out=1281 total=$4.69
+  ms3_0348/1: err=None stop=end_turn in=208 write=0 read=952139 out=147 total=$4.74
+  dae_X7_012/1: err=None stop=end_turn in=407 write=0 read=952139 out=1393 total=$4.79
+  dae_X1_081/1: err=None stop=end_turn in=284 write=0 read=952139 out=1266 total=$4.84
+  ms3_0198/1: err=None stop=end_turn in=135 write=0 read=952139 out=2141 total=$4.89
+  dae_X2_049/1: err=None stop=end_turn in=307 write=0 read=952139 out=1659 total=$4.94
+  ms3_0093/1: err=None stop=end_turn in=176 write=0 read=952139 out=1628 total=$4.99
+  dae_X6_003/1: err=None stop=end_turn in=384 write=0 read=952139 out=2093 total=$5.05
+  ms3_0374/1: err=None stop=end_turn in=194 write=0 read=952139 out=2106 total=$5.10
+  dae_X2_001/1: err=None stop=end_turn in=277 write=0 read=952139 out=89 total=$5.15
+  dae_X9_050/1: err=None stop=end_turn in=490 write=0 read=952139 out=3878 total=$5.21
+  ms_pid_arrhenius_001_rv1/1: err=None stop=end_turn in=158 write=0 read=952139 out=89 total=$5.25
+  dae_X8_013/1: err=None stop=end_turn in=386 write=0 read=952139 out=108 total=$5.30
+  ms3_0499/1: err=None stop=end_turn in=220 write=0 read=952139 out=2068 total=$5.36
+  dae_X7_048/1: err=None stop=end_turn in=502 write=0 read=952139 out=2933 total=$5.41
+  dae_X6_004/1: err=None stop=end_turn in=395 write=0 read=952139 out=1470 total=$5.46
+  dae_X9_056/1: err=None stop=end_turn in=536 write=0 read=952139 out=217 total=$5.51
+  ms3_0391/1: err=None stop=end_turn in=138 write=0 read=952139 out=2740 total=$5.56
+  core_077_v1/1: err=None stop=end_turn in=97 write=0 read=952139 out=93 total=$5.61
+  dae_X7_093/1: err=None stop=end_turn in=373 write=0 read=952139 out=1513 total=$5.66
+  ms3_0437/1: err=None stop=end_turn in=189 write=0 read=952139 out=2310 total=$5.72
+  dae_X2_011/1: err=None stop=end_turn in=422 write=0 read=952139 out=1277 total=$5.77
+  dae_X5_013/1: err=None stop=end_turn in=457 write=0 read=952139 out=1713 total=$5.82
+  ms3_0305/1: err=None stop=end_turn in=191 write=0 read=952139 out=89 total=$5.87
+  dae_X4_083/1: err=None stop=refusal in=429 write=0 read=952139 out=1404 total=$5.92
+  ms3_0017/1: err=None stop=end_turn in=150 write=0 read=952139 out=71 total=$5.97
+  ms3_0108/1: err=None stop=end_turn in=163 write=0 read=952139 out=85 total=$6.02
+  dae_X2_058/1: err=None stop=end_turn in=305 write=0 read=952139 out=74 total=$6.06
+  ms3_0060/1: err=None stop=end_turn in=176 write=0 read=952139 out=88 total=$6.11
+  ms_batch_convection_001_rv1/1: err=None stop=end_turn in=145 write=0 read=952139 out=72 total=$6.16
+  dae_X7_037/1: err=None stop=end_turn in=474 write=0 read=952139 out=2161 total=$6.21
+  dae_X6_050/1: err=None stop=end_turn in=567 write=0 read=952139 out=2435 total=$6.27
+  dae_X10_025/1: err=None stop=end_turn in=637 write=0 read=952139 out=2993 total=$6.32
+  dae_X5_095/1: err=None stop=end_turn in=428 write=0 read=952139 out=2774 total=$6.38
+  ms3_0012/1: err=None stop=end_turn in=176 write=0 read=952139 out=85 total=$6.43
+  ms3_0046/1: err=None stop=end_turn in=145 write=0 read=952139 out=1834 total=$6.48
+  core_036_v1/1: err=None stop=end_turn in=86 write=0 read=952139 out=72 total=$6.53
+  ms3_0276/1: err=None stop=end_turn in=226 write=0 read=952139 out=98 total=$6.57
+  dae_X9_079/1: err=None stop=end_turn in=394 write=0 read=952139 out=1531 total=$6.62
+  dae_X6_061/1: err=None stop=end_turn in=394 write=0 read=952139 out=91 total=$6.67
+  ms3_0003/1: err=None stop=end_turn in=153 write=0 read=952139 out=80 total=$6.72
+  dae_X8_019/1: err=None stop=end_turn in=353 write=0 read=952139 out=2323 total=$6.77
+  dae_X9_067/1: err=None stop=end_turn in=436 write=0 read=952139 out=182 total=$6.82
+  dae_X3_092/1: err=None stop=end_turn in=335 write=0 read=952139 out=66 total=$6.87
+  dae_X4_066/1: err=None stop=refusal in=301 write=0 read=952139 out=114 total=$6.92
+  dae_X5_075/1: err=None stop=end_turn in=348 write=0 read=952139 out=1361 total=$6.97
+  ms3_0137/1: err=None stop=end_turn in=221 write=0 read=952139 out=2307 total=$7.02
+  ms_bioreactor_001_rv3/1: err=None stop=end_turn in=172 write=0 read=952139 out=87 total=$7.07
+  dae_X4_036/1: err=None stop=end_turn in=414 write=0 read=952139 out=2358 total=$7.12
+  ms3_0169/1: err=None stop=end_turn in=168 write=0 read=952139 out=2277 total=$7.18
+  dae_X4_091/1: err=None stop=end_turn in=421 write=0 read=952139 out=1700 total=$7.23
+  dae_X2_027/1: err=None stop=end_turn in=241 write=0 read=952139 out=2293 total=$7.28
+  ms3_0167/1: err=None stop=end_turn in=168 write=0 read=952139 out=1289 total=$7.33
+  ms_chemeng_re_001/1: err=None stop=end_turn in=132 write=0 read=952139 out=1367 total=$7.39
+  ms3_0196/1: err=None stop=end_turn in=135 write=0 read=952139 out=1825 total=$7.44
+  dae_X8_026/1: err=None stop=end_turn in=525 write=0 read=952139 out=1861 total=$7.49
+  dae_X5_060/1: err=None stop=end_turn in=436 write=0 read=952139 out=2675 total=$7.54
+  ms3_0207/1: err=None stop=end_turn in=235 write=0 read=952139 out=70 total=$7.59
+  dae_X8_045/1: err=None stop=end_turn in=528 write=0 read=952139 out=72 total=$7.64
+  dae_X7_038/1: err=None stop=end_turn in=390 write=0 read=952139 out=111 total=$7.69
+  dae_X4_051/1: err=None stop=end_turn in=320 write=0 read=952139 out=2093 total=$7.74
+  dae_X8_001/1: err=None stop=end_turn in=399 write=0 read=952139 out=1195 total=$7.79
+  dae_X1_031/1: err=None stop=end_turn in=260 write=0 read=952139 out=110 total=$7.84
+  core_093_v1/1: err=None stop=end_turn in=150 write=0 read=952139 out=70 total=$7.89
+  ms3_0336/1: err=None stop=end_turn in=121 write=0 read=952139 out=70 total=$7.94
+  dae_X7_080/1: err=None stop=end_turn in=414 write=0 read=952139 out=29 total=$7.98
+  dae_X6_053/1: err=None stop=end_turn in=407 write=0 read=952139 out=1630 total=$8.04
+  dae_X6_024/1: err=None stop=end_turn in=422 write=0 read=952139 out=1397 total=$8.09
+  dae_X2_087/1: err=None stop=end_turn in=377 write=0 read=952139 out=1347 total=$8.14
+  core_002_v1/1: err=None stop=end_turn in=117 write=0 read=952139 out=57 total=$8.19
+  dae_X6_049/1: err=None stop=end_turn in=393 write=0 read=952139 out=102 total=$8.23
+  ms3_0091/1: err=None stop=end_turn in=176 write=0 read=952139 out=1257 total=$8.29
+  ms_steady_cstr_heat_001_rv6/1: err=None stop=end_turn in=155 write=0 read=952139 out=70 total=$8.33
+  ms3_0235/1: err=None stop=end_turn in=160 write=0 read=952139 out=974 total=$8.38
+  dae_X2_056/1: err=None stop=end_turn in=242 write=0 read=952139 out=101 total=$8.43
+  ms3_0160/1: err=None stop=end_turn in=169 write=0 read=952139 out=97 total=$8.48
+  dae_X9_054/1: err=None stop=end_turn in=529 write=0 read=952139 out=1623 total=$8.53
+  dae_X1_038/1: err=None stop=end_turn in=307 write=0 read=952139 out=72 total=$8.58
+  core_021_v1/1: err=None stop=end_turn in=150 write=0 read=952139 out=72 total=$8.63
+  dae_X8_092/1: err=None stop=end_turn in=465 write=0 read=952139 out=87 total=$8.68
+  dae_X3_055/1: err=None stop=end_turn in=286 write=0 read=952139 out=71 total=$8.72
+  dae_X5_014/1: err=None stop=end_turn in=459 write=0 read=952139 out=1744 total=$8.78
+  core_113_v1/1: err=None stop=end_turn in=112 write=0 read=952139 out=70 total=$8.82
+  ms_bio_diffusion_002/1: err=None stop=end_turn in=148 write=0 read=952139 out=88 total=$8.87
+  dae_X3_004/1: err=None stop=end_turn in=338 write=0 read=952139 out=1864 total=$8.92
+  dae_X4_096/1: err=None stop=end_turn in=273 write=0 read=952139 out=60 total=$8.97
+  dae_X7_054/1: err=None stop=end_turn in=631 write=0 read=952139 out=102 total=$9.02
+  dae_X2_020/1: err=None stop=end_turn in=323 write=0 read=952139 out=180 total=$9.07
+  dae_X1_086/1: err=None stop=end_turn in=213 write=0 read=952139 out=66 total=$9.12
+  ms_batch_arrhenius_001_rv3/1: err=None stop=end_turn in=128 write=0 read=952139 out=70 total=$9.16
+  dae_X9_048/1: err=None stop=end_turn in=552 write=0 read=952139 out=2440 total=$9.22
+  ms3_0424/1: err=None stop=end_turn in=136 write=0 read=952139 out=74 total=$9.27
+  ms3_0083/1: err=None stop=end_turn in=189 write=0 read=952139 out=2918 total=$9.32
+  dae_X4_072/1: err=None stop=refusal in=430 write=0 read=952139 out=365 total=$9.37
+  dae_X2_059/1: err=None stop=end_turn in=301 write=0 read=952139 out=69 total=$9.42
+  dae_X3_026/1: err=None stop=end_turn in=361 write=0 read=952139 out=2883 total=$9.47
+  core_075_v1/1: err=None stop=end_turn in=134 write=0 read=952139 out=72 total=$9.52
+  ms_batch_arrhenius_001_rv6/1: err=None stop=end_turn in=123 write=0 read=952139 out=73 total=$9.57
+  dae_X6_047/1: err=None stop=end_turn in=403 write=0 read=952139 out=1792 total=$9.62
+  dae_X3_054/1: err=None stop=end_turn in=338 write=0 read=952139 out=1342 total=$9.67
+  ms_batch_cstr_001_rv3/1: err=None stop=end_turn in=127 write=0 read=952139 out=75 total=$9.72
+  dae_X5_071/1: err=None stop=end_turn in=482 write=0 read=952139 out=1146 total=$9.77
+  dae_X7_085/1: err=None stop=end_turn in=445 write=0 read=952139 out=1633 total=$9.82
+  ms3_0442/1: err=None stop=end_turn in=173 write=0 read=952139 out=2098 total=$9.87
+  dae_X8_024/1: err=None stop=end_turn in=380 write=0 read=952139 out=2230 total=$9.93
+  dae_X2_002/1: err=None stop=end_turn in=222 write=0 read=952139 out=91 total=$9.98
+dae_X5_043 run=1: served=claude-haiku-5-5 stop=end_turn out=1466 sec=65.0 cost=$0.599 n=20 invalid=0 dup=0 K=5 R@20=0.400 AP@20=0.300 (同じ式も正解: R@20=0.400) parse_error=None
+dae_X2_016 run=1: served=claude-haiku-5-5 stop=end_turn out=1231 sec=9.2 cost=$0.051 n=19 invalid=0 dup=1 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0335 run=1: served=claude-haiku-5-5 stop=end_turn out=1294 sec=11.7 cost=$0.051 n=19 invalid=0 dup=1 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X6_068 run=1: served=claude-haiku-5-5 stop=end_turn out=89 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=6 R@20=0.500 AP@20=0.417 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X10_043 run=1: served=claude-haiku-5-5 stop=end_turn out=1955 sec=11.5 cost=$0.053 n=20 invalid=0 dup=0 K=10 R@20=0.500 AP@20=0.195 (同じ式も正解: R@20=0.700) parse_error=None
+dae_X10_016 run=1: served=claude-haiku-5-5 stop=end_turn out=1253 sec=8.7 cost=$0.051 n=20 invalid=0 dup=0 K=10 R@20=0.100 AP@20=0.007 (同じ式も正解: R@20=0.100) parse_error=None
+dae_X2_022 run=1: served=claude-haiku-5-5 stop=end_turn out=91 sec=2.7 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X7_051 run=1: served=claude-haiku-5-5 stop=end_turn out=1560 sec=38.8 cost=$0.052 n=20 invalid=0 dup=0 K=7 R@20=0.714 AP@20=0.330 (同じ式も正解: R@20=0.714) parse_error=None
+dae_X3_069 run=1: served=claude-haiku-5-5 stop=end_turn out=881 sec=6.7 cost=$0.050 n=20 invalid=0 dup=0 K=3 R@20=1.000 AP@20=0.700 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X9_044 run=1: served=claude-haiku-5-5 stop=end_turn out=259 sec=3.6 cost=$0.048 n=20 invalid=0 dup=7 K=9 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X1_024 run=1: served=claude-haiku-5-5 stop=end_turn out=1261 sec=45.4 cost=$0.051 n=20 invalid=0 dup=0 K=1 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X4_042 run=1: served=claude-haiku-5-5 stop=end_turn out=2501 sec=14.3 cost=$0.054 n=20 invalid=0 dup=0 K=4 R@20=0.500 AP@20=0.350 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X4_039 run=1: served=claude-haiku-5-5 stop=end_turn out=91 sec=44.3 cost=$0.048 n=20 invalid=0 dup=0 K=4 R@20=0.750 AP@20=0.312 (同じ式も正解: R@20=0.750) parse_error=None
+ms3_0203 run=1: served=claude-haiku-5-5 stop=end_turn out=83 sec=3.9 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.250 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X4_086 run=1: served=claude-haiku-5-5 stop=end_turn out=2362 sec=14.3 cost=$0.054 n=20 invalid=0 dup=0 K=4 R@20=0.500 AP@20=0.333 (同じ式も正解: R@20=0.500) parse_error=None
+ms3_0223 run=1: served=claude-haiku-5-5 stop=end_turn out=90 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.071 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X1_082 run=1: served=claude-haiku-5-5 stop=end_turn out=77 sec=3.7 cost=$0.048 n=20 invalid=0 dup=0 K=1 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms_reactor_heat_arrhenius_001_rv2 run=1: served=claude-haiku-5-5 stop=end_turn out=992 sec=7.3 cost=$0.050 n=19 invalid=0 dup=1 K=3 R@20=0.333 AP@20=0.167 (同じ式も正解: R@20=0.333) parse_error=None
+ms_cstr_heat_001_rv4 run=1: served=claude-haiku-5-5 stop=end_turn out=134 sec=3.3 cost=$0.048 n=20 invalid=0 dup=3 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X4_013 run=1: served=claude-haiku-5-5 stop=end_turn out=74 sec=2.8 cost=$0.048 n=16 invalid=0 dup=0 K=4 R@20=0.500 AP@20=0.133 (同じ式も正解: R@20=0.500) parse_error=None
+ms3_0127 run=1: served=claude-haiku-5-5 stop=end_turn out=1322 sec=9.7 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.062 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X2_033 run=1: served=claude-haiku-5-5 stop=end_turn out=91 sec=3.5 cost=$0.048 n=19 invalid=0 dup=1 K=2 R@20=0.500 AP@20=0.062 (同じ式も正解: R@20=0.500) parse_error=None
+ms_pfr_masstransfer_001_rv3 run=1: served=claude-haiku-5-5 stop=end_turn out=91 sec=3.4 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=0.417 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X4_081 run=1: served=claude-haiku-5-5 stop=refusal out=0 sec=2.3 cost=$0.048 n=0 invalid=0 dup=0 K=4 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=unreadable: Expecting value: line 1 column 1 (char 0)
+dae_X2_043 run=1: served=claude-haiku-5-5 stop=end_turn out=86 sec=2.9 cost=$0.048 n=20 invalid=0 dup=1 K=2 R@20=1.000 AP@20=0.181 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X6_017 run=1: served=claude-haiku-5-5 stop=end_turn out=88 sec=3.6 cost=$0.048 n=20 invalid=0 dup=0 K=6 R@20=0.333 AP@20=0.041 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X5_006 run=1: served=claude-haiku-5-5 stop=end_turn out=2216 sec=12.3 cost=$0.053 n=20 invalid=0 dup=0 K=5 R@20=0.800 AP@20=0.509 (同じ式も正解: R@20=0.800) parse_error=None
+dae_X9_001 run=1: served=claude-haiku-5-5 stop=end_turn out=1633 sec=53.3 cost=$0.052 n=20 invalid=0 dup=0 K=9 R@20=0.889 AP@20=0.485 (同じ式も正解: R@20=0.889) parse_error=None
+ms3_0403 run=1: served=claude-haiku-5-5 stop=end_turn out=1644 sec=9.8 cost=$0.052 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+ms3_0174 run=1: served=claude-haiku-5-5 stop=end_turn out=2116 sec=13.7 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=0.208 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X3_031 run=1: served=claude-haiku-5-5 stop=end_turn out=1610 sec=46.5 cost=$0.052 n=20 invalid=0 dup=0 K=3 R@20=0.333 AP@20=0.048 (同じ式も正解: R@20=0.333) parse_error=None
+dae_X1_048 run=1: served=claude-haiku-5-5 stop=end_turn out=1211 sec=7.8 cost=$0.051 n=20 invalid=0 dup=0 K=1 R@20=1.000 AP@20=0.500 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0087 run=1: served=claude-haiku-5-5 stop=end_turn out=94 sec=2.4 cost=$0.048 n=20 invalid=0 dup=1 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X4_057 run=1: served=claude-haiku-5-5 stop=end_turn out=141 sec=4.0 cost=$0.048 n=20 invalid=0 dup=0 K=4 R@20=1.000 AP@20=0.624 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X10_092 run=1: served=claude-haiku-5-5 stop=end_turn out=1795 sec=10.9 cost=$0.052 n=20 invalid=0 dup=0 K=10 R@20=0.800 AP@20=0.463 (同じ式も正解: R@20=0.800) parse_error=None
+dae_X9_085 run=1: served=claude-haiku-5-5 stop=end_turn out=1646 sec=10.1 cost=$0.052 n=20 invalid=0 dup=0 K=9 R@20=0.333 AP@20=0.062 (同じ式も正解: R@20=0.333) parse_error=None
+dae_X2_012 run=1: served=claude-haiku-5-5 stop=end_turn out=860 sec=6.7 cost=$0.050 n=19 invalid=0 dup=1 K=2 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms_arrhenius_001_rv6 run=1: served=claude-haiku-5-5 stop=end_turn out=87 sec=2.9 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.050 (同じ式も正解: R@20=0.500) parse_error=None
+ms_bio_pid_001_rv3 run=1: served=claude-haiku-5-5 stop=end_turn out=1497 sec=9.3 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X3_006 run=1: served=claude-haiku-5-5 stop=end_turn out=70 sec=2.8 cost=$0.048 n=20 invalid=0 dup=0 K=3 R@20=0.333 AP@20=0.067 (同じ式も正解: R@20=0.333) parse_error=None
+dae_X4_054 run=1: served=claude-haiku-5-5 stop=end_turn out=1753 sec=10.3 cost=$0.052 n=20 invalid=0 dup=0 K=4 R@20=0.500 AP@20=0.417 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X5_066 run=1: served=claude-haiku-5-5 stop=end_turn out=1745 sec=11.2 cost=$0.052 n=20 invalid=0 dup=0 K=5 R@20=1.000 AP@20=0.664 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X3_008 run=1: served=claude-haiku-5-5 stop=end_turn out=2101 sec=11.8 cost=$0.053 n=20 invalid=0 dup=0 K=3 R@20=1.000 AP@20=0.917 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X10_074 run=1: served=claude-haiku-5-5 stop=end_turn out=1375 sec=8.5 cost=$0.051 n=20 invalid=0 dup=0 K=10 R@20=0.600 AP@20=0.425 (同じ式も正解: R@20=0.600) parse_error=None
+ms_batch_cstr_001_rv5 run=1: served=claude-haiku-5-5 stop=end_turn out=112 sec=2.9 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.071 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X9_096 run=1: served=claude-haiku-5-5 stop=end_turn out=2750 sec=15.1 cost=$0.055 n=20 invalid=0 dup=0 K=9 R@20=0.667 AP@20=0.243 (同じ式も正解: R@20=0.778) parse_error=None
+dae_X7_036 run=1: served=claude-haiku-5-5 stop=end_turn out=88 sec=3.0 cost=$0.048 n=20 invalid=0 dup=0 K=7 R@20=0.286 AP@20=0.050 (同じ式も正解: R@20=0.286) parse_error=None
+dae_X4_076 run=1: served=claude-haiku-5-5 stop=end_turn out=105 sec=2.8 cost=$0.048 n=20 invalid=0 dup=3 K=4 R@20=0.750 AP@20=0.249 (同じ式も正解: R@20=0.750) parse_error=None
+dae_X5_037 run=1: served=claude-haiku-5-5 stop=end_turn out=1762 sec=11.1 cost=$0.052 n=20 invalid=0 dup=0 K=5 R@20=0.800 AP@20=0.643 (同じ式も正解: R@20=0.800) parse_error=None
+dae_X2_036 run=1: served=claude-haiku-5-5 stop=end_turn out=963 sec=8.1 cost=$0.050 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0324 run=1: served=claude-haiku-5-5 stop=end_turn out=1484 sec=9.7 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.250 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X6_006 run=1: served=claude-haiku-5-5 stop=end_turn out=1245 sec=8.4 cost=$0.051 n=20 invalid=0 dup=0 K=6 R@20=0.667 AP@20=0.367 (同じ式も正解: R@20=0.667) parse_error=None
+ms3_0001 run=1: served=claude-haiku-5-5 stop=end_turn out=84 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms_pid_arrhenius_001 run=1: served=claude-haiku-5-5 stop=end_turn out=68 sec=2.6 cost=$0.048 n=19 invalid=0 dup=1 K=2 R@20=0.500 AP@20=0.167 (同じ式も正解: R@20=0.500) parse_error=None
+ms3_0414 run=1: served=claude-haiku-5-5 stop=end_turn out=1900 sec=11.1 cost=$0.052 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+ms3_0400 run=1: served=claude-haiku-5-5 stop=end_turn out=1354 sec=10.3 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+core_058_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=91 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=1 R@20=1.000 AP@20=0.500 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X2_097 run=1: served=claude-haiku-5-5 stop=end_turn out=53 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0275 run=1: served=claude-haiku-5-5 stop=end_turn out=1485 sec=9.2 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=0.833 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X1_074 run=1: served=claude-haiku-5-5 stop=end_turn out=72 sec=3.5 cost=$0.048 n=19 invalid=0 dup=1 K=1 R@20=1.000 AP@20=0.500 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X10_013 run=1: served=claude-haiku-5-5 stop=end_turn out=2710 sec=62.8 cost=$0.055 n=20 invalid=0 dup=0 K=10 R@20=0.300 AP@20=0.097 (同じ式も正解: R@20=0.300) parse_error=None
+dae_X6_089 run=1: served=claude-haiku-5-5 stop=refusal out=708 sec=6.9 cost=$0.050 n=0 invalid=0 dup=0 K=6 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=unreadable: Expecting value: line 1 column 1 (char 0)
+ms_pfr_kin_001_rv4 run=1: served=claude-haiku-5-5 stop=end_turn out=75 sec=2.5 cost=$0.048 n=16 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.250 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X1_052 run=1: served=claude-haiku-5-5 stop=end_turn out=1638 sec=12.1 cost=$0.052 n=20 invalid=0 dup=0 K=1 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X4_001 run=1: served=claude-haiku-5-5 stop=end_turn out=136 sec=3.8 cost=$0.048 n=20 invalid=0 dup=1 K=4 R@20=0.500 AP@20=0.163 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X3_025 run=1: served=claude-haiku-5-5 stop=end_turn out=2396 sec=15.4 cost=$0.054 n=19 invalid=0 dup=0 K=3 R@20=0.667 AP@20=0.556 (同じ式も正解: R@20=0.667) parse_error=None
+dae_X4_024 run=1: served=claude-haiku-5-5 stop=end_turn out=51 sec=5.4 cost=$0.048 n=10 invalid=0 dup=0 K=4 R@20=0.750 AP@20=0.750 (同じ式も正解: R@20=0.750) parse_error=None
+dae_X6_055 run=1: served=claude-haiku-5-5 stop=end_turn out=2095 sec=12.7 cost=$0.053 n=20 invalid=0 dup=0 K=6 R@20=1.000 AP@20=0.770 (同じ式も正解: R@20=1.000) parse_error=None
+ms_pfr_convection_001 run=1: served=claude-haiku-5-5 stop=end_turn out=97 sec=3.2 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.100 (同じ式も正解: R@20=0.500) parse_error=None
+ms3_0361 run=1: served=claude-haiku-5-5 stop=end_turn out=94 sec=3.4 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms_pfr_kin_001_rv3 run=1: served=claude-haiku-5-5 stop=end_turn out=90 sec=3.5 cost=$0.048 n=18 invalid=0 dup=2 K=2 R@20=0.500 AP@20=0.167 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X4_030 run=1: served=claude-haiku-5-5 stop=end_turn out=1563 sec=9.5 cost=$0.052 n=20 invalid=0 dup=0 K=4 R@20=0.750 AP@20=0.308 (同じ式も正解: R@20=1.000) parse_error=None
+ms_chemeng_re_001_rv4 run=1: served=claude-haiku-5-5 stop=end_turn out=1522 sec=9.5 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X7_078 run=1: served=claude-haiku-5-5 stop=end_turn out=2311 sec=12.5 cost=$0.054 n=20 invalid=0 dup=0 K=7 R@20=0.714 AP@20=0.402 (同じ式も正解: R@20=0.714) parse_error=None
+dae_X10_026 run=1: served=claude-haiku-5-5 stop=end_turn out=2451 sec=55.1 cost=$0.054 n=20 invalid=0 dup=0 K=10 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.600) parse_error=None
+dae_X8_031 run=1: served=claude-haiku-5-5 stop=end_turn out=1649 sec=50.5 cost=$0.052 n=20 invalid=0 dup=0 K=8 R@20=0.375 AP@20=0.188 (同じ式も正解: R@20=0.375) parse_error=None
+dae_X6_002 run=1: served=claude-haiku-5-5 stop=end_turn out=3270 sec=16.4 cost=$0.056 n=20 invalid=0 dup=0 K=6 R@20=0.500 AP@20=0.279 (同じ式も正解: R@20=0.667) parse_error=None
+dae_X6_025 run=1: served=claude-haiku-5-5 stop=end_turn out=1753 sec=16.2 cost=$0.052 n=20 invalid=0 dup=0 K=6 R@20=0.500 AP@20=0.137 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X8_094 run=1: served=claude-haiku-5-5 stop=end_turn out=1785 sec=11.4 cost=$0.052 n=20 invalid=0 dup=0 K=8 R@20=0.625 AP@20=0.162 (同じ式も正解: R@20=0.625) parse_error=None
+ms3_0063 run=1: served=claude-haiku-5-5 stop=end_turn out=2254 sec=12.8 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.125 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X10_079 run=1: served=claude-haiku-5-5 stop=end_turn out=2794 sec=15.1 cost=$0.055 n=20 invalid=0 dup=0 K=10 R@20=0.300 AP@20=0.046 (同じ式も正解: R@20=0.300) parse_error=None
+dae_X10_083 run=1: served=claude-haiku-5-5 stop=end_turn out=1281 sec=9.7 cost=$0.051 n=20 invalid=0 dup=0 K=10 R@20=0.100 AP@20=0.033 (同じ式も正解: R@20=0.200) parse_error=None
+ms3_0348 run=1: served=claude-haiku-5-5 stop=end_turn out=147 sec=3.2 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=0.225 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X7_012 run=1: served=claude-haiku-5-5 stop=end_turn out=1393 sec=19.0 cost=$0.051 n=20 invalid=0 dup=0 K=7 R@20=0.143 AP@20=0.143 (同じ式も正解: R@20=0.143) parse_error=None
+dae_X1_081 run=1: served=claude-haiku-5-5 stop=end_turn out=1266 sec=9.5 cost=$0.051 n=15 invalid=0 dup=0 K=1 R@20=1.000 AP@20=0.500 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0198 run=1: served=claude-haiku-5-5 stop=end_turn out=2141 sec=11.7 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=0.700 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X2_049 run=1: served=claude-haiku-5-5 stop=end_turn out=1659 sec=10.5 cost=$0.052 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=0.833 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0093 run=1: served=claude-haiku-5-5 stop=end_turn out=1628 sec=10.6 cost=$0.052 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.167 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X6_003 run=1: served=claude-haiku-5-5 stop=end_turn out=2093 sec=11.6 cost=$0.053 n=20 invalid=0 dup=0 K=6 R@20=0.667 AP@20=0.386 (同じ式も正解: R@20=0.667) parse_error=None
+ms3_0374 run=1: served=claude-haiku-5-5 stop=end_turn out=2106 sec=12.5 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X2_001 run=1: served=claude-haiku-5-5 stop=end_turn out=89 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X9_050 run=1: served=claude-haiku-5-5 stop=end_turn out=3878 sec=20.6 cost=$0.058 n=20 invalid=0 dup=0 K=9 R@20=0.111 AP@20=0.111 (同じ式も正解: R@20=0.444) parse_error=None
+ms_pid_arrhenius_001_rv1 run=1: served=claude-haiku-5-5 stop=end_turn out=89 sec=2.0 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X8_013 run=1: served=claude-haiku-5-5 stop=end_turn out=108 sec=3.3 cost=$0.048 n=20 invalid=0 dup=0 K=8 R@20=0.125 AP@20=0.009 (同じ式も正解: R@20=0.125) parse_error=None
+ms3_0499 run=1: served=claude-haiku-5-5 stop=end_turn out=2068 sec=12.0 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.062 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X7_048 run=1: served=claude-haiku-5-5 stop=end_turn out=2933 sec=14.5 cost=$0.055 n=20 invalid=0 dup=0 K=7 R@20=0.286 AP@20=0.179 (同じ式も正解: R@20=0.286) parse_error=None
+dae_X6_004 run=1: served=claude-haiku-5-5 stop=end_turn out=1470 sec=9.1 cost=$0.051 n=20 invalid=0 dup=0 K=6 R@20=0.667 AP@20=0.344 (同じ式も正解: R@20=0.667) parse_error=None
+dae_X9_056 run=1: served=claude-haiku-5-5 stop=end_turn out=217 sec=4.2 cost=$0.048 n=20 invalid=0 dup=3 K=9 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0391 run=1: served=claude-haiku-5-5 stop=end_turn out=2740 sec=15.2 cost=$0.055 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+core_077_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=93 sec=3.0 cost=$0.048 n=20 invalid=0 dup=1 K=1 R@20=1.000 AP@20=0.333 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X7_093 run=1: served=claude-haiku-5-5 stop=end_turn out=1513 sec=9.1 cost=$0.052 n=20 invalid=0 dup=0 K=7 R@20=0.714 AP@20=0.210 (同じ式も正解: R@20=0.714) parse_error=None
+ms3_0437 run=1: served=claude-haiku-5-5 stop=end_turn out=2310 sec=12.5 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X2_011 run=1: served=claude-haiku-5-5 stop=end_turn out=1277 sec=8.1 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X5_013 run=1: served=claude-haiku-5-5 stop=end_turn out=1713 sec=14.4 cost=$0.052 n=20 invalid=0 dup=0 K=5 R@20=0.600 AP@20=0.400 (同じ式も正解: R@20=0.600) parse_error=None
+ms3_0305 run=1: served=claude-haiku-5-5 stop=end_turn out=89 sec=3.4 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.100 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X4_083 run=1: served=claude-haiku-5-5 stop=refusal out=1404 sec=8.8 cost=$0.051 n=0 invalid=0 dup=0 K=4 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=unreadable: Expecting value: line 1 column 1 (char 0)
+ms3_0017 run=1: served=claude-haiku-5-5 stop=end_turn out=71 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0108 run=1: served=claude-haiku-5-5 stop=end_turn out=85 sec=2.1 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.031 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X2_058 run=1: served=claude-haiku-5-5 stop=end_turn out=74 sec=2.4 cost=$0.048 n=16 invalid=0 dup=0 K=2 R@20=1.000 AP@20=0.129 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0060 run=1: served=claude-haiku-5-5 stop=end_turn out=88 sec=2.2 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms_batch_convection_001_rv1 run=1: served=claude-haiku-5-5 stop=end_turn out=72 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X7_037 run=1: served=claude-haiku-5-5 stop=end_turn out=2161 sec=12.5 cost=$0.053 n=20 invalid=0 dup=0 K=7 R@20=0.286 AP@20=0.179 (同じ式も正解: R@20=0.286) parse_error=None
+dae_X6_050 run=1: served=claude-haiku-5-5 stop=end_turn out=2435 sec=13.8 cost=$0.054 n=20 invalid=0 dup=0 K=6 R@20=0.333 AP@20=0.208 (同じ式も正解: R@20=0.333) parse_error=None
+dae_X10_025 run=1: served=claude-haiku-5-5 stop=end_turn out=2993 sec=16.6 cost=$0.055 n=20 invalid=0 dup=0 K=10 R@20=0.900 AP@20=0.782 (同じ式も正解: R@20=0.900) parse_error=None
+dae_X5_095 run=1: served=claude-haiku-5-5 stop=end_turn out=2774 sec=15.8 cost=$0.055 n=20 invalid=0 dup=0 K=5 R@20=0.400 AP@20=0.100 (同じ式も正解: R@20=0.400) parse_error=None
+ms3_0012 run=1: served=claude-haiku-5-5 stop=end_turn out=85 sec=3.4 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.250 (同じ式も正解: R@20=0.500) parse_error=None
+ms3_0046 run=1: served=claude-haiku-5-5 stop=end_turn out=1834 sec=11.2 cost=$0.052 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+core_036_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=72 sec=2.7 cost=$0.048 n=20 invalid=1 dup=0 K=1 R@20=1.000 AP@20=0.200 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0276 run=1: served=claude-haiku-5-5 stop=end_turn out=98 sec=3.7 cost=$0.048 n=20 invalid=0 dup=2 K=2 R@20=0.500 AP@20=0.062 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X9_079 run=1: served=claude-haiku-5-5 stop=end_turn out=1531 sec=10.8 cost=$0.052 n=20 invalid=0 dup=0 K=9 R@20=1.000 AP@20=0.873 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X6_061 run=1: served=claude-haiku-5-5 stop=end_turn out=91 sec=3.0 cost=$0.048 n=20 invalid=0 dup=0 K=6 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0003 run=1: served=claude-haiku-5-5 stop=end_turn out=80 sec=3.0 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X8_019 run=1: served=claude-haiku-5-5 stop=end_turn out=2323 sec=13.4 cost=$0.054 n=20 invalid=0 dup=0 K=8 R@20=0.625 AP@20=0.423 (同じ式も正解: R@20=0.625) parse_error=None
+dae_X9_067 run=1: served=claude-haiku-5-5 stop=end_turn out=182 sec=3.6 cost=$0.048 n=20 invalid=0 dup=0 K=9 R@20=0.111 AP@20=0.014 (同じ式も正解: R@20=0.111) parse_error=None
+dae_X3_092 run=1: served=claude-haiku-5-5 stop=end_turn out=66 sec=26.4 cost=$0.048 n=16 invalid=0 dup=0 K=3 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X4_066 run=1: served=claude-haiku-5-5 stop=refusal out=114 sec=3.6 cost=$0.048 n=0 invalid=0 dup=0 K=4 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=unreadable: Expecting value: line 1 column 1 (char 0)
+dae_X5_075 run=1: served=claude-haiku-5-5 stop=end_turn out=1361 sec=9.8 cost=$0.051 n=20 invalid=0 dup=0 K=5 R@20=0.600 AP@20=0.202 (同じ式も正解: R@20=0.600) parse_error=None
+ms3_0137 run=1: served=claude-haiku-5-5 stop=end_turn out=2307 sec=12.7 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms_bioreactor_001_rv3 run=1: served=claude-haiku-5-5 stop=end_turn out=87 sec=2.7 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X4_036 run=1: served=claude-haiku-5-5 stop=end_turn out=2358 sec=12.5 cost=$0.054 n=20 invalid=0 dup=0 K=4 R@20=1.000 AP@20=0.385 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0169 run=1: served=claude-haiku-5-5 stop=end_turn out=2277 sec=11.5 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X4_091 run=1: served=claude-haiku-5-5 stop=end_turn out=1700 sec=9.6 cost=$0.052 n=20 invalid=0 dup=0 K=4 R@20=0.750 AP@20=0.156 (同じ式も正解: R@20=0.750) parse_error=None
+dae_X2_027 run=1: served=claude-haiku-5-5 stop=end_turn out=2293 sec=12.5 cost=$0.053 n=16 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.071 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0167 run=1: served=claude-haiku-5-5 stop=end_turn out=1289 sec=8.8 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms_chemeng_re_001 run=1: served=claude-haiku-5-5 stop=end_turn out=1367 sec=8.1 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0196 run=1: served=claude-haiku-5-5 stop=end_turn out=1825 sec=10.6 cost=$0.052 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X8_026 run=1: served=claude-haiku-5-5 stop=end_turn out=1861 sec=11.9 cost=$0.053 n=20 invalid=0 dup=0 K=8 R@20=0.250 AP@20=0.138 (同じ式も正解: R@20=0.250) parse_error=None
+dae_X5_060 run=1: served=claude-haiku-5-5 stop=end_turn out=2675 sec=14.3 cost=$0.055 n=20 invalid=0 dup=0 K=5 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0207 run=1: served=claude-haiku-5-5 stop=end_turn out=70 sec=2.9 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X8_045 run=1: served=claude-haiku-5-5 stop=end_turn out=72 sec=2.7 cost=$0.048 n=20 invalid=0 dup=0 K=8 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X7_038 run=1: served=claude-haiku-5-5 stop=end_turn out=111 sec=3.8 cost=$0.048 n=20 invalid=0 dup=0 K=7 R@20=0.429 AP@20=0.221 (同じ式も正解: R@20=0.429) parse_error=None
+dae_X4_051 run=1: served=claude-haiku-5-5 stop=end_turn out=2093 sec=11.4 cost=$0.053 n=20 invalid=0 dup=0 K=4 R@20=0.250 AP@20=0.028 (同じ式も正解: R@20=0.250) parse_error=None
+dae_X8_001 run=1: served=claude-haiku-5-5 stop=end_turn out=1195 sec=8.6 cost=$0.051 n=20 invalid=0 dup=0 K=8 R@20=0.250 AP@20=0.250 (同じ式も正解: R@20=0.250) parse_error=None
+dae_X1_031 run=1: served=claude-haiku-5-5 stop=end_turn out=110 sec=3.5 cost=$0.048 n=20 invalid=0 dup=0 K=1 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+core_093_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=70 sec=2.8 cost=$0.048 n=20 invalid=0 dup=0 K=1 R@20=1.000 AP@20=0.067 (同じ式も正解: R@20=1.000) parse_error=None
+ms3_0336 run=1: served=claude-haiku-5-5 stop=end_turn out=70 sec=3.8 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X7_080 run=1: served=claude-haiku-5-5 stop=end_turn out=29 sec=2.3 cost=$0.048 n=6 invalid=0 dup=0 K=7 R@20=0.571 AP@20=0.571 (同じ式も正解: R@20=0.571) parse_error=None
+dae_X6_053 run=1: served=claude-haiku-5-5 stop=end_turn out=1630 sec=11.3 cost=$0.052 n=20 invalid=0 dup=0 K=6 R@20=0.333 AP@20=0.075 (同じ式も正解: R@20=0.333) parse_error=None
+dae_X6_024 run=1: served=claude-haiku-5-5 stop=end_turn out=1397 sec=8.5 cost=$0.051 n=20 invalid=0 dup=0 K=6 R@20=0.833 AP@20=0.325 (同じ式も正解: R@20=0.833) parse_error=None
+dae_X2_087 run=1: served=claude-haiku-5-5 stop=end_turn out=1347 sec=8.9 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+core_002_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=57 sec=2.7 cost=$0.048 n=15 invalid=0 dup=0 K=1 R@20=1.000 AP@20=0.333 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X6_049 run=1: served=claude-haiku-5-5 stop=end_turn out=102 sec=3.1 cost=$0.048 n=20 invalid=0 dup=2 K=6 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0091 run=1: served=claude-haiku-5-5 stop=end_turn out=1257 sec=9.3 cost=$0.051 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.167 (同じ式も正解: R@20=0.500) parse_error=None
+ms_steady_cstr_heat_001_rv6 run=1: served=claude-haiku-5-5 stop=end_turn out=70 sec=2.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0235 run=1: served=claude-haiku-5-5 stop=end_turn out=974 sec=6.8 cost=$0.050 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X2_056 run=1: served=claude-haiku-5-5 stop=end_turn out=101 sec=2.6 cost=$0.048 n=20 invalid=0 dup=1 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0160 run=1: served=claude-haiku-5-5 stop=end_turn out=97 sec=3.5 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X9_054 run=1: served=claude-haiku-5-5 stop=end_turn out=1623 sec=9.7 cost=$0.052 n=20 invalid=0 dup=0 K=9 R@20=0.333 AP@20=0.113 (同じ式も正解: R@20=0.444) parse_error=None
+dae_X1_038 run=1: served=claude-haiku-5-5 stop=end_turn out=72 sec=2.5 cost=$0.048 n=17 invalid=0 dup=3 K=1 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+core_021_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=72 sec=2.5 cost=$0.048 n=20 invalid=1 dup=0 K=1 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X8_092 run=1: served=claude-haiku-5-5 stop=end_turn out=87 sec=23.5 cost=$0.048 n=19 invalid=0 dup=1 K=8 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X3_055 run=1: served=claude-haiku-5-5 stop=end_turn out=71 sec=2.4 cost=$0.048 n=20 invalid=0 dup=0 K=3 R@20=0.333 AP@20=0.067 (同じ式も正解: R@20=0.333) parse_error=None
+dae_X5_014 run=1: served=claude-haiku-5-5 stop=end_turn out=1744 sec=38.2 cost=$0.052 n=20 invalid=0 dup=0 K=5 R@20=1.000 AP@20=0.871 (同じ式も正解: R@20=1.000) parse_error=None
+core_113_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=70 sec=2.5 cost=$0.048 n=14 invalid=0 dup=1 K=1 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms_bio_diffusion_002 run=1: served=claude-haiku-5-5 stop=end_turn out=88 sec=3.7 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.062 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X3_004 run=1: served=claude-haiku-5-5 stop=end_turn out=1864 sec=14.5 cost=$0.052 n=20 invalid=0 dup=0 K=3 R@20=1.000 AP@20=0.538 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X4_096 run=1: served=claude-haiku-5-5 stop=end_turn out=60 sec=3.9 cost=$0.048 n=20 invalid=0 dup=0 K=4 R@20=0.500 AP@20=0.312 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X7_054 run=1: served=claude-haiku-5-5 stop=end_turn out=102 sec=3.6 cost=$0.048 n=20 invalid=0 dup=3 K=7 R@20=0.571 AP@20=0.200 (同じ式も正解: R@20=0.571) parse_error=None
+dae_X2_020 run=1: served=claude-haiku-5-5 stop=end_turn out=180 sec=3.2 cost=$0.048 n=20 invalid=0 dup=3 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X1_086 run=1: served=claude-haiku-5-5 stop=end_turn out=66 sec=3.9 cost=$0.048 n=19 invalid=0 dup=1 K=1 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms_batch_arrhenius_001_rv3 run=1: served=claude-haiku-5-5 stop=end_turn out=70 sec=3.0 cost=$0.048 n=15 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.071 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X9_048 run=1: served=claude-haiku-5-5 stop=end_turn out=2440 sec=12.3 cost=$0.054 n=20 invalid=0 dup=0 K=9 R@20=0.667 AP@20=0.205 (同じ式も正解: R@20=0.667) parse_error=None
+ms3_0424 run=1: served=claude-haiku-5-5 stop=end_turn out=74 sec=2.5 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+ms3_0083 run=1: served=claude-haiku-5-5 stop=end_turn out=2918 sec=15.4 cost=$0.055 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.500 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X4_072 run=1: served=claude-haiku-5-5 stop=refusal out=365 sec=5.5 cost=$0.049 n=0 invalid=0 dup=0 K=4 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=unreadable: Expecting value: line 1 column 1 (char 0)
+dae_X2_059 run=1: served=claude-haiku-5-5 stop=end_turn out=69 sec=2.8 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.000 AP@20=0.000 (同じ式も正解: R@20=0.000) parse_error=None
+dae_X3_026 run=1: served=claude-haiku-5-5 stop=end_turn out=2883 sec=12.5 cost=$0.055 n=20 invalid=0 dup=0 K=3 R@20=0.667 AP@20=0.278 (同じ式も正解: R@20=0.667) parse_error=None
+core_075_v1 run=1: served=claude-haiku-5-5 stop=end_turn out=72 sec=2.8 cost=$0.048 n=20 invalid=0 dup=0 K=1 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+ms_batch_arrhenius_001_rv6 run=1: served=claude-haiku-5-5 stop=end_turn out=73 sec=2.0 cost=$0.048 n=16 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.083 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X6_047 run=1: served=claude-haiku-5-5 stop=end_turn out=1792 sec=13.3 cost=$0.052 n=20 invalid=0 dup=0 K=6 R@20=0.833 AP@20=0.833 (同じ式も正解: R@20=0.833) parse_error=None
+dae_X3_054 run=1: served=claude-haiku-5-5 stop=end_turn out=1342 sec=8.6 cost=$0.051 n=20 invalid=0 dup=0 K=3 R@20=0.333 AP@20=0.167 (同じ式も正解: R@20=0.333) parse_error=None
+ms_batch_cstr_001_rv3 run=1: served=claude-haiku-5-5 stop=end_turn out=75 sec=3.1 cost=$0.048 n=16 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.083 (同じ式も正解: R@20=0.500) parse_error=None
+dae_X5_071 run=1: served=claude-haiku-5-5 stop=end_turn out=1146 sec=7.5 cost=$0.051 n=20 invalid=0 dup=0 K=5 R@20=0.600 AP@20=0.255 (同じ式も正解: R@20=0.800) parse_error=None
+dae_X7_085 run=1: served=claude-haiku-5-5 stop=end_turn out=1633 sec=10.1 cost=$0.052 n=20 invalid=0 dup=0 K=7 R@20=0.714 AP@20=0.662 (同じ式も正解: R@20=0.714) parse_error=None
+ms3_0442 run=1: served=claude-haiku-5-5 stop=end_turn out=2098 sec=12.0 cost=$0.053 n=20 invalid=0 dup=0 K=2 R@20=1.000 AP@20=1.000 (同じ式も正解: R@20=1.000) parse_error=None
+dae_X8_024 run=1: served=claude-haiku-5-5 stop=end_turn out=2230 sec=13.5 cost=$0.053 n=20 invalid=0 dup=0 K=8 R@20=0.500 AP@20=0.125 (同じ式も正解: R@20=0.625) parse_error=None
+dae_X2_002 run=1: served=claude-haiku-5-5 stop=end_turn out=91 sec=3.6 cost=$0.048 n=20 invalid=0 dup=0 K=2 R@20=0.500 AP@20=0.125 (同じ式も正解: R@20=0.500) parse_error=None

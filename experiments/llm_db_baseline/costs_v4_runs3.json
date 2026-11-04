@@ -66,30 +66,70 @@
    },
    "measured_output_tokens": {
     "by_kind_mean": {
-     "single": 57.666666666666664,
-     "cross": 153.0,
-     "synth": 1539.6666666666667
+     "synth": 1230.957627118644,
+     "cross": 866.8852459016393,
+     "single": 74.625
     },
     "by_kind_n": {
-     "single": 3,
-     "cross": 3,
-     "synth": 3
+     "synth": 118,
+     "cross": 61,
+     "single": 8
     },
     "plan_share": {
      "single": 0.04662283323371189,
      "cross": 0.35923490735206215,
      "synth": 0.5941422594142259
     },
-    "weighted": 972.4325562861128,
-    "prompt_version": "v3"
+    "weighted": 1046.2586157458563,
+    "prompt_version": "v4"
    },
    "10splits_out_measured": {
     "read": 238.94053680000002,
     "write": 0.59509,
     "task": 0.888363,
-    "output": 12.2015975,
-    "total": 252.6255873,
-    "read_share": 0.9458287236607248
+    "output": 13.127929981071132,
+    "total": 253.55191978107115,
+    "read_share": 0.9423732110027513
+   },
+   "measured_cost": {
+    "10splits": {
+     "n_records": {
+      "synth": 118,
+      "cross": 61,
+      "single": 8
+     },
+     "per_call_mean_by_kind": {
+      "synth": 0.050883538983050855,
+      "cross": 0.04985645819672131,
+      "single": 0.04785470000000001
+     },
+     "total": 253.41899717614618,
+     "ci95": [
+      251.76243329351212,
+      255.10760285376324
+     ],
+     "write_once": 0.59509,
+     "n_calls": 5019
+    },
+    "3splits": {
+     "n_records": {
+      "synth": 118,
+      "cross": 61,
+      "single": 8
+     },
+     "per_call_mean_by_kind": {
+      "synth": 0.050883538983050855,
+      "cross": 0.04985645819672131,
+      "single": 0.04785470000000001
+     },
+     "total": 198.1090449786151,
+     "ci95": [
+      196.81488538829666,
+      199.42823662275464
+     ],
+     "write_once": 0.59509,
+     "n_calls": 3921
+    }
    }
   },
   "claude-sonnet-5-5": {
@@ -190,6 +230,73 @@
     "output": 627.36,
     "total": 1384.3441808000002,
     "read_share": 0.5393682692179234
+   },
+   "measured_output_tokens": {
+    "by_kind_mean": {
+     "synth": 1003.1326530612245,
+     "cross": 769.9607843137255,
+     "single": 109.8
+    },
+    "by_kind_n": {
+     "synth": 98,
+     "cross": 51,
+     "single": 5
+    },
+    "plan_share": {
+     "single": 0.04662283323371189,
+     "cross": 0.35923490735206215,
+     "synth": 0.5941422594142259
+    },
+    "weighted": 877.7194790887065,
+    "prompt_version": "v4"
+   },
+   "10splits_out_measured": {
+    "read": 955.7621472000001,
+    "write": 4.76072,
+    "task": 7.106904,
+    "output": 88.10548131092436,
+    "total": 1055.7352525109245,
+    "read_share": 0.9053047579180937
+   },
+   "measured_cost": {
+    "10splits": {
+     "n_records": {
+      "synth": 98,
+      "cross": 51,
+      "single": 5
+     },
+     "per_call_mean_by_kind": {
+      "synth": 0.21210224897959185,
+      "cross": 0.2064961921568628,
+      "single": 0.19309020000000002
+     },
+     "total": 1054.7453677159665,
+     "ci95": [
+      1039.057195030084,
+      1076.4117449660505
+     ],
+     "write_once": 4.76072,
+     "n_calls": 5019
+    },
+    "3splits": {
+     "n_records": {
+      "synth": 98,
+      "cross": 51,
+      "single": 5
+     },
+     "per_call_mean_by_kind": {
+      "synth": 0.21210224897959185,
+      "cross": 0.2064961921568628,
+      "single": 0.19309020000000002
+     },
+     "total": 825.0416133441532,
+     "ci95": [
+      812.7855214729944,
+      841.9680658640932
+     ],
+     "write_once": 4.76072,
+     "n_calls": 3921
+    }
    }
   },
   "claude-fable-5-1": {

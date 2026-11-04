@@ -1178,6 +1178,15 @@ def cmd_check_compress(args) -> None:
     print(json.dumps(res, ensure_ascii=False, indent=1))
 
 
+def _as_cache_read(usage: dict) -> dict:
+    """キャッシュに保存した分を、読み出した分として数え直した usage（2 回目以降の 1 回の費用の見込みに使う）."""
+    u = dict(usage)
+    u["cache_read_input_tokens"] = (u.get("cache_read_input_tokens") or 0) + (u.get("cache_creation_input_tokens") or 0)
+    u["cache_creation_input_tokens"] = 0
+    u["cache_creation"] = None
+    return u
+
+
 def _run_cases(client, cfg: dict, todo: list, params_of, source: str, workers: int,
                budget: float | None, spent: list, attempts: int = 4, meta_of=None,
                fields=("setting", "seed", "case_id"), group_of=lambda t: (t[0], t[1]), stream: bool = False) -> None:
@@ -1186,19 +1195,32 @@ def _run_cases(client, cfg: dict, todo: list, params_of, source: str, workers: i
     by_split = {}
     for t in todo:
         by_split.setdefault(group_of(t), []).append(t)
+    # 並列で流すとき、上限を超えないように、走っている呼び出しの分（それまでの 1 回の最大の費用。キャッシュの保存は
+    # 読み出しとして数える）を前もって見込む
+    flight = {"n": 0, "per": 0.0}
 
     def one(t):
-        if budget is not None and spent[0] >= budget:
-            return
+        with _RAW_LOCK:
+            if budget is not None and (spent[0] >= budget
+                                       or spent[0] + (flight["n"] + 1) * flight["per"] > budget):
+                return
+            flight["n"] += 1
         t0 = time.time()
-        rec, err = call_api(client, params_of(t), attempts=attempts, stream=stream)
+        try:
+            rec, err = call_api(client, params_of(t), attempts=attempts, stream=stream)
+        except BaseException:
+            with _RAW_LOCK:
+                flight["n"] -= 1
+            raise
         r = {**cfg, **dict(zip(fields, t)), "source": source,
              "time": datetime.now(timezone.utc).isoformat(timespec="seconds"), "seconds": round(time.time() - t0, 1),
              "error": err, **(meta_of(t) if meta_of else {}), **(rec or {})}
         append_raw(cfg, r)
-        if rec:
-            with _RAW_LOCK:
+        with _RAW_LOCK:   # 費用を足すのと、走っている数を減らすのを同時に（間に別の呼び出しが始まらないように）
+            if rec:
                 spent[0] += cost_usd(rec["usage"], cfg["model"])
+                flight["per"] = max(flight["per"], cost_usd(_as_cache_read(rec["usage"]), cfg["model"]))
+            flight["n"] -= 1
         u = (rec or {}).get("usage") or {}
         print(f"  {'/'.join(map(str, t))}: err={err} stop={(rec or {}).get('stop_reason')} "
               f"in={u.get('input_tokens')} write={u.get('cache_creation_input_tokens')} "
@@ -1569,6 +1591,36 @@ def measured_output_tokens(recs: list, cases: dict, plan_ids: list) -> dict | No
             "weighted": float(sum(mean[k] * share[k] for k in share) / len(plan_ids))}
 
 
+def measured_cost_interval(recs: list, cases: dict, plan_ids: list, n_calls: int, prefix: float, model: str,
+                           n_boot: int = 2000, seed: int = 0) -> dict | None:
+    """試しの 1 回ごとの実際の費用（キャッシュの保存は読み出しとして数え直す）から、本実行 n_calls 回の総額を見積もる.
+
+    種類（単一出典、出典横断、合成）ごとに 1 回の平均を出し、本実行の種類の割合で重みを付けて n_calls 倍し、
+    キャッシュの保存 1 回分を足す。95% 区間は、種類ごとに記録を復元抽出し直すブートストラップ（n_boot 回）。
+    """
+    by = {}
+    for r in recs:
+        if r.get("error") is None and r.get("usage") and r.get("case_id") in cases:
+            by.setdefault(case_kind(cases[r["case_id"]].get("variant_type") or ""), []).append(
+                cost_usd(_as_cache_read(r["usage"]), model))
+    share = Counter(case_kind(cases[c].get("variant_type") or "") for c in plan_ids)
+    if any(k not in by for k in share):
+        return None
+    w = {k: share[k] / len(plan_ids) for k in share}
+    write = prefix * price_for(model, prefix)["w5m"] / 1e6
+
+    def total(means):
+        return n_calls * sum(w[k] * means[k] for k in w) + write
+    rng = np.random.default_rng(seed)
+    arr = {k: np.asarray(v) for k, v in by.items()}
+    boots = [total({k: float(rng.choice(arr[k], len(arr[k])).mean()) for k in w}) for _ in range(n_boot)]
+    lo, hi = np.percentile(boots, [2.5, 97.5])
+    return {"n_records": {k: len(v) for k, v in by.items()},
+            "per_call_mean_by_kind": {k: float(np.mean(v)) for k, v in by.items()},
+            "total": total({k: float(np.mean(by[k])) for k in w}), "ci95": [float(lo), float(hi)],
+            "write_once": write, "n_calls": n_calls}
+
+
 def cmd_costs3(args) -> None:
     """--runs 回ずつ解かせるときの費用の見積もりと内訳（API を呼ばない）。token_counts_<RUN_VERSION>.json のトークン数を使う.
 
@@ -1597,6 +1649,13 @@ def cmd_costs3(args) -> None:
             out["models"][model]["measured_output_tokens"] = meas
             out["models"][model]["10splits_out_measured"] = cost_breakdown(
                 m["prefix_tokens"], m["task_mean_est"], out["n_calls"]["10splits"], meas["weighted"], p)
+            if meas["prompt_version"] == RUN_VERSION:   # 1 回ごとの実際の費用からの見積もりと 95% 区間
+                cfg = {"model": model, "effort": "high", "db_format": "eqd", "examples": "none",
+                       "prompt_version": RUN_VERSION}
+                pil = [r for r in load_raw(cfg) if r.get("source") == "pilot"]
+                out["models"][model]["measured_cost"] = {
+                    name: measured_cost_interval(pil, cases, plan_ids, n, m["prefix_tokens"], model)
+                    for name, n in out["n_calls"].items()}
         b = out["models"][model]["10splits_out2000"]
         print(f"{model}: 10 分割 × {args.runs} 回 = {out['n_calls']['10splits']} 回、出力 2,000 で "
               f"{b['total']:.1f} USD（読み出し {b['read_share']:.0%}）"
@@ -1636,6 +1695,15 @@ def run_variability(per_run: dict) -> dict:
             "AP@20_sd_mean": float(np.mean(sd_ap)), "AP@20_sd_max": float(np.max(sd_ap)), "per_case": per_case}
 
 
+def sample_plan_cases(plan_ids: list, n: int, seed: int) -> list:
+    """本実行で解かせるケース（plan_ids）から無作為に n 件を、無作為な順に選ぶ（費用の見積もりの試し用）.
+
+    予算で途中で止まっても、解いた分が無作為な標本になるように、選んだ順に解かせる。
+    """
+    rng = np.random.default_rng(seed)
+    return [plan_ids[i] for i in rng.permutation(len(plan_ids))[:n]]
+
+
 def cmd_pilot3(args) -> None:
     """承認後、本実行の前に各モデルで数件だけ流して出力の形を確かめる（3 分割で解かせるケースの先頭 n 件。本実行で再利用される）.
 
@@ -1646,16 +1714,18 @@ def cmd_pilot3(args) -> None:
     equiv = equiv_maps(eqs, id_to_key)
     cases, splits = load_case_index(), load_splits()
     cfg = _cfg3(args)
-    ids = (args.case_ids.split(",") if args.case_ids else v3_plan(splits, [42, 123, 456], cases)[: args.n])
+    if args.case_ids:
+        ids = args.case_ids.split(",")
+    elif args.sample:
+        ids = sample_plan_cases(v3_plan(splits, ALL_SEEDS, cases), args.sample, args.sample_seed)
+    else:
+        ids = v3_plan(splits, [42, 123, 456], cases)[: args.n]
     unknown = [c for c in ids if c not in cases]
     if unknown:
         sys.exit(f"ケースがない: {unknown}")
-    if args.runs > 1:
-        fields = ("case_id", "run")
-        plan = run_plan(ids, args.runs)
-    else:
-        fields = ("case_id",)
-        plan = [(cid,) for cid in ids]
+    # 回の番号を必ず記録する（run3 が同じケースと回を解き直さず、試しの答えを本実行で使えるようにするため）
+    fields = ("case_id", "run")
+    plan = run_plan(ids, args.runs)
     todo = pending_cases(load_raw(cfg), plan, cfg, fields=fields)
     params_of, meta_of = _params3(args, eqs, cases)
     client, spent = client_(max_retries=0), [_spent_so_far(cfg)]
@@ -1667,7 +1737,8 @@ def cmd_pilot3(args) -> None:
         print(f"1 件目の入力 {n_in:,} トークン（max_tokens {args.max_tokens:,}、上限 {CONTEXT_LIMIT[args.model]:,}）")
         if n_in + args.max_tokens > CONTEXT_LIMIT[args.model]:
             sys.exit("入力と出力の上限の和が、入力の上限を超えるので送らない")
-    _run_cases(client, cfg, todo, params_of, "pilot", 1, args.budget_usd, spent, attempts=1, meta_of=meta_of,
+    _run_cases(client, cfg, todo, params_of, "pilot", args.workers, args.budget_usd, spent, attempts=1,
+               meta_of=meta_of,
                fields=fields, group_of=lambda t: "all", stream=True)
     per_run = {}
     for r in load_raw(cfg):
@@ -1882,6 +1953,10 @@ def main() -> None:
     common3(p)
     p.add_argument("--n", type=int, default=3)
     p.add_argument("--case-ids", default=None, help="解かせるケース（カンマ区切り）。与えると --n より優先")
+    p.add_argument("--sample", type=int, default=0,
+                   help="10 通りの分割で解かせるケースから無作為に選ぶ件数（--case-ids がないとき --n より優先）")
+    p.add_argument("--sample-seed", type=int, default=20261104)
+    p.add_argument("--workers", type=int, default=1)
     p.add_argument("--runs", type=int, default=1,
                    help="同じケースを独立に解かせる回数。2 以上なら回ごとに記録し、回の間のぶれを集計する")
     p.set_defaults(fn=cmd_pilot3)

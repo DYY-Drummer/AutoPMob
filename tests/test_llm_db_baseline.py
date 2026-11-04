@@ -671,3 +671,46 @@ def test_measured_output_tokens_weights_kinds_by_the_plan():
     assert m["by_kind_mean"] == {"single": 100.0, "cross": 200.0, "synth": 2000.0}
     assert m["weighted"] == (100 + 200 + 2 * 2000) / 4
     assert measured_output_tokens(recs[:1], cases, ["core_1", "ms_1"]) is None   # 試しにない種類がある
+
+
+def test_sample_plan_cases_is_random_subset_and_reproducible():
+    from run_llm_db_baseline import sample_plan_cases
+    ids = [f"c{i}" for i in range(100)]
+    a = sample_plan_cases(ids, 10, 1)
+    assert a == sample_plan_cases(ids, 10, 1)
+    assert len(set(a)) == 10 and set(a) <= set(ids)
+    assert a != ids[:10]
+    assert sample_plan_cases(ids, 20, 1)[:10] == a   # 件数を増やしても先頭は同じ
+
+
+def test_run_cases_budget_reserves_in_flight_calls(monkeypatch, tmp_path):
+    import run_llm_db_baseline as m
+    monkeypatch.setattr(m, "RAW_DIR", tmp_path)
+    usage = {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0,
+             "output_tokens": 50_000}   # Opus 5.5 で 1 回 1.0 USD
+    calls = []
+
+    def fake(client, params, attempts=4, stream=False):
+        calls.append(1)
+        return {"usage": usage, "stop_reason": "end_turn"}, None
+    monkeypatch.setattr(m, "call_api", fake)
+    cfg = {"model": "claude-opus-5-5", "effort": "high", "db_format": "eqd", "examples": "none",
+           "prompt_version": "v4"}
+    spent = [0.0]
+    todo = [(f"c{i}", 1) for i in range(20)]
+    m._run_cases(None, cfg, todo, lambda t: {}, "pilot", 4, 5.0, spent, fields=("case_id", "run"),
+                 group_of=lambda t: "all")
+    assert spent[0] <= 5.0 + 1e-9
+    assert len(calls) == 5
+
+
+def test_measured_cost_interval_weights_kinds_and_adds_one_write():
+    from run_llm_db_baseline import measured_cost_interval
+    cases = {"a": {"variant_type": "original"}, "b": {"variant_type": "multisource_x"}, "c": {"variant_type": "dae"}}
+    u = lambda out: {"input_tokens": 0, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0,
+                     "output_tokens": out}
+    recs = [{"case_id": "a", "usage": u(50_000)}, {"case_id": "b", "usage": u(100_000)},
+            {"case_id": "c", "usage": u(0)}]   # Opus 5.5 で 1.0、2.0、0.0 USD
+    r = measured_cost_interval(recs, cases, ["a", "b", "c", "c"], 10, 1_000_000, "claude-opus-5-5", n_boot=50)
+    assert abs(r["total"] - (10 * (0.25 * 1 + 0.25 * 2 + 0.5 * 0) + 5.0)) < 1e-9
+    assert r["ci95"][0] <= r["total"] <= r["ci95"][1]
