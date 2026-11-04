@@ -582,6 +582,45 @@ def ranks_in_list(ranked_ids: list, id_to_key: dict, correct_keys) -> list:
     return [pos.get(k, MISS_RANK) for k in dict.fromkeys(correct_keys)]
 
 
+def latex_key(s) -> str:
+    """同じ式の印：LaTeX から空白と \\left・\\right・\\,・\\;・\\!・\\quad を除いた文字列.
+
+    set_aware_reranker.latex_key と同じ規則（報告書の「別の出典にある同じ式」386/3,132 本の定義）。
+    パイプラインの書き換えの影響を受けないよう写す。試験で同じ結果になることを確かめる。
+    """
+    return re.sub(r"\\left|\\right|\\,|\\;|\\!|\\quad|\s+", "", s or "")
+
+
+def equiv_maps(eqs: list, id_to_key: dict) -> tuple:
+    """(式の ID → 同じ式の印, 式の ID → 出典)。eqs[i-1] が短い ID i の式."""
+    key_latex = {k: latex_key(eqs[i - 1].get("equation")) for i, k in id_to_key.items()}
+    key_src = {k: get_src(eqs[i - 1]) for i, k in id_to_key.items()}
+    return key_latex, key_src
+
+
+def equiv_ranks_in_list(ranked_keys: list, correct_keys, key_latex: dict, key_src: dict) -> list:
+    """別の出典にある同じ式も正解とみなした、正解式の順位（昇順。並べた中になければ MISS_RANK）.
+
+    set_aware_reranker.equiv_ranks（eq_src あり）と同じ規則：答えを順に見て、まだ数えていない正解式と
+    同じ印の式が、正解式そのものか、正解式と別の出典の式なら、その正解式の順位とする。1 本の正解式は 1 回だけ、
+    1 本の答えは 1 本の正解式にだけ数える。DB にない ID（None）は数えないが、その順位を占める。
+    """
+    correct = list(dict.fromkeys(correct_keys))
+    open_gt = sorted(correct)
+    got = {}
+    for r, j in enumerate(ranked_keys, 1):
+        if not open_gt:
+            break
+        if j is None:
+            continue
+        for g in open_gt:
+            if key_latex[j] == key_latex[g] and (j == g or key_src[j] != key_src[g]):
+                got[g] = r
+                open_gt.remove(g)
+                break
+    return sorted(got.get(g, MISS_RANK) for g in correct)
+
+
 def metrics_from_ranks(ranks: list, top_n: int = TOP_N) -> dict:
     """Recall@top_n と AP@top_n（標準の定義: AP = (1/K) Σ P(e)。上位 top_n 件の外の正解式は P(e) = 0）."""
     k = len(ranks)
@@ -645,15 +684,15 @@ def v3_plan(splits: dict, seeds, cases: dict) -> list:
     return [cid for cid in cases if cid in ids]
 
 
-def split_summary(per_case: dict, splits: dict, setting: str, seeds: list) -> dict:
+def split_summary(per_case: dict, splits: dict, setting: str, seeds: list, suffix: str = "") -> dict:
     """版 3 の集計。per_case[case_id] = {"recall@20", "AP@20"}。各分割のテストケースの平均と、
-    分割間の平均 ± 標準偏差（ddof=1）."""
+    分割間の平均 ± 標準偏差（ddof=1）。suffix="_equiv" なら、別の出典の同じ式も正解とみなした値で集計する."""
     per_seed = {}
     for sd in seeds:
         ids = splits[setting][str(sd)]["test"]
         per_seed[str(sd)] = {"n": len(ids),
-                             "recall@20": float(np.mean([per_case[c]["recall@20"] for c in ids])),
-                             "MAP@20": float(np.mean([per_case[c]["AP@20"] for c in ids]))}
+                             "recall@20": float(np.mean([per_case[c][f"recall@20{suffix}"] for c in ids])),
+                             "MAP@20": float(np.mean([per_case[c][f"AP@20{suffix}"] for c in ids]))}
     return {"per_seed": per_seed,
             "recall@20": _mean_sd([v["recall@20"] for v in per_seed.values()]),
             "MAP@20": _mean_sd([v["MAP@20"] for v in per_seed.values()])}
@@ -937,13 +976,21 @@ def call_api(client, params: dict, attempts: int = 4, stream: bool = False) -> t
     return None, f"api gave up: {last}"
 
 
-def score_record(rec: dict, id_to_key: dict, correct_keys: list) -> dict:
+def score_record(rec: dict, id_to_key: dict, correct_keys: list, equiv: tuple | None = None) -> dict:
+    """1 件の応答の判定と指標。equiv = (式の ID → 同じ式の印, 式の ID → 出典) を与えると、
+    別の出典にある同じ式も正解とみなした順位と指標（*_equiv）も足す."""
     ids, err = parse_output(rec.get("text")) if rec.get("error") is None else (None, rec["error"])
     j = judge_ids(ids, n_db=len(id_to_key))
     ranks = ranks_in_list(j["ranked_ids"], id_to_key, correct_keys)
-    return {**metrics_from_ranks(ranks), "ranks": sorted(ranks), "parse_error": err,
-            "ranked_ids": j["ranked_ids"], "ranked_keys": [id_to_key.get(i) for i in j["ranked_ids"]],
-            **{k: j[k] for k in ("n_raw", "n_duplicates", "n_invalid", "n_truncated")}}
+    ranked_keys = [id_to_key.get(i) for i in j["ranked_ids"]]
+    out = {**metrics_from_ranks(ranks), "ranks": sorted(ranks), "parse_error": err,
+           "ranked_ids": j["ranked_ids"], "ranked_keys": ranked_keys,
+           **{k: j[k] for k in ("n_raw", "n_duplicates", "n_invalid", "n_truncated")}}
+    if equiv is not None:
+        ranks_eq = equiv_ranks_in_list(ranked_keys, correct_keys, *equiv)
+        m = metrics_from_ranks(ranks_eq)
+        out.update({"ranks_equiv": ranks_eq, "recall@20_equiv": m["recall@20"], "AP@20_equiv": m["AP@20"]})
+    return out
 
 
 def _cfg(args) -> dict:
@@ -1262,7 +1309,10 @@ def reference_rows(settings: list, seeds: list, splits: dict) -> dict:
                     reason = f"{f} の種 {seed} のテストケースが splits.json と違う"
                     break
                 rows += [{"setting": s, "seed": seed, "case_id": r["case_id"],
-                          **metrics_from_ranks(r["ranks"]), "AP_full": ap_full(r["ranks"])} for r in pcs]
+                          **metrics_from_ranks(r["ranks"]), "AP_full": ap_full(r["ranks"]),
+                          # 別の出典の同じ式も正解とみなした順位（パイプラインの出力にあるときだけ）
+                          **({"equiv": metrics_from_ranks(r["ranks_equiv"])} if "ranks_equiv" in r else {})}
+                         for r in pcs]
             if reason:
                 print(f"  比べる相手から外す: {name} 設定 {s}（{reason}）", file=sys.stderr)
             else:
@@ -1275,6 +1325,8 @@ def reference_rows(settings: list, seeds: list, splits: dict) -> dict:
                                                 for seed in seeds if any(r["seed"] == seed and r["setting"] == s
                                                                          for r in recs)])
             out[name] = {"summary": summ, "per_case": recs}
+            if all("equiv" in r for r in recs):
+                out[name]["summary_equiv"] = summarize([{**r, **r["equiv"]} for r in recs])
     return out
 
 
@@ -1490,6 +1542,7 @@ def cmd_run3(args) -> None:
 def cmd_evaluate3(args) -> None:
     """版 3 の判定と集計：設定 A・B の、10 通りと 3 通りの分割ごとの値（答えのそろった分だけ）と、既存の手法との比較."""
     eqs, id_to_key, key_to_id = load_db_v3()
+    equiv = equiv_maps(eqs, id_to_key)
     cases, splits = load_case_index(), load_splits()
     cfg = _cfg3(args)
     latest = {}
@@ -1502,7 +1555,7 @@ def cmd_evaluate3(args) -> None:
         if r is None:
             continue
         correct = [norm(m) for m in cases[cid]["correct_model_ids"] if norm(m) in key_to_id]
-        sc = score_record(r, id_to_key, correct)
+        sc = score_record(r, id_to_key, correct, equiv=equiv)
         per_case[cid] = sc
         rows.append({"case_id": cid, "variant": cases[cid].get("variant_type"), "time": r.get("time"),
                      "stop_reason": r.get("stop_reason"), "model_served": r.get("model_served"),
@@ -1511,27 +1564,32 @@ def cmd_evaluate3(args) -> None:
     out = {"config": cfg, "order_seed": V3_ORDER_SEED, "n_scored": len(rows),
            "rules": "ID だけで判定（等価性の判定なし）。DB にない ID と読めない出力は、その順位を占める不正解。"
                     "同じ ID の 2 回目以降は除く。上位 20 件。MAP@20 は標準の定義（上位 20 件の外の正解式は P(e)=0）。"
-                    "例題を渡さないので、同じケースの答えを、そのケースがテストに入るすべての分割で使う。",
-           "summary": {}, "comparison": {}}
+                    "例題を渡さないので、同じケースの答えを、そのケースがテストに入るすべての分割で使う。"
+                    "summary_equiv と comparison_equiv は、別の出典にある同じ式（空白と \\left・\\right・\\,・\\;・\\!・"
+                    "\\quad を除いた LaTeX が同じ式）も正解とみなした値（どの手法にも同じ規則）。",
+           "summary": {}, "comparison": {}, "summary_equiv": {}, "comparison_equiv": {}}
     refs = reference_rows(["A", "B"], ALL_SEEDS, splits)
     out["reference"] = {k: v["summary"] for k, v in refs.items()}
+    out["reference_equiv"] = {k: v["summary_equiv"] for k, v in refs.items() if "summary_equiv" in v}
     for name, seeds in (("10splits", ALL_SEEDS), ("3splits", [42, 123, 456])):
         need = v3_plan(splits, seeds, cases)
         lack = [c for c in need if c not in per_case]
         if lack:
             out["summary"][name] = {"missing": len(lack)}
             continue
-        for st in ("A", "B"):
-            sm = split_summary(per_case, splits, st, seeds)
-            out["summary"][f"{st}_{name}"] = sm
-            for ref, v in refs.items():
-                if st not in v["summary"]:
-                    continue
-                rs = {sd: x for sd, x in v["summary"][st]["per_seed"].items() if int(sd) in seeds}
-                out["comparison"][f"{st}_{name}__vs__{ref}"] = {
-                    metric: compare_splits({sd: x[metric] for sd, x in sm["per_seed"].items()},
-                                        {sd: x[metric] for sd, x in rs.items()})
-                    for metric in ("recall@20", "MAP@20")}
+        for suffix, skey, ckey, rkey in (("", "summary", "comparison", "summary"),
+                                         ("_equiv", "summary_equiv", "comparison_equiv", "summary_equiv")):
+            for st in ("A", "B"):
+                sm = split_summary(per_case, splits, st, seeds, suffix=suffix)
+                out[skey][f"{st}_{name}"] = sm
+                for ref, v in refs.items():
+                    if st not in v.get(rkey, {}):
+                        continue
+                    rs = {sd: x for sd, x in v[rkey][st]["per_seed"].items() if int(sd) in seeds}
+                    out[ckey][f"{st}_{name}__vs__{ref}"] = {
+                        metric: compare_splits({sd: x[metric] for sd, x in sm["per_seed"].items()},
+                                            {sd: x[metric] for sd, x in rs.items()})
+                        for metric in ("recall@20", "MAP@20")}
     out["quality"] = {
         "stop_reason": dict(Counter(x["stop_reason"] for x in rows)),
         "model_served": dict(Counter(x["model_served"] for x in rows)),
@@ -1553,8 +1611,11 @@ def cmd_evaluate3(args) -> None:
         if "missing" in v:
             print(f"  {key}: 答えのないケースが {v['missing']} 件")
             continue
+        eq = out["summary_equiv"].get(key)
         print(f"  {key}: R@20 {v['recall@20']['mean']:.3f}±{v['recall@20']['sd']:.3f}"
-              f"  MAP@20 {v['MAP@20']['mean']:.3f}±{v['MAP@20']['sd']:.3f}")
+              f"  MAP@20 {v['MAP@20']['mean']:.3f}±{v['MAP@20']['sd']:.3f}"
+              + (f"  （同じ式も正解: R@20 {eq['recall@20']['mean']:.3f}  MAP@20 {eq['MAP@20']['mean']:.3f}）"
+                 if eq else ""))
     print(f"wrote {f}")
 
 

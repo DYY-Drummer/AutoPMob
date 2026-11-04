@@ -358,6 +358,10 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-11-04(8)（LLM との比較：別の出典にある同じ式も正解とみなす判定を、LLM の答えにも使えるようにした）：
+    本人の指示「判定を LLM の答えにも使えるように実装して」に対応し、\texttt{run\_llm\_db\_baseline.py} に、提案手法と baseline と同じ規則の判定を足した。同じ式の印は、LaTeX から空白と \texttt{\textbackslash left}、\texttt{\textbackslash right}、\texttt{\textbackslash ,}、\texttt{\textbackslash ;}、\texttt{\textbackslash !}、\texttt{\textbackslash quad} を除いた文字列（\texttt{set\_aware\_reranker.latex\_key} と同じ）。答えを順に見て、まだ数えていない正解式と同じ印の式が、正解式そのものか別の出典の式なら、その正解式の順位とする（1 本の正解式は 1 回だけ。DB にない ID は数えないが順位を占める。\texttt{set\_aware\_reranker.equiv\_ranks} と同じ）。
+    \texttt{evaluate3} は、ID による値に加えて、この判定の値（\texttt{summary\_equiv}、\texttt{comparison\_equiv}）と、比べる相手の同じ判定の値（\texttt{reference\_equiv}、kato1021 の per-case 出力の \texttt{ranks\_equiv} から）も出す。
+    試験を 6 件足した（計 65 件）：規則がパイプラインの関数と一致すること、正解式 3{,}132 本のうち 386 本に別の出典の同じ式があること（報告書と同じ）、比べる相手の値が \texttt{experiments/kato1021/main.json} の table\_equiv と一致すること（全ケースの Recall@20 は提案手法 0.983、baseline 0.908）。LLM の答えがない状態で \texttt{evaluate3} が動くことも確かめた。有料の呼び出しはしていない。
   \item 2026-11-04(7)（11 月 4 日の進捗報告で、同じ文字列の式も正解とみなす判定を手法の節に入れた）：
     本人の指摘「LLM には式の出典も説明文も渡さないので、出典が違って形が同じ式は LLM には区別できない」に対応し、\texttt{progress\_report\_2026-11-04\_llm\_comparison.tex} の 2.3 節の判定の段落に、空白と \LaTeX{} の間隔や括弧の大きさの命令を除いて同じ文字列の式が別の出典にあれば、それも正解とみなした値もあわせて示す（どの手法にも同じ規則）と書いた。今後の計画の 4 つ目は、この判定を LLM の答えにも使えるように実装する項目にした（提案手法と baseline の値は \texttt{experiments/kato1021/main.json} の table\_equiv で計算済み。\texttt{run\_llm\_db\_baseline.py} にはまだない）。
   \item 2026-11-04(6)（11 月 4 日の進捗報告の、使うモデルの数と書き方をそろえた）：

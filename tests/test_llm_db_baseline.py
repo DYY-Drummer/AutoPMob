@@ -485,3 +485,92 @@ def test_test_records_keeps_the_seed_and_the_test_split_only():
            {"seed": 123, "case_id": "c", "split": "test"}, {"seed": 42, "case_id": "d"}]
     assert [r["case_id"] for r in split_test_records(pcs, 42)] == ["a", "d"]   # split がない記録はテスト（旧い出力）
     assert [r["case_id"] for r in split_test_records([{"case_id": "e"}], 7)] == ["e"]   # 種ごとのファイル（seed なし）
+
+
+# ---- 別の出典にある同じ式も正解とみなす判定（2026-11-04、本人の指摘：LLM には出典も式周辺の文章も渡さないので、
+#      別の出典にある同じ表記の式を区別できない。提案手法と baseline と同じ規則を LLM の答えにも当てる） ----------
+
+from run_llm_db_baseline import (  # noqa: E402
+    equiv_maps, equiv_ranks_in_list, latex_key, reference_rows, score_record,
+)
+
+
+def test_latex_key_is_the_same_rule_as_the_pipeline():
+    from set_aware_reranker import latex_key as pipeline_latex_key
+    samples = [r"\left( a + b \right)", r"x\,y \; z\!w", r"a \quad b", "C_{A0} = 1", "", None,
+               r"\frac{dC_A}{dt} = -k C_A"]
+    for s in samples:
+        assert latex_key(s) == pipeline_latex_key(s)
+    assert latex_key(r"\left( x \right)") == latex_key("(x)")
+
+
+def test_equiv_ranks_counts_same_equation_from_another_source_once():
+    key_latex = {"s1__1": "A", "s2__1": "A", "s1__2": "A", "s3__1": "B", "s4__1": "C"}
+    key_src = {"s1__1": "s1", "s2__1": "s2", "s1__2": "s1", "s3__1": "s3", "s4__1": "s4"}
+    # 正解 s1__1 と同じ式：s2__1（別の出典、数える）、s1__2（同じ出典、数えない）
+    assert equiv_ranks_in_list(["s1__2", "s2__1", "s1__1"], ["s1__1"], key_latex, key_src) == [2]
+    # DB にない ID（None）は数えないが、その順位を占める
+    assert equiv_ranks_in_list([None, "s2__1"], ["s1__1"], key_latex, key_src) == [2]
+    # 並べた中に同じ式がなければ MISS_RANK。1 本の答えは 1 本の正解式にだけ数える
+    assert equiv_ranks_in_list(["s3__1"], ["s1__1", "s4__1"], key_latex, key_src) == [MISS_RANK, MISS_RANK]
+    assert equiv_ranks_in_list(["s2__1"], ["s1__1", "s1__2"], key_latex, key_src) == [1, MISS_RANK]
+
+
+def test_equiv_ranks_agree_with_the_pipeline_function():
+    from set_aware_reranker import equiv_ranks
+    keys = ["a1", "a2", "b1", "b2", "c1", "c2", "d1"]
+    lat = {"a1": "X", "a2": "X", "b1": "Y", "b2": "Y", "c1": "Z", "c2": "X", "d1": "W"}
+    src = {"a1": "s1", "a2": "s2", "b1": "s1", "b2": "s1", "c1": "s3", "c2": "s1", "d1": "s4"}
+    for ranked, correct in ((["c2", "a2", "b2", "d1"], ["a1", "b1"]), (["a2", "c2", "a1"], ["a1", "c2"]),
+                            (["d1"], ["a1"]), (["b2", "b1"], ["b1"])):
+        idx = {k: i for i, k in enumerate(keys)}
+        want = equiv_ranks([idx[k] for k in ranked], {idx[k] for k in correct}, [lat[k] for k in keys],
+                           miss_rank=MISS_RANK, eq_src=[src[k] for k in keys])
+        assert equiv_ranks_in_list(ranked, correct, lat, src) == want
+
+
+def test_score_record_adds_equiv_metrics_and_keeps_id_metrics():
+    id_to_key = {1: "s1__1", 2: "s2__1", 3: "s3__1"}
+    equiv = ({"s1__1": "A", "s2__1": "A", "s3__1": "B"}, {"s1__1": "s1", "s2__1": "s2", "s3__1": "s3"})
+    rec = {"text": json.dumps({"equation_ids": [2, 3]})}
+    s = score_record(rec, id_to_key, ["s1__1"], equiv=equiv)
+    assert s["recall@20"] == 0.0 and s["ranks"] == [MISS_RANK]       # ID の判定では不正解
+    assert s["recall@20_equiv"] == 1.0 and s["AP@20_equiv"] == 1.0   # 同じ式（別の出典）が 1 位 → 正解（K = 1）
+    assert "ranks_equiv" not in score_record(rec, id_to_key, ["s1__1"])  # equiv を与えなければ足さない
+
+
+def _db_and_cases():
+    from run_llm_db_baseline import load_case_index, load_db_v3, norm
+    eqs, id_to_key, key_to_id = load_db_v3()
+    return eqs, id_to_key, key_to_id, load_case_index(), norm
+
+
+@pytest.mark.skipif(not (ROOT / "unified_equations.json").exists(), reason="データベースがない")
+def test_equiv_maps_reproduce_the_reported_386_of_3132_correct_equations():
+    # 報告書（8/31 報告 3.5 節）：正解式 3,132 本のうち 386 本は、同じ文字列の式が別の出典にもある
+    eqs, id_to_key, key_to_id, cases, norm = _db_and_cases()
+    key_latex, key_src = equiv_maps(eqs, id_to_key)
+    d = json.loads(SPLITS.read_text(encoding="utf-8"))["splits"]["A"]["42"]
+    ids = set(d["train"]) | set(d["val"]) | set(d["test"])
+    correct = {norm(m) for c in ids for m in cases[c]["correct_model_ids"] if norm(m) in key_to_id}
+    by_latex = {}
+    for k, lx in key_latex.items():
+        by_latex.setdefault(lx, set()).add(key_src[k])
+    dup = [k for k in correct if by_latex[key_latex[k]] - {key_src[k]}]
+    assert (len(correct), len(dup)) == (3132, 386)
+
+
+@pytest.mark.skipif(not (ROOT / "experiments" / "kato1021" / "raw").exists(), reason="kato1021 の出力がない")
+def test_reference_equiv_summary_matches_the_reported_table():
+    # 比べる相手の「同じ式も正解」の値が、kato1021/main.json の table_equiv と一致する
+    splits = json.loads(SPLITS.read_text(encoding="utf-8"))["splits"]
+    from run_llm_db_baseline import ALL_SEEDS
+    refs = reference_rows(["A", "B"], ALL_SEEDS, splits)
+    main = json.loads((ROOT / "experiments" / "kato1021" / "main.json").read_text(encoding="utf-8"))["table_equiv"]
+    names = {"proposed (N1 = 2,000, (0.3, 0.7), validation-selected negatives)": "proposed_static",
+             "baseline TF-IDF (validation-selected weights)": "baseline_tfidf"}
+    for ref, mkey in names.items():
+        for st in ("A", "B"):
+            got = refs[ref]["summary_equiv"][st]
+            assert got["recall@20"]["mean"] == pytest.approx(main[st][mkey]["Recall@20"]["mean"], abs=1e-9)
+            assert got["MAP@20"]["mean"] == pytest.approx(main[st][mkey]["MAP@20"]["mean"], abs=1e-9)
