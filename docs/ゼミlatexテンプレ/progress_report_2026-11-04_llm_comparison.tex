@@ -117,8 +117,9 @@ LLM は多くの文献を学習しており、データベースを渡せば、�
 
 \begin{table}[t]\centering
 \footnotesize
-\caption{Information used by each method. The LLMs receive only the ID, the equation in LaTeX and the domain label of each database equation, because the full records do not fit in the input limit of one million tokens. The proposed method learns from the training cases and selects its settings on the validation cases; the baseline selects its weights on the validation cases.}
-\label{tab:inputs}
+% 本人の指示（2026-11-04）: Table 1 の英語のタイトルを消す。番号だけを残し、本文からの参照（Table 1）は生かす。
+\refstepcounter{table}\label{tab:inputs}
+\vskip\abovecaptionskip\hbox to\hsize{\hfil\tablename~\thetable\hfil}\vskip\belowcaptionskip
 \begin{tabular}{@{}lccc@{}}
 \toprule
 情報 & 提案手法 & baseline & LLM \\
