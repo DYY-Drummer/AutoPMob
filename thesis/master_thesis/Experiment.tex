@@ -59,7 +59,7 @@ and both rank the whole database and train nothing.
 %         （tfidf:none, bm25:minmax, e5:minmax。e5 のクエリは説明文だけ＝case_text(c)）
 
 The LLMs receive the whole database and the query of one test case and return the identifiers of
-up to 20 equations for the desired model, from the most to the least likely. They see no solved
+20 equations for the desired model, from the most to the least likely. They see no solved
 example. Each equation of the database reaches them only as its identifier, its expression, and
 its domain label, because adding the variable definitions and the context texts would exceed their
 input limit of one million tokens. We withhold the sources, shuffle the order of the equations,

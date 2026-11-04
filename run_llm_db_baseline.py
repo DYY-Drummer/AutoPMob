@@ -153,6 +153,18 @@ The set of equations that forms the model satisfies these conditions:
 # Answer
 For the task in <task>, list up to 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. If they are fewer than 20, continue with the other equations most likely to be needed for this model, until the list has 20 IDs. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; "."""
 
+# 版 4（2026-11-04、本人の指示）：版 3 の指示文の「# Answer」の 2 か所だけを変えた。「list up to 20 equation IDs」を
+# 「list 20 equation IDs」にし、「20 件に満たなければ、このモデルに要りそうなほかの式を続けて 20 件にする」の 1 文を消した。
+# DB の形と並び、テストケース、出力の形、設定は版 3 と同じ。
+# 版 3 の試し（2026-11-04、Claude Haiku 5.5 で 3 件 × 3 回）は、変える前の文で解かせた。
+FILL_TO_20_V3 = (" If they are fewer than 20, continue with the other equations most likely to be needed for this"
+                 " model, until the list has 20 IDs.")
+UP_TO_20_V3 = "list up to 20 equation IDs"
+assert SYSTEM_V3.count(FILL_TO_20_V3) == 1 and SYSTEM_V3.count(UP_TO_20_V3) == 1
+SYSTEM_V4 = SYSTEM_V3.replace(FILL_TO_20_V3, "").replace(UP_TO_20_V3, "list 20 equation IDs")
+ZERO_SHOT_VERSIONS = ("v3", "v4")   # 参考ケースを渡さず、DB を ID・分野ラベル・式の表記だけで渡す版
+RUN_VERSION = "v4"                  # count3・costs3・pilot3・run3・evaluate3 で使う指示文の版
+
 MISSING_NOTE = (' A line "   symbols:" below an equation lists symbols of variables of that equation that are'
                 ' written differently in the equation itself.')
 FINAL_V2 = "List the IDs of the database equations for this task."
@@ -427,6 +439,8 @@ def system_prompt(fmt: str, version: str = PROMPT_VERSION) -> str:
         return SYSTEM_TEMPLATE.format(notes=notes)
     if version == "v3":
         return SYSTEM_V3
+    if version == "v4":
+        return SYSTEM_V4
     return SYSTEM_V2.format(notes=MISSING_NOTE if opt["vars"] == "missing" else "")
 
 
@@ -437,7 +451,7 @@ def db_text(eqs: list, fmt: str, version: str = PROMPT_VERSION) -> str:
     同じ入力からは同じ文字列を返す（プロンプトキャッシュの前提）。
     """
     opt = DB_FORMATS[fmt]
-    if version == "v3":   # 1 行に「ID<タブ>分野ラベル<タブ>式の表記」。見出しも出典もなし。並びは呼び出し側（load_db）で決める
+    if version in ZERO_SHOT_VERSIONS:   # 1 行に「ID<タブ>分野ラベル<タブ>式の表記」。見出しも出典もなし。並びは呼び出し側（load_db）で決める
         body = [f"{i}\t{one_line(e.get('domain'))}\t{one_line(e.get('equation'))}" for i, e in enumerate(eqs, 1)]
         return "\n".join([f'<equation_database count="{len(eqs)}">', *body, "</equation_database>"])
     h_src, h_dom = ("## Source: ", "### Domain: ") if version == "v1" else ("# ", "## ")
@@ -476,7 +490,8 @@ def db_text(eqs: list, fmt: str, version: str = PROMPT_VERSION) -> str:
 
 _LABELS = {"v1": ("Description: ", "Input variables: ", "Output variables: ", "Equations: "),
            "v2": ("D: ", "I: ", "O: ", "E: "),
-           "v3": ("Description: ", "Input variables: ", "Output variables: ", None)}
+           "v3": ("Description: ", "Input variables: ", "Output variables: ", None),
+           "v4": ("Description: ", "Input variables: ", "Output variables: ", None)}
 
 
 def _case_lines(case: dict, version: str = PROMPT_VERSION) -> list:
@@ -514,7 +529,7 @@ def build_params(model: str, effort: str, db_block: str, ex_block: str, task_blo
     """
     cc = {"type": "ephemeral"} if ttl == "5m" else {"type": "ephemeral", "ttl": ttl}
     blocks = [{"type": "text", "text": db_block, "cache_control": dict(cc)}]
-    if version != "v3":                       # 版 3 はゼロショット（参考ケースなし）
+    if version not in ZERO_SHOT_VERSIONS:     # 版 3・4 はゼロショット（参考ケースなし）
         blocks.append({"type": "text", "text": ex_block, "cache_control": dict(cc)})
     blocks.append({"type": "text", "text": task_block})
     params = {
@@ -1414,22 +1429,22 @@ def v3_case_ids(cases: dict, splits: dict) -> list:
 
 def _cfg3(args) -> dict:
     return {"model": args.model, "effort": args.effort, "db_format": "eqd", "examples": "none",
-            "prompt_version": "v3"}
+            "prompt_version": RUN_VERSION}
 
 
 def _params3(args, eqs, cases):
-    db_block = db_text(eqs, "eqd", "v3")
+    db_block = db_text(eqs, "eqd", RUN_VERSION)
 
     def params_of(t):
-        return build_params(args.model, args.effort, db_block, None, task_text(cases[t[0]], "v3"),
-                            fmt="eqd", ttl=args.ttl, max_tokens=args.max_tokens, version="v3")
+        return build_params(args.model, args.effort, db_block, None, task_text(cases[t[0]], RUN_VERSION),
+                            fmt="eqd", ttl=args.ttl, max_tokens=args.max_tokens, version=RUN_VERSION)
 
     cases_sha = sha256(CASES_JSON)   # 説明文は training_cases.json の context をそのまま使う。どの版で解いたかを記録する
 
     def meta_of(t):
         return {"ttl": args.ttl, "max_tokens": args.max_tokens, "order_seed": V3_ORDER_SEED,
                 "training_cases_sha256": cases_sha,
-                "task_sha256": hashlib.sha256(task_text(cases[t[0]], "v3").encode("utf-8")).hexdigest()}
+                "task_sha256": hashlib.sha256(task_text(cases[t[0]], RUN_VERSION).encode("utf-8")).hexdigest()}
     return params_of, meta_of
 
 
@@ -1483,19 +1498,19 @@ def cmd_count3(args) -> None:
     cases, splits = load_case_index(), load_splits()
     plans = {"10splits": v3_plan(splits, ALL_SEEDS, cases), "3splits": v3_plan(splits, [42, 123, 456], cases)}
     client = client_()
-    db_block = db_text(eqs, "eqd", "v3")
-    longest = max(plans["10splits"], key=lambda c: len(task_text(cases[c], "v3")))
-    chars = [len(task_text(cases[c], "v3")) for c in plans["10splits"]]
-    out = {"time": datetime.now(timezone.utc).isoformat(timespec="seconds"), "prompt_version": "v3",
+    db_block = db_text(eqs, "eqd", RUN_VERSION)
+    longest = max(plans["10splits"], key=lambda c: len(task_text(cases[c], RUN_VERSION)))
+    chars = [len(task_text(cases[c], RUN_VERSION)) for c in plans["10splits"]]
+    out = {"time": datetime.now(timezone.utc).isoformat(timespec="seconds"), "prompt_version": RUN_VERSION,
            "n_calls": {k: len(v) for k, v in plans.items()}, "max_tokens": args.max_tokens, "limit": 1_000_000,
            "out_tokens_assumed": args.out_tokens, "models": {}}
     for model in args.models.split(","):
         def count(task):
             p = build_params(model, args.effort, db_block, None, task, fmt="eqd", max_tokens=args.max_tokens,
-                             version="v3")
+                             version=RUN_VERSION)
             return client.messages.count_tokens(**{k: p[k] for k in ("model", "system", "messages",
                                                                      "output_config", "thinking") if k in p}).input_tokens
-        full_max = count(task_text(cases[longest], "v3"))
+        full_max = count(task_text(cases[longest], RUN_VERSION))
         base = count("x")
         task_max = full_max - base + 1
         task_mean = task_max * float(np.mean(chars)) / max(chars)
@@ -1510,7 +1525,7 @@ def cmd_count3(args) -> None:
                                 "fits_with_max_tokens": full_max + args.max_tokens <= 1_000_000,
                                 "cost_usd": cost}
         print(model, json.dumps(out["models"][model]), flush=True)
-    (OUT_DIR / "token_counts_v3.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
+    (OUT_DIR / f"token_counts_{RUN_VERSION}.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
 
 
 def cost_breakdown(prefix: float, task_mean: float, n_calls: int, out_tokens: float, price: dict) -> dict:
@@ -1555,14 +1570,14 @@ def measured_output_tokens(recs: list, cases: dict, plan_ids: list) -> dict | No
 
 
 def cmd_costs3(args) -> None:
-    """--runs 回ずつ解かせるときの費用の見積もりと内訳（API を呼ばない）。token_counts_v3.json のトークン数を使う.
+    """--runs 回ずつ解かせるときの費用の見積もりと内訳（API を呼ばない）。token_counts_<RUN_VERSION>.json のトークン数を使う.
 
     試し（pilot3）の記録があるモデルは、実際の出力のトークン数（種類の割合で重みを付けた平均）でも見積もる（*_measured）。
     """
-    tc = json.loads((OUT_DIR / "token_counts_v3.json").read_text(encoding="utf-8"))
+    tc = json.loads((OUT_DIR / f"token_counts_{RUN_VERSION}.json").read_text(encoding="utf-8"))
     cases, splits = load_case_index(), load_splits()
     plan_ids = v3_plan(splits, ALL_SEEDS, cases)
-    out = {"source": "token_counts_v3.json", "runs": args.runs,
+    out = {"source": f"token_counts_{RUN_VERSION}.json", "runs": args.runs,
            "n_cases": tc["n_calls"], "n_calls": {k: v * args.runs for k, v in tc["n_calls"].items()},
            "out_tokens_assumed": tc["out_tokens_assumed"], "models": {}}
     for model, m in tc["models"].items():
@@ -1570,8 +1585,14 @@ def cmd_costs3(args) -> None:
         out["models"][model] = {
             f"{name}_out{o}": cost_breakdown(m["prefix_tokens"], m["task_mean_est"], n, o, p)
             for name, n in out["n_calls"].items() for o in tc["out_tokens_assumed"]}
-        cfg = {"model": model, "effort": "high", "db_format": "eqd", "examples": "none", "prompt_version": "v3"}
-        meas = measured_output_tokens([r for r in load_raw(cfg) if r.get("source") == "pilot"], cases, plan_ids)
+        meas = None
+        for v in dict.fromkeys((RUN_VERSION, "v3")):   # 今の版の試しがなければ、版 3 の試し（11/4）の出力で見積もる
+            cfg = {"model": model, "effort": "high", "db_format": "eqd", "examples": "none", "prompt_version": v}
+            meas = measured_output_tokens([r for r in load_raw(cfg) if r.get("source") == "pilot"], cases,
+                                          plan_ids)
+            if meas:
+                meas["prompt_version"] = v
+                break
         if meas:
             out["models"][model]["measured_output_tokens"] = meas
             out["models"][model]["10splits_out_measured"] = cost_breakdown(
@@ -1581,7 +1602,7 @@ def cmd_costs3(args) -> None:
               f"{b['total']:.1f} USD（読み出し {b['read_share']:.0%}）"
               + (f"、実測の出力 {meas['weighted']:.0f} で {out['models'][model]['10splits_out_measured']['total']:.1f} USD"
                  if meas else ""))
-    f = OUT_DIR / f"costs_v3_runs{args.runs}.json"
+    f = OUT_DIR / f"costs_{RUN_VERSION}_runs{args.runs}.json"
     f.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {f}")
 

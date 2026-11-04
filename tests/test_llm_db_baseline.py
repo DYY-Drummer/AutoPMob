@@ -420,6 +420,28 @@ def test_build_params_v3_sends_db_and_one_task_only():
     assert p1["output_config"]["effort"] == "high"
 
 
+def test_v4_asks_for_20_ids_and_drops_the_fill_to_20_sentence():
+    from run_llm_db_baseline import RUN_VERSION, SYSTEM_V3, SYSTEM_V4, system_prompt
+    assert RUN_VERSION == "v4" and system_prompt("eqd", "v4") == SYSTEM_V4 and system_prompt("eqd", "v3") == SYSTEM_V3
+    assert "fewer than 20" not in SYSTEM_V4 and "until the list has 20 IDs" not in SYSTEM_V4
+    assert SYSTEM_V3.replace(" If they are fewer than 20, continue with the other equations most likely to be needed"
+                             " for this model, until the list has 20 IDs.", "").replace(
+        "list up to 20 equation IDs", "list 20 equation IDs") == SYSTEM_V4
+    assert "For the task in <task>, list 20 equation IDs, from the most to the least likely" in SYSTEM_V4
+    assert "up to 20" not in SYSTEM_V4
+    assert "Put first the equations that you judge to form the model. Use only IDs from the database" in SYSTEM_V4
+
+
+def test_v4_sends_the_same_db_and_task_as_v3():
+    assert db_text(EQS, "eqd", version="v4") == db_text(EQS, "eqd", version="v3")
+    assert task_text(CASES[0], version="v4") == task_text(CASES[0], version="v3")
+    db = db_text(EQS, "eqd", version="v4")
+    p3 = build_params("claude-haiku-5-5", "high", db, None, task_text(CASES[0], version="v3"), fmt="eqd", version="v3")
+    p4 = build_params("claude-haiku-5-5", "high", db, None, task_text(CASES[0], version="v4"), fmt="eqd", version="v4")
+    assert p4["messages"] == p3["messages"] and p4["output_config"] == p3["output_config"]
+    assert p4["system"] != p3["system"]
+
+
 def test_pending_cases_by_case_for_v3():
     cfg = {"model": "m", "effort": "high", "db_format": "eqd", "examples": "none", "prompt_version": "v3"}
     recs = [{**cfg, "case_id": "c1", "error": None},
@@ -626,8 +648,11 @@ def test_mean_over_runs_averages_each_metric():
     assert mean_over_runs(s) == {"recall@20": 0.5, "AP@20": 0.25, "recall@20_equiv": 0.75, "AP@20_equiv": 0.375}
 
 
-def test_cost_breakdown_matches_the_one_run_estimate_in_token_counts():
-    tc = json.loads((ROOT / "experiments" / "llm_db_baseline" / "token_counts_v3.json").read_text(encoding="utf-8"))
+@pytest.mark.parametrize("version", ["v3", "v4"])
+def test_cost_breakdown_matches_the_one_run_estimate_in_token_counts(version):
+    tc = json.loads((ROOT / "experiments" / "llm_db_baseline" / f"token_counts_{version}.json")
+                    .read_text(encoding="utf-8"))
+    assert tc["prompt_version"] == version
     for model, m in tc["models"].items():
         b = cost_breakdown(m["prefix_tokens"], m["task_mean_est"], tc["n_calls"]["10splits"], 2000,
                            price_for(model, m["prefix_tokens"]))

@@ -54,7 +54,7 @@ E5 & \texttt{intfloat/e5-base-v2}, mean pooling, $\ell_2$ norm, 512 tokens \\
 E5 query & description \\
 Text scores of BM25 and E5 & min--max normalized over the database, per query \\
 LLMs (prepared, not yet run) & Claude Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1 \\
-LLM effort / answer & high / up to 20 identifiers, no solved example \\
+LLM effort / answer & high / 20 identifiers, no solved example \\
 Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
 \bottomrule
 \end{tabular}
@@ -471,7 +471,7 @@ The set of equations that forms the model satisfies these conditions:
 <equation_database> lists equations extracted from the literature, in no particular order. Each line has three fields separated by tabs: the equation ID, the domain label of the equation, and the equation in LaTeX.
 
 # Answer
-For the task in <task>, list up to 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. If they are fewer than 20, continue with the other equations most likely to be needed for this model, until the list has 20 IDs. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
+For the task in <task>, list 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
 
 [user, block 1: the database (cache_control: ephemeral)]
 <equation_database count="11146">

@@ -24,19 +24,25 @@
 %   - Recall@20 0.906 → 0.981 と Table 2: experiments/kato1021/main.json の table.{A,B}.{baseline_tfidf,proposed_static}.{Recall@20,MAP@20}
 %     （10 分割の平均と標本標準偏差）。提案手法は一括の並べ直し（N1 = 2,000、重み (0.3, 0.7)、検証で選んだ不正解の選び方）で、
 %     run_llm_db_baseline.py の REFERENCE と同じ。
-%   - 952,185、952,918、734、354、1,673、費用: experiments/llm_db_baseline/token_counts_v3.json（count_tokens で数えた。無料）。
-%     費用の内訳は n (P r_read + T r_in + O r_out) + P r_write（P = 952,185、T = 354、O = 2,000、n = 1,673）で計算し、合計は JSON と一致。
+%   - 952,144、952,877、734、354、1,673、費用: experiments/llm_db_baseline/token_counts_v4.json（版 4 の指示文で、count_tokens で数えた。無料）。
+%     費用の内訳は n (P r_read + T r_in + O r_out) + P r_write（P = 952,144、T = 354、O = 2,000、n = 1,673）で計算し、合計は JSON と一致。
 %   - 延べ 4,229 件と 2,432 件、異なる 1,673 件（合成 994、出典横断 601、単一出典 78）、テストに入らない 58 件:
 %     experiments/llm_db_baseline/splits.json と training_cases.json から数えた。
 %   - 約 199 万トークン: experiments/llm_db_baseline/token_counts.json の system_db_eq+def = 1,986,253（出典の見出しを付けた版 1 の形）。
 %   - 料金: Anthropic の料金表（2026-11-01 に確認）。run_llm_db_baseline.py の PRICES と一致。
 % 本人の指示（2026-11-04）: 異なるテストケースごとに 3 回解かせ、ケースの値は 3 回の平均。ばらつきが大きければ回数を増やし、小さければ減らす。
-%   費用は experiments/llm_db_baseline/costs_v3_runs3.json（run_llm_db_baseline.py costs3、API を呼ばない）。
+%   費用は experiments/llm_db_baseline/costs_v4_runs3.json（run_llm_db_baseline.py costs3、API を呼ばない）。
 %   試しの 0.600/0.800/0.000 は experiments/llm_db_baseline/variability_claude-haiku-5-5__eqd__ex-none__high__v3.json（dae_X5_000）。
 % 本人の指示（2026-11-04）: Haiku 5.5 の出力は試しの実測（種類の割合で重みを付けた平均 972 トークン）で見積もる。ほかは 2,000 の仮定。
-%   値は experiments/llm_db_baseline/costs_v3_runs3.json の claude-haiku-5-5.measured_output_tokens と 10splits_out_measured。
+%   値は experiments/llm_db_baseline/costs_v4_runs3.json の claude-haiku-5-5.measured_output_tokens と 10splits_out_measured
+%   （試しは版 3 の指示文で解かせたので、measured_output_tokens.prompt_version = "v3"）。
 % 本人の指示（2026-11-04）: 1 節に、比較の目的を簡潔に書く。目的は精度を比べるだけでなく、提案手法と LLM のそれぞれの長所と短所を見つけること。
 % 本人の指示（2026-11-04）: LLM に与えたプロンプトだけは付録に載せる（Appendix A）。
+% 本人の指示（2026-11-04）: 指示文から「If they are fewer than 20, ... until the list has 20 IDs.」の 1 文を消し、
+%   「list up to 20 equation IDs」を「list 20 equation IDs」にする（版 4）。本文の「最大 20 個」と「20 個に満たなければ…埋める」も直した。
+%   データベースの部分は 952,185 → 952,144 トークン。Table 3 で変わるのは、読み出しの 2 つのセル（Haiku 239.0 → 238.9、
+%   Fable 1,194.8 → 1,194.7）だけで、合計と割合は変わらない。2 モデルの費用の上限は 2,311 → 2,310 ドル。
+%   試し（3 件 × 3 回）は変える前の文（版 3）で解かせた。
 % 本人の指示（2026-11-04）: 付録はいったん無くす（全体ゼミなので、具体的すぎる部分は議論しない）。
 % 本人の指示（2026-11-04）: 今後の計画は「ゼミでの議論を受けて…流す」の 1 項目だけを残す。
 %   - 出力 70 トークン: 2026-10-14 の試しの呼び出し 2 件（Opus 5.5、effort medium、思考 0、出力 71 と 64）。
@@ -104,12 +110,12 @@
 \section{進捗と議論のポイント}
 \begin{itemize}[leftmargin=1.5em]
   \item \textbf{比較の目的}：同じデータベースと同じ判定の規則のもとで、提案手法と大規模言語モデル（large language model, LLM）のそれぞれの長所と短所を見つける。精度を比べるだけでなく、どのようなケースでどちらが正解式を上位に選べるか、費用、答えの回ごとのばらつきも比べる。高性能と低コストの 2 つのモデルを使い、モデルの規模による違いも見る。
-  \item LLM との比較の方法を決め、実行の準備を済ませた。LLM に、データベースの全 11{,}146 式と、テストケース 1 件のクエリ（作りたいモデルの説明文と入出力変数）を渡して式を最大 20 個選ばせ、選んだ式が正解式かを、提案手法と同じく式の ID で判定する。
-  \item テストケース 1{,}673 件を 2 つのモデルで 3 回ずつ解かせる費用を見積もった（モデルの組み合わせによって 1{,}421〜2{,}311 ドル）。有料のため、まだ実行していない。
+  \item LLM との比較の方法を決め、実行の準備を済ませた。LLM に、データベースの全 11{,}146 式と、テストケース 1 件のクエリ（作りたいモデルの説明文と入出力変数）を渡して式を 20 個選ばせ、選んだ式が正解式かを、提案手法と同じく式の ID で判定する。
+  \item テストケース 1{,}673 件を 2 つのモデルで 3 回ずつ解かせる費用を見積もった（モデルの組み合わせによって 1{,}421〜2{,}310 ドル）。有料のため、まだ実行していない。
   \item \textbf{議論したい点}：次の 2 点について、意見をいただきたい。
   \begin{enumerate}[label=(\arabic*), leftmargin=2em]
     \item この比較方法は公平か。この方法で、提案手法と LLM の性能を本当に比べられるか。
-    \item 費用の 69〜95\% は、呼び出しのたびにデータベース（952{,}185 トークン。トークンは LLM が文字列を数える単位）を読み出す料金である。もっと費用を抑えて比べる方法はないか。
+    \item 費用の 69〜95\% は、呼び出しのたびにデータベース（952{,}144 トークン。トークンは LLM が文字列を数える単位）を読み出す料金である。もっと費用を抑えて比べる方法はないか。
   \end{enumerate}
 \end{itemize}
 
@@ -121,10 +127,10 @@ LLM は多くの文献を学習しており、データベースを渡せば、�
 \subsection{LLM に渡すもの}
 1 回の呼び出しで、LLM に、指示文、データベース、テストケース 1 件のクエリを渡す（指示文と入力の形は Appendix~A）。各手法が使う情報を Table~\ref{tab:inputs} にまとめる。
 \begin{itemize}[leftmargin=1.5em]
-  \item \textbf{データベース}：各式を、ID、式の表記、分野ラベル（式が扱う分野の名前）の 3 つだけで渡す。使う LLM の入力の上限は 100 万トークンであり、この形でも、指示文とデータベースで 952{,}185 トークンになる。変数記号とその定義を加えると約 199 万トークンになって上限を超えるため、変数記号の一覧と定義、式周辺の文章は渡さない。ただし、式の表記には変数が記号で書かれている。
+  \item \textbf{データベース}：各式を、ID、式の表記、分野ラベル（式が扱う分野の名前）の 3 つだけで渡す。使う LLM の入力の上限は 100 万トークンであり、この形でも、指示文とデータベースで 952{,}144 トークンになる。変数記号とその定義を加えると約 199 万トークンになって上限を超えるため、変数記号の一覧と定義、式周辺の文章は渡さない。ただし、式の表記には変数が記号で書かれている。
   \item \textbf{出典}：渡さない。式の並びを無作為にし、ID も 1〜11{,}146 の番号に振り直す（元の ID は出典の名前を含む）。提案手法は出典を使わないためである。また、合成のケース（微分方程式から始め、プログラムで式を足して作った 1{,}000 件）の正解集合は、同じ出典の式を優先して作ったので、出典が分かると、LLM だけが答えの手がかりを持つことになる。
   \item \textbf{解いた例}：渡さない。正解の分かっているケースを例として見せずに解かせる（ゼロショット）ためである。
-  \item \textbf{答え方}：作りたいモデルに使う式の ID を、可能性の高い順に最大 20 個答えさせる。モデルを構成すると判断した式を先に挙げ、20 個に満たなければ、使う可能性の高いほかの式で埋めるよう指示する。指示文には、モデルの式の組が満たす条件として、\citet{CombineEq} の要件のうち変数と式の数え方に関する 3 つ（入出力変数がすべていずれかの式に現れる、式の数が入力変数以外の変数の数に等しい、入出力変数以外の変数は 2 本以上の式に現れる）を書く。
+  \item \textbf{答え方}：作りたいモデルに使う式の ID を、可能性の高い順に 20 個答えさせる。モデルを構成すると判断した式を先に挙げるよう指示する。指示文には、モデルの式の組が満たす条件として、\citet{CombineEq} の要件のうち変数と式の数え方に関する 3 つ（入出力変数がすべていずれかの式に現れる、式の数が入力変数以外の変数の数に等しい、入出力変数以外の変数は 2 本以上の式に現れる）を書く。
   \item \textbf{モデル}：Anthropic の LLM（Claude）から、高性能のもの（Claude Fable 5.1。費用が高ければ Claude Opus 5.5）と、低コストのもの（Claude Haiku 5.5 か Claude Sonnet 5.5）を 1 つずつ使う。答える前に考える量の設定（effort）は、どちらのモデルも high にそろえる。呼び出しはプログラムから行ない、モデル名、指示文の版、設定、日時、使ったトークン数、応答をすべて記録する。
 \end{itemize}
 
@@ -156,7 +162,7 @@ LLM は多くの文献を学習しており、データベースを渡せば、�
   \mathrm{Recall@20}(q) = \frac{|R_q \cap \Top_{20}(q)|}{K}, \qquad
   \mathrm{AP@20}(q) = \frac{1}{K} \sum_{e \in R_q} P(e)
 \end{equation*}
-を求める。$P(e)$ は、正解式 $e$ が上位 20 件にあれば、$e$ の順位までの式のうち正解式の割合、なければ 0 である。AP@20 のケースの平均を MAP@20（mean average precision）とよぶ。MAP@20 は、正解式がどれだけ上位に集まっているかを表す。LLM は 20 件までしか答えないので、どの手法も上位 20 件で比べる。
+を求める。$P(e)$ は、正解式 $e$ が上位 20 件にあれば、$e$ の順位までの式のうち正解式の割合、なければ 0 である。AP@20 のケースの平均を MAP@20（mean average precision）とよぶ。MAP@20 は、正解式がどれだけ上位に集まっているかを表す。LLM には 20 件を答えさせるので、どの手法も上位 20 件で比べる。
 
 \textbf{比べ方}：提案手法と baseline と同じ 10 通りの分け方を使い、分け方ごとにテスト用のケースで平均した値を求めて、10 通りの平均 $\pm$ 標準偏差と、10 通りのうち何通りで一方が上回ったかを示す。評価は、全ケースを使う場合と、合成のケースだけを使う場合（分け方はそれぞれ 10 通り）の 2 つで行なう。比べる相手の値を Table~\ref{tab:reference} に示す。
 
@@ -181,9 +187,9 @@ LLM（2 モデル） & \multicolumn{4}{c}{実行後に示す} \\
 \end{table}
 
 \subsection{費用}\label{sec:cost}
-1 回の入力は、指示文とデータベースの 952{,}185 トークンと、テストケースの平均 354 トークンである。データベースの部分は毎回同じなので、プロンプトキャッシュを使う。プロンプトキャッシュは、入力の先頭部分を保存しておき、次の呼び出しでは、その部分を通常の入力の 2.5〜10\%（モデルによる）の料金で読み出す仕組みである（保存には、通常の入力の 1.25 倍の料金がかかる）。出力のトークン数（答える前に考えた分を含む）は、Claude Haiku 5.5 では、3 件を 3 回ずつ解かせた試しの実測から 1 回約 970 トークンとし、ほかのモデルでは 1 回 2{,}000 トークンと仮定した。料金は、2026 年 11 月 1 日に確かめた料金表~\citep{AnthropicPricing}による。
+1 回の入力は、指示文とデータベースの 952{,}144 トークンと、テストケースの平均 354 トークンである。データベースの部分は毎回同じなので、プロンプトキャッシュを使う。プロンプトキャッシュは、入力の先頭部分を保存しておき、次の呼び出しでは、その部分を通常の入力の 2.5〜10\%（モデルによる）の料金で読み出す仕組みである（保存には、通常の入力の 1.25 倍の料金がかかる）。出力のトークン数（答える前に考えた分を含む）は、Claude Haiku 5.5 では、3 件を 3 回ずつ解かせた試しの実測から 1 回約 970 トークンとし、ほかのモデルでは 1 回 2{,}000 トークンと仮定した。料金は、2026 年 11 月 1 日に確かめた料金表~\citep{AnthropicPricing}による。
 
-見積もりを Table~\ref{tab:cost} に示す。1 モデルで 5{,}019 回を流す費用は 253〜1{,}726 ドルで、2 モデルでは、組み合わせによって 1{,}421〜2{,}311 ドルになる。どのモデルでも、費用の 69〜95\% は、呼び出しのたびにデータベースを読み出す料金である。出力が 1 回 70〜8{,}000 トークンの範囲で変わると、合計は Table~\ref{tab:cost} の右端の列のように変わる。
+見積もりを Table~\ref{tab:cost} に示す。1 モデルで 5{,}019 回を流す費用は 253〜1{,}726 ドルで、2 モデルでは、組み合わせによって 1{,}421〜2{,}310 ドルになる。どのモデルでも、費用の 69〜95\% は、呼び出しのたびにデータベースを読み出す料金である。出力が 1 回 70〜8{,}000 トークンの範囲で変わると、合計は Table~\ref{tab:cost} の右端の列のように変わる。
 
 % source: experiments/llm_db_baseline/token_counts_v3.json（合計と範囲は cost_usd の 10splits_out{70,2000,8000}）。内訳は run_llm_db_baseline.py costs3（costs_v3_runs3.json）で計算した。
 \begin{table}[t]\centering
@@ -195,10 +201,10 @@ LLM（2 モデル） & \multicolumn{4}{c}{実行後に示す} \\
 \toprule
 モデル & \shortstack{データベースの\\読み出し} & \shortstack{キャッシュ\\への保存} & \shortstack{テストケース\\の入力} & 出力 & 合計 & \shortstack{読み出し\\の割合} & \shortstack{合計（出力\\70〜8{,}000）} \\
 \midrule
-Claude Haiku 5.5 & 239.0 & 0.6 & 0.9 & 12.2 & 252.6 & 95\% & 241〜341 \\
+Claude Haiku 5.5 & 238.9 & 0.6 & 0.9 & 12.2 & 252.6 & 95\% & 241〜341 \\
 Claude Sonnet 5.5 & 477.9 & 2.4 & 3.6 & 100.4 & 584.2 & 82\% & 487〜885 \\
 Claude Opus 5.5 & 955.8 & 4.8 & 7.1 & 200.8 & 1{,}168.4 & 82\% & 975〜1{,}771 \\
-Claude Fable 5.1 & 1{,}194.8 & 11.9 & 17.8 & 501.9 & 1{,}726.3 & 69\% & 1{,}242〜3{,}232 \\
+Claude Fable 5.1 & 1{,}194.7 & 11.9 & 17.8 & 501.9 & 1{,}726.3 & 69\% & 1{,}242〜3{,}232 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -238,7 +244,7 @@ The set of equations that forms the model satisfies these conditions:
 <equation_database> lists equations extracted from the literature, in no particular order. Each line has three fields separated by tabs: the equation ID, the domain label of the equation, and the equation in LaTeX.
 
 # Answer
-For the task in <task>, list up to 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. If they are fewer than 20, continue with the other equations most likely to be needed for this model, until the list has 20 IDs. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
+For the task in <task>, list 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
 
 [user, block 1: equation database, cached]
 <equation_database count="11146">
