@@ -120,9 +120,9 @@ LLM は多くの文献を学習しており、データベースを渡せば、�
 
 \begin{table}[t]\centering
 \footnotesize
-% 本人の指示（2026-11-04）: Table 1 の英語のタイトルを消す。番号だけを残し、本文からの参照（Table 1）は生かす。
-\refstepcounter{table}\label{tab:inputs}
-\vskip\abovecaptionskip\hbox to\hsize{\hfil\tablename~\thetable\hfil}\vskip\belowcaptionskip
+% 本人の指示（2026-11-04）: Table 1 のキャプションを戻し、短くする。
+\caption{Information used by each method.}
+\label{tab:inputs}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 情報 & 提案手法 & baseline & LLM \\
@@ -155,7 +155,7 @@ LLM は多くの文献を学習しており、データベースを渡せば、�
 % source: experiments/kato1021/main.json の table.{A,B}.{baseline_tfidf,proposed_static}.{Recall@20,MAP@20}.{mean,std}。
 \begin{table}[t]\centering
 \footnotesize
-\caption{Recall@20 and MAP@20 of the methods that the LLMs will be compared with (mean $\pm$ standard deviation over the 10 splits). The proposed method reranks the top 2,000 candidates of the first-stage search; the baseline ranks all the equations by the first-stage score. MAP@20 sets the precision of a correct equation outside the top 20 to zero.}
+\caption{Recall@20 and MAP@20 of the methods compared with the LLMs (mean $\pm$ SD over 10 splits).}
 \label{tab:reference}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
@@ -178,7 +178,7 @@ LLM（2 モデル） & \multicolumn{4}{c}{実行後に示す} \\
 % source: experiments/llm_db_baseline/token_counts_v3.json（合計と範囲は cost_usd の 10splits_out{70,2000,8000}）。内訳は Appendix C の式で計算した。
 \begin{table}[t]\centering
 \footnotesize
-\caption{Estimated cost in US dollars of one run over the 1,673 test cases, assuming 2,000 output tokens per call. The second-to-last column gives the share of reading the database from the cache in the total; the last column gives the total for 70 to 8,000 output tokens per call.}
+\caption{Estimated cost in US dollars of 1,673 calls, assuming 2,000 output tokens per call.}
 \label{tab:cost}
 \setlength{\tabcolsep}{5pt}
 \begin{tabular}{@{}lrrrrrrr@{}}
