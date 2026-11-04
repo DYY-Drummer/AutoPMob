@@ -63,6 +63,32 @@
     "output": 78.42,
     "total": 266.385001875,
     "read_share": 0.7007746980349774
+   },
+   "measured_output_tokens": {
+    "by_kind_mean": {
+     "single": 57.666666666666664,
+     "cross": 153.0,
+     "synth": 1539.6666666666667
+    },
+    "by_kind_n": {
+     "single": 3,
+     "cross": 3,
+     "synth": 3
+    },
+    "plan_share": {
+     "single": 0.04662283323371189,
+     "cross": 0.35923490735206215,
+     "synth": 0.5941422594142259
+    },
+    "weighted": 972.4325562861128
+   },
+   "10splits_out_measured": {
+    "read": 238.95082575,
+    "write": 0.595115625,
+    "task": 0.888363,
+    "output": 12.2015975,
+    "total": 252.635901875,
+    "read_share": 0.9458308339256899
    }
   },
   "claude-sonnet-5-5": {

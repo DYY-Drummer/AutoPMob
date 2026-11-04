@@ -1527,9 +1527,41 @@ def cost_breakdown(prefix: float, task_mean: float, n_calls: int, out_tokens: fl
             "read_share": read / (read + write + task + out)}
 
 
+def case_kind(variant: str) -> str:
+    """ケースの種類（single：単一出典、cross：出典横断、synth：合成）."""
+    if variant == "original":
+        return "single"
+    return "cross" if variant.startswith("multisource_") else "synth"
+
+
+def measured_output_tokens(recs: list, cases: dict, plan_ids: list) -> dict | None:
+    """試し（pilot3）で実際に出た出力のトークン数（考えた分を含む）から、本実行の 1 回あたりを見積もる.
+
+    種類（単一出典、出典横断、合成）ごとに平均し、本実行で解かせるケース（plan_ids）の種類の割合で重みを付ける。
+    試しにない種類があれば None（見積もれない）。
+    """
+    by = {}
+    for r in recs:
+        if r.get("error") is None and r.get("usage") and r.get("case_id") in cases:
+            by.setdefault(case_kind(cases[r["case_id"]].get("variant_type") or ""), []).append(
+                r["usage"]["output_tokens"])
+    share = Counter(case_kind(cases[c].get("variant_type") or "") for c in plan_ids)
+    if any(k not in by for k in share):
+        return None
+    mean = {k: float(np.mean(v)) for k, v in by.items()}
+    return {"by_kind_mean": mean, "by_kind_n": {k: len(v) for k, v in by.items()},
+            "plan_share": {k: share[k] / len(plan_ids) for k in share},
+            "weighted": float(sum(mean[k] * share[k] for k in share) / len(plan_ids))}
+
+
 def cmd_costs3(args) -> None:
-    """--runs 回ずつ解かせるときの費用の見積もりと内訳（API を呼ばない）。token_counts_v3.json のトークン数を使う."""
+    """--runs 回ずつ解かせるときの費用の見積もりと内訳（API を呼ばない）。token_counts_v3.json のトークン数を使う.
+
+    試し（pilot3）の記録があるモデルは、実際の出力のトークン数（種類の割合で重みを付けた平均）でも見積もる（*_measured）。
+    """
     tc = json.loads((OUT_DIR / "token_counts_v3.json").read_text(encoding="utf-8"))
+    cases, splits = load_case_index(), load_splits()
+    plan_ids = v3_plan(splits, ALL_SEEDS, cases)
     out = {"source": "token_counts_v3.json", "runs": args.runs,
            "n_cases": tc["n_calls"], "n_calls": {k: v * args.runs for k, v in tc["n_calls"].items()},
            "out_tokens_assumed": tc["out_tokens_assumed"], "models": {}}
@@ -1538,9 +1570,17 @@ def cmd_costs3(args) -> None:
         out["models"][model] = {
             f"{name}_out{o}": cost_breakdown(m["prefix_tokens"], m["task_mean_est"], n, o, p)
             for name, n in out["n_calls"].items() for o in tc["out_tokens_assumed"]}
+        cfg = {"model": model, "effort": "high", "db_format": "eqd", "examples": "none", "prompt_version": "v3"}
+        meas = measured_output_tokens([r for r in load_raw(cfg) if r.get("source") == "pilot"], cases, plan_ids)
+        if meas:
+            out["models"][model]["measured_output_tokens"] = meas
+            out["models"][model]["10splits_out_measured"] = cost_breakdown(
+                m["prefix_tokens"], m["task_mean_est"], out["n_calls"]["10splits"], meas["weighted"], p)
         b = out["models"][model]["10splits_out2000"]
         print(f"{model}: 10 分割 × {args.runs} 回 = {out['n_calls']['10splits']} 回、出力 2,000 で "
-              f"{b['total']:.1f} USD（読み出し {b['read_share']:.0%}）")
+              f"{b['total']:.1f} USD（読み出し {b['read_share']:.0%}）"
+              + (f"、実測の出力 {meas['weighted']:.0f} で {out['models'][model]['10splits_out_measured']['total']:.1f} USD"
+                 if meas else ""))
     f = OUT_DIR / f"costs_v3_runs{args.runs}.json"
     f.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {f}")

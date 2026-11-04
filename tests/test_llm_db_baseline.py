@@ -632,3 +632,17 @@ def test_cost_breakdown_matches_the_one_run_estimate_in_token_counts():
         b = cost_breakdown(m["prefix_tokens"], m["task_mean_est"], tc["n_calls"]["10splits"], 2000,
                            price_for(model, m["prefix_tokens"]))
         assert round(b["total"], 1) == m["cost_usd"]["10splits_out2000"]
+
+
+def test_measured_output_tokens_weights_kinds_by_the_plan():
+    from run_llm_db_baseline import measured_output_tokens
+    cases = {"core_1": {"variant_type": "original"}, "ms_1": {"variant_type": "multisource_x"},
+             "dae_1": {"variant_type": "dae_X5"}, "dae_2": {"variant_type": "dae_X3"}}
+    recs = [{"case_id": "core_1", "error": None, "usage": {"output_tokens": 100}},
+            {"case_id": "ms_1", "error": None, "usage": {"output_tokens": 200}},
+            {"case_id": "dae_1", "error": None, "usage": {"output_tokens": 1000}},
+            {"case_id": "dae_1", "error": None, "usage": {"output_tokens": 3000}}]
+    m = measured_output_tokens(recs, cases, ["core_1", "ms_1", "dae_1", "dae_2"])
+    assert m["by_kind_mean"] == {"single": 100.0, "cross": 200.0, "synth": 2000.0}
+    assert m["weighted"] == (100 + 200 + 2 * 2000) / 4
+    assert measured_output_tokens(recs[:1], cases, ["core_1", "ms_1"]) is None   # 試しにない種類がある
