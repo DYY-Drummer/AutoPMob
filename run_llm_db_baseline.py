@@ -1389,6 +1389,7 @@ def cmd_evaluate(args) -> None:
 
 # ---- 版 3（ゼロショット、全ケース × 3 回）のコマンド ------------------------------------------------
 
+V3_RUNS = 3            # 本実行で、異なるテストケースごとに独立に解かせる回数（2026-11-04 本人の指示。加藤先生の 10/14 の方針）
 V3_MAX_TOKENS = 32000   # 思考を含む出力の上限。入力（約 95 万）と合わせて 100 万に収まる。大きいのでストリーミングで受ける
 
 
@@ -1438,6 +1439,27 @@ def _spent_so_far(cfg: dict) -> float:
 
 def _seeds(text: str) -> list:
     return ALL_SEEDS if text == "all" else [int(x) for x in text.split(",")]
+
+
+def run_plan(case_ids: list, runs: int) -> list:
+    """(case_id, 回) の列。全ケースの 1 回目、次に 2 回目、… の順."""
+    return [(cid, k) for k in range(1, runs + 1) for cid in case_ids]
+
+
+def answers_by_run(recs: list) -> dict:
+    """{case_id: {回: 記録}}。API が応答を返した記録だけ。回のない記録（回数を足す前のもの）は 1 回目とみなす.
+    同じケースと回の記録が複数あれば、後の記録を使う."""
+    out = {}
+    for r in recs:
+        if r.get("error") is None and r.get("case_id"):
+            out.setdefault(r["case_id"], {})[int(r.get("run") or 1)] = r
+    return out
+
+
+def mean_over_runs(scores: list) -> dict:
+    """1 ケースの回ごとの score_record の結果を、指標ごとに平均する（ケースの値は回の平均とする）."""
+    keys = ("recall@20", "AP@20", "recall@20_equiv", "AP@20_equiv")
+    return {k: float(np.mean([s[k] for s in scores])) for k in keys if all(k in s for s in scores)}
 
 
 def cmd_fix_order(args) -> None:
@@ -1491,6 +1513,39 @@ def cmd_count3(args) -> None:
     (OUT_DIR / "token_counts_v3.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
 
 
+def cost_breakdown(prefix: float, task_mean: float, n_calls: int, out_tokens: float, price: dict) -> dict:
+    """1 モデルの費用の内訳（USD）。キャッシュは毎回当たり、保存はモデルごとに 1 回とする.
+
+    最初の 1 回は指示文とデータベース（prefix）をキャッシュに保存し、残りの n_calls − 1 回は読み出す。
+    count3 の見積もり（n × 読み出し ＋ 保存 1 回）と同じ扱いにするため、読み出しも n_calls 回で数える。
+    """
+    read = n_calls * prefix * price["read"] / 1e6
+    write = prefix * price["w5m"] / 1e6
+    task = n_calls * task_mean * price["in"] / 1e6
+    out = n_calls * out_tokens * price["out"] / 1e6
+    return {"read": read, "write": write, "task": task, "output": out, "total": read + write + task + out,
+            "read_share": read / (read + write + task + out)}
+
+
+def cmd_costs3(args) -> None:
+    """--runs 回ずつ解かせるときの費用の見積もりと内訳（API を呼ばない）。token_counts_v3.json のトークン数を使う."""
+    tc = json.loads((OUT_DIR / "token_counts_v3.json").read_text(encoding="utf-8"))
+    out = {"source": "token_counts_v3.json", "runs": args.runs,
+           "n_cases": tc["n_calls"], "n_calls": {k: v * args.runs for k, v in tc["n_calls"].items()},
+           "out_tokens_assumed": tc["out_tokens_assumed"], "models": {}}
+    for model, m in tc["models"].items():
+        p = price_for(model, m["prefix_tokens"])
+        out["models"][model] = {
+            f"{name}_out{o}": cost_breakdown(m["prefix_tokens"], m["task_mean_est"], n, o, p)
+            for name, n in out["n_calls"].items() for o in tc["out_tokens_assumed"]}
+        b = out["models"][model]["10splits_out2000"]
+        print(f"{model}: 10 分割 × {args.runs} 回 = {out['n_calls']['10splits']} 回、出力 2,000 で "
+              f"{b['total']:.1f} USD（読み出し {b['read_share']:.0%}）")
+    f = OUT_DIR / f"costs_v3_runs{args.runs}.json"
+    f.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"wrote {f}")
+
+
 def run_variability(per_run: dict) -> dict:
     """同じケースを独立に何回か解かせたときの、回の間のぶれ.
 
@@ -1536,7 +1591,7 @@ def cmd_pilot3(args) -> None:
         sys.exit(f"ケースがない: {unknown}")
     if args.runs > 1:
         fields = ("case_id", "run")
-        plan = [(cid, k) for k in range(1, args.runs + 1) for cid in ids]
+        plan = run_plan(ids, args.runs)
     else:
         fields = ("case_id",)
         plan = [(cid,) for cid in ids]
@@ -1577,21 +1632,24 @@ def cmd_pilot3(args) -> None:
 
 
 def cmd_run3(args) -> None:
-    """本実行：--seeds の分割のテストケース（設定 A と B の和集合）を 1 回ずつ解かせる。途中から再開できる.
+    """本実行：--seeds の分割のテストケース（設定 A と B の和集合）を、ケースごとに --runs 回（既定 3 回）独立に解かせる.
 
-    3 通りの分割で流したあとに 10 通りに増やすと、まだ解いていないケースだけを解かせる。
+    回ごとに記録（run）し、途中から再開できる。全ケースの 1 回目を先に解かせ、次に 2 回目、3 回目の順に進む
+    （途中で止まっても、回の数がケースによって偏らないようにするため）。pilot3 --runs で解かせた回は再利用する。
+    3 通りの分割で流したあとに 10 通りに増やすと、まだ解いていないケースと回だけを解かせる。
     """
     eqs, _, _ = load_db_v3()
     cases, splits = load_case_index(), load_splits()
     cfg = _cfg3(args)
-    plan = [(cid,) for cid in v3_plan(splits, _seeds(args.seeds), cases)]
-    todo = pending_cases(load_raw(cfg), plan, cfg, fields=("case_id",))
+    ids = v3_plan(splits, _seeds(args.seeds), cases)
+    plan = run_plan(ids, args.runs)
+    todo = pending_cases(load_raw(cfg), plan, cfg, fields=("case_id", "run"))
     spent = [_spent_so_far(cfg)]
     print(f"{cfg_name(cfg)}: plan {len(plan)}, todo {len(todo)}, spent so far ${spent[0]:.2f}, "
           f"budget {args.budget_usd}")
     params_of, meta_of = _params3(args, eqs, cases)
     _run_cases(client_(), cfg, todo, params_of, "run", args.workers, args.budget_usd, spent, meta_of=meta_of,
-               fields=("case_id",), group_of=lambda t: "all", stream=True)
+               fields=("case_id", "run"), group_of=lambda t: "all", stream=True)
 
 
 def cmd_evaluate3(args) -> None:
@@ -1600,29 +1658,37 @@ def cmd_evaluate3(args) -> None:
     equiv = equiv_maps(eqs, id_to_key)
     cases, splits = load_case_index(), load_splits()
     cfg = _cfg3(args)
-    latest = {}
-    for r in load_raw(cfg):
-        if r.get("error") is None and r.get("case_id"):
-            latest[r["case_id"]] = r
-    per_case, rows = {}, []
+    by_run = answers_by_run(load_raw(cfg))
+    runs = list(range(1, args.runs + 1))
+    per_case, per_case_run, per_run_scores, rows = {}, {k: {} for k in runs}, {}, []
     for cid in v3_plan(splits, ALL_SEEDS, cases):
-        r = latest.get(cid)
-        if r is None:
-            continue
+        got = by_run.get(cid, {})
+        if not all(k in got for k in runs):
+            continue                                  # 回がそろっていないケースは集計しない（missing に数える）
         correct = [norm(m) for m in cases[cid]["correct_model_ids"] if norm(m) in key_to_id]
-        sc = score_record(r, id_to_key, correct, equiv=equiv)
-        per_case[cid] = sc
-        rows.append({"case_id": cid, "variant": cases[cid].get("variant_type"), "time": r.get("time"),
-                     "stop_reason": r.get("stop_reason"), "model_served": r.get("model_served"),
-                     "output_tokens": (r.get("usage") or {}).get("output_tokens"),
-                     "raw_text": r.get("text"), **sc})
-    out = {"config": cfg, "order_seed": V3_ORDER_SEED, "n_scored": len(rows),
+        scs = []
+        for k in runs:
+            r = got[k]
+            sc = score_record(r, id_to_key, correct, equiv=equiv)
+            scs.append(sc)
+            per_case_run[k][cid] = sc
+            rows.append({"case_id": cid, "run": k, "variant": cases[cid].get("variant_type"), "time": r.get("time"),
+                         "stop_reason": r.get("stop_reason"), "model_served": r.get("model_served"),
+                         "output_tokens": (r.get("usage") or {}).get("output_tokens"),
+                         "raw_text": r.get("text"), **sc})
+        per_case[cid] = mean_over_runs(scs)
+        per_run_scores[cid] = scs
+    out = {"config": cfg, "order_seed": V3_ORDER_SEED, "runs": args.runs, "n_cases_scored": len(per_case),
+           "n_scored": len(rows),
            "rules": "ID だけで判定（等価性の判定なし）。DB にない ID と読めない出力は、その順位を占める不正解。"
                     "同じ ID の 2 回目以降は除く。上位 20 件。MAP@20 は標準の定義（上位 20 件の外の正解式は P(e)=0）。"
                     "例題を渡さないので、同じケースの答えを、そのケースがテストに入るすべての分割で使う。"
+                    "各ケースを独立に runs 回解かせ、ケースの値は回の平均とする（summary）。summary_by_run は回ごとの値、"
+                    "variability は回の間のぶれ。"
                     "summary_equiv と comparison_equiv は、別の出典にある同じ式（空白と \\left・\\right・\\,・\\;・\\!・"
                     "\\quad を除いた LaTeX が同じ式）も正解とみなした値（どの手法にも同じ規則）。",
-           "summary": {}, "comparison": {}, "summary_equiv": {}, "comparison_equiv": {}}
+           "summary": {}, "comparison": {}, "summary_equiv": {}, "comparison_equiv": {},
+           "summary_by_run": {}, "variability": run_variability(per_run_scores)}
     refs = reference_rows(["A", "B"], ALL_SEEDS, splits)
     out["reference"] = {k: v["summary"] for k, v in refs.items()}
     out["reference_equiv"] = {k: v["summary_equiv"] for k, v in refs.items() if "summary_equiv" in v}
@@ -1632,6 +1698,9 @@ def cmd_evaluate3(args) -> None:
         if lack:
             out["summary"][name] = {"missing": len(lack)}
             continue
+        for k in runs:
+            for st in ("A", "B"):
+                out["summary_by_run"][f"run{k}_{st}_{name}"] = split_summary(per_case_run[k], splits, st, seeds)
         for suffix, skey, ckey, rkey in (("", "summary", "comparison", "summary"),
                                          ("_equiv", "summary_equiv", "comparison_equiv", "summary_equiv")):
             for st in ("A", "B"):
@@ -1759,10 +1828,15 @@ def main() -> None:
     common3(p)
     p.add_argument("--seeds", required=True, help="解かせる分割の乱数の種（カンマ区切り、または all）。例: 42,123,456")
     p.add_argument("--workers", type=int, default=8)
+    p.add_argument("--runs", type=int, default=V3_RUNS, help="ケースごとに独立に解かせる回数")
     p.set_defaults(fn=cmd_run3)
     p = sub.add_parser("evaluate3")
     common3(p)
+    p.add_argument("--runs", type=int, default=V3_RUNS, help="集計に使う回数（ケースごとに 1〜runs 回目がそろったものだけ）")
     p.set_defaults(fn=cmd_evaluate3)
+    p = sub.add_parser("costs3")
+    p.add_argument("--runs", type=int, default=V3_RUNS)
+    p.set_defaults(fn=cmd_costs3)
     args = ap.parse_args()
     args.fn(args)
 

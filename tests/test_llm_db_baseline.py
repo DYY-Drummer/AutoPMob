@@ -597,3 +597,38 @@ def test_run_variability_counts_agreement_and_spread():
     assert v["per_case"]["diff"]["jaccard_mean"] == pytest.approx(1 / 3)
     assert v["same_list_share"] == 0.5
     assert v["recall@20_sd_max"] == pytest.approx(math.sqrt(0.125))
+
+
+# ---- 本実行を「異なるテストケースごとに 3 回」に（2026-11-04 本人の指示） ----------------------------------------
+
+from run_llm_db_baseline import (  # noqa: E402
+    V3_RUNS, answers_by_run, cost_breakdown, mean_over_runs, run_plan,
+)
+
+
+def test_run_plan_puts_all_first_runs_before_second_runs():
+    assert V3_RUNS == 3
+    assert run_plan(["a", "b"], 3) == [("a", 1), ("b", 1), ("a", 2), ("b", 2), ("a", 3), ("b", 3)]
+
+
+def test_answers_by_run_skips_errors_and_treats_missing_run_as_first():
+    recs = [{"case_id": "a", "error": None, "text": "old"},
+            {"case_id": "a", "run": 2, "error": None, "text": "r2"},
+            {"case_id": "a", "run": 3, "error": "api 500"},
+            {"case_id": "a", "run": 2, "error": None, "text": "r2-later"}]
+    got = answers_by_run(recs)
+    assert sorted(got["a"]) == [1, 2] and got["a"][1]["text"] == "old" and got["a"][2]["text"] == "r2-later"
+
+
+def test_mean_over_runs_averages_each_metric():
+    s = [{"recall@20": 1.0, "AP@20": 0.5, "recall@20_equiv": 1.0, "AP@20_equiv": 0.5},
+         {"recall@20": 0.0, "AP@20": 0.0, "recall@20_equiv": 0.5, "AP@20_equiv": 0.25}]
+    assert mean_over_runs(s) == {"recall@20": 0.5, "AP@20": 0.25, "recall@20_equiv": 0.75, "AP@20_equiv": 0.375}
+
+
+def test_cost_breakdown_matches_the_one_run_estimate_in_token_counts():
+    tc = json.loads((ROOT / "experiments" / "llm_db_baseline" / "token_counts_v3.json").read_text(encoding="utf-8"))
+    for model, m in tc["models"].items():
+        b = cost_breakdown(m["prefix_tokens"], m["task_mean_est"], tc["n_calls"]["10splits"], 2000,
+                           price_for(model, m["prefix_tokens"]))
+        assert round(b["total"], 1) == m["cost_usd"]["10splits_out2000"]
