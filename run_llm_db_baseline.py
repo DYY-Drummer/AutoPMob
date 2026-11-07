@@ -951,7 +951,11 @@ def client_(max_retries: int = 3):
 def message_record(msg, headers: dict | None) -> dict:
     text = "".join(b.text for b in msg.content if b.type == "text")
     thinking = "".join(getattr(b, "thinking", "") or "" for b in msg.content if b.type == "thinking")
-    return {"model_served": msg.model, "stop_reason": msg.stop_reason, "usage": msg.usage.model_dump(),
+    sd = getattr(msg, "stop_details", None)   # 安全分類器が止めたとき（stop_reason が refusal）の種類と説明
+    if sd is not None and hasattr(sd, "model_dump"):
+        sd = sd.model_dump()
+    return {"model_served": msg.model, "stop_reason": msg.stop_reason, "stop_details": sd,
+            "usage": msg.usage.model_dump(),
             "text": text, "thinking": thinking, "request_id": getattr(msg, "_request_id", None),
             "ratelimit": headers}
 

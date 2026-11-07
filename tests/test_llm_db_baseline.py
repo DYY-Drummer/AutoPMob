@@ -714,3 +714,17 @@ def test_measured_cost_interval_weights_kinds_and_adds_one_write():
     r = measured_cost_interval(recs, cases, ["a", "b", "c", "c"], 10, 1_000_000, "claude-opus-5-5", n_boot=50)
     assert abs(r["total"] - (10 * (0.25 * 1 + 0.25 * 2 + 0.5 * 0) + 5.0)) < 1e-9
     assert r["ci95"][0] <= r["total"] <= r["ci95"][1]
+
+
+def test_message_record_keeps_stop_details():
+    from types import SimpleNamespace as NS
+    from run_llm_db_baseline import message_record
+
+    class Dumpable(NS):
+        def model_dump(self):
+            return dict(self.__dict__)
+    msg = NS(content=[], model="m", stop_reason="refusal", usage=Dumpable(output_tokens=0),
+             stop_details=Dumpable(type="refusal", category="bio", explanation="x"))
+    assert message_record(msg, None)["stop_details"] == {"type": "refusal", "category": "bio", "explanation": "x"}
+    msg2 = NS(content=[], model="m", stop_reason="end_turn", usage=Dumpable(output_tokens=1))
+    assert message_record(msg2, None)["stop_details"] is None
