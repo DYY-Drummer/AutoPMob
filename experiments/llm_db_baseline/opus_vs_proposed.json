@@ -1,0 +1,377 @@
+{
+ "definition": "case-level: Opus mean over 3 runs vs proposed mean over the splits in which the case is a test case",
+ "settings": {
+  "A": {
+   "n_cases": 1586,
+   "R_groups": {
+    "tie": 1064,
+    "loss": 486,
+    "win": 36
+   },
+   "R_groups_by_kind": {
+    "single": {
+     "tie": 74,
+     "loss": 4
+    },
+    "cross": {
+     "tie": 495,
+     "loss": 106
+    },
+    "synth": {
+     "tie": 495,
+     "loss": 376,
+     "win": 36
+    }
+   },
+   "R_robust_wins": 12,
+   "AP_groups": {
+    "tie": 469,
+    "win": 274,
+    "loss": 843
+   },
+   "AP_groups_by_kind": {
+    "single": {
+     "tie": 60,
+     "win": 10,
+     "loss": 8
+    },
+    "cross": {
+     "tie": 209,
+     "loss": 327,
+     "win": 65
+    },
+    "synth": {
+     "loss": 508,
+     "tie": 200,
+     "win": 199
+    }
+   },
+   "AP_robust_wins": 136,
+   "R_win_K": {
+    "2": 1,
+    "3": 1,
+    "4": 4,
+    "5": 1,
+    "6": 3,
+    "7": 6,
+    "8": 5,
+    "9": 5,
+    "10": 10
+   },
+   "R_win_from_dup_books": 25,
+   "R_win_means": {
+    "opus_R": 0.8518849206349206,
+    "prop_R": 0.7126166593180482,
+    "opus_AP": 0.5462274642261328,
+    "prop_AP": 0.41020568656215356
+   },
+   "synth_K7plus": {
+    "dup_books": {
+     "n": 57,
+     "R_win_rate": 0.2631578947368421,
+     "R_loss_rate": 0.7017543859649122,
+     "prop_R": 0.7513104520560661,
+     "opus_R": 0.6464192889631486,
+     "twins_per_list_prop": 4.457894736842105,
+     "twins_per_list_opus": 3.8888888888888893
+    },
+    "other_sources": {
+     "n": 298,
+     "R_win_rate": 0.03691275167785235,
+     "R_loss_rate": 0.6610738255033557,
+     "prop_R": 0.978660203827989,
+     "opus_R": 0.8940902311707682,
+     "twins_per_list_prop": 0.5282438478747203,
+     "twins_per_list_opus": 0.4821029082774049
+    }
+   },
+   "R_win_correct_eqs": {
+    "both": {
+     "n": 177,
+     "jaccard": 0.2218529846898075,
+     "text_sim": 0.0959403932904059,
+     "stage1_rank_median": 17.0,
+     "n_vars": 7.016949152542373,
+     "has_twin": 0.423728813559322
+    },
+    "only_opus": {
+     "n": 58,
+     "jaccard": 0.17381336488600435,
+     "text_sim": 0.06690749642406571,
+     "stage1_rank_median": 50.5,
+     "n_vars": 5.431034482758621,
+     "has_twin": 0.5862068965517241
+    },
+    "only_proposed": {
+     "n": 16,
+     "jaccard": 0.1866440256126225,
+     "text_sim": 0.0992515364594074,
+     "stage1_rank_median": 24.0,
+     "n_vars": 6.5625,
+     "has_twin": 0.5625
+    },
+    "neither": {
+     "n": 20,
+     "jaccard": 0.13864922001957894,
+     "text_sim": 0.09258496194094543,
+     "stage1_rank_median": 48.0,
+     "n_vars": 4.55,
+     "has_twin": 0.65
+    }
+   },
+   "wrong_items_per_list_synth_K7plus": {
+    "win": {
+     "prop": {
+      "wrong": 10.017307692307693,
+      "all_vars_in_io": 9.183974358974359,
+      "twin": 3.870512820512821
+     },
+     "opus": {
+      "wrong": 9.076923076923077,
+      "all_vars_in_io": 4.064102564102564,
+      "twin": 3.6794871794871797
+     }
+    },
+    "tie": {
+     "prop": {
+      "wrong": 11.347826086956522,
+      "all_vars_in_io": 8.119202898550725,
+      "twin": 0.4710144927536231
+     },
+     "opus": {
+      "wrong": 10.967391304347828,
+      "all_vars_in_io": 1.9057971014492754,
+      "twin": 0.3659420289855073
+     }
+    },
+    "loss": {
+     "prop": {
+      "wrong": 10.717229254571027,
+      "all_vars_in_io": 8.561111111111112,
+      "twin": 1.1289029535864978
+     },
+     "opus": {
+      "wrong": 11.994374120956401,
+      "all_vars_in_io": 3.209563994374121,
+      "twin": 0.9957805907172996
+     }
+    }
+   },
+   "cross_AP_by_min_jaccard_tercile": [
+    {
+     "min_jaccard": [
+      0.20000000298023224,
+      0.4444444477558136
+     ],
+     "n": 200,
+     "AP_win_rate": 0.195,
+     "opus_AP": 0.7796249676249676,
+     "prop_AP": 0.8575590451215451
+    },
+    {
+     "min_jaccard": [
+      0.4444444477558136,
+      0.5
+     ],
+     "n": 125,
+     "AP_win_rate": 0.08,
+     "opus_AP": 0.7729130787513141,
+     "prop_AP": 0.9237222222222221
+    },
+    {
+     "min_jaccard": [
+      0.5,
+      0.625
+     ],
+     "n": 276,
+     "AP_win_rate": 0.057971014492753624,
+     "opus_AP": 0.7687750443159986,
+     "prop_AP": 0.9220051184725098
+    }
+   ],
+   "AP_win_rank1_cross": {
+    "prop": {
+     "correct": 0.5794871794871795,
+     "twin": 0.2923076923076923,
+     "wrong_all_vars_in_io": 0.1282051282051282
+    },
+    "opus": {
+     "correct": 0.8974358974358975,
+     "twin": 0.05641025641025641,
+     "wrong_all_vars_in_io": 0.035897435897435895,
+     "wrong_other": 0.010256410256410256
+    }
+   },
+   "AP_win_rank1_synth": {
+    "prop": {
+     "correct": 0.7340823970037453,
+     "wrong_all_vars_in_io": 0.16292134831460675,
+     "twin": 0.10299625468164794
+    },
+    "opus": {
+     "correct": 0.9061976549413735,
+     "twin": 0.06030150753768844,
+     "wrong_other": 0.018425460636515914,
+     "wrong_all_vars_in_io": 0.01507537688442211
+    }
+   }
+  },
+  "B": {
+   "n_cases": 941,
+   "R_groups": {
+    "tie": 501,
+    "loss": 396,
+    "win": 44
+   },
+   "R_groups_by_kind": {
+    "single": {},
+    "cross": {},
+    "synth": {
+     "tie": 501,
+     "loss": 396,
+     "win": 44
+    }
+   },
+   "R_robust_wins": 12,
+   "AP_groups": {
+    "loss": 541,
+    "tie": 188,
+    "win": 212
+   },
+   "AP_groups_by_kind": {
+    "single": {},
+    "cross": {},
+    "synth": {
+     "loss": 541,
+     "tie": 188,
+     "win": 212
+    }
+   },
+   "AP_robust_wins": 121,
+   "R_win_K": {
+    "2": 1,
+    "3": 1,
+    "4": 5,
+    "5": 1,
+    "6": 6,
+    "7": 5,
+    "8": 6,
+    "9": 6,
+    "10": 13
+   },
+   "R_win_from_dup_books": 28,
+   "R_win_means": {
+    "opus_R": 0.8498045935545936,
+    "prop_R": 0.7177985209235209,
+    "opus_AP": 0.5363978692160221,
+    "prop_AP": 0.42354358949002696
+   },
+   "synth_K7plus": {
+    "dup_books": {
+     "n": 52,
+     "R_win_rate": 0.28846153846153844,
+     "R_loss_rate": 0.6730769230769231,
+     "prop_R": 0.7451719576719579,
+     "opus_R": 0.6473341473341473,
+     "twins_per_list_prop": 4.280448717948718,
+     "twins_per_list_opus": 3.814102564102564
+    },
+    "other_sources": {
+     "n": 329,
+     "R_win_rate": 0.04559270516717325,
+     "R_loss_rate": 0.6656534954407295,
+     "prop_R": 0.9710648148148148,
+     "opus_R": 0.8856584004760297,
+     "twins_per_list_prop": 0.5101317122593718,
+     "twins_per_list_opus": 0.45896656534954405
+    }
+   },
+   "R_win_correct_eqs": {
+    "both": {
+     "n": 219,
+     "jaccard": 0.22778102859310365,
+     "text_sim": 0.09171267000208719,
+     "stage1_rank_median": 16.0,
+     "n_vars": 7.19634703196347,
+     "has_twin": 0.4063926940639269
+    },
+    "only_opus": {
+     "n": 70,
+     "jaccard": 0.16772224056933607,
+     "text_sim": 0.07199694055323362,
+     "stage1_rank_median": 62.5,
+     "n_vars": 5.1571428571428575,
+     "has_twin": 0.5428571428571428
+    },
+    "only_proposed": {
+     "n": 24,
+     "jaccard": 0.18989195705701908,
+     "text_sim": 0.09630296410939528,
+     "stage1_rank_median": 26.5,
+     "n_vars": 6.291666666666667,
+     "has_twin": 0.6666666666666666
+    },
+    "neither": {
+     "n": 20,
+     "jaccard": 0.12736413069069386,
+     "text_sim": 0.08183468320217839,
+     "stage1_rank_median": 65.0,
+     "n_vars": 4.3,
+     "has_twin": 0.5
+    }
+   },
+   "wrong_items_per_list_synth_K7plus": {
+    "win": {
+     "prop": {
+      "wrong": 10.180555555555555,
+      "all_vars_in_io": 8.952777777777778,
+      "twin": 3.577777777777778
+     },
+     "opus": {
+      "wrong": 9.21111111111111,
+      "all_vars_in_io": 4.377777777777778,
+      "twin": 3.388888888888889
+     }
+    },
+    "tie": {
+     "prop": {
+      "wrong": 11.33676975945017,
+      "all_vars_in_io": 7.9312714776632305,
+      "twin": 0.4948453608247423
+     },
+     "opus": {
+      "wrong": 11.10996563573883,
+      "all_vars_in_io": 1.8728522336769762,
+      "twin": 0.3402061855670103
+     }
+    },
+    "loss": {
+     "prop": {
+      "wrong": 10.956036745406823,
+      "all_vars_in_io": 8.556430446194225,
+      "twin": 0.925524934383202
+     },
+     "opus": {
+      "wrong": 12.186351706036744,
+      "all_vars_in_io": 3.312335958005249,
+      "twin": 0.8451443569553806
+     }
+    }
+   },
+   "AP_win_rank1_synth": {
+    "prop": {
+     "correct": 0.7212837837837838,
+     "wrong_all_vars_in_io": 0.17736486486486486,
+     "twin": 0.09966216216216216,
+     "wrong_other": 0.0016891891891891893
+    },
+    "opus": {
+     "correct": 0.8930817610062893,
+     "twin": 0.06446540880503145,
+     "wrong_all_vars_in_io": 0.0220125786163522,
+     "wrong_other": 0.020440251572327043
+    }
+   }
+  }
+ }
+}

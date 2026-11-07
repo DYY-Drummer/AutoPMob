@@ -1,0 +1,20 @@
+  [seed=42] reranker-10S    MRR_f=0.9723  MRR_w=0.2507  MAP=0.8883  R@K_c=0.8071  FullR@3=0.2576  multiFullR@3=0.1707  n=229
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__42.json: 229 test cases, ranks identical to B_w30-70_hard__42.json
+  [seed=123] reranker-10S    MRR_f=0.9543  MRR_w=0.2303  MAP=0.8430  R@K_c=0.7645  FullR@3=0.2256  multiFullR@3=0.1417  n=266
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__123.json: 266 test cases, ranks identical to B_w30-70_hard__123.json
+  [seed=456] reranker-10S    MRR_f=0.9634  MRR_w=0.2314  MAP=0.8526  R@K_c=0.7753  FullR@3=0.2284  multiFullR@3=0.1489  n=289
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__456.json: 289 test cases, ranks identical to B_w30-70_hard__456.json
+  [seed=789] reranker-10S    MRR_f=0.9091  MRR_w=0.2175  MAP=0.8120  R@K_c=0.7307  FullR@3=0.2197  multiFullR@3=0.1381  n=264
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__789.json: 264 test cases, ranks identical to B_w30-70_hard__789.json
+  [seed=1024] reranker-10S    MRR_f=0.9079  MRR_w=0.2055  MAP=0.7845  R@K_c=0.7125  FullR@3=0.1972  multiFullR@3=0.1237  n=213
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__1024.json: 213 test cases, ranks identical to B_w30-70_hard__1024.json
+  [seed=2024] reranker-10S    MRR_f=0.9357  MRR_w=0.2316  MAP=0.8501  R@K_c=0.7915  FullR@3=0.2228  multiFullR@3=0.1429  n=193
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__2024.json: 193 test cases, ranks identical to B_w30-70_hard__2024.json
+  [seed=3141] reranker-10S    MRR_f=0.9402  MRR_w=0.2507  MAP=0.8387  R@K_c=0.7655  FullR@3=0.2661  multiFullR@3=0.1765  n=248
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__3141.json: 248 test cases, ranks identical to B_w30-70_hard__3141.json
+  [seed=5926] reranker-10S    MRR_f=0.9558  MRR_w=0.2313  MAP=0.8510  R@K_c=0.7695  FullR@3=0.2435  multiFullR@3=0.1594  n=230
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__5926.json: 230 test cases, ranks identical to B_w30-70_hard__5926.json
+  [seed=7777] reranker-10S    MRR_f=0.8787  MRR_w=0.2086  MAP=0.7429  R@K_c=0.6615  FullR@3=0.2137  multiFullR@3=0.1286  n=234
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__7777.json: 234 test cases, ranks identical to B_w30-70_hard__7777.json
+  [seed=9999] reranker-10S    MRR_f=0.9527  MRR_w=0.2282  MAP=0.8534  R@K_c=0.7677  FullR@3=0.2368  multiFullR@3=0.1506  n=266
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/llm_db_baseline/proposed_top20/B__9999.json: 266 test cases, ranks identical to B_w30-70_hard__9999.json
