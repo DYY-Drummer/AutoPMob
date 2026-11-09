@@ -1,0 +1,16 @@
+        for needle in [
+            "this study", "Equation-set retrieval", "Documents", "Extraction", "Equivalence",
+            "Physical model", "11,146 equations", "361 sources",
+            r"r_A = k", r"\exp(-E/RT)", "degrees of freedom",
+        ]:
+>           assert needle in texts, needle
+E           AssertionError: degrees of freedom
+E           assert 'degrees of freedom' in '(a) AutoPMoB pipeline Documents papers, textbooks Extraction equations, variables, data Equivalence judgment variable...ed equations Given the inputs, the 3 equations determine $C_A$, $r_A$, $k$, one each retrieve rank and select as a set'
+
+tests/test_fig_overview.py:29: AssertionError
+----------------------------- Captured stdout call -----------------------------
+saved /Users/kazuhiromiyamura/Projects/AutoPMob/thesis/master_thesis/figures/fig_autopmob_overview.png/.pdf
+=========================== short test summary info ============================
+FAILED tests/test_fig_overview.py::test_overview_generates_files_and_labels
+1 failed, 532 passed, 3 skipped in 32.08s
+exit 0

@@ -1,0 +1,20 @@
+  [seed=42] reranker-10S    MRR_f=0.9164  MRR_w=0.2294  MAP=0.8044  R@K_c=0.7233  FullR@3=0.2277  multiFullR@3=0.1350  n=224
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__42.json: test 224 cases, 65 s
+  [seed=123] reranker-10S    MRR_f=0.9366  MRR_w=0.2206  MAP=0.8105  R@K_c=0.7291  FullR@3=0.2266  multiFullR@3=0.1414  n=331
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__123.json: test 331 cases, 50 s
+  [seed=456] reranker-10S    MRR_f=0.9732  MRR_w=0.2378  MAP=0.8930  R@K_c=0.8154  FullR@3=0.2488  multiFullR@3=0.1765  n=205
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__456.json: test 205 cases, 61 s
+  [seed=789] reranker-10S    MRR_f=0.9538  MRR_w=0.2448  MAP=0.8805  R@K_c=0.8092  FullR@3=0.2468  multiFullR@3=0.1683  n=231
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__789.json: test 231 cases, 64 s
+  [seed=1024] reranker-10S    MRR_f=0.9138  MRR_w=0.2129  MAP=0.7866  R@K_c=0.7001  FullR@3=0.2199  multiFullR@3=0.1382  n=241
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__1024.json: test 241 cases, 71 s
+  [seed=2024] reranker-10S    MRR_f=0.9103  MRR_w=0.2264  MAP=0.8099  R@K_c=0.7404  FullR@3=0.2304  multiFullR@3=0.1523  n=217
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__2024.json: test 217 cases, 76 s
+  [seed=3141] reranker-10S    MRR_f=0.9536  MRR_w=0.2383  MAP=0.8582  R@K_c=0.7772  FullR@3=0.2540  multiFullR@3=0.1667  n=248
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__3141.json: test 248 cases, 71 s
+  [seed=5926] reranker-10S    MRR_f=0.9097  MRR_w=0.2157  MAP=0.8048  R@K_c=0.7251  FullR@3=0.2093  multiFullR@3=0.1333  n=215
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__5926.json: test 215 cases, 63 s
+  [seed=7777] reranker-10S    MRR_f=0.9725  MRR_w=0.2428  MAP=0.8848  R@K_c=0.8027  FullR@3=0.2525  multiFullR@3=0.1747  n=297
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__7777.json: test 297 cases, 56 s
+  [seed=9999] reranker-10S    MRR_f=0.9655  MRR_w=0.2466  MAP=0.8785  R@K_c=0.7985  FullR@3=0.2555  multiFullR@3=0.1675  n=227
+wrote /Users/kazuhiromiyamura/Projects/AutoPMob/experiments/doc_split/raw/B__9999.json: test 227 cases, 75 s

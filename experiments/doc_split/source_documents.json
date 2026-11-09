@@ -1,0 +1,3690 @@
+{
+ "note": "同じ文献が別々のファイル（出典 ID）として入っているものをまとめた対応。分割の単位に使う。DB の式は変えない。",
+ "created": "2026-11-09T02:32:30+00:00",
+ "rule": "1. ファイル名から収集の番号（01_、FB05_、FB2_10_ など）と .pdf を除いた名前が同じ（年が頭に付く初期のファイルは年を後ろに回す）。\n  2. 文献集めの記録（docs/paper_collection/*.json）で DOI が同じ。\n  3. 手で挙げた教科書（BOOK_GROUPS）：Seborg（2 ファイル）、Corriou（2004 年の初版の第 1 章も含めて 4 ファイル）、\n     Marlin（本全体と第 3・4 章の 3 ファイル。式の重なりはほぼないが、同じ本なので 1 つにする）。\n  生成した基礎式集（handbook_X と handbook_X_adv）は文献でなく、式も重ならないので、今までどおり別の単位のまま。",
+ "n_files": 361,
+ "n_documents": 311,
+ "n_documents_with_several_files": 38,
+ "n_files_in_them": 88,
+ "n_equations_in_them": 3646,
+ "documents": {
+  "01_A_review_on_nanofluids_-_part_I_theoretical_and_numerical_in_2008.pdf": {
+   "files": [
+    "01_A_review_on_nanofluids_-_part_I_theoretical_and_numerical_in_2008.pdf"
+   ],
+   "n_equations": {
+    "01_A_review_on_nanofluids_-_part_I_theoretical_and_numerical_in_2008.pdf": 22
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_Extracting_Knowledge_from_Data_through_Catalysis_Informatics_2018.pdf": {
+   "files": [
+    "01_Extracting_Knowledge_from_Data_through_Catalysis_Informatics_2018.pdf"
+   ],
+   "n_equations": {
+    "01_Extracting_Knowledge_from_Data_through_Catalysis_Informatics_2018.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_Global_optimization_of_metasurface_designs_using_statistical_2019.pdf": {
+   "files": [
+    "01_Global_optimization_of_metasurface_designs_using_statistical_2019.pdf"
+   ],
+   "n_equations": {
+    "01_Global_optimization_of_metasurface_designs_using_statistical_2019.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_Impedance_Modeling_and_Stability_Analysis_of_Grid-Connected__2019.pdf": {
+   "files": [
+    "01_Impedance_Modeling_and_Stability_Analysis_of_Grid-Connected__2019.pdf"
+   ],
+   "n_equations": {
+    "01_Impedance_Modeling_and_Stability_Analysis_of_Grid-Connected__2019.pdf": 27
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_MR_elastography_Principles_guidelines_and_terminology_2020.pdf": {
+   "files": [
+    "01_MR_elastography_Principles_guidelines_and_terminology_2020.pdf"
+   ],
+   "n_equations": {
+    "01_MR_elastography_Principles_guidelines_and_terminology_2020.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_Moving_beyond_photosynthesis_from_carbon_source_to_sink_driv_2013.pdf": {
+   "files": [
+    "01_Moving_beyond_photosynthesis_from_carbon_source_to_sink_driv_2013.pdf"
+   ],
+   "n_equations": {
+    "01_Moving_beyond_photosynthesis_from_carbon_source_to_sink_driv_2013.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_One_and_a_Half_Century_of_Diffusion_Fick_Einstein_Before_and_2006.pdf": {
+   "files": [
+    "01_One_and_a_Half_Century_of_Diffusion_Fick_Einstein_Before_and_2006.pdf"
+   ],
+   "n_equations": {
+    "01_One_and_a_Half_Century_of_Diffusion_Fick_Einstein_Before_and_2006.pdf": 15
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_Physical_properties_of_hydrate_bearing_sediments_2009.pdf": {
+   "files": [
+    "01_Physical_properties_of_hydrate_bearing_sediments_2009.pdf"
+   ],
+   "n_equations": {
+    "01_Physical_properties_of_hydrate_bearing_sediments_2009.pdf": 25
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf": {
+   "files": [
+    "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf"
+   ],
+   "n_equations": {
+    "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf": 76
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Analytic_Models_of_Oxygen_and_Nutrient_Diffusion_Metabolism__2015.pdf": {
+   "files": [
+    "02_Analytic_Models_of_Oxygen_and_Nutrient_Diffusion_Metabolism__2015.pdf"
+   ],
+   "n_equations": {
+    "02_Analytic_Models_of_Oxygen_and_Nutrient_Diffusion_Metabolism__2015.pdf": 64
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Analytical_solution_for_a_hybrid_Logistic_Monod_cell_growth__2019.pdf": {
+   "files": [
+    "02_Analytical_solution_for_a_hybrid_Logistic_Monod_cell_growth__2019.pdf"
+   ],
+   "n_equations": {
+    "02_Analytical_solution_for_a_hybrid_Logistic_Monod_cell_growth__2019.pdf": 18
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Cooperative_Effects_Drive_Water_Oxidation_Catalysis_in_Cobal_2024.pdf": {
+   "files": [
+    "02_Cooperative_Effects_Drive_Water_Oxidation_Catalysis_in_Cobal_2024.pdf"
+   ],
+   "n_equations": {
+    "02_Cooperative_Effects_Drive_Water_Oxidation_Catalysis_in_Cobal_2024.pdf": 11
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Modeling_of_thermochemical_conversion_of_waste_biomass_a_com_2021.pdf": {
+   "files": [
+    "02_Modeling_of_thermochemical_conversion_of_waste_biomass_a_com_2021.pdf"
+   ],
+   "n_equations": {
+    "02_Modeling_of_thermochemical_conversion_of_waste_biomass_a_com_2021.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Optical_tweezers_theory_and_practice_2020.pdf": {
+   "files": [
+    "02_Optical_tweezers_theory_and_practice_2020.pdf"
+   ],
+   "n_equations": {
+    "02_Optical_tweezers_theory_and_practice_2020.pdf": 65
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Optimizing_investments_in_coupled_offshore_wind_-electrolyti_2017.pdf": {
+   "files": [
+    "02_Optimizing_investments_in_coupled_offshore_wind_-electrolyti_2017.pdf"
+   ],
+   "n_equations": {
+    "02_Optimizing_investments_in_coupled_offshore_wind_-electrolyti_2017.pdf": 23
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Parameters_Governing_Separation_Control_with_Sweeping_Jet_Ac_2011.pdf": {
+   "files": [
+    "02_Parameters_Governing_Separation_Control_with_Sweeping_Jet_Ac_2011.pdf"
+   ],
+   "n_equations": {
+    "02_Parameters_Governing_Separation_Control_with_Sweeping_Jet_Ac_2011.pdf": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_Port-Hamiltonian_Systems_on_Graphs_2013.pdf": {
+   "files": [
+    "02_Port-Hamiltonian_Systems_on_Graphs_2013.pdf"
+   ],
+   "n_equations": {
+    "02_Port-Hamiltonian_Systems_on_Graphs_2013.pdf": 69
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_QSAR_without_borders_2020.pdf": {
+   "files": [
+    "02_QSAR_without_borders_2020.pdf"
+   ],
+   "n_equations": {
+    "02_QSAR_without_borders_2020.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_The_global_chemistry_transport_model_TM5_description_and_eva_2010.pdf": {
+   "files": [
+    "02_The_global_chemistry_transport_model_TM5_description_and_eva_2010.pdf"
+   ],
+   "n_equations": {
+    "02_The_global_chemistry_transport_model_TM5_description_and_eva_2010.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_i_Stan_i_A_Probabilistic_Programming_Language_2017.pdf": {
+   "files": [
+    "02_i_Stan_i_A_Probabilistic_Programming_Language_2017.pdf"
+   ],
+   "n_equations": {
+    "02_i_Stan_i_A_Probabilistic_Programming_Language_2017.pdf": 26
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "02_scp_Taylor_Couette_scp_reactor_Principles_design_and_applica_2021.pdf": {
+   "files": [
+    "02_scp_Taylor_Couette_scp_reactor_Principles_design_and_applica_2021.pdf"
+   ],
+   "n_equations": {
+    "02_scp_Taylor_Couette_scp_reactor_Principles_design_and_applica_2021.pdf": 55
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "038.pdf": {
+   "files": [
+    "038.pdf"
+   ],
+   "n_equations": {
+    "038.pdf": 13
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_A_Refined_Zigzag_Beam_Theory_for_Composite_and_Sandwich_Beam_2009.pdf": {
+   "files": [
+    "03_A_Refined_Zigzag_Beam_Theory_for_Composite_and_Sandwich_Beam_2009.pdf"
+   ],
+   "n_equations": {
+    "03_A_Refined_Zigzag_Beam_Theory_for_Composite_and_Sandwich_Beam_2009.pdf": 55
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_MEDSLIK-II_a_Lagrangian_marine_surface_oil_spill_model_for_s_2013.pdf": {
+   "files": [
+    "03_MEDSLIK-II_a_Lagrangian_marine_surface_oil_spill_model_for_s_2013.pdf"
+   ],
+   "n_equations": {
+    "03_MEDSLIK-II_a_Lagrangian_marine_surface_oil_spill_model_for_s_2013.pdf": 101
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_Maximum_Power_Point_Tracking_Converter_Based_on_the_Open-Cir_2014.pdf": {
+   "files": [
+    "03_Maximum_Power_Point_Tracking_Converter_Based_on_the_Open-Cir_2014.pdf"
+   ],
+   "n_equations": {
+    "03_Maximum_Power_Point_Tracking_Converter_Based_on_the_Open-Cir_2014.pdf": 14
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_Multiscale_modelling_and_numerical_simulation_of_rechargeabl_2013.pdf": {
+   "files": [
+    "03_Multiscale_modelling_and_numerical_simulation_of_rechargeabl_2013.pdf"
+   ],
+   "n_equations": {
+    "03_Multiscale_modelling_and_numerical_simulation_of_rechargeabl_2013.pdf": 10
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_On_Pixel-Wise_Explanations_for_Non-Linear_Classifier_Decisio_2015.pdf": {
+   "files": [
+    "03_On_Pixel-Wise_Explanations_for_Non-Linear_Classifier_Decisio_2015.pdf"
+   ],
+   "n_equations": {
+    "03_On_Pixel-Wise_Explanations_for_Non-Linear_Classifier_Decisio_2015.pdf": 65
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_Optimal_Tuning_of_Fractional_Order_PID_Controller_for_DC_Mot_2019.pdf": {
+   "files": [
+    "03_Optimal_Tuning_of_Fractional_Order_PID_Controller_for_DC_Mot_2019.pdf"
+   ],
+   "n_equations": {
+    "03_Optimal_Tuning_of_Fractional_Order_PID_Controller_for_DC_Mot_2019.pdf": 39
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_Phase-Field_Models_for_Multi-Component_Fluid_Flows_2012.pdf": {
+   "files": [
+    "03_Phase-Field_Models_for_Multi-Component_Fluid_Flows_2012.pdf"
+   ],
+   "n_equations": {
+    "03_Phase-Field_Models_for_Multi-Component_Fluid_Flows_2012.pdf": 85
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_Steady-State_Simulation_of_Semiconductor_Devices_Using_Disco_2020.pdf": {
+   "files": [
+    "03_Steady-State_Simulation_of_Semiconductor_Devices_Using_Disco_2020.pdf"
+   ],
+   "n_equations": {
+    "03_Steady-State_Simulation_of_Semiconductor_Devices_Using_Disco_2020.pdf": 36
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "03_Theoretical_investigations_on_the_effect_of_absorbent_type_o_2020.pdf": {
+   "files": [
+    "03_Theoretical_investigations_on_the_effect_of_absorbent_type_o_2020.pdf"
+   ],
+   "n_equations": {
+    "03_Theoretical_investigations_on_the_effect_of_absorbent_type_o_2020.pdf": 21
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_3D_finite_element_modeling_and_simulation_of_industrial_semi_2015.pdf": {
+   "files": [
+    "04_3D_finite_element_modeling_and_simulation_of_industrial_semi_2015.pdf"
+   ],
+   "n_equations": {
+    "04_3D_finite_element_modeling_and_simulation_of_industrial_semi_2015.pdf": 40
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_A_consistent_refinement_of_first-order_shear_deformation_the_2010.pdf": {
+   "files": [
+    "04_A_consistent_refinement_of_first-order_shear_deformation_the_2010.pdf"
+   ],
+   "n_equations": {
+    "04_A_consistent_refinement_of_first-order_shear_deformation_the_2010.pdf": 44
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_A_novel_process-based_model_of_microbial_growth_self-inhibit_2015.pdf": {
+   "files": [
+    "04_A_novel_process-based_model_of_microbial_growth_self-inhibit_2015.pdf"
+   ],
+   "n_equations": {
+    "04_A_novel_process-based_model_of_microbial_growth_self-inhibit_2015.pdf": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_Bond-graph_modeling_2007.pdf": {
+   "files": [
+    "04_Bond-graph_modeling_2007.pdf"
+   ],
+   "n_equations": {
+    "04_Bond-graph_modeling_2007.pdf": 29
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_Critical_Review_of_Electro-kinetic_Remediation_of_Contaminat_2021.pdf": {
+   "files": [
+    "04_Critical_Review_of_Electro-kinetic_Remediation_of_Contaminat_2021.pdf"
+   ],
+   "n_equations": {
+    "04_Critical_Review_of_Electro-kinetic_Remediation_of_Contaminat_2021.pdf": 35
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_Critical_Review_of_Electro-kinetic_Rememdiation_of_Contaminat_2021.pdf": {
+   "files": [
+    "04_Critical_Review_of_Electro-kinetic_Rememdiation_of_Contaminat_2021.pdf"
+   ],
+   "n_equations": {
+    "04_Critical_Review_of_Electro-kinetic_Rememdiation_of_Contaminat_2021.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_Flow_boundary_conditions_from_nano-_to_micro-scales_2007.pdf": {
+   "files": [
+    "04_Flow_boundary_conditions_from_nano-_to_micro-scales_2007.pdf"
+   ],
+   "n_equations": {
+    "04_Flow_boundary_conditions_from_nano-_to_micro-scales_2007.pdf": 23
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_Fractional-order_models_of_the_supercapacitors_in_the_form_o_2013.pdf": {
+   "files": [
+    "04_Fractional-order_models_of_the_supercapacitors_in_the_form_o_2013.pdf"
+   ],
+   "n_equations": {
+    "04_Fractional-order_models_of_the_supercapacitors_in_the_form_o_2013.pdf": 34
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "04_Review_The_Use_of_Equivalent_Source_Method_in_Computational__2016.pdf": {
+   "files": [
+    "04_Review_The_Use_of_Equivalent_Source_Method_in_Computational__2016.pdf"
+   ],
+   "n_equations": {
+    "04_Review_The_Use_of_Equivalent_Source_Method_in_Computational__2016.pdf": 22
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_A_functionally_based_model_for_hydrolysis_of_cellulose_by_fu_2006.pdf": {
+   "files": [
+    "05_A_functionally_based_model_for_hydrolysis_of_cellulose_by_fu_2006.pdf"
+   ],
+   "n_equations": {
+    "05_A_functionally_based_model_for_hydrolysis_of_cellulose_by_fu_2006.pdf": 27
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_A_review_of_recent_advances_in_the_spherical_harmonics_expan_2016.pdf": {
+   "files": [
+    "05_A_review_of_recent_advances_in_the_spherical_harmonics_expan_2016.pdf"
+   ],
+   "n_equations": {
+    "05_A_review_of_recent_advances_in_the_spherical_harmonics_expan_2016.pdf": 39
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Active_learning_of_deep_surrogates_for_PDEs_application_to_m_2020.pdf": {
+   "files": [
+    "05_Active_learning_of_deep_surrogates_for_PDEs_application_to_m_2020.pdf"
+   ],
+   "n_equations": {
+    "05_Active_learning_of_deep_surrogates_for_PDEs_application_to_m_2020.pdf": 11
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Conceptual_methods_for_synthesis_of_reactive_distillation_pr_2024.pdf": {
+   "files": [
+    "05_Conceptual_methods_for_synthesis_of_reactive_distillation_pr_2024.pdf"
+   ],
+   "n_equations": {
+    "05_Conceptual_methods_for_synthesis_of_reactive_distillation_pr_2024.pdf": 13
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Design_principles_for_water_dissociation_catalysts_in_high-p_2022.pdf": {
+   "files": [
+    "05_Design_principles_for_water_dissociation_catalysts_in_high-p_2022.pdf"
+   ],
+   "n_equations": {
+    "05_Design_principles_for_water_dissociation_catalysts_in_high-p_2022.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Dynamic_rerouting_of_the_carbohydrate_flux_is_key_to_counter_2007.pdf": {
+   "files": [
+    "05_Dynamic_rerouting_of_the_carbohydrate_flux_is_key_to_counter_2007.pdf"
+   ],
+   "n_equations": {
+    "05_Dynamic_rerouting_of_the_carbohydrate_flux_is_key_to_counter_2007.pdf": 5
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Emergent_Hydrodynamics_in_Integrable_Quantum_Systems_Out_of__2016.pdf": {
+   "files": [
+    "05_Emergent_Hydrodynamics_in_Integrable_Quantum_Systems_Out_of__2016.pdf"
+   ],
+   "n_equations": {
+    "05_Emergent_Hydrodynamics_in_Integrable_Quantum_Systems_Out_of__2016.pdf": 70
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Functional_analysis_of_the_polarization_response_in_linear_t_2021.pdf": {
+   "files": [
+    "05_Functional_analysis_of_the_polarization_response_in_linear_t_2021.pdf"
+   ],
+   "n_equations": {
+    "05_Functional_analysis_of_the_polarization_response_in_linear_t_2021.pdf": 57
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Generalized_combined_field_integral_equations_for_the_iterat_2007.pdf": {
+   "files": [
+    "05_Generalized_combined_field_integral_equations_for_the_iterat_2007.pdf"
+   ],
+   "n_equations": {
+    "05_Generalized_combined_field_integral_equations_for_the_iterat_2007.pdf": 41
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Global_well-posedness_of_the_three-dimensional_viscous_primi_2007.pdf": {
+   "files": [
+    "05_Global_well-posedness_of_the_three-dimensional_viscous_primi_2007.pdf"
+   ],
+   "n_equations": {
+    "05_Global_well-posedness_of_the_three-dimensional_viscous_primi_2007.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Multi-scale_model_of_food_drying_Current_status_and_challeng_2016.pdf": {
+   "files": [
+    "05_Multi-scale_model_of_food_drying_Current_status_and_challeng_2016.pdf"
+   ],
+   "n_equations": {
+    "05_Multi-scale_model_of_food_drying_Current_status_and_challeng_2016.pdf": 31
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_The_harmonic_balance_method_for_bifurcation_analysis_of_larg_2015.pdf": {
+   "files": [
+    "05_The_harmonic_balance_method_for_bifurcation_analysis_of_larg_2015.pdf"
+   ],
+   "n_equations": {
+    "05_The_harmonic_balance_method_for_bifurcation_analysis_of_larg_2015.pdf": 38
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Towards_Industrialization_of_FOPID_Controllers_A_Survey_on_M_2021.pdf": {
+   "files": [
+    "05_Towards_Industrialization_of_FOPID_Controllers_A_Survey_on_M_2021.pdf"
+   ],
+   "n_equations": {
+    "05_Towards_Industrialization_of_FOPID_Controllers_A_Survey_on_M_2021.pdf": 15
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Towards_the_distributed_burning_regime_in_turbulent_premixed_2019.pdf": {
+   "files": [
+    "05_Towards_the_distributed_burning_regime_in_turbulent_premixed_2019.pdf"
+   ],
+   "n_equations": {
+    "05_Towards_the_distributed_burning_regime_in_turbulent_premixed_2019.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf": {
+   "files": [
+    "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf"
+   ],
+   "n_equations": {
+    "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf": 28
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "05_i_In_silico_i_ADME_T_modelling_for_rational_drug_design_2015.pdf": {
+   "files": [
+    "05_i_In_silico_i_ADME_T_modelling_for_rational_drug_design_2015.pdf"
+   ],
+   "n_equations": {
+    "05_i_In_silico_i_ADME_T_modelling_for_rational_drug_design_2015.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_A_Casson_nanofluid_flow_within_the_conical_gap_between_rotat_2022.pdf": {
+   "files": [
+    "06_A_Casson_nanofluid_flow_within_the_conical_gap_between_rotat_2022.pdf"
+   ],
+   "n_equations": {
+    "06_A_Casson_nanofluid_flow_within_the_conical_gap_between_rotat_2022.pdf": 46
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_A_Review_of_Kinetic_Modeling_Methodologies_for_Complex_Proce_2016.pdf": {
+   "files": [
+    "06_A_Review_of_Kinetic_Modeling_Methodologies_for_Complex_Proce_2016.pdf"
+   ],
+   "n_equations": {
+    "06_A_Review_of_Kinetic_Modeling_Methodologies_for_Complex_Proce_2016.pdf": 35
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Application_of_Different_Optimization_Algorithms_for_Optimal_2019.pdf": {
+   "files": [
+    "06_Application_of_Different_Optimization_Algorithms_for_Optimal_2019.pdf"
+   ],
+   "n_equations": {
+    "06_Application_of_Different_Optimization_Algorithms_for_Optimal_2019.pdf": 66
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Causes_of_variation_in_soil_carbon_simulations_from_CMIP5_Ea_2013.pdf": {
+   "files": [
+    "06_Causes_of_variation_in_soil_carbon_simulations_from_CMIP5_Ea_2013.pdf"
+   ],
+   "n_equations": {
+    "06_Causes_of_variation_in_soil_carbon_simulations_from_CMIP5_Ea_2013.pdf": 8
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Continental_scale_high_order_high_spatial_resolution_ice_she_2012.pdf": {
+   "files": [
+    "06_Continental_scale_high_order_high_spatial_resolution_ice_she_2012.pdf"
+   ],
+   "n_equations": {
+    "06_Continental_scale_high_order_high_spatial_resolution_ice_she_2012.pdf": 33
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Geomechanical_modelling_of_sinkhole_development_using_distin_2018.pdf": {
+   "files": [
+    "06_Geomechanical_modelling_of_sinkhole_development_using_distin_2018.pdf"
+   ],
+   "n_equations": {
+    "06_Geomechanical_modelling_of_sinkhole_development_using_distin_2018.pdf": 14
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Modeling_growth_lipid_accumulation_and_lipid_turnover_in_sub_2011.pdf": {
+   "files": [
+    "06_Modeling_growth_lipid_accumulation_and_lipid_turnover_in_sub_2011.pdf"
+   ],
+   "n_equations": {
+    "06_Modeling_growth_lipid_accumulation_and_lipid_turnover_in_sub_2011.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Review_of_applications_of_TLBO_algorithm_and_a_tutorial_for__2015.pdf": {
+   "files": [
+    "06_Review_of_applications_of_TLBO_algorithm_and_a_tutorial_for__2015.pdf"
+   ],
+   "n_equations": {
+    "06_Review_of_applications_of_TLBO_algorithm_and_a_tutorial_for__2015.pdf": 10
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Some_Recent_Developments_in_Turbulence_Closure_Modeling_2017.pdf": {
+   "files": [
+    "06_Some_Recent_Developments_in_Turbulence_Closure_Modeling_2017.pdf"
+   ],
+   "n_equations": {
+    "06_Some_Recent_Developments_in_Turbulence_Closure_Modeling_2017.pdf": 35
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_The_acidity_of_atmospheric_particles_and_clouds_2020.pdf": {
+   "files": [
+    "06_The_acidity_of_atmospheric_particles_and_clouds_2020.pdf"
+   ],
+   "n_equations": {
+    "06_The_acidity_of_atmospheric_particles_and_clouds_2020.pdf": 27
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "06_Two-phase_flow_of_dusty_fluid_with_suspended_hybrid_nanopart_2021.pdf": {
+   "files": [
+    "06_Two-phase_flow_of_dusty_fluid_with_suspended_hybrid_nanopart_2021.pdf"
+   ],
+   "n_equations": {
+    "06_Two-phase_flow_of_dusty_fluid_with_suspended_hybrid_nanopart_2021.pdf": 15
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "07_Bridging_Scales_in_Bioenergy_and_Catalysis_A_Review_of_Mesos_2021.pdf": {
+   "files": [
+    "07_Bridging_Scales_in_Bioenergy_and_Catalysis_A_Review_of_Mesos_2021.pdf"
+   ],
+   "n_equations": {
+    "07_Bridging_Scales_in_Bioenergy_and_Catalysis_A_Review_of_Mesos_2021.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "07_Enhancing_computational_fluid_dynamics_with_machine_learning_2022.pdf": {
+   "files": [
+    "07_Enhancing_computational_fluid_dynamics_with_machine_learning_2022.pdf"
+   ],
+   "n_equations": {
+    "07_Enhancing_computational_fluid_dynamics_with_machine_learning_2022.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "07_Hidden_attractors_in_Chua_circuit_mathematical_theory_meets__2022.pdf": {
+   "files": [
+    "07_Hidden_attractors_in_Chua_circuit_mathematical_theory_meets__2022.pdf"
+   ],
+   "n_equations": {
+    "07_Hidden_attractors_in_Chua_circuit_mathematical_theory_meets__2022.pdf": 33
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "07_Hydrothermal_Carbonization_of_Organic_Waste_and_Biomass_A_Re_2020.pdf": {
+   "files": [
+    "07_Hydrothermal_Carbonization_of_Organic_Waste_and_Biomass_A_Re_2020.pdf"
+   ],
+   "n_equations": {
+    "07_Hydrothermal_Carbonization_of_Organic_Waste_and_Biomass_A_Re_2020.pdf": 23
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "07_National_assessment_of_shoreline_change_part_4_Historical_co_2007.pdf": {
+   "files": [
+    "07_National_assessment_of_shoreline_change_part_4_Historical_co_2007.pdf"
+   ],
+   "n_equations": {
+    "07_National_assessment_of_shoreline_change_part_4_Historical_co_2007.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf": {
+   "files": [
+    "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf"
+   ],
+   "n_equations": {
+    "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_Analysis_of_an_Epidemic_Spreading_Model_with_Exponential_Dec_2020.pdf": {
+   "files": [
+    "08_Analysis_of_an_Epidemic_Spreading_Model_with_Exponential_Dec_2020.pdf"
+   ],
+   "n_equations": {
+    "08_Analysis_of_an_Epidemic_Spreading_Model_with_Exponential_Dec_2020.pdf": 29
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_Attainable_region_analysis_for_continuous_production_of_seco_2013.pdf": {
+   "files": [
+    "08_Attainable_region_analysis_for_continuous_production_of_seco_2013.pdf"
+   ],
+   "n_equations": {
+    "08_Attainable_region_analysis_for_continuous_production_of_seco_2013.pdf": 15
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf": {
+   "files": [
+    "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf"
+   ],
+   "n_equations": {
+    "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_Gravitational_spin_Hall_effect_of_light_2020.pdf": {
+   "files": [
+    "08_Gravitational_spin_Hall_effect_of_light_2020.pdf"
+   ],
+   "n_equations": {
+    "08_Gravitational_spin_Hall_effect_of_light_2020.pdf": 110
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_Influence_of_coal_dust_on_premixed_turbulent_methane_air_fla_2012.pdf": {
+   "files": [
+    "08_Influence_of_coal_dust_on_premixed_turbulent_methane_air_fla_2012.pdf"
+   ],
+   "n_equations": {
+    "08_Influence_of_coal_dust_on_premixed_turbulent_methane_air_fla_2012.pdf": 32
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_Molecular_Modelling_for_Reactor_Design_2018.pdf": {
+   "files": [
+    "08_Molecular_Modelling_for_Reactor_Design_2018.pdf"
+   ],
+   "n_equations": {
+    "08_Molecular_Modelling_for_Reactor_Design_2018.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "08_Small_Modular_Reactors_An_Overview_of_Modeling_Control_Simul_2024.pdf": {
+   "files": [
+    "08_Small_Modular_Reactors_An_Overview_of_Modeling_Control_Simul_2024.pdf"
+   ],
+   "n_equations": {
+    "08_Small_Modular_Reactors_An_Overview_of_Modeling_Control_Simul_2024.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "09_Bridging_substrate_intake_kinetics_and_bacterial_growth_phen_2020.pdf": {
+   "files": [
+    "09_Bridging_substrate_intake_kinetics_and_bacterial_growth_phen_2020.pdf"
+   ],
+   "n_equations": {
+    "09_Bridging_substrate_intake_kinetics_and_bacterial_growth_phen_2020.pdf": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "09_Ergodicity_of_the_2D_Navier_Stokes_equations_with_degenerate_2006.pdf": {
+   "files": [
+    "09_Ergodicity_of_the_2D_Navier_Stokes_equations_with_degenerate_2006.pdf"
+   ],
+   "n_equations": {
+    "09_Ergodicity_of_the_2D_Navier_Stokes_equations_with_degenerate_2006.pdf": 66
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "09_Mathematical_Model_Simulation_and_Scale_up_of_Batch_Reactor__2021.pdf": {
+   "files": [
+    "09_Mathematical_Model_Simulation_and_Scale_up_of_Batch_Reactor__2021.pdf"
+   ],
+   "n_equations": {
+    "09_Mathematical_Model_Simulation_and_Scale_up_of_Batch_Reactor__2021.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf": {
+   "files": [
+    "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf"
+   ],
+   "n_equations": {
+    "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf": 21
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "09_Physiologically_Based_Pharmacokinetic_Modeling_and_Simulatio_2014.pdf": {
+   "files": [
+    "09_Physiologically_Based_Pharmacokinetic_Modeling_and_Simulatio_2014.pdf"
+   ],
+   "n_equations": {
+    "09_Physiologically_Based_Pharmacokinetic_Modeling_and_Simulatio_2014.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "09_The_Review_of_Some_Commonly_Used_Methods_and_Techniques_to_M_2016.pdf": {
+   "files": [
+    "09_The_Review_of_Some_Commonly_Used_Methods_and_Techniques_to_M_2016.pdf"
+   ],
+   "n_equations": {
+    "09_The_Review_of_Some_Commonly_Used_Methods_and_Techniques_to_M_2016.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "1-s2.0-0009250974800898-main.pdf": {
+   "files": [
+    "1-s2.0-0009250974800898-main.pdf"
+   ],
+   "n_equations": {
+    "1-s2.0-0009250974800898-main.pdf": 33
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "1-s2.0-S1369703X09000059-main.pdf": {
+   "files": [
+    "1-s2.0-S1369703X09000059-main.pdf"
+   ],
+   "n_equations": {
+    "1-s2.0-S1369703X09000059-main.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "10_Computational_fluid_dynamics_modelling_in_cardiovascular_med_2015.pdf": {
+   "files": [
+    "10_Computational_fluid_dynamics_modelling_in_cardiovascular_med_2015.pdf"
+   ],
+   "n_equations": {
+    "10_Computational_fluid_dynamics_modelling_in_cardiovascular_med_2015.pdf": 8
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "10_Mitigating_Uncertainty_Problems_of_Renewable_Energy_Resource_2024.pdf": {
+   "files": [
+    "10_Mitigating_Uncertainty_Problems_of_Renewable_Energy_Resource_2024.pdf"
+   ],
+   "n_equations": {
+    "10_Mitigating_Uncertainty_Problems_of_Renewable_Energy_Resource_2024.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "1989_A_new_simple_dynamic_model_of_parallel_and_counter_flow_heat.pdf": {
+   "files": [
+    "1989_A_new_simple_dynamic_model_of_parallel_and_counter_flow_heat.pdf"
+   ],
+   "n_equations": {
+    "1989_A_new_simple_dynamic_model_of_parallel_and_counter_flow_heat.pdf": 13
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "1990_A_dynamic_model_for_helium_core_heat_exchangers.pdf": {
+   "files": [
+    "1990_A_dynamic_model_for_helium_core_heat_exchangers.pdf"
+   ],
+   "n_equations": {
+    "1990_A_dynamic_model_for_helium_core_heat_exchangers.pdf": 40
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf": {
+   "files": [
+    "2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf"
+   ],
+   "n_equations": {
+    "2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf": 15
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2015_Towards_the_modelling_of_a_heat_exchanger_reactor_by_a_dynam.pdf": {
+   "files": [
+    "2015_Towards_the_modelling_of_a_heat_exchanger_reactor_by_a_dynam.pdf"
+   ],
+   "n_equations": {
+    "2015_Towards_the_modelling_of_a_heat_exchanger_reactor_by_a_dynam.pdf": 18
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2016_Kinetic_Modeling_and_Optimization_of_a_Batch_Ethanol_Ferment.pdf": {
+   "files": [
+    "2016_Kinetic_Modeling_and_Optimization_of_a_Batch_Ethanol_Ferment.pdf"
+   ],
+   "n_equations": {
+    "2016_Kinetic_Modeling_and_Optimization_of_a_Batch_Ethanol_Ferment.pdf": 15
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf": {
+   "files": [
+    "2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf"
+   ],
+   "n_equations": {
+    "2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf": {
+   "files": [
+    "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf"
+   ],
+   "n_equations": {
+    "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf": 61
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2020_General_route_to_design_polymer_molecular_weight_distributio.pdf": {
+   "files": [
+    "2020_General_route_to_design_polymer_molecular_weight_distributio.pdf"
+   ],
+   "n_equations": {
+    "2020_General_route_to_design_polymer_molecular_weight_distributio.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2021_An_experimental_and_modeling_study_of_ammonia_with_enriched.pdf": {
+   "files": [
+    "2021_An_experimental_and_modeling_study_of_ammonia_with_enriched.pdf"
+   ],
+   "n_equations": {
+    "2021_An_experimental_and_modeling_study_of_ammonia_with_enriched.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2023_Chemical_reactor_stability_research_of_ethylene_polymerizati.pdf": {
+   "files": [
+    "2023_Chemical_reactor_stability_research_of_ethylene_polymerizati.pdf"
+   ],
+   "n_equations": {
+    "2023_Chemical_reactor_stability_research_of_ethylene_polymerizati.pdf": 11
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2023_Evolution_of_Flame_Displacement_Speed_Within_Flame_Front_in.pdf": {
+   "files": [
+    "2023_Evolution_of_Flame_Displacement_Speed_Within_Flame_Front_in.pdf"
+   ],
+   "n_equations": {
+    "2023_Evolution_of_Flame_Displacement_Speed_Within_Flame_Front_in.pdf": 11
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2023_On_flame_speed_enhancement_in_turbulent_premixed_hydrogen-ai.pdf": {
+   "files": [
+    "2023_On_flame_speed_enhancement_in_turbulent_premixed_hydrogen-ai.pdf"
+   ],
+   "n_equations": {
+    "2023_On_flame_speed_enhancement_in_turbulent_premixed_hydrogen-ai.pdf": 27
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2024_Experimentally_Closing_the_Balance_of_Progress_of_Reaction_i.pdf": {
+   "files": [
+    "2024_Experimentally_Closing_the_Balance_of_Progress_of_Reaction_i.pdf"
+   ],
+   "n_equations": {
+    "2024_Experimentally_Closing_the_Balance_of_Progress_of_Reaction_i.pdf": 41
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "2024_Mathematical_modeling_of_pyrolysis_of_rubber_waste_in_horizo.pdf": {
+   "files": [
+    "2024_Mathematical_modeling_of_pyrolysis_of_rubber_waste_in_horizo.pdf"
+   ],
+   "n_equations": {
+    "2024_Mathematical_modeling_of_pyrolysis_of_rubber_waste_in_horizo.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "Basic_Dyn_Con_Textbook_free.pdf": {
+   "files": [
+    "Basic_Dyn_Con_Textbook_free.pdf"
+   ],
+   "n_equations": {
+    "Basic_Dyn_Con_Textbook_free.pdf": 61
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "Chemical Process Dynamics.pdf": {
+   "files": [
+    "Chemical Process Dynamics.pdf"
+   ],
+   "n_equations": {
+    "Chemical Process Dynamics.pdf": 23
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "ChemicalProcessDynamicsAndControls.pdf": {
+   "files": [
+    "ChemicalProcessDynamicsAndControls.pdf"
+   ],
+   "n_equations": {
+    "ChemicalProcessDynamicsAndControls.pdf": 521
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "Corriou_Process_Control": {
+   "files": [
+    "2018_Book_ProcessControl.pdf",
+    "2018_Book_ProcessControl_Chapter1.pdf",
+    "2018_Book_ProcessControl_Chapter1_6.pdf",
+    "9781852337766-c1.pdf"
+   ],
+   "n_equations": {
+    "2018_Book_ProcessControl.pdf": 226,
+    "2018_Book_ProcessControl_Chapter1.pdf": 50,
+    "2018_Book_ProcessControl_Chapter1_6.pdf": 54,
+    "9781852337766-c1.pdf": 70
+   },
+   "evidence": [
+    "hand-listed textbook (BOOK_GROUPS)"
+   ],
+   "n_latex_in_2_or_more_files": 64
+  },
+  "FB01_Everything_you_always_wanted_to_know_about_the_cosmological__2012.pdf": {
+   "files": [
+    "FB01_Everything_you_always_wanted_to_know_about_the_cosmological__2012.pdf"
+   ],
+   "n_equations": {
+    "FB01_Everything_you_always_wanted_to_know_about_the_cosmological__2012.pdf": 57
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB01_Improving_Photosynthetic_Efficiency_for_Greater_Yield_2010.pdf": {
+   "files": [
+    "FB01_Improving_Photosynthetic_Efficiency_for_Greater_Yield_2010.pdf"
+   ],
+   "n_equations": {
+    "FB01_Improving_Photosynthetic_Efficiency_for_Greater_Yield_2010.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf": {
+   "files": [
+    "FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf"
+   ],
+   "n_equations": {
+    "FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf": 152
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB01_Simulation_of_the_Undiseased_Human_Cardiac_Ventricular_Actio_2011.pdf": {
+   "files": [
+    "FB01_Simulation_of_the_Undiseased_Human_Cardiac_Ventricular_Actio_2011.pdf"
+   ],
+   "n_equations": {
+    "FB01_Simulation_of_the_Undiseased_Human_Cardiac_Ventricular_Actio_2011.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB02_Basic_Concepts_in_Population_Modeling_Simulation_and_Model_B_2013.pdf": {
+   "files": [
+    "FB02_Basic_Concepts_in_Population_Modeling_Simulation_and_Model_B_2013.pdf"
+   ],
+   "n_equations": {
+    "FB02_Basic_Concepts_in_Population_Modeling_Simulation_and_Model_B_2013.pdf": 33
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf": {
+   "files": [
+    "FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf"
+   ],
+   "n_equations": {
+    "FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf": 120
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB03_Clinical_Pharmacokinetics_and_Pharmacodynamics_of_Propofol_2018.pdf": {
+   "files": [
+    "FB03_Clinical_Pharmacokinetics_and_Pharmacodynamics_of_Propofol_2018.pdf"
+   ],
+   "n_equations": {
+    "FB03_Clinical_Pharmacokinetics_and_Pharmacodynamics_of_Propofol_2018.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB03_Joint_Optimization_of_Radio_and_Computational_Resources_for__2015.pdf": {
+   "files": [
+    "FB03_Joint_Optimization_of_Radio_and_Computational_Resources_for__2015.pdf"
+   ],
+   "n_equations": {
+    "FB03_Joint_Optimization_of_Radio_and_Computational_Resources_for__2015.pdf": 62
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB03_The_FLUKA_Code_An_Accurate_Simulation_Tool_for_Particle_Ther_2016.pdf": {
+   "files": [
+    "FB03_The_FLUKA_Code_An_Accurate_Simulation_Tool_for_Particle_Ther_2016.pdf"
+   ],
+   "n_equations": {
+    "FB03_The_FLUKA_Code_An_Accurate_Simulation_Tool_for_Particle_Ther_2016.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB04_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting__2018.pdf": {
+   "files": [
+    "FB04_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting__2018.pdf"
+   ],
+   "n_equations": {
+    "FB04_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting__2018.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB04_Adjoint_Equations_in_Stability_Analysis_2013.pdf": {
+   "files": [
+    "FB04_Adjoint_Equations_in_Stability_Analysis_2013.pdf"
+   ],
+   "n_equations": {
+    "FB04_Adjoint_Equations_in_Stability_Analysis_2013.pdf": 59
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB04_Soft_Biomimetic_Fish_Robot_Made_of_Dielectric_Elastomer_Actu_2018.pdf": {
+   "files": [
+    "FB04_Soft_Biomimetic_Fish_Robot_Made_of_Dielectric_Elastomer_Actu_2018.pdf"
+   ],
+   "n_equations": {
+    "FB04_Soft_Biomimetic_Fish_Robot_Made_of_Dielectric_Elastomer_Actu_2018.pdf": 15
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf": {
+   "files": [
+    "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf"
+   ],
+   "n_equations": {
+    "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf": 69
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB04_The_meniscus-guided_deposition_of_semiconducting_polymers_2018.pdf": {
+   "files": [
+    "FB04_The_meniscus-guided_deposition_of_semiconducting_polymers_2018.pdf"
+   ],
+   "n_equations": {
+    "FB04_The_meniscus-guided_deposition_of_semiconducting_polymers_2018.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB05_Decomposition_of_skin_conductance_data_by_means_of_nonnegati_2010.pdf": {
+   "files": [
+    "FB05_Decomposition_of_skin_conductance_data_by_means_of_nonnegati_2010.pdf"
+   ],
+   "n_equations": {
+    "FB05_Decomposition_of_skin_conductance_data_by_means_of_nonnegati_2010.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB05_Dynamic_Mode_Decomposition_with_Control_2016.pdf": {
+   "files": [
+    "FB05_Dynamic_Mode_Decomposition_with_Control_2016.pdf"
+   ],
+   "n_equations": {
+    "FB05_Dynamic_Mode_Decomposition_with_Control_2016.pdf": 47
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB05_Inhibited_proton_transfer_enhances_Au-catalyzed_CO_sub_2_sub_2016.pdf": {
+   "files": [
+    "FB05_Inhibited_proton_transfer_enhances_Au-catalyzed_CO_sub_2_sub_2016.pdf"
+   ],
+   "n_equations": {
+    "FB05_Inhibited_proton_transfer_enhances_Au-catalyzed_CO_sub_2_sub_2016.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB05_Peridynamics_review_2018.pdf": {
+   "files": [
+    "FB05_Peridynamics_review_2018.pdf"
+   ],
+   "n_equations": {
+    "FB05_Peridynamics_review_2018.pdf": 11
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB06_BISON_Theory_Manual_The_Equations_behind_Nuclear_Fuel_Analys_2016.pdf": {
+   "files": [
+    "FB06_BISON_Theory_Manual_The_Equations_behind_Nuclear_Fuel_Analys_2016.pdf"
+   ],
+   "n_equations": {
+    "FB06_BISON_Theory_Manual_The_Equations_behind_Nuclear_Fuel_Analys_2016.pdf": 248
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf": {
+   "files": [
+    "FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf"
+   ],
+   "n_equations": {
+    "FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB06_Thermodynamics_and_kinetics_of_crystallization_of_flexible_m_2008.pdf": {
+   "files": [
+    "FB06_Thermodynamics_and_kinetics_of_crystallization_of_flexible_m_2008.pdf"
+   ],
+   "n_equations": {
+    "FB06_Thermodynamics_and_kinetics_of_crystallization_of_flexible_m_2008.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf": {
+   "files": [
+    "FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf"
+   ],
+   "n_equations": {
+    "FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf": 32
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB07_Existence_and_uniqueness_of_weak_solutions_for_a_class_of_fr_2017.pdf": {
+   "files": [
+    "FB07_Existence_and_uniqueness_of_weak_solutions_for_a_class_of_fr_2017.pdf"
+   ],
+   "n_equations": {
+    "FB07_Existence_and_uniqueness_of_weak_solutions_for_a_class_of_fr_2017.pdf": 34
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB07_Metal_organic_framework_based_mixed_matrix_membranes_a_solut_2015.pdf": {
+   "files": [
+    "FB07_Metal_organic_framework_based_mixed_matrix_membranes_a_solut_2015.pdf"
+   ],
+   "n_equations": {
+    "FB07_Metal_organic_framework_based_mixed_matrix_membranes_a_solut_2015.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB07_Physicochemical_Properties_and_Solubility_of_Hydrochloride_M_2021.pdf": {
+   "files": [
+    "FB07_Physicochemical_Properties_and_Solubility_of_Hydrochloride_M_2021.pdf"
+   ],
+   "n_equations": {
+    "FB07_Physicochemical_Properties_and_Solubility_of_Hydrochloride_M_2021.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB08_A_mathematical_model_for_the_hard_sphere_repulsion_in_ionic__2011.pdf": {
+   "files": [
+    "FB08_A_mathematical_model_for_the_hard_sphere_repulsion_in_ionic__2011.pdf"
+   ],
+   "n_equations": {
+    "FB08_A_mathematical_model_for_the_hard_sphere_repulsion_in_ionic__2011.pdf": 35
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf": {
+   "files": [
+    "FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf"
+   ],
+   "n_equations": {
+    "FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB08_Forty_years_of_temporal_analysis_of_products_2017.pdf": {
+   "files": [
+    "FB08_Forty_years_of_temporal_analysis_of_products_2017.pdf"
+   ],
+   "n_equations": {
+    "FB08_Forty_years_of_temporal_analysis_of_products_2017.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB08_Fused_Deposition_Modeling_FDM_3D_Printed_Tablets_for_Intraga_2017.pdf": {
+   "files": [
+    "FB08_Fused_Deposition_Modeling_FDM_3D_Printed_Tablets_for_Intraga_2017.pdf"
+   ],
+   "n_equations": {
+    "FB08_Fused_Deposition_Modeling_FDM_3D_Printed_Tablets_for_Intraga_2017.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB08_Machine_learning_and_structural_health_monitoring_overview_w_2021.pdf": {
+   "files": [
+    "FB08_Machine_learning_and_structural_health_monitoring_overview_w_2021.pdf"
+   ],
+   "n_equations": {
+    "FB08_Machine_learning_and_structural_health_monitoring_overview_w_2021.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB08_Sobol_Sensitivity_Analysis_A_Tool_to_Guide_the_Development_a_2015.pdf": {
+   "files": [
+    "FB08_Sobol_Sensitivity_Analysis_A_Tool_to_Guide_the_Development_a_2015.pdf"
+   ],
+   "n_equations": {
+    "FB08_Sobol_Sensitivity_Analysis_A_Tool_to_Guide_the_Development_a_2015.pdf": 10
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB09_Compact_Modeling_of_Total_Ionizing_Dose_and_Aging_Effects_in_2015.pdf": {
+   "files": [
+    "FB09_Compact_Modeling_of_Total_Ionizing_Dose_and_Aging_Effects_in_2015.pdf"
+   ],
+   "n_equations": {
+    "FB09_Compact_Modeling_of_Total_Ionizing_Dose_and_Aging_Effects_in_2015.pdf": 40
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB09_Polysulfone_silica_nanoparticle_mixed-matrix_membranes_for_g_2008.pdf": {
+   "files": [
+    "FB09_Polysulfone_silica_nanoparticle_mixed-matrix_membranes_for_g_2008.pdf"
+   ],
+   "n_equations": {
+    "FB09_Polysulfone_silica_nanoparticle_mixed-matrix_membranes_for_g_2008.pdf": 11
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB09_Reevaluation_of_Performance_of_Electric_Double-layer_Capacit_2016.pdf": {
+   "files": [
+    "FB09_Reevaluation_of_Performance_of_Electric_Double-layer_Capacit_2016.pdf"
+   ],
+   "n_equations": {
+    "FB09_Reevaluation_of_Performance_of_Electric_Double-layer_Capacit_2016.pdf": 28
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf": {
+   "files": [
+    "FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf"
+   ],
+   "n_equations": {
+    "FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB10_Review_of_the_Methods_of_Transition_from_Partial_to_Ordinary_2021.pdf": {
+   "files": [
+    "FB10_Review_of_the_Methods_of_Transition_from_Partial_to_Ordinary_2021.pdf"
+   ],
+   "n_equations": {
+    "FB10_Review_of_the_Methods_of_Transition_from_Partial_to_Ordinary_2021.pdf": 67
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB11_A_review_of_multilayer_and_composite_films_and_coatings_for__2022.pdf": {
+   "files": [
+    "FB11_A_review_of_multilayer_and_composite_films_and_coatings_for__2022.pdf"
+   ],
+   "n_equations": {
+    "FB11_A_review_of_multilayer_and_composite_films_and_coatings_for__2022.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB11_Microfluidic_droplet-based_liquid_liquid_extraction_online_m_2015.pdf": {
+   "files": [
+    "FB11_Microfluidic_droplet-based_liquid_liquid_extraction_online_m_2015.pdf"
+   ],
+   "n_equations": {
+    "FB11_Microfluidic_droplet-based_liquid_liquid_extraction_online_m_2015.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB11_On_the_convective_heat_and_zero_nanoparticle_mass_flux_condi_2019.pdf": {
+   "files": [
+    "FB11_On_the_convective_heat_and_zero_nanoparticle_mass_flux_condi_2019.pdf"
+   ],
+   "n_equations": {
+    "FB11_On_the_convective_heat_and_zero_nanoparticle_mass_flux_condi_2019.pdf": 18
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB11_Operating_characteristics_of_transcritical_CO2_heat_pump_for_2011.pdf": {
+   "files": [
+    "FB11_Operating_characteristics_of_transcritical_CO2_heat_pump_for_2011.pdf"
+   ],
+   "n_equations": {
+    "FB11_Operating_characteristics_of_transcritical_CO2_heat_pump_for_2011.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf": {
+   "files": [
+    "FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf"
+   ],
+   "n_equations": {
+    "FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf": 36
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB12_Onset_dynamics_of_type_A_botulinum_neurotoxin-induced_paraly_2008.pdf": {
+   "files": [
+    "FB12_Onset_dynamics_of_type_A_botulinum_neurotoxin-induced_paraly_2008.pdf"
+   ],
+   "n_equations": {
+    "FB12_Onset_dynamics_of_type_A_botulinum_neurotoxin-induced_paraly_2008.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf": {
+   "files": [
+    "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf"
+   ],
+   "n_equations": {
+    "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB13_Multiple_positive_solutions_to_a_coupled_systems_of_nonlinea_2016.pdf": {
+   "files": [
+    "FB13_Multiple_positive_solutions_to_a_coupled_systems_of_nonlinea_2016.pdf"
+   ],
+   "n_equations": {
+    "FB13_Multiple_positive_solutions_to_a_coupled_systems_of_nonlinea_2016.pdf": 22
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf": {
+   "files": [
+    "FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf"
+   ],
+   "n_equations": {
+    "FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf": 38
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf": {
+   "files": [
+    "FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf"
+   ],
+   "n_equations": {
+    "FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB14_Significance_of_melting_heat_in_bioconvection_flow_of_microp_2023.pdf": {
+   "files": [
+    "FB14_Significance_of_melting_heat_in_bioconvection_flow_of_microp_2023.pdf"
+   ],
+   "n_equations": {
+    "FB14_Significance_of_melting_heat_in_bioconvection_flow_of_microp_2023.pdf": 30
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB15_Heat_and_mass_transfer_of_generalized_fourier_and_Fick_s_law_2023.pdf": {
+   "files": [
+    "FB15_Heat_and_mass_transfer_of_generalized_fourier_and_Fick_s_law_2023.pdf"
+   ],
+   "n_equations": {
+    "FB15_Heat_and_mass_transfer_of_generalized_fourier_and_Fick_s_law_2023.pdf": 24
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB15_Ionic_interactions_in_biological_and_physical_systems_a_vari_2012.pdf": {
+   "files": [
+    "FB15_Ionic_interactions_in_biological_and_physical_systems_a_vari_2012.pdf"
+   ],
+   "n_equations": {
+    "FB15_Ionic_interactions_in_biological_and_physical_systems_a_vari_2012.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB15_Learning-based_CO2_concentration_prediction_Application_to_i_2021.pdf": {
+   "files": [
+    "FB15_Learning-based_CO2_concentration_prediction_Application_to_i_2021.pdf"
+   ],
+   "n_equations": {
+    "FB15_Learning-based_CO2_concentration_prediction_Application_to_i_2021.pdf": 14
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB15_Mathematical_modeling_and_thermodynamics_of_Prandtl_Eyring_f_2021.pdf": {
+   "files": [
+    "FB15_Mathematical_modeling_and_thermodynamics_of_Prandtl_Eyring_f_2021.pdf"
+   ],
+   "n_equations": {
+    "FB15_Mathematical_modeling_and_thermodynamics_of_Prandtl_Eyring_f_2021.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB16_A_kinetic_study_of_a_ternary_cycle_between_adenine_nucleotid_2006.pdf": {
+   "files": [
+    "FB16_A_kinetic_study_of_a_ternary_cycle_between_adenine_nucleotid_2006.pdf"
+   ],
+   "n_equations": {
+    "FB16_A_kinetic_study_of_a_ternary_cycle_between_adenine_nucleotid_2006.pdf": 41
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf": {
+   "files": [
+    "FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf"
+   ],
+   "n_equations": {
+    "FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf": 36
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB16_Radio-Frequency_Applications_for_Food_Processing_and_Safety_2018.pdf": {
+   "files": [
+    "FB16_Radio-Frequency_Applications_for_Food_Processing_and_Safety_2018.pdf"
+   ],
+   "n_equations": {
+    "FB16_Radio-Frequency_Applications_for_Food_Processing_and_Safety_2018.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB17_Decentralized_Participation_of_Flexible_Demand_in_Electricit_2013.pdf": {
+   "files": [
+    "FB17_Decentralized_Participation_of_Flexible_Demand_in_Electricit_2013.pdf"
+   ],
+   "n_equations": {
+    "FB17_Decentralized_Participation_of_Flexible_Demand_in_Electricit_2013.pdf": 18
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB17_MATHEMATICAL_MODELING_OF_LEACHING_PROCESS_OF_RED_MUD_IN_ORDE_2015.pdf": {
+   "files": [
+    "FB17_MATHEMATICAL_MODELING_OF_LEACHING_PROCESS_OF_RED_MUD_IN_ORDE_2015.pdf"
+   ],
+   "n_equations": {
+    "FB17_MATHEMATICAL_MODELING_OF_LEACHING_PROCESS_OF_RED_MUD_IN_ORDE_2015.pdf": 13
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB18_An_epidemic_model_for_non-first-order_transmission_kinetics_2021.pdf": {
+   "files": [
+    "FB18_An_epidemic_model_for_non-first-order_transmission_kinetics_2021.pdf"
+   ],
+   "n_equations": {
+    "FB18_An_epidemic_model_for_non-first-order_transmission_kinetics_2021.pdf": 16
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf": {
+   "files": [
+    "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf"
+   ],
+   "n_equations": {
+    "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB18_Features_of_Cu_and_TiO2_in_the_flow_of_engine_oil_subject_to_2021.pdf": {
+   "files": [
+    "FB18_Features_of_Cu_and_TiO2_in_the_flow_of_engine_oil_subject_to_2021.pdf"
+   ],
+   "n_equations": {
+    "FB18_Features_of_Cu_and_TiO2_in_the_flow_of_engine_oil_subject_to_2021.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB18_On_Applications_of_Generalized_Functions_in_the_Discontinuou_2016.pdf": {
+   "files": [
+    "FB18_On_Applications_of_Generalized_Functions_in_the_Discontinuou_2016.pdf"
+   ],
+   "n_equations": {
+    "FB18_On_Applications_of_Generalized_Functions_in_the_Discontinuou_2016.pdf": 52
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB21_Flow_and_heat_transfer_analysis_of_Eyring-Powell_fluid_over__2020.pdf": {
+   "files": [
+    "FB21_Flow_and_heat_transfer_analysis_of_Eyring-Powell_fluid_over__2020.pdf"
+   ],
+   "n_equations": {
+    "FB21_Flow_and_heat_transfer_analysis_of_Eyring-Powell_fluid_over__2020.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB24_Series_solution_of_unsteady_MHD_oblique_stagnation_point_flo_2020.pdf": {
+   "files": [
+    "FB24_Series_solution_of_unsteady_MHD_oblique_stagnation_point_flo_2020.pdf"
+   ],
+   "n_equations": {
+    "FB24_Series_solution_of_unsteady_MHD_oblique_stagnation_point_flo_2020.pdf": 39
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf": {
+   "files": [
+    "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf"
+   ],
+   "n_equations": {
+    "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf": 29
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB25_Significance_of_heat_transfer_rate_in_water-based_nanopartic_2023.pdf": {
+   "files": [
+    "FB25_Significance_of_heat_transfer_rate_in_water-based_nanopartic_2023.pdf"
+   ],
+   "n_equations": {
+    "FB25_Significance_of_heat_transfer_rate_in_water-based_nanopartic_2023.pdf": 35
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB27_The_modified_finite_element_method_for_heat_and_mass_transfe_2022.pdf": {
+   "files": [
+    "FB27_The_modified_finite_element_method_for_heat_and_mass_transfe_2022.pdf"
+   ],
+   "n_equations": {
+    "FB27_The_modified_finite_element_method_for_heat_and_mass_transfe_2022.pdf": 23
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_01_Inferring_the_Joint_Demographic_History_of_Multiple_Populati_2009.pdf": {
+   "files": [
+    "FB2_01_Inferring_the_Joint_Demographic_History_of_Multiple_Populati_2009.pdf"
+   ],
+   "n_equations": {
+    "FB2_01_Inferring_the_Joint_Demographic_History_of_Multiple_Populati_2009.pdf": 5
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_01_i_Planck_i_2015_results_2016.pdf": {
+   "files": [
+    "FB2_01_i_Planck_i_2015_results_2016.pdf"
+   ],
+   "n_equations": {
+    "FB2_01_i_Planck_i_2015_results_2016.pdf": 77
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_02_Description_and_evaluation_of_GLOMAP-mode_a_modal_global_aer_2010.pdf": {
+   "files": [
+    "FB2_02_Description_and_evaluation_of_GLOMAP-mode_a_modal_global_aer_2010.pdf"
+   ],
+   "n_equations": {
+    "FB2_02_Description_and_evaluation_of_GLOMAP-mode_a_modal_global_aer_2010.pdf": 58
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_04_Binding_and_neutralization_of_vascular_endothelial_growth_fa_2012.pdf": {
+   "files": [
+    "FB2_04_Binding_and_neutralization_of_vascular_endothelial_growth_fa_2012.pdf"
+   ],
+   "n_equations": {
+    "FB2_04_Binding_and_neutralization_of_vascular_endothelial_growth_fa_2012.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_04_Controllable_ion_transport_by_surface-charged_graphene_oxide_2019.pdf": {
+   "files": [
+    "FB2_04_Controllable_ion_transport_by_surface-charged_graphene_oxide_2019.pdf"
+   ],
+   "n_equations": {
+    "FB2_04_Controllable_ion_transport_by_surface-charged_graphene_oxide_2019.pdf": 18
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_04_TRIGRS_-_A_Fortran_Program_for_Transient_Rainfall_Infiltrati_2008.pdf": {
+   "files": [
+    "FB2_04_TRIGRS_-_A_Fortran_Program_for_Transient_Rainfall_Infiltrati_2008.pdf"
+   ],
+   "n_equations": {
+    "FB2_04_TRIGRS_-_A_Fortran_Program_for_Transient_Rainfall_Infiltrati_2008.pdf": 33
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_05_Ion-induced_nucleation_of_pure_biogenic_particles_2016.pdf": {
+   "files": [
+    "FB2_05_Ion-induced_nucleation_of_pure_biogenic_particles_2016.pdf"
+   ],
+   "n_equations": {
+    "FB2_05_Ion-induced_nucleation_of_pure_biogenic_particles_2016.pdf": 22
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_07_Kinetic_model_framework_for_aerosol_and_cloud_surface_chemis_2007.pdf": {
+   "files": [
+    "FB2_07_Kinetic_model_framework_for_aerosol_and_cloud_surface_chemis_2007.pdf"
+   ],
+   "n_equations": {
+    "FB2_07_Kinetic_model_framework_for_aerosol_and_cloud_surface_chemis_2007.pdf": 67
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_07_Sparse_and_Compositionally_Robust_Inference_of_Microbial_Eco_2015.pdf": {
+   "files": [
+    "FB2_07_Sparse_and_Compositionally_Robust_Inference_of_Microbial_Eco_2015.pdf"
+   ],
+   "n_equations": {
+    "FB2_07_Sparse_and_Compositionally_Robust_Inference_of_Microbial_Eco_2015.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_07_The_Effect_of_Fluoroethylene_Carbonate_as_an_Additive_on_the_2015.pdf": {
+   "files": [
+    "FB2_07_The_Effect_of_Fluoroethylene_Carbonate_as_an_Additive_on_the_2015.pdf"
+   ],
+   "n_equations": {
+    "FB2_07_The_Effect_of_Fluoroethylene_Carbonate_as_an_Additive_on_the_2015.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_10_Review_on_the_History_Research_and_Applications_of_Electrohy_2014.pdf": {
+   "files": [
+    "FB2_10_Review_on_the_History_Research_and_Applications_of_Electrohy_2014.pdf"
+   ],
+   "n_equations": {
+    "FB2_10_Review_on_the_History_Research_and_Applications_of_Electrohy_2014.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_11_Mechanical_weathering_and_rock_erosion_by_climate_dependent__2017.pdf": {
+   "files": [
+    "FB2_11_Mechanical_weathering_and_rock_erosion_by_climate_dependent__2017.pdf"
+   ],
+   "n_equations": {
+    "FB2_11_Mechanical_weathering_and_rock_erosion_by_climate_dependent__2017.pdf": 54
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_11_Struvite_a_slow-release_fertiliser_for_sustainable_phosphoru_2015.pdf": {
+   "files": [
+    "FB2_11_Struvite_a_slow-release_fertiliser_for_sustainable_phosphoru_2015.pdf"
+   ],
+   "n_equations": {
+    "FB2_11_Struvite_a_slow-release_fertiliser_for_sustainable_phosphoru_2015.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_12_Data-driven_modeling_and_learning_in_science_and_engineering_2019.pdf": {
+   "files": [
+    "FB2_12_Data-driven_modeling_and_learning_in_science_and_engineering_2019.pdf"
+   ],
+   "n_equations": {
+    "FB2_12_Data-driven_modeling_and_learning_in_science_and_engineering_2019.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_13_A_review_of_operational_regional-scale_chemical_weather_fore_2012.pdf": {
+   "files": [
+    "FB2_13_A_review_of_operational_regional-scale_chemical_weather_fore_2012.pdf"
+   ],
+   "n_equations": {
+    "FB2_13_A_review_of_operational_regional-scale_chemical_weather_fore_2012.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_13_SIMULATION_OF_HEAT_AND_MASS_EXCHANGE_PROCESS_HEAT_EXCHANGER__2022.pdf": {
+   "files": [
+    "FB2_13_SIMULATION_OF_HEAT_AND_MASS_EXCHANGE_PROCESS_HEAT_EXCHANGER__2022.pdf"
+   ],
+   "n_equations": {
+    "FB2_13_SIMULATION_OF_HEAT_AND_MASS_EXCHANGE_PROCESS_HEAT_EXCHANGER__2022.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_14_A_study_on_iterative_methods_for_solving_Richards_equation_2016.pdf": {
+   "files": [
+    "FB2_14_A_study_on_iterative_methods_for_solving_Richards_equation_2016.pdf"
+   ],
+   "n_equations": {
+    "FB2_14_A_study_on_iterative_methods_for_solving_Richards_equation_2016.pdf": 21
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf": {
+   "files": [
+    "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf"
+   ],
+   "n_equations": {
+    "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf": 24
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_16_The_Mechanochemistry_of_Endocytosis_2009.pdf": {
+   "files": [
+    "FB2_16_The_Mechanochemistry_of_Endocytosis_2009.pdf"
+   ],
+   "n_equations": {
+    "FB2_16_The_Mechanochemistry_of_Endocytosis_2009.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB2_18_A_5-D_Implementation_of_FGM_for_the_Large_Eddy_Simulation_of_2016.pdf": {
+   "files": [
+    "FB2_18_A_5-D_Implementation_of_FGM_for_the_Large_Eddy_Simulation_of_2016.pdf"
+   ],
+   "n_equations": {
+    "FB2_18_A_5-D_Implementation_of_FGM_for_the_Large_Eddy_Simulation_of_2016.pdf": 13
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB36_Double_diffusive_MHD_stagnation_point_flow_of_second_grade_f_2025.pdf": {
+   "files": [
+    "FB36_Double_diffusive_MHD_stagnation_point_flow_of_second_grade_f_2025.pdf"
+   ],
+   "n_equations": {
+    "FB36_Double_diffusive_MHD_stagnation_point_flow_of_second_grade_f_2025.pdf": 28
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB38_Numerical_simulation_of_two-phase_multicomponent_flow_with_r_2015.pdf": {
+   "files": [
+    "FB38_Numerical_simulation_of_two-phase_multicomponent_flow_with_r_2015.pdf"
+   ],
+   "n_equations": {
+    "FB38_Numerical_simulation_of_two-phase_multicomponent_flow_with_r_2015.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_01_Diffusion_in_Biofilms_2003.pdf": {
+   "files": [
+    "FB3_01_Diffusion_in_Biofilms_2003.pdf"
+   ],
+   "n_equations": {
+    "FB3_01_Diffusion_in_Biofilms_2003.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_01_PDDL2.1_An_Extension_to_PDDL_for_Expressing_Temporal_Plannin_2003.pdf": {
+   "files": [
+    "FB3_01_PDDL2.1_An_Extension_to_PDDL_for_Expressing_Temporal_Plannin_2003.pdf"
+   ],
+   "n_equations": {
+    "FB3_01_PDDL2.1_An_Extension_to_PDDL_for_Expressing_Temporal_Plannin_2003.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_02_Challenges_in_microbial_ecology_building_predictive_understa_2016.pdf": {
+   "files": [
+    "FB3_02_Challenges_in_microbial_ecology_building_predictive_understa_2016.pdf"
+   ],
+   "n_equations": {
+    "FB3_02_Challenges_in_microbial_ecology_building_predictive_understa_2016.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf": {
+   "files": [
+    "FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf"
+   ],
+   "n_equations": {
+    "FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_02_Techniques_of_EMG_signal_analysis_detection_processing_class_2006.pdf": {
+   "files": [
+    "FB3_02_Techniques_of_EMG_signal_analysis_detection_processing_class_2006.pdf"
+   ],
+   "n_equations": {
+    "FB3_02_Techniques_of_EMG_signal_analysis_detection_processing_class_2006.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_03_Attention_Uncertainty_and_Free-Energy_2010.pdf": {
+   "files": [
+    "FB3_03_Attention_Uncertainty_and_Free-Energy_2010.pdf"
+   ],
+   "n_equations": {
+    "FB3_03_Attention_Uncertainty_and_Free-Energy_2010.pdf": 27
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_03_Control-Oriented_Modeling_of_Transcritical_Vapor_Compression_2004.pdf": {
+   "files": [
+    "FB3_03_Control-Oriented_Modeling_of_Transcritical_Vapor_Compression_2004.pdf"
+   ],
+   "n_equations": {
+    "FB3_03_Control-Oriented_Modeling_of_Transcritical_Vapor_Compression_2004.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_03_Interactive_evolutionary_computation_fusion_of_the_capabilit_2001.pdf": {
+   "files": [
+    "FB3_03_Interactive_evolutionary_computation_fusion_of_the_capabilit_2001.pdf"
+   ],
+   "n_equations": {
+    "FB3_03_Interactive_evolutionary_computation_fusion_of_the_capabilit_2001.pdf": 1
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_03_Systematic_analysis_of_nucleation-dependent_polymerization_r_2008.pdf": {
+   "files": [
+    "FB3_03_Systematic_analysis_of_nucleation-dependent_polymerization_r_2008.pdf"
+   ],
+   "n_equations": {
+    "FB3_03_Systematic_analysis_of_nucleation-dependent_polymerization_r_2008.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_03_The_Caltech_Photooxidation_Flow_Tube_reactor_design_fluid_dy_2017.pdf": {
+   "files": [
+    "FB3_03_The_Caltech_Photooxidation_Flow_Tube_reactor_design_fluid_dy_2017.pdf"
+   ],
+   "n_equations": {
+    "FB3_03_The_Caltech_Photooxidation_Flow_Tube_reactor_design_fluid_dy_2017.pdf": 36
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_03_The_Roles_of_APC_and_Axin_Derived_from_Experimental_and_Theo_2003.pdf": {
+   "files": [
+    "FB3_03_The_Roles_of_APC_and_Axin_Derived_from_Experimental_and_Theo_2003.pdf"
+   ],
+   "n_equations": {
+    "FB3_03_The_Roles_of_APC_and_Axin_Derived_from_Experimental_and_Theo_2003.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_04_Action_and_behavior_a_free-energy_formulation_2010.pdf": {
+   "files": [
+    "FB3_04_Action_and_behavior_a_free-energy_formulation_2010.pdf"
+   ],
+   "n_equations": {
+    "FB3_04_Action_and_behavior_a_free-energy_formulation_2010.pdf": 31
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf": {
+   "files": [
+    "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf"
+   ],
+   "n_equations": {
+    "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_04_Transient_Stability_of_Voltage-Source_Converters_With_Grid-F_2019.pdf": {
+   "files": [
+    "FB3_04_Transient_Stability_of_Voltage-Source_Converters_With_Grid-F_2019.pdf"
+   ],
+   "n_equations": {
+    "FB3_04_Transient_Stability_of_Voltage-Source_Converters_With_Grid-F_2019.pdf": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_04_What_makes_a_material_printable_A_viscoelastic_model_for_ext_2018.pdf": {
+   "files": [
+    "FB3_04_What_makes_a_material_printable_A_viscoelastic_model_for_ext_2018.pdf"
+   ],
+   "n_equations": {
+    "FB3_04_What_makes_a_material_printable_A_viscoelastic_model_for_ext_2018.pdf": 36
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_05_Exergy_analysis_of_a_hydrogen_and_water_production_process_b_2017.pdf": {
+   "files": [
+    "FB3_05_Exergy_analysis_of_a_hydrogen_and_water_production_process_b_2017.pdf"
+   ],
+   "n_equations": {
+    "FB3_05_Exergy_analysis_of_a_hydrogen_and_water_production_process_b_2017.pdf": 60
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_05_Metabolic_modeling_of_synthesis_gas_fermentation_in_bubble_c_2015.pdf": {
+   "files": [
+    "FB3_05_Metabolic_modeling_of_synthesis_gas_fermentation_in_bubble_c_2015.pdf"
+   ],
+   "n_equations": {
+    "FB3_05_Metabolic_modeling_of_synthesis_gas_fermentation_in_bubble_c_2015.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_06_3D_microstructure_design_of_lithium-ion_battery_electrodes_a_2020.pdf": {
+   "files": [
+    "FB3_06_3D_microstructure_design_of_lithium-ion_battery_electrodes_a_2020.pdf"
+   ],
+   "n_equations": {
+    "FB3_06_3D_microstructure_design_of_lithium-ion_battery_electrodes_a_2020.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_06_Computation_of_stagnation_coating_flow_of_electro-conductive_2023.pdf": {
+   "files": [
+    "FB3_06_Computation_of_stagnation_coating_flow_of_electro-conductive_2023.pdf"
+   ],
+   "n_equations": {
+    "FB3_06_Computation_of_stagnation_coating_flow_of_electro-conductive_2023.pdf": 19
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_06_Mathematics_of_thermoacoustic_tomography_2008.pdf": {
+   "files": [
+    "FB3_06_Mathematics_of_thermoacoustic_tomography_2008.pdf"
+   ],
+   "n_equations": {
+    "FB3_06_Mathematics_of_thermoacoustic_tomography_2008.pdf": 36
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_06_Standard_SOGI-FLL_and_Its_Close_Variants_Precise_Modeling_in_2020.pdf": {
+   "files": [
+    "FB3_06_Standard_SOGI-FLL_and_Its_Close_Variants_Precise_Modeling_in_2020.pdf"
+   ],
+   "n_equations": {
+    "FB3_06_Standard_SOGI-FLL_and_Its_Close_Variants_Precise_Modeling_in_2020.pdf": 32
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_06_State_of_the_art_in_the_aeroelasticity_of_wind_turbine_blade_2016.pdf": {
+   "files": [
+    "FB3_06_State_of_the_art_in_the_aeroelasticity_of_wind_turbine_blade_2016.pdf"
+   ],
+   "n_equations": {
+    "FB3_06_State_of_the_art_in_the_aeroelasticity_of_wind_turbine_blade_2016.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_07_Free-energy_and_the_brain_2007.pdf": {
+   "files": [
+    "FB3_07_Free-energy_and_the_brain_2007.pdf"
+   ],
+   "n_equations": {
+    "FB3_07_Free-energy_and_the_brain_2007.pdf": 31
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_07_Frequency-Domain_Stability_Criteria_for_Converter-Based_Powe_2022.pdf": {
+   "files": [
+    "FB3_07_Frequency-Domain_Stability_Criteria_for_Converter-Based_Powe_2022.pdf"
+   ],
+   "n_equations": {
+    "FB3_07_Frequency-Domain_Stability_Criteria_for_Converter-Based_Powe_2022.pdf": 94
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_07_The_New_Modularization_Framework_for_the_FAST_Wind_Turbine_C_2013.pdf": {
+   "files": [
+    "FB3_07_The_New_Modularization_Framework_for_the_FAST_Wind_Turbine_C_2013.pdf"
+   ],
+   "n_equations": {
+    "FB3_07_The_New_Modularization_Framework_for_the_FAST_Wind_Turbine_C_2013.pdf": 39
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_07_Unitary_Transforms_Using_Time-Frequency_Warping_for_Digital__2018.pdf": {
+   "files": [
+    "FB3_07_Unitary_Transforms_Using_Time-Frequency_Warping_for_Digital__2018.pdf"
+   ],
+   "n_equations": {
+    "FB3_07_Unitary_Transforms_Using_Time-Frequency_Warping_for_Digital__2018.pdf": 43
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_08_Exploring_Instructive_Physiological_Signaling_with_the_Bioel_2016.pdf": {
+   "files": [
+    "FB3_08_Exploring_Instructive_Physiological_Signaling_with_the_Bioel_2016.pdf"
+   ],
+   "n_equations": {
+    "FB3_08_Exploring_Instructive_Physiological_Signaling_with_the_Bioel_2016.pdf": 33
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_09_Basic_Operation_of_Cryocoolers_and_Related_Thermal_Machines_2011.pdf": {
+   "files": [
+    "FB3_09_Basic_Operation_of_Cryocoolers_and_Related_Thermal_Machines_2011.pdf"
+   ],
+   "n_equations": {
+    "FB3_09_Basic_Operation_of_Cryocoolers_and_Related_Thermal_Machines_2011.pdf": 166
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_09_Underwater_Wireless_Sensor_Networks_A_Survey_on_Enabling_Tec_2019.pdf": {
+   "files": [
+    "FB3_09_Underwater_Wireless_Sensor_Networks_A_Survey_on_Enabling_Tec_2019.pdf"
+   ],
+   "n_equations": {
+    "FB3_09_Underwater_Wireless_Sensor_Networks_A_Survey_on_Enabling_Tec_2019.pdf": 17
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_10_ThermoCycle_A_Modelica_library_for_the_simulation_of_thermod_2014.pdf": {
+   "files": [
+    "FB3_10_ThermoCycle_A_Modelica_library_for_the_simulation_of_thermod_2014.pdf"
+   ],
+   "n_equations": {
+    "FB3_10_ThermoCycle_A_Modelica_library_for_the_simulation_of_thermod_2014.pdf": 8
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_13_An_improved_feedforward-long_short-term_memory_modeling_meth_2022.pdf": {
+   "files": [
+    "FB3_13_An_improved_feedforward-long_short-term_memory_modeling_meth_2022.pdf"
+   ],
+   "n_equations": {
+    "FB3_13_An_improved_feedforward-long_short-term_memory_modeling_meth_2022.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_16_Phase-error_analysis_of_high-order_finite_difference_time_do_2007.pdf": {
+   "files": [
+    "FB3_16_Phase-error_analysis_of_high-order_finite_difference_time_do_2007.pdf"
+   ],
+   "n_equations": {
+    "FB3_16_Phase-error_analysis_of_high-order_finite_difference_time_do_2007.pdf": 45
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_17_Efficient_Synthesis_of_Room_Acoustics_via_Scattering_Delay_N_2015.pdf": {
+   "files": [
+    "FB3_17_Efficient_Synthesis_of_Room_Acoustics_via_Scattering_Delay_N_2015.pdf"
+   ],
+   "n_equations": {
+    "FB3_17_Efficient_Synthesis_of_Room_Acoustics_via_Scattering_Delay_N_2015.pdf": 37
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB3_27_Flow_of_Jeffrey_Fluid_over_a_Horizontal_Circular_Cylinder_wi_2020.pdf": {
+   "files": [
+    "FB3_27_Flow_of_Jeffrey_Fluid_over_a_Horizontal_Circular_Cylinder_wi_2020.pdf"
+   ],
+   "n_equations": {
+    "FB3_27_Flow_of_Jeffrey_Fluid_over_a_Horizontal_Circular_Cylinder_wi_2020.pdf": 23
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB4_01_Observation_of_Gravitational_Waves_from_a_Binary_Black_Hole__2016.pdf": {
+   "files": [
+    "FB4_01_Observation_of_Gravitational_Waves_from_a_Binary_Black_Hole__2016.pdf"
+   ],
+   "n_equations": {
+    "FB4_01_Observation_of_Gravitational_Waves_from_a_Binary_Black_Hole__2016.pdf": 5
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB4_02_The_i_Gaia_i_mission_2016.pdf": {
+   "files": [
+    "FB4_02_The_i_Gaia_i_mission_2016.pdf"
+   ],
+   "n_equations": {
+    "FB4_02_The_i_Gaia_i_mission_2016.pdf": 14
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "FB4_05_Coding_metamaterials_digital_metamaterials_and_programmable__2014.pdf": {
+   "files": [
+    "FB4_05_Coding_metamaterials_digital_metamaterials_and_programmable__2014.pdf"
+   ],
+   "n_equations": {
+    "FB4_05_Coding_metamaterials_digital_metamaterials_and_programmable__2014.pdf": 3
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "Marlin_Process_Control": {
+   "files": [
+    "Process_Control_Chapter3.pdf",
+    "Process_Control_Chapter4.pdf",
+    "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf"
+   ],
+   "n_equations": {
+    "Process_Control_Chapter3.pdf": 79,
+    "Process_Control_Chapter4.pdf": 82,
+    "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf": 482
+   },
+   "evidence": [
+    "hand-listed textbook (BOOK_GROUPS)"
+   ],
+   "n_latex_in_2_or_more_files": 5
+  },
+  "ORNL/SPR-2018/864": {
+   "files": [
+    "ORNL/SPR-2018/864"
+   ],
+   "n_equations": {
+    "ORNL/SPR-2018/864": 39
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "Process_Control_Symbols_and_Acronyms.pdf": {
+   "files": [
+    "Process_Control_Symbols_and_Acronyms.pdf"
+   ],
+   "n_equations": {
+    "Process_Control_Symbols_and_Acronyms.pdf": 2
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "Seborg_Process_Dynamics_and_Control": {
+   "files": [
+    "SEBORG_3rd_Edition_Process_Dynamics_and.pdf",
+    "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf"
+   ],
+   "n_equations": {
+    "SEBORG_3rd_Edition_Process_Dynamics_and.pdf": 308,
+    "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf": 108
+   },
+   "evidence": [
+    "hand-listed textbook (BOOK_GROUPS)"
+   ],
+   "n_latex_in_2_or_more_files": 67
+  },
+  "WJET_2015040715405408.pdf": {
+   "files": [
+    "WJET_2015040715405408.pdf"
+   ],
+   "n_equations": {
+    "WJET_2015040715405408.pdf": 6
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "a_platform_for_benchmark_cases_in_computational_acoustics_2015": {
+   "files": [
+    "09_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf",
+    "FB3_19_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf"
+   ],
+   "n_equations": {
+    "09_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf": 2,
+    "FB3_19_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf": 2
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 1
+  },
+  "a_review_of_quadrotor_unmanned_aerial_vehicles_applications__2022": {
+   "files": [
+    "02_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf",
+    "FB11_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf"
+   ],
+   "n_equations": {
+    "02_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf": 23,
+    "FB11_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf": 23
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 13
+  },
+  "a_study_of_triple-mass_diffusion_species_and_energy_transfer_2022": {
+   "files": [
+    "01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf",
+    "2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf",
+    "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf"
+   ],
+   "n_equations": {
+    "01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf": 23,
+    "2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf": 23,
+    "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf": 23
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 7
+  },
+  "analysis_and_quantification_of_the_diversities_of_aerosol_li_2006": {
+   "files": [
+    "FB02_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf",
+    "FB2_01_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf",
+    "FB3_03_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf"
+   ],
+   "n_equations": {
+    "FB02_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf": 7,
+    "FB2_01_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf": 7,
+    "FB3_03_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf": 7
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 3
+  },
+  "applsci-10-00992-v2.pdf": {
+   "files": [
+    "applsci-10-00992-v2.pdf"
+   ],
+   "n_equations": {
+    "applsci-10-00992-v2.pdf": 42
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "bison_a_flexible_code_for_advanced_simulation_of_the_perform_2021": {
+   "files": [
+    "03_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf",
+    "FB04_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf"
+   ],
+   "n_equations": {
+    "03_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf": 2,
+    "FB04_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf": 2
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 1
+  },
+  "computational_intelligence_techniques_for_hvac_systems_a_rev_2016": {
+   "files": [
+    "FB12_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf",
+    "FB2_09_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf"
+   ],
+   "n_equations": {
+    "FB12_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf": 23,
+    "FB2_09_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf": 23
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 10
+  },
+  "dedalus_a_flexible_framework_for_numerical_simulations_with__2020": {
+   "files": [
+    "08_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf",
+    "FB01_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf",
+    "FB3_05_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf"
+   ],
+   "n_equations": {
+    "08_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf": 60,
+    "FB01_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf": 50,
+    "FB3_05_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf": 115
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 38
+  },
+  "dfnworks_a_discrete_fracture_network_framework_for_modeling__2015": {
+   "files": [
+    "FB2_09_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf",
+    "FB3_06_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf"
+   ],
+   "n_equations": {
+    "FB2_09_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf": 2,
+    "FB3_06_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf": 1
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 1
+  },
+  "digital_twin_values_challenges_and_enablers_from_a_modeling__2020": {
+   "files": [
+    "07_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf",
+    "FB01_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf"
+   ],
+   "n_equations": {
+    "07_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf": 1,
+    "FB01_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf": 1
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "direct_numerical_simulation_of_premixed_flame_boundary_layer_2012": {
+   "files": [
+    "03_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf",
+    "FB2_10_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf"
+   ],
+   "n_equations": {
+    "03_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf": 6,
+    "FB2_10_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf": 6
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 2
+  },
+  "dynamical_movement_primitives_learning_attractor_models_for__2012": {
+   "files": [
+    "08_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf",
+    "FB02_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf",
+    "FB3_03_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf"
+   ],
+   "n_equations": {
+    "08_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf": 33,
+    "FB02_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf": 34,
+    "FB3_03_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf": 33
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 9
+  },
+  "dynamics_modeling_and_loads_analysis_of_an_offshore_floating_2007": {
+   "files": [
+    "FB06_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf",
+    "FB3_01_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf"
+   ],
+   "n_equations": {
+    "FB06_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf": 92,
+    "FB3_01_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf": 73
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 18
+  },
+  "effect_of_temperature_on_the_aging_rate_of_li_ion_battery_op_2015": {
+   "files": [
+    "FB03_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf",
+    "FB3_05_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf"
+   ],
+   "n_equations": {
+    "FB03_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf": 7,
+    "FB3_05_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf": 6
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 1
+  },
+  "energies-17-01344.pdf": {
+   "files": [
+    "energies-17-01344.pdf"
+   ],
+   "n_equations": {
+    "energies-17-01344.pdf": 23
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "extended_scp_tight_binding_scp_quantum_chemistry_methods_2020": {
+   "files": [
+    "03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf",
+    "FB03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf"
+   ],
+   "n_equations": {
+    "03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf": 65,
+    "FB03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf": 39
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 6
+  },
+  "grand_challenges_in_the_design_manufacture_and_operation_of__2023": {
+   "files": [
+    "03_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf",
+    "FB3_08_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf"
+   ],
+   "n_equations": {
+    "03_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf": 1,
+    "FB3_08_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf": 1
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 1
+  },
+  "handbook_acoustics": {
+   "files": [
+    "handbook_acoustics"
+   ],
+   "n_equations": {
+    "handbook_acoustics": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_aerodynamics": {
+   "files": [
+    "handbook_aerodynamics"
+   ],
+   "n_equations": {
+    "handbook_aerodynamics": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_bioprocess": {
+   "files": [
+    "handbook_bioprocess"
+   ],
+   "n_equations": {
+    "handbook_bioprocess": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_chemeng": {
+   "files": [
+    "handbook_chemeng"
+   ],
+   "n_equations": {
+    "handbook_chemeng": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_combustion": {
+   "files": [
+    "handbook_combustion"
+   ],
+   "n_equations": {
+    "handbook_combustion": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_electrical": {
+   "files": [
+    "handbook_electrical"
+   ],
+   "n_equations": {
+    "handbook_electrical": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_electrochemistry": {
+   "files": [
+    "handbook_electrochemistry"
+   ],
+   "n_equations": {
+    "handbook_electrochemistry": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_electrochemistry_adv": {
+   "files": [
+    "handbook_electrochemistry_adv"
+   ],
+   "n_equations": {
+    "handbook_electrochemistry_adv": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_environmental": {
+   "files": [
+    "handbook_environmental"
+   ],
+   "n_equations": {
+    "handbook_environmental": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_fluid_dynamics": {
+   "files": [
+    "handbook_fluid_dynamics"
+   ],
+   "n_equations": {
+    "handbook_fluid_dynamics": 25
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_fluid_dynamics_adv": {
+   "files": [
+    "handbook_fluid_dynamics_adv"
+   ],
+   "n_equations": {
+    "handbook_fluid_dynamics_adv": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_food_process": {
+   "files": [
+    "handbook_food_process"
+   ],
+   "n_equations": {
+    "handbook_food_process": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_geotechnical": {
+   "files": [
+    "handbook_geotechnical"
+   ],
+   "n_equations": {
+    "handbook_geotechnical": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_heat_transfer": {
+   "files": [
+    "handbook_heat_transfer"
+   ],
+   "n_equations": {
+    "handbook_heat_transfer": 25
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_heat_transfer_adv": {
+   "files": [
+    "handbook_heat_transfer_adv"
+   ],
+   "n_equations": {
+    "handbook_heat_transfer_adv": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_hvac": {
+   "files": [
+    "handbook_hvac"
+   ],
+   "n_equations": {
+    "handbook_hvac": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_mass_transfer": {
+   "files": [
+    "handbook_mass_transfer"
+   ],
+   "n_equations": {
+    "handbook_mass_transfer": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_nuclear": {
+   "files": [
+    "handbook_nuclear"
+   ],
+   "n_equations": {
+    "handbook_nuclear": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_optics": {
+   "files": [
+    "handbook_optics"
+   ],
+   "n_equations": {
+    "handbook_optics": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_pharma": {
+   "files": [
+    "handbook_pharma"
+   ],
+   "n_equations": {
+    "handbook_pharma": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_polymer": {
+   "files": [
+    "handbook_polymer"
+   ],
+   "n_equations": {
+    "handbook_polymer": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_process_control": {
+   "files": [
+    "handbook_process_control"
+   ],
+   "n_equations": {
+    "handbook_process_control": 25
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_process_control_adv": {
+   "files": [
+    "handbook_process_control_adv"
+   ],
+   "n_equations": {
+    "handbook_process_control_adv": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_reaction_eng_adv": {
+   "files": [
+    "handbook_reaction_eng_adv"
+   ],
+   "n_equations": {
+    "handbook_reaction_eng_adv": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_reaction_engineering": {
+   "files": [
+    "handbook_reaction_engineering"
+   ],
+   "n_equations": {
+    "handbook_reaction_engineering": 25
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_semiconductor": {
+   "files": [
+    "handbook_semiconductor"
+   ],
+   "n_equations": {
+    "handbook_semiconductor": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_separation": {
+   "files": [
+    "handbook_separation"
+   ],
+   "n_equations": {
+    "handbook_separation": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_structural": {
+   "files": [
+    "handbook_structural"
+   ],
+   "n_equations": {
+    "handbook_structural": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_thermodynamics": {
+   "files": [
+    "handbook_thermodynamics"
+   ],
+   "n_equations": {
+    "handbook_thermodynamics": 25
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_thermodynamics_adv": {
+   "files": [
+    "handbook_thermodynamics_adv"
+   ],
+   "n_equations": {
+    "handbook_thermodynamics_adv": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_transport_phenomena": {
+   "files": [
+    "handbook_transport_phenomena"
+   ],
+   "n_equations": {
+    "handbook_transport_phenomena": 25
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "handbook_vibrations": {
+   "files": [
+    "handbook_vibrations"
+   ],
+   "n_equations": {
+    "handbook_vibrations": 20
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "kinetics_soybean_oil.pdf": {
+   "files": [
+    "kinetics_soybean_oil.pdf"
+   ],
+   "n_equations": {
+    "kinetics_soybean_oil.pdf": 4
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "lattice_boltzmann_methods_for_multiphase_flow_and_phase-chan_2015": {
+   "files": [
+    "04_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf",
+    "FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf",
+    "FB3_03_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf"
+   ],
+   "n_equations": {
+    "04_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf": 191,
+    "FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf": 75,
+    "FB3_03_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf": 85
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 31
+  },
+  "les_over_rans_in_building_simulation_for_outdoor_and_indoor__2018": {
+   "files": [
+    "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf",
+    "FB07_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf"
+   ],
+   "n_equations": {
+    "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf": 30,
+    "FB07_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf": 30
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 24
+  },
+  "machine_learning_for_fluid_mechanics_2019": {
+   "files": [
+    "01_Machine_Learning_for_Fluid_Mechanics_2019.pdf",
+    "04_Machine_Learning_for_Fluid_Mechanics_2019.pdf",
+    "FB3_01_Machine_Learning_for_Fluid_Mechanics_2019.pdf"
+   ],
+   "n_equations": {
+    "01_Machine_Learning_for_Fluid_Mechanics_2019.pdf": 4,
+    "04_Machine_Learning_for_Fluid_Mechanics_2019.pdf": 4,
+    "FB3_01_Machine_Learning_for_Fluid_Mechanics_2019.pdf": 4
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 4
+  },
+  "machine_learning_in_materials_informatics_recent_application_2017": {
+   "files": [
+    "FB05_Machine_learning_in_materials_informatics_recent_application_2017.pdf",
+    "FB3_01_Machine_learning_in_materials_informatics_recent_application_2017.pdf"
+   ],
+   "n_equations": {
+    "FB05_Machine_learning_in_materials_informatics_recent_application_2017.pdf": 4,
+    "FB3_01_Machine_learning_in_materials_informatics_recent_application_2017.pdf": 4
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 3
+  },
+  "macroscopic_fluctuation_theory_2015": {
+   "files": [
+    "04_Macroscopic_fluctuation_theory_2015.pdf",
+    "FB2_06_Macroscopic_fluctuation_theory_2015.pdf"
+   ],
+   "n_equations": {
+    "04_Macroscopic_fluctuation_theory_2015.pdf": 54,
+    "FB2_06_Macroscopic_fluctuation_theory_2015.pdf": 34
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 21
+  },
+  "matecconf_cscc2019_01027.pdf": {
+   "files": [
+    "matecconf_cscc2019_01027.pdf"
+   ],
+   "n_equations": {
+    "matecconf_cscc2019_01027.pdf": 9
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "materials_science_aspects_of_zinc_air_batteries_a_review_2014": {
+   "files": [
+    "04_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf",
+    "FB3_14_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf"
+   ],
+   "n_equations": {
+    "04_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf": 5,
+    "FB3_14_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf": 5
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 5
+  },
+  "mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012": {
+   "files": [
+    "10_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf",
+    "FB3_14_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf"
+   ],
+   "n_equations": {
+    "10_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf": 41,
+    "FB3_14_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf": 37
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 15
+  },
+  "model_order_reduction_methods_for_geometrically_nonlinear_st_2021": {
+   "files": [
+    "06_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf",
+    "07_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf"
+   ],
+   "n_equations": {
+    "06_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf": 77,
+    "07_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf": 82
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf": {
+   "files": [
+    "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf"
+   ],
+   "n_equations": {
+    "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf": 7
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "non-equilibrium_steady_states_in_supramolecular_polymerizati_2017": {
+   "files": [
+    "02_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf",
+    "FB3_01_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf"
+   ],
+   "n_equations": {
+    "02_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf": 5,
+    "FB3_01_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf": 5
+   },
+   "evidence": [
+    "same name after removing the collection prefix"
+   ],
+   "n_latex_in_2_or_more_files": 3
+  },
+  "numerically_analysis_of_marangoni_convective_flow_of_hybrid__2023": {
+   "files": [
+    "04_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf",
+    "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf"
+   ],
+   "n_equations": {
+    "04_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf": 44,
+    "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf": 44
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "physics_guided_machine_learning_using_simplified_theories_2021": {
+   "files": [
+    "01_Physics_guided_machine_learning_using_simplified_theories_2021.pdf",
+    "FB07_Physics_guided_machine_learning_using_simplified_theories_2021.pdf"
+   ],
+   "n_equations": {
+    "01_Physics_guided_machine_learning_using_simplified_theories_2021.pdf": 1,
+    "FB07_Physics_guided_machine_learning_using_simplified_theories_2021.pdf": 1
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "redox_flow_batteries_a_review_2011": {
+   "files": [
+    "FB03_Redox_flow_batteries_a_review_2011.pdf",
+    "FB2_05_Redox_flow_batteries_a_review_2011.pdf"
+   ],
+   "n_equations": {
+    "FB03_Redox_flow_batteries_a_review_2011.pdf": 40,
+    "FB2_05_Redox_flow_batteries_a_review_2011.pdf": 40
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 9
+  },
+  "review_liquid_phase_sintering_2008": {
+   "files": [
+    "02_Review_liquid_phase_sintering_2008.pdf",
+    "FB03_Review_liquid_phase_sintering_2008.pdf",
+    "FB2_10_Review_liquid_phase_sintering_2008.pdf"
+   ],
+   "n_equations": {
+    "02_Review_liquid_phase_sintering_2008.pdf": 50,
+    "FB03_Review_liquid_phase_sintering_2008.pdf": 51,
+    "FB2_10_Review_liquid_phase_sintering_2008.pdf": 52
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 39
+  },
+  "roadmap_on_transformation_optics_2018": {
+   "files": [
+    "06_Roadmap_on_transformation_optics_2018.pdf",
+    "08_Roadmap_on_transformation_optics_2018.pdf"
+   ],
+   "n_equations": {
+    "06_Roadmap_on_transformation_optics_2018.pdf": 4,
+    "08_Roadmap_on_transformation_optics_2018.pdf": 8
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 1
+  },
+  "s41598-024-60757-5.pdf": {
+   "files": [
+    "s41598-024-60757-5.pdf"
+   ],
+   "n_equations": {
+    "s41598-024-60757-5.pdf": 46
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "state_of_the_art_for_the_biosorption_process_a_review_2013": {
+   "files": [
+    "01_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf",
+    "FB2_07_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf"
+   ],
+   "n_equations": {
+    "01_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf": 23,
+    "FB2_07_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf": 23
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 8
+  },
+  "summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007": {
+   "files": [
+    "FB06_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf",
+    "FB2_03_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf"
+   ],
+   "n_equations": {
+    "FB06_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf": 12,
+    "FB2_03_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf": 14
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 6
+  },
+  "the_future_of_pharmaceutical_manufacturing_sciences_2015": {
+   "files": [
+    "01_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf",
+    "03_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf",
+    "FB05_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf"
+   ],
+   "n_equations": {
+    "01_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf": 2,
+    "03_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf": 3,
+    "FB05_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf": 3
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 3
+  },
+  "theory_of_star_formation_2007": {
+   "files": [
+    "01_Theory_of_Star_Formation_2007.pdf",
+    "FB02_Theory_of_Star_Formation_2007.pdf",
+    "FB2_03_Theory_of_Star_Formation_2007.pdf"
+   ],
+   "n_equations": {
+    "01_Theory_of_Star_Formation_2007.pdf": 56,
+    "FB02_Theory_of_Star_Formation_2007.pdf": 56,
+    "FB2_03_Theory_of_Star_Formation_2007.pdf": 56
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 4
+  },
+  "vol20no2p7.pdf": {
+   "files": [
+    "vol20no2p7.pdf"
+   ],
+   "n_equations": {
+    "vol20no2p7.pdf": 8
+   },
+   "evidence": [],
+   "n_latex_in_2_or_more_files": 0
+  },
+  "water_desalination_using_a_humidification-dehumidification_t_2013": {
+   "files": [
+    "04_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf",
+    "FB2_14_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf"
+   ],
+   "n_equations": {
+    "04_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf": 3,
+    "FB2_14_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf": 3
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 1
+  },
+  "wood_modification_by_heat_treatment_a_review_2008": {
+   "files": [
+    "FB03_Wood_modification_by_heat_treatment_A_review_2008.pdf",
+    "FB2_13_Wood_modification_by_heat_treatment_A_review_2008.pdf"
+   ],
+   "n_equations": {
+    "FB03_Wood_modification_by_heat_treatment_A_review_2008.pdf": 3,
+    "FB2_13_Wood_modification_by_heat_treatment_A_review_2008.pdf": 3
+   },
+   "evidence": [
+    "same name after removing the collection prefix",
+    "same DOI in docs/paper_collection"
+   ],
+   "n_latex_in_2_or_more_files": 2
+  }
+ },
+ "file_to_doc": {
+  "01_A_review_on_nanofluids_-_part_I_theoretical_and_numerical_in_2008.pdf": "01_A_review_on_nanofluids_-_part_I_theoretical_and_numerical_in_2008.pdf",
+  "01_Extracting_Knowledge_from_Data_through_Catalysis_Informatics_2018.pdf": "01_Extracting_Knowledge_from_Data_through_Catalysis_Informatics_2018.pdf",
+  "01_Global_optimization_of_metasurface_designs_using_statistical_2019.pdf": "01_Global_optimization_of_metasurface_designs_using_statistical_2019.pdf",
+  "01_Impedance_Modeling_and_Stability_Analysis_of_Grid-Connected__2019.pdf": "01_Impedance_Modeling_and_Stability_Analysis_of_Grid-Connected__2019.pdf",
+  "01_MR_elastography_Principles_guidelines_and_terminology_2020.pdf": "01_MR_elastography_Principles_guidelines_and_terminology_2020.pdf",
+  "01_Moving_beyond_photosynthesis_from_carbon_source_to_sink_driv_2013.pdf": "01_Moving_beyond_photosynthesis_from_carbon_source_to_sink_driv_2013.pdf",
+  "01_One_and_a_Half_Century_of_Diffusion_Fick_Einstein_Before_and_2006.pdf": "01_One_and_a_Half_Century_of_Diffusion_Fick_Einstein_Before_and_2006.pdf",
+  "01_Physical_properties_of_hydrate_bearing_sediments_2009.pdf": "01_Physical_properties_of_hydrate_bearing_sediments_2009.pdf",
+  "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf": "01_Reactive_transport_codes_for_subsurface_environmental_simula_2014.pdf",
+  "02_Analytic_Models_of_Oxygen_and_Nutrient_Diffusion_Metabolism__2015.pdf": "02_Analytic_Models_of_Oxygen_and_Nutrient_Diffusion_Metabolism__2015.pdf",
+  "02_Analytical_solution_for_a_hybrid_Logistic_Monod_cell_growth__2019.pdf": "02_Analytical_solution_for_a_hybrid_Logistic_Monod_cell_growth__2019.pdf",
+  "02_Cooperative_Effects_Drive_Water_Oxidation_Catalysis_in_Cobal_2024.pdf": "02_Cooperative_Effects_Drive_Water_Oxidation_Catalysis_in_Cobal_2024.pdf",
+  "02_Modeling_of_thermochemical_conversion_of_waste_biomass_a_com_2021.pdf": "02_Modeling_of_thermochemical_conversion_of_waste_biomass_a_com_2021.pdf",
+  "02_Optical_tweezers_theory_and_practice_2020.pdf": "02_Optical_tweezers_theory_and_practice_2020.pdf",
+  "02_Optimizing_investments_in_coupled_offshore_wind_-electrolyti_2017.pdf": "02_Optimizing_investments_in_coupled_offshore_wind_-electrolyti_2017.pdf",
+  "02_Parameters_Governing_Separation_Control_with_Sweeping_Jet_Ac_2011.pdf": "02_Parameters_Governing_Separation_Control_with_Sweeping_Jet_Ac_2011.pdf",
+  "02_Port-Hamiltonian_Systems_on_Graphs_2013.pdf": "02_Port-Hamiltonian_Systems_on_Graphs_2013.pdf",
+  "02_QSAR_without_borders_2020.pdf": "02_QSAR_without_borders_2020.pdf",
+  "02_The_global_chemistry_transport_model_TM5_description_and_eva_2010.pdf": "02_The_global_chemistry_transport_model_TM5_description_and_eva_2010.pdf",
+  "02_i_Stan_i_A_Probabilistic_Programming_Language_2017.pdf": "02_i_Stan_i_A_Probabilistic_Programming_Language_2017.pdf",
+  "02_scp_Taylor_Couette_scp_reactor_Principles_design_and_applica_2021.pdf": "02_scp_Taylor_Couette_scp_reactor_Principles_design_and_applica_2021.pdf",
+  "038.pdf": "038.pdf",
+  "03_A_Refined_Zigzag_Beam_Theory_for_Composite_and_Sandwich_Beam_2009.pdf": "03_A_Refined_Zigzag_Beam_Theory_for_Composite_and_Sandwich_Beam_2009.pdf",
+  "03_MEDSLIK-II_a_Lagrangian_marine_surface_oil_spill_model_for_s_2013.pdf": "03_MEDSLIK-II_a_Lagrangian_marine_surface_oil_spill_model_for_s_2013.pdf",
+  "03_Maximum_Power_Point_Tracking_Converter_Based_on_the_Open-Cir_2014.pdf": "03_Maximum_Power_Point_Tracking_Converter_Based_on_the_Open-Cir_2014.pdf",
+  "03_Multiscale_modelling_and_numerical_simulation_of_rechargeabl_2013.pdf": "03_Multiscale_modelling_and_numerical_simulation_of_rechargeabl_2013.pdf",
+  "03_On_Pixel-Wise_Explanations_for_Non-Linear_Classifier_Decisio_2015.pdf": "03_On_Pixel-Wise_Explanations_for_Non-Linear_Classifier_Decisio_2015.pdf",
+  "03_Optimal_Tuning_of_Fractional_Order_PID_Controller_for_DC_Mot_2019.pdf": "03_Optimal_Tuning_of_Fractional_Order_PID_Controller_for_DC_Mot_2019.pdf",
+  "03_Phase-Field_Models_for_Multi-Component_Fluid_Flows_2012.pdf": "03_Phase-Field_Models_for_Multi-Component_Fluid_Flows_2012.pdf",
+  "03_Steady-State_Simulation_of_Semiconductor_Devices_Using_Disco_2020.pdf": "03_Steady-State_Simulation_of_Semiconductor_Devices_Using_Disco_2020.pdf",
+  "03_Theoretical_investigations_on_the_effect_of_absorbent_type_o_2020.pdf": "03_Theoretical_investigations_on_the_effect_of_absorbent_type_o_2020.pdf",
+  "04_3D_finite_element_modeling_and_simulation_of_industrial_semi_2015.pdf": "04_3D_finite_element_modeling_and_simulation_of_industrial_semi_2015.pdf",
+  "04_A_consistent_refinement_of_first-order_shear_deformation_the_2010.pdf": "04_A_consistent_refinement_of_first-order_shear_deformation_the_2010.pdf",
+  "04_A_novel_process-based_model_of_microbial_growth_self-inhibit_2015.pdf": "04_A_novel_process-based_model_of_microbial_growth_self-inhibit_2015.pdf",
+  "04_Bond-graph_modeling_2007.pdf": "04_Bond-graph_modeling_2007.pdf",
+  "04_Critical_Review_of_Electro-kinetic_Remediation_of_Contaminat_2021.pdf": "04_Critical_Review_of_Electro-kinetic_Remediation_of_Contaminat_2021.pdf",
+  "04_Critical_Review_of_Electro-kinetic_Rememdiation_of_Contaminat_2021.pdf": "04_Critical_Review_of_Electro-kinetic_Rememdiation_of_Contaminat_2021.pdf",
+  "04_Flow_boundary_conditions_from_nano-_to_micro-scales_2007.pdf": "04_Flow_boundary_conditions_from_nano-_to_micro-scales_2007.pdf",
+  "04_Fractional-order_models_of_the_supercapacitors_in_the_form_o_2013.pdf": "04_Fractional-order_models_of_the_supercapacitors_in_the_form_o_2013.pdf",
+  "04_Review_The_Use_of_Equivalent_Source_Method_in_Computational__2016.pdf": "04_Review_The_Use_of_Equivalent_Source_Method_in_Computational__2016.pdf",
+  "05_A_functionally_based_model_for_hydrolysis_of_cellulose_by_fu_2006.pdf": "05_A_functionally_based_model_for_hydrolysis_of_cellulose_by_fu_2006.pdf",
+  "05_A_review_of_recent_advances_in_the_spherical_harmonics_expan_2016.pdf": "05_A_review_of_recent_advances_in_the_spherical_harmonics_expan_2016.pdf",
+  "05_Active_learning_of_deep_surrogates_for_PDEs_application_to_m_2020.pdf": "05_Active_learning_of_deep_surrogates_for_PDEs_application_to_m_2020.pdf",
+  "05_Conceptual_methods_for_synthesis_of_reactive_distillation_pr_2024.pdf": "05_Conceptual_methods_for_synthesis_of_reactive_distillation_pr_2024.pdf",
+  "05_Design_principles_for_water_dissociation_catalysts_in_high-p_2022.pdf": "05_Design_principles_for_water_dissociation_catalysts_in_high-p_2022.pdf",
+  "05_Dynamic_rerouting_of_the_carbohydrate_flux_is_key_to_counter_2007.pdf": "05_Dynamic_rerouting_of_the_carbohydrate_flux_is_key_to_counter_2007.pdf",
+  "05_Emergent_Hydrodynamics_in_Integrable_Quantum_Systems_Out_of__2016.pdf": "05_Emergent_Hydrodynamics_in_Integrable_Quantum_Systems_Out_of__2016.pdf",
+  "05_Functional_analysis_of_the_polarization_response_in_linear_t_2021.pdf": "05_Functional_analysis_of_the_polarization_response_in_linear_t_2021.pdf",
+  "05_Generalized_combined_field_integral_equations_for_the_iterat_2007.pdf": "05_Generalized_combined_field_integral_equations_for_the_iterat_2007.pdf",
+  "05_Global_well-posedness_of_the_three-dimensional_viscous_primi_2007.pdf": "05_Global_well-posedness_of_the_three-dimensional_viscous_primi_2007.pdf",
+  "05_Multi-scale_model_of_food_drying_Current_status_and_challeng_2016.pdf": "05_Multi-scale_model_of_food_drying_Current_status_and_challeng_2016.pdf",
+  "05_The_harmonic_balance_method_for_bifurcation_analysis_of_larg_2015.pdf": "05_The_harmonic_balance_method_for_bifurcation_analysis_of_larg_2015.pdf",
+  "05_Towards_Industrialization_of_FOPID_Controllers_A_Survey_on_M_2021.pdf": "05_Towards_Industrialization_of_FOPID_Controllers_A_Survey_on_M_2021.pdf",
+  "05_Towards_the_distributed_burning_regime_in_turbulent_premixed_2019.pdf": "05_Towards_the_distributed_burning_regime_in_turbulent_premixed_2019.pdf",
+  "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf": "05_Utilizing_the_Impact_of_Earth_and_Atmospheric_Tides_on_Groun_2019.pdf",
+  "05_i_In_silico_i_ADME_T_modelling_for_rational_drug_design_2015.pdf": "05_i_In_silico_i_ADME_T_modelling_for_rational_drug_design_2015.pdf",
+  "06_A_Casson_nanofluid_flow_within_the_conical_gap_between_rotat_2022.pdf": "06_A_Casson_nanofluid_flow_within_the_conical_gap_between_rotat_2022.pdf",
+  "06_A_Review_of_Kinetic_Modeling_Methodologies_for_Complex_Proce_2016.pdf": "06_A_Review_of_Kinetic_Modeling_Methodologies_for_Complex_Proce_2016.pdf",
+  "06_Application_of_Different_Optimization_Algorithms_for_Optimal_2019.pdf": "06_Application_of_Different_Optimization_Algorithms_for_Optimal_2019.pdf",
+  "06_Causes_of_variation_in_soil_carbon_simulations_from_CMIP5_Ea_2013.pdf": "06_Causes_of_variation_in_soil_carbon_simulations_from_CMIP5_Ea_2013.pdf",
+  "06_Continental_scale_high_order_high_spatial_resolution_ice_she_2012.pdf": "06_Continental_scale_high_order_high_spatial_resolution_ice_she_2012.pdf",
+  "06_Geomechanical_modelling_of_sinkhole_development_using_distin_2018.pdf": "06_Geomechanical_modelling_of_sinkhole_development_using_distin_2018.pdf",
+  "06_Modeling_growth_lipid_accumulation_and_lipid_turnover_in_sub_2011.pdf": "06_Modeling_growth_lipid_accumulation_and_lipid_turnover_in_sub_2011.pdf",
+  "06_Review_of_applications_of_TLBO_algorithm_and_a_tutorial_for__2015.pdf": "06_Review_of_applications_of_TLBO_algorithm_and_a_tutorial_for__2015.pdf",
+  "06_Some_Recent_Developments_in_Turbulence_Closure_Modeling_2017.pdf": "06_Some_Recent_Developments_in_Turbulence_Closure_Modeling_2017.pdf",
+  "06_The_acidity_of_atmospheric_particles_and_clouds_2020.pdf": "06_The_acidity_of_atmospheric_particles_and_clouds_2020.pdf",
+  "06_Two-phase_flow_of_dusty_fluid_with_suspended_hybrid_nanopart_2021.pdf": "06_Two-phase_flow_of_dusty_fluid_with_suspended_hybrid_nanopart_2021.pdf",
+  "07_Bridging_Scales_in_Bioenergy_and_Catalysis_A_Review_of_Mesos_2021.pdf": "07_Bridging_Scales_in_Bioenergy_and_Catalysis_A_Review_of_Mesos_2021.pdf",
+  "07_Enhancing_computational_fluid_dynamics_with_machine_learning_2022.pdf": "07_Enhancing_computational_fluid_dynamics_with_machine_learning_2022.pdf",
+  "07_Hidden_attractors_in_Chua_circuit_mathematical_theory_meets__2022.pdf": "07_Hidden_attractors_in_Chua_circuit_mathematical_theory_meets__2022.pdf",
+  "07_Hydrothermal_Carbonization_of_Organic_Waste_and_Biomass_A_Re_2020.pdf": "07_Hydrothermal_Carbonization_of_Organic_Waste_and_Biomass_A_Re_2020.pdf",
+  "07_National_assessment_of_shoreline_change_part_4_Historical_co_2007.pdf": "07_National_assessment_of_shoreline_change_part_4_Historical_co_2007.pdf",
+  "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf": "08_A_novel_hybridity_model_for_TiO2-CuO_water_hybrid_nanofluid__2019.pdf",
+  "08_Analysis_of_an_Epidemic_Spreading_Model_with_Exponential_Dec_2020.pdf": "08_Analysis_of_an_Epidemic_Spreading_Model_with_Exponential_Dec_2020.pdf",
+  "08_Attainable_region_analysis_for_continuous_production_of_seco_2013.pdf": "08_Attainable_region_analysis_for_continuous_production_of_seco_2013.pdf",
+  "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf": "08_CFD_modelling_approach_for_dam_break_flow_studies_2010.pdf",
+  "08_Gravitational_spin_Hall_effect_of_light_2020.pdf": "08_Gravitational_spin_Hall_effect_of_light_2020.pdf",
+  "08_Influence_of_coal_dust_on_premixed_turbulent_methane_air_fla_2012.pdf": "08_Influence_of_coal_dust_on_premixed_turbulent_methane_air_fla_2012.pdf",
+  "08_Molecular_Modelling_for_Reactor_Design_2018.pdf": "08_Molecular_Modelling_for_Reactor_Design_2018.pdf",
+  "08_Small_Modular_Reactors_An_Overview_of_Modeling_Control_Simul_2024.pdf": "08_Small_Modular_Reactors_An_Overview_of_Modeling_Control_Simul_2024.pdf",
+  "09_Bridging_substrate_intake_kinetics_and_bacterial_growth_phen_2020.pdf": "09_Bridging_substrate_intake_kinetics_and_bacterial_growth_phen_2020.pdf",
+  "09_Ergodicity_of_the_2D_Navier_Stokes_equations_with_degenerate_2006.pdf": "09_Ergodicity_of_the_2D_Navier_Stokes_equations_with_degenerate_2006.pdf",
+  "09_Mathematical_Model_Simulation_and_Scale_up_of_Batch_Reactor__2021.pdf": "09_Mathematical_Model_Simulation_and_Scale_up_of_Batch_Reactor__2021.pdf",
+  "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf": "09_Modelling_of_displacement_washing_of_packed_bed_of_fibers_2009.pdf",
+  "09_Physiologically_Based_Pharmacokinetic_Modeling_and_Simulatio_2014.pdf": "09_Physiologically_Based_Pharmacokinetic_Modeling_and_Simulatio_2014.pdf",
+  "09_The_Review_of_Some_Commonly_Used_Methods_and_Techniques_to_M_2016.pdf": "09_The_Review_of_Some_Commonly_Used_Methods_and_Techniques_to_M_2016.pdf",
+  "1-s2.0-0009250974800898-main.pdf": "1-s2.0-0009250974800898-main.pdf",
+  "1-s2.0-S1369703X09000059-main.pdf": "1-s2.0-S1369703X09000059-main.pdf",
+  "10_Computational_fluid_dynamics_modelling_in_cardiovascular_med_2015.pdf": "10_Computational_fluid_dynamics_modelling_in_cardiovascular_med_2015.pdf",
+  "10_Mitigating_Uncertainty_Problems_of_Renewable_Energy_Resource_2024.pdf": "10_Mitigating_Uncertainty_Problems_of_Renewable_Energy_Resource_2024.pdf",
+  "1989_A_new_simple_dynamic_model_of_parallel_and_counter_flow_heat.pdf": "1989_A_new_simple_dynamic_model_of_parallel_and_counter_flow_heat.pdf",
+  "1990_A_dynamic_model_for_helium_core_heat_exchangers.pdf": "1990_A_dynamic_model_for_helium_core_heat_exchangers.pdf",
+  "2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf": "2013_Modeling_of_an_industrial_process_of_pleuromutilin_fermentat.pdf",
+  "2015_Towards_the_modelling_of_a_heat_exchanger_reactor_by_a_dynam.pdf": "2015_Towards_the_modelling_of_a_heat_exchanger_reactor_by_a_dynam.pdf",
+  "2016_Kinetic_Modeling_and_Optimization_of_a_Batch_Ethanol_Ferment.pdf": "2016_Kinetic_Modeling_and_Optimization_of_a_Batch_Ethanol_Ferment.pdf",
+  "2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf": "2016_Numerical_Solutions_of_Free_Convective_Flow_from_a_Vertical.pdf",
+  "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf": "2018_Current_State_and_Perspective_in_the_Models_Applicable_to_Oe.pdf",
+  "2020_General_route_to_design_polymer_molecular_weight_distributio.pdf": "2020_General_route_to_design_polymer_molecular_weight_distributio.pdf",
+  "2021_An_experimental_and_modeling_study_of_ammonia_with_enriched.pdf": "2021_An_experimental_and_modeling_study_of_ammonia_with_enriched.pdf",
+  "2023_Chemical_reactor_stability_research_of_ethylene_polymerizati.pdf": "2023_Chemical_reactor_stability_research_of_ethylene_polymerizati.pdf",
+  "2023_Evolution_of_Flame_Displacement_Speed_Within_Flame_Front_in.pdf": "2023_Evolution_of_Flame_Displacement_Speed_Within_Flame_Front_in.pdf",
+  "2023_On_flame_speed_enhancement_in_turbulent_premixed_hydrogen-ai.pdf": "2023_On_flame_speed_enhancement_in_turbulent_premixed_hydrogen-ai.pdf",
+  "2024_Experimentally_Closing_the_Balance_of_Progress_of_Reaction_i.pdf": "2024_Experimentally_Closing_the_Balance_of_Progress_of_Reaction_i.pdf",
+  "2024_Mathematical_modeling_of_pyrolysis_of_rubber_waste_in_horizo.pdf": "2024_Mathematical_modeling_of_pyrolysis_of_rubber_waste_in_horizo.pdf",
+  "Basic_Dyn_Con_Textbook_free.pdf": "Basic_Dyn_Con_Textbook_free.pdf",
+  "Chemical Process Dynamics.pdf": "Chemical Process Dynamics.pdf",
+  "ChemicalProcessDynamicsAndControls.pdf": "ChemicalProcessDynamicsAndControls.pdf",
+  "2018_Book_ProcessControl.pdf": "Corriou_Process_Control",
+  "2018_Book_ProcessControl_Chapter1.pdf": "Corriou_Process_Control",
+  "2018_Book_ProcessControl_Chapter1_6.pdf": "Corriou_Process_Control",
+  "9781852337766-c1.pdf": "Corriou_Process_Control",
+  "FB01_Everything_you_always_wanted_to_know_about_the_cosmological__2012.pdf": "FB01_Everything_you_always_wanted_to_know_about_the_cosmological__2012.pdf",
+  "FB01_Improving_Photosynthetic_Efficiency_for_Greater_Yield_2010.pdf": "FB01_Improving_Photosynthetic_Efficiency_for_Greater_Yield_2010.pdf",
+  "FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf": "FB01_Relativistic_Fluid_Dynamics_Physics_for_Many_Different_Scale_2007.pdf",
+  "FB01_Simulation_of_the_Undiseased_Human_Cardiac_Ventricular_Actio_2011.pdf": "FB01_Simulation_of_the_Undiseased_Human_Cardiac_Ventricular_Actio_2011.pdf",
+  "FB02_Basic_Concepts_in_Population_Modeling_Simulation_and_Model_B_2013.pdf": "FB02_Basic_Concepts_in_Population_Modeling_Simulation_and_Model_B_2013.pdf",
+  "FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf": "FB02_The_Solar_Wind_as_a_Turbulence_Laboratory_2013.pdf",
+  "FB03_Clinical_Pharmacokinetics_and_Pharmacodynamics_of_Propofol_2018.pdf": "FB03_Clinical_Pharmacokinetics_and_Pharmacodynamics_of_Propofol_2018.pdf",
+  "FB03_Joint_Optimization_of_Radio_and_Computational_Resources_for__2015.pdf": "FB03_Joint_Optimization_of_Radio_and_Computational_Resources_for__2015.pdf",
+  "FB03_The_FLUKA_Code_An_Accurate_Simulation_Tool_for_Particle_Ther_2016.pdf": "FB03_The_FLUKA_Code_An_Accurate_Simulation_Tool_for_Particle_Ther_2016.pdf",
+  "FB04_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting__2018.pdf": "FB04_A_Quantitative_Exploration_of_Two_Teachers_with_Contrasting__2018.pdf",
+  "FB04_Adjoint_Equations_in_Stability_Analysis_2013.pdf": "FB04_Adjoint_Equations_in_Stability_Analysis_2013.pdf",
+  "FB04_Soft_Biomimetic_Fish_Robot_Made_of_Dielectric_Elastomer_Actu_2018.pdf": "FB04_Soft_Biomimetic_Fish_Robot_Made_of_Dielectric_Elastomer_Actu_2018.pdf",
+  "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf": "FB04_The_Dynamic_Brain_From_Spiking_Neurons_to_Neural_Masses_and__2008.pdf",
+  "FB04_The_meniscus-guided_deposition_of_semiconducting_polymers_2018.pdf": "FB04_The_meniscus-guided_deposition_of_semiconducting_polymers_2018.pdf",
+  "FB05_Decomposition_of_skin_conductance_data_by_means_of_nonnegati_2010.pdf": "FB05_Decomposition_of_skin_conductance_data_by_means_of_nonnegati_2010.pdf",
+  "FB05_Dynamic_Mode_Decomposition_with_Control_2016.pdf": "FB05_Dynamic_Mode_Decomposition_with_Control_2016.pdf",
+  "FB05_Inhibited_proton_transfer_enhances_Au-catalyzed_CO_sub_2_sub_2016.pdf": "FB05_Inhibited_proton_transfer_enhances_Au-catalyzed_CO_sub_2_sub_2016.pdf",
+  "FB05_Peridynamics_review_2018.pdf": "FB05_Peridynamics_review_2018.pdf",
+  "FB06_BISON_Theory_Manual_The_Equations_behind_Nuclear_Fuel_Analys_2016.pdf": "FB06_BISON_Theory_Manual_The_Equations_behind_Nuclear_Fuel_Analys_2016.pdf",
+  "FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf": "FB06_Basic_Concepts_in_Physiologically_Based_Pharmacokinetic_Mode_2013.pdf",
+  "FB06_Thermodynamics_and_kinetics_of_crystallization_of_flexible_m_2008.pdf": "FB06_Thermodynamics_and_kinetics_of_crystallization_of_flexible_m_2008.pdf",
+  "FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf": "FB07_A_review_of_methods_for_the_calculation_of_solution_free_ene_2015.pdf",
+  "FB07_Existence_and_uniqueness_of_weak_solutions_for_a_class_of_fr_2017.pdf": "FB07_Existence_and_uniqueness_of_weak_solutions_for_a_class_of_fr_2017.pdf",
+  "FB07_Metal_organic_framework_based_mixed_matrix_membranes_a_solut_2015.pdf": "FB07_Metal_organic_framework_based_mixed_matrix_membranes_a_solut_2015.pdf",
+  "FB07_Physicochemical_Properties_and_Solubility_of_Hydrochloride_M_2021.pdf": "FB07_Physicochemical_Properties_and_Solubility_of_Hydrochloride_M_2021.pdf",
+  "FB08_A_mathematical_model_for_the_hard_sphere_repulsion_in_ionic__2011.pdf": "FB08_A_mathematical_model_for_the_hard_sphere_repulsion_in_ionic__2011.pdf",
+  "FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf": "FB08_Aqueous_two-phase_system_ATPS_an_overview_and_advances_in_it_2016.pdf",
+  "FB08_Forty_years_of_temporal_analysis_of_products_2017.pdf": "FB08_Forty_years_of_temporal_analysis_of_products_2017.pdf",
+  "FB08_Fused_Deposition_Modeling_FDM_3D_Printed_Tablets_for_Intraga_2017.pdf": "FB08_Fused_Deposition_Modeling_FDM_3D_Printed_Tablets_for_Intraga_2017.pdf",
+  "FB08_Machine_learning_and_structural_health_monitoring_overview_w_2021.pdf": "FB08_Machine_learning_and_structural_health_monitoring_overview_w_2021.pdf",
+  "FB08_Sobol_Sensitivity_Analysis_A_Tool_to_Guide_the_Development_a_2015.pdf": "FB08_Sobol_Sensitivity_Analysis_A_Tool_to_Guide_the_Development_a_2015.pdf",
+  "FB09_Compact_Modeling_of_Total_Ionizing_Dose_and_Aging_Effects_in_2015.pdf": "FB09_Compact_Modeling_of_Total_Ionizing_Dose_and_Aging_Effects_in_2015.pdf",
+  "FB09_Polysulfone_silica_nanoparticle_mixed-matrix_membranes_for_g_2008.pdf": "FB09_Polysulfone_silica_nanoparticle_mixed-matrix_membranes_for_g_2008.pdf",
+  "FB09_Reevaluation_of_Performance_of_Electric_Double-layer_Capacit_2016.pdf": "FB09_Reevaluation_of_Performance_of_Electric_Double-layer_Capacit_2016.pdf",
+  "FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf": "FB10_Forecasting_and_dynamical_modeling_of_reversible_enzymatic_r_2024.pdf",
+  "FB10_Review_of_the_Methods_of_Transition_from_Partial_to_Ordinary_2021.pdf": "FB10_Review_of_the_Methods_of_Transition_from_Partial_to_Ordinary_2021.pdf",
+  "FB11_A_review_of_multilayer_and_composite_films_and_coatings_for__2022.pdf": "FB11_A_review_of_multilayer_and_composite_films_and_coatings_for__2022.pdf",
+  "FB11_Microfluidic_droplet-based_liquid_liquid_extraction_online_m_2015.pdf": "FB11_Microfluidic_droplet-based_liquid_liquid_extraction_online_m_2015.pdf",
+  "FB11_On_the_convective_heat_and_zero_nanoparticle_mass_flux_condi_2019.pdf": "FB11_On_the_convective_heat_and_zero_nanoparticle_mass_flux_condi_2019.pdf",
+  "FB11_Operating_characteristics_of_transcritical_CO2_heat_pump_for_2011.pdf": "FB11_Operating_characteristics_of_transcritical_CO2_heat_pump_for_2011.pdf",
+  "FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf": "FB12_Conditions_for_translation_and_scaling_invariance_of_the_neu_2018.pdf",
+  "FB12_Onset_dynamics_of_type_A_botulinum_neurotoxin-induced_paraly_2008.pdf": "FB12_Onset_dynamics_of_type_A_botulinum_neurotoxin-induced_paraly_2008.pdf",
+  "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf": "FB13_Latent_thermal_energy_storage_for_solar_process_heat_applica_2018.pdf",
+  "FB13_Multiple_positive_solutions_to_a_coupled_systems_of_nonlinea_2016.pdf": "FB13_Multiple_positive_solutions_to_a_coupled_systems_of_nonlinea_2016.pdf",
+  "FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf": "FB13_Regular_and_chaotic_oscillations_of_a_Timoshenko_beam_subjec_2014.pdf",
+  "FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf": "FB14_A_computational_neuron_model_based_on_Poisson-Nernst-Planck__2008.pdf",
+  "FB14_Significance_of_melting_heat_in_bioconvection_flow_of_microp_2023.pdf": "FB14_Significance_of_melting_heat_in_bioconvection_flow_of_microp_2023.pdf",
+  "FB15_Heat_and_mass_transfer_of_generalized_fourier_and_Fick_s_law_2023.pdf": "FB15_Heat_and_mass_transfer_of_generalized_fourier_and_Fick_s_law_2023.pdf",
+  "FB15_Ionic_interactions_in_biological_and_physical_systems_a_vari_2012.pdf": "FB15_Ionic_interactions_in_biological_and_physical_systems_a_vari_2012.pdf",
+  "FB15_Learning-based_CO2_concentration_prediction_Application_to_i_2021.pdf": "FB15_Learning-based_CO2_concentration_prediction_Application_to_i_2021.pdf",
+  "FB15_Mathematical_modeling_and_thermodynamics_of_Prandtl_Eyring_f_2021.pdf": "FB15_Mathematical_modeling_and_thermodynamics_of_Prandtl_Eyring_f_2021.pdf",
+  "FB16_A_kinetic_study_of_a_ternary_cycle_between_adenine_nucleotid_2006.pdf": "FB16_A_kinetic_study_of_a_ternary_cycle_between_adenine_nucleotid_2006.pdf",
+  "FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf": "FB16_Experimental_and_Computational_Methods_Pertaining_to_Drug_So_2012.pdf",
+  "FB16_Radio-Frequency_Applications_for_Food_Processing_and_Safety_2018.pdf": "FB16_Radio-Frequency_Applications_for_Food_Processing_and_Safety_2018.pdf",
+  "FB17_Decentralized_Participation_of_Flexible_Demand_in_Electricit_2013.pdf": "FB17_Decentralized_Participation_of_Flexible_Demand_in_Electricit_2013.pdf",
+  "FB17_MATHEMATICAL_MODELING_OF_LEACHING_PROCESS_OF_RED_MUD_IN_ORDE_2015.pdf": "FB17_MATHEMATICAL_MODELING_OF_LEACHING_PROCESS_OF_RED_MUD_IN_ORDE_2015.pdf",
+  "FB18_An_epidemic_model_for_non-first-order_transmission_kinetics_2021.pdf": "FB18_An_epidemic_model_for_non-first-order_transmission_kinetics_2021.pdf",
+  "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf": "FB18_Electrochemical_Compression_Technologies_for_High-Pressure_H_2020.pdf",
+  "FB18_Features_of_Cu_and_TiO2_in_the_flow_of_engine_oil_subject_to_2021.pdf": "FB18_Features_of_Cu_and_TiO2_in_the_flow_of_engine_oil_subject_to_2021.pdf",
+  "FB18_On_Applications_of_Generalized_Functions_in_the_Discontinuou_2016.pdf": "FB18_On_Applications_of_Generalized_Functions_in_the_Discontinuou_2016.pdf",
+  "FB21_Flow_and_heat_transfer_analysis_of_Eyring-Powell_fluid_over__2020.pdf": "FB21_Flow_and_heat_transfer_analysis_of_Eyring-Powell_fluid_over__2020.pdf",
+  "FB24_Series_solution_of_unsteady_MHD_oblique_stagnation_point_flo_2020.pdf": "FB24_Series_solution_of_unsteady_MHD_oblique_stagnation_point_flo_2020.pdf",
+  "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf": "FB25_Principles_of_Direct_Thermoelectric_Conversion_2011.pdf",
+  "FB25_Significance_of_heat_transfer_rate_in_water-based_nanopartic_2023.pdf": "FB25_Significance_of_heat_transfer_rate_in_water-based_nanopartic_2023.pdf",
+  "FB27_The_modified_finite_element_method_for_heat_and_mass_transfe_2022.pdf": "FB27_The_modified_finite_element_method_for_heat_and_mass_transfe_2022.pdf",
+  "FB2_01_Inferring_the_Joint_Demographic_History_of_Multiple_Populati_2009.pdf": "FB2_01_Inferring_the_Joint_Demographic_History_of_Multiple_Populati_2009.pdf",
+  "FB2_01_i_Planck_i_2015_results_2016.pdf": "FB2_01_i_Planck_i_2015_results_2016.pdf",
+  "FB2_02_Description_and_evaluation_of_GLOMAP-mode_a_modal_global_aer_2010.pdf": "FB2_02_Description_and_evaluation_of_GLOMAP-mode_a_modal_global_aer_2010.pdf",
+  "FB2_04_Binding_and_neutralization_of_vascular_endothelial_growth_fa_2012.pdf": "FB2_04_Binding_and_neutralization_of_vascular_endothelial_growth_fa_2012.pdf",
+  "FB2_04_Controllable_ion_transport_by_surface-charged_graphene_oxide_2019.pdf": "FB2_04_Controllable_ion_transport_by_surface-charged_graphene_oxide_2019.pdf",
+  "FB2_04_TRIGRS_-_A_Fortran_Program_for_Transient_Rainfall_Infiltrati_2008.pdf": "FB2_04_TRIGRS_-_A_Fortran_Program_for_Transient_Rainfall_Infiltrati_2008.pdf",
+  "FB2_05_Ion-induced_nucleation_of_pure_biogenic_particles_2016.pdf": "FB2_05_Ion-induced_nucleation_of_pure_biogenic_particles_2016.pdf",
+  "FB2_07_Kinetic_model_framework_for_aerosol_and_cloud_surface_chemis_2007.pdf": "FB2_07_Kinetic_model_framework_for_aerosol_and_cloud_surface_chemis_2007.pdf",
+  "FB2_07_Sparse_and_Compositionally_Robust_Inference_of_Microbial_Eco_2015.pdf": "FB2_07_Sparse_and_Compositionally_Robust_Inference_of_Microbial_Eco_2015.pdf",
+  "FB2_07_The_Effect_of_Fluoroethylene_Carbonate_as_an_Additive_on_the_2015.pdf": "FB2_07_The_Effect_of_Fluoroethylene_Carbonate_as_an_Additive_on_the_2015.pdf",
+  "FB2_10_Review_on_the_History_Research_and_Applications_of_Electrohy_2014.pdf": "FB2_10_Review_on_the_History_Research_and_Applications_of_Electrohy_2014.pdf",
+  "FB2_11_Mechanical_weathering_and_rock_erosion_by_climate_dependent__2017.pdf": "FB2_11_Mechanical_weathering_and_rock_erosion_by_climate_dependent__2017.pdf",
+  "FB2_11_Struvite_a_slow-release_fertiliser_for_sustainable_phosphoru_2015.pdf": "FB2_11_Struvite_a_slow-release_fertiliser_for_sustainable_phosphoru_2015.pdf",
+  "FB2_12_Data-driven_modeling_and_learning_in_science_and_engineering_2019.pdf": "FB2_12_Data-driven_modeling_and_learning_in_science_and_engineering_2019.pdf",
+  "FB2_13_A_review_of_operational_regional-scale_chemical_weather_fore_2012.pdf": "FB2_13_A_review_of_operational_regional-scale_chemical_weather_fore_2012.pdf",
+  "FB2_13_SIMULATION_OF_HEAT_AND_MASS_EXCHANGE_PROCESS_HEAT_EXCHANGER__2022.pdf": "FB2_13_SIMULATION_OF_HEAT_AND_MASS_EXCHANGE_PROCESS_HEAT_EXCHANGER__2022.pdf",
+  "FB2_14_A_study_on_iterative_methods_for_solving_Richards_equation_2016.pdf": "FB2_14_A_study_on_iterative_methods_for_solving_Richards_equation_2016.pdf",
+  "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf": "FB2_14_Distribution_of_temperature_and_moisture_content_fields_in_a_2018.pdf",
+  "FB2_16_The_Mechanochemistry_of_Endocytosis_2009.pdf": "FB2_16_The_Mechanochemistry_of_Endocytosis_2009.pdf",
+  "FB2_18_A_5-D_Implementation_of_FGM_for_the_Large_Eddy_Simulation_of_2016.pdf": "FB2_18_A_5-D_Implementation_of_FGM_for_the_Large_Eddy_Simulation_of_2016.pdf",
+  "FB36_Double_diffusive_MHD_stagnation_point_flow_of_second_grade_f_2025.pdf": "FB36_Double_diffusive_MHD_stagnation_point_flow_of_second_grade_f_2025.pdf",
+  "FB38_Numerical_simulation_of_two-phase_multicomponent_flow_with_r_2015.pdf": "FB38_Numerical_simulation_of_two-phase_multicomponent_flow_with_r_2015.pdf",
+  "FB3_01_Diffusion_in_Biofilms_2003.pdf": "FB3_01_Diffusion_in_Biofilms_2003.pdf",
+  "FB3_01_PDDL2.1_An_Extension_to_PDDL_for_Expressing_Temporal_Plannin_2003.pdf": "FB3_01_PDDL2.1_An_Extension_to_PDDL_for_Expressing_Temporal_Plannin_2003.pdf",
+  "FB3_02_Challenges_in_microbial_ecology_building_predictive_understa_2016.pdf": "FB3_02_Challenges_in_microbial_ecology_building_predictive_understa_2016.pdf",
+  "FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf": "FB3_02_Full-waveform_inversion_imaging_of_the_human_brain_2020.pdf",
+  "FB3_02_Techniques_of_EMG_signal_analysis_detection_processing_class_2006.pdf": "FB3_02_Techniques_of_EMG_signal_analysis_detection_processing_class_2006.pdf",
+  "FB3_03_Attention_Uncertainty_and_Free-Energy_2010.pdf": "FB3_03_Attention_Uncertainty_and_Free-Energy_2010.pdf",
+  "FB3_03_Control-Oriented_Modeling_of_Transcritical_Vapor_Compression_2004.pdf": "FB3_03_Control-Oriented_Modeling_of_Transcritical_Vapor_Compression_2004.pdf",
+  "FB3_03_Interactive_evolutionary_computation_fusion_of_the_capabilit_2001.pdf": "FB3_03_Interactive_evolutionary_computation_fusion_of_the_capabilit_2001.pdf",
+  "FB3_03_Systematic_analysis_of_nucleation-dependent_polymerization_r_2008.pdf": "FB3_03_Systematic_analysis_of_nucleation-dependent_polymerization_r_2008.pdf",
+  "FB3_03_The_Caltech_Photooxidation_Flow_Tube_reactor_design_fluid_dy_2017.pdf": "FB3_03_The_Caltech_Photooxidation_Flow_Tube_reactor_design_fluid_dy_2017.pdf",
+  "FB3_03_The_Roles_of_APC_and_Axin_Derived_from_Experimental_and_Theo_2003.pdf": "FB3_03_The_Roles_of_APC_and_Axin_Derived_from_Experimental_and_Theo_2003.pdf",
+  "FB3_04_Action_and_behavior_a_free-energy_formulation_2010.pdf": "FB3_04_Action_and_behavior_a_free-energy_formulation_2010.pdf",
+  "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf": "FB3_04_DENFIS_dynamic_evolving_neural-fuzzy_inference_system_and_it_2002.pdf",
+  "FB3_04_Transient_Stability_of_Voltage-Source_Converters_With_Grid-F_2019.pdf": "FB3_04_Transient_Stability_of_Voltage-Source_Converters_With_Grid-F_2019.pdf",
+  "FB3_04_What_makes_a_material_printable_A_viscoelastic_model_for_ext_2018.pdf": "FB3_04_What_makes_a_material_printable_A_viscoelastic_model_for_ext_2018.pdf",
+  "FB3_05_Exergy_analysis_of_a_hydrogen_and_water_production_process_b_2017.pdf": "FB3_05_Exergy_analysis_of_a_hydrogen_and_water_production_process_b_2017.pdf",
+  "FB3_05_Metabolic_modeling_of_synthesis_gas_fermentation_in_bubble_c_2015.pdf": "FB3_05_Metabolic_modeling_of_synthesis_gas_fermentation_in_bubble_c_2015.pdf",
+  "FB3_06_3D_microstructure_design_of_lithium-ion_battery_electrodes_a_2020.pdf": "FB3_06_3D_microstructure_design_of_lithium-ion_battery_electrodes_a_2020.pdf",
+  "FB3_06_Computation_of_stagnation_coating_flow_of_electro-conductive_2023.pdf": "FB3_06_Computation_of_stagnation_coating_flow_of_electro-conductive_2023.pdf",
+  "FB3_06_Mathematics_of_thermoacoustic_tomography_2008.pdf": "FB3_06_Mathematics_of_thermoacoustic_tomography_2008.pdf",
+  "FB3_06_Standard_SOGI-FLL_and_Its_Close_Variants_Precise_Modeling_in_2020.pdf": "FB3_06_Standard_SOGI-FLL_and_Its_Close_Variants_Precise_Modeling_in_2020.pdf",
+  "FB3_06_State_of_the_art_in_the_aeroelasticity_of_wind_turbine_blade_2016.pdf": "FB3_06_State_of_the_art_in_the_aeroelasticity_of_wind_turbine_blade_2016.pdf",
+  "FB3_07_Free-energy_and_the_brain_2007.pdf": "FB3_07_Free-energy_and_the_brain_2007.pdf",
+  "FB3_07_Frequency-Domain_Stability_Criteria_for_Converter-Based_Powe_2022.pdf": "FB3_07_Frequency-Domain_Stability_Criteria_for_Converter-Based_Powe_2022.pdf",
+  "FB3_07_The_New_Modularization_Framework_for_the_FAST_Wind_Turbine_C_2013.pdf": "FB3_07_The_New_Modularization_Framework_for_the_FAST_Wind_Turbine_C_2013.pdf",
+  "FB3_07_Unitary_Transforms_Using_Time-Frequency_Warping_for_Digital__2018.pdf": "FB3_07_Unitary_Transforms_Using_Time-Frequency_Warping_for_Digital__2018.pdf",
+  "FB3_08_Exploring_Instructive_Physiological_Signaling_with_the_Bioel_2016.pdf": "FB3_08_Exploring_Instructive_Physiological_Signaling_with_the_Bioel_2016.pdf",
+  "FB3_09_Basic_Operation_of_Cryocoolers_and_Related_Thermal_Machines_2011.pdf": "FB3_09_Basic_Operation_of_Cryocoolers_and_Related_Thermal_Machines_2011.pdf",
+  "FB3_09_Underwater_Wireless_Sensor_Networks_A_Survey_on_Enabling_Tec_2019.pdf": "FB3_09_Underwater_Wireless_Sensor_Networks_A_Survey_on_Enabling_Tec_2019.pdf",
+  "FB3_10_ThermoCycle_A_Modelica_library_for_the_simulation_of_thermod_2014.pdf": "FB3_10_ThermoCycle_A_Modelica_library_for_the_simulation_of_thermod_2014.pdf",
+  "FB3_13_An_improved_feedforward-long_short-term_memory_modeling_meth_2022.pdf": "FB3_13_An_improved_feedforward-long_short-term_memory_modeling_meth_2022.pdf",
+  "FB3_16_Phase-error_analysis_of_high-order_finite_difference_time_do_2007.pdf": "FB3_16_Phase-error_analysis_of_high-order_finite_difference_time_do_2007.pdf",
+  "FB3_17_Efficient_Synthesis_of_Room_Acoustics_via_Scattering_Delay_N_2015.pdf": "FB3_17_Efficient_Synthesis_of_Room_Acoustics_via_Scattering_Delay_N_2015.pdf",
+  "FB3_27_Flow_of_Jeffrey_Fluid_over_a_Horizontal_Circular_Cylinder_wi_2020.pdf": "FB3_27_Flow_of_Jeffrey_Fluid_over_a_Horizontal_Circular_Cylinder_wi_2020.pdf",
+  "FB4_01_Observation_of_Gravitational_Waves_from_a_Binary_Black_Hole__2016.pdf": "FB4_01_Observation_of_Gravitational_Waves_from_a_Binary_Black_Hole__2016.pdf",
+  "FB4_02_The_i_Gaia_i_mission_2016.pdf": "FB4_02_The_i_Gaia_i_mission_2016.pdf",
+  "FB4_05_Coding_metamaterials_digital_metamaterials_and_programmable__2014.pdf": "FB4_05_Coding_metamaterials_digital_metamaterials_and_programmable__2014.pdf",
+  "Process_Control_Chapter3.pdf": "Marlin_Process_Control",
+  "Process_Control_Chapter4.pdf": "Marlin_Process_Control",
+  "Process_Control_Designing_Processes_and_Control_Systems_for_Dynamic_Performance.pdf": "Marlin_Process_Control",
+  "ORNL/SPR-2018/864": "ORNL/SPR-2018/864",
+  "Process_Control_Symbols_and_Acronyms.pdf": "Process_Control_Symbols_and_Acronyms.pdf",
+  "SEBORG_3rd_Edition_Process_Dynamics_and.pdf": "Seborg_Process_Dynamics_and_Control",
+  "SEBORG_Process_Dynamic_and_Control_Chap_2.pdf": "Seborg_Process_Dynamics_and_Control",
+  "WJET_2015040715405408.pdf": "WJET_2015040715405408.pdf",
+  "09_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf": "a_platform_for_benchmark_cases_in_computational_acoustics_2015",
+  "FB3_19_A_Platform_for_Benchmark_Cases_in_Computational_Acoustics_2015.pdf": "a_platform_for_benchmark_cases_in_computational_acoustics_2015",
+  "02_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf": "a_review_of_quadrotor_unmanned_aerial_vehicles_applications__2022",
+  "FB11_A_Review_of_Quadrotor_Unmanned_Aerial_Vehicles_Applications__2022.pdf": "a_review_of_quadrotor_unmanned_aerial_vehicles_applications__2022",
+  "01_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf": "a_study_of_triple-mass_diffusion_species_and_energy_transfer_2022",
+  "2022_A_study_of_triple-mass_diffusion_species_and_energy_transfer.pdf": "a_study_of_triple-mass_diffusion_species_and_energy_transfer_2022",
+  "FB24_A_study_of_triple-mass_diffusion_species_and_energy_transfer_2022.pdf": "a_study_of_triple-mass_diffusion_species_and_energy_transfer_2022",
+  "FB02_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf": "analysis_and_quantification_of_the_diversities_of_aerosol_li_2006",
+  "FB2_01_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf": "analysis_and_quantification_of_the_diversities_of_aerosol_li_2006",
+  "FB3_03_Analysis_and_quantification_of_the_diversities_of_aerosol_li_2006.pdf": "analysis_and_quantification_of_the_diversities_of_aerosol_li_2006",
+  "applsci-10-00992-v2.pdf": "applsci-10-00992-v2.pdf",
+  "03_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf": "bison_a_flexible_code_for_advanced_simulation_of_the_perform_2021",
+  "FB04_BISON_A_Flexible_Code_for_Advanced_Simulation_of_the_Perform_2021.pdf": "bison_a_flexible_code_for_advanced_simulation_of_the_perform_2021",
+  "FB12_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf": "computational_intelligence_techniques_for_hvac_systems_a_rev_2016",
+  "FB2_09_Computational_intelligence_techniques_for_HVAC_systems_A_rev_2016.pdf": "computational_intelligence_techniques_for_hvac_systems_a_rev_2016",
+  "08_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf": "dedalus_a_flexible_framework_for_numerical_simulations_with__2020",
+  "FB01_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf": "dedalus_a_flexible_framework_for_numerical_simulations_with__2020",
+  "FB3_05_Dedalus_A_flexible_framework_for_numerical_simulations_with__2020.pdf": "dedalus_a_flexible_framework_for_numerical_simulations_with__2020",
+  "FB2_09_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf": "dfnworks_a_discrete_fracture_network_framework_for_modeling__2015",
+  "FB3_06_dfnWorks_A_discrete_fracture_network_framework_for_modeling__2015.pdf": "dfnworks_a_discrete_fracture_network_framework_for_modeling__2015",
+  "07_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf": "digital_twin_values_challenges_and_enablers_from_a_modeling__2020",
+  "FB01_Digital_Twin_Values_Challenges_and_Enablers_From_a_Modeling__2020.pdf": "digital_twin_values_challenges_and_enablers_from_a_modeling__2020",
+  "03_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf": "direct_numerical_simulation_of_premixed_flame_boundary_layer_2012",
+  "FB2_10_Direct_numerical_simulation_of_premixed_flame_boundary_layer_2012.pdf": "direct_numerical_simulation_of_premixed_flame_boundary_layer_2012",
+  "08_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf": "dynamical_movement_primitives_learning_attractor_models_for__2012",
+  "FB02_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf": "dynamical_movement_primitives_learning_attractor_models_for__2012",
+  "FB3_03_Dynamical_Movement_Primitives_Learning_Attractor_Models_for__2012.pdf": "dynamical_movement_primitives_learning_attractor_models_for__2012",
+  "FB06_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf": "dynamics_modeling_and_loads_analysis_of_an_offshore_floating_2007",
+  "FB3_01_Dynamics_Modeling_and_Loads_Analysis_of_an_Offshore_Floating_2007.pdf": "dynamics_modeling_and_loads_analysis_of_an_offshore_floating_2007",
+  "FB03_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf": "effect_of_temperature_on_the_aging_rate_of_li_ion_battery_op_2015",
+  "FB3_05_Effect_of_Temperature_on_the_Aging_rate_of_Li_Ion_Battery_Op_2015.pdf": "effect_of_temperature_on_the_aging_rate_of_li_ion_battery_op_2015",
+  "energies-17-01344.pdf": "energies-17-01344.pdf",
+  "03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf": "extended_scp_tight_binding_scp_quantum_chemistry_methods_2020",
+  "FB03_Extended_scp_tight_binding_scp_quantum_chemistry_methods_2020.pdf": "extended_scp_tight_binding_scp_quantum_chemistry_methods_2020",
+  "03_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf": "grand_challenges_in_the_design_manufacture_and_operation_of__2023",
+  "FB3_08_Grand_challenges_in_the_design_manufacture_and_operation_of__2023.pdf": "grand_challenges_in_the_design_manufacture_and_operation_of__2023",
+  "handbook_acoustics": "handbook_acoustics",
+  "handbook_aerodynamics": "handbook_aerodynamics",
+  "handbook_bioprocess": "handbook_bioprocess",
+  "handbook_chemeng": "handbook_chemeng",
+  "handbook_combustion": "handbook_combustion",
+  "handbook_electrical": "handbook_electrical",
+  "handbook_electrochemistry": "handbook_electrochemistry",
+  "handbook_electrochemistry_adv": "handbook_electrochemistry_adv",
+  "handbook_environmental": "handbook_environmental",
+  "handbook_fluid_dynamics": "handbook_fluid_dynamics",
+  "handbook_fluid_dynamics_adv": "handbook_fluid_dynamics_adv",
+  "handbook_food_process": "handbook_food_process",
+  "handbook_geotechnical": "handbook_geotechnical",
+  "handbook_heat_transfer": "handbook_heat_transfer",
+  "handbook_heat_transfer_adv": "handbook_heat_transfer_adv",
+  "handbook_hvac": "handbook_hvac",
+  "handbook_mass_transfer": "handbook_mass_transfer",
+  "handbook_nuclear": "handbook_nuclear",
+  "handbook_optics": "handbook_optics",
+  "handbook_pharma": "handbook_pharma",
+  "handbook_polymer": "handbook_polymer",
+  "handbook_process_control": "handbook_process_control",
+  "handbook_process_control_adv": "handbook_process_control_adv",
+  "handbook_reaction_eng_adv": "handbook_reaction_eng_adv",
+  "handbook_reaction_engineering": "handbook_reaction_engineering",
+  "handbook_semiconductor": "handbook_semiconductor",
+  "handbook_separation": "handbook_separation",
+  "handbook_structural": "handbook_structural",
+  "handbook_thermodynamics": "handbook_thermodynamics",
+  "handbook_thermodynamics_adv": "handbook_thermodynamics_adv",
+  "handbook_transport_phenomena": "handbook_transport_phenomena",
+  "handbook_vibrations": "handbook_vibrations",
+  "kinetics_soybean_oil.pdf": "kinetics_soybean_oil.pdf",
+  "04_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf": "lattice_boltzmann_methods_for_multiphase_flow_and_phase-chan_2015",
+  "FB2_07_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf": "lattice_boltzmann_methods_for_multiphase_flow_and_phase-chan_2015",
+  "FB3_03_Lattice_Boltzmann_methods_for_multiphase_flow_and_phase-chan_2015.pdf": "lattice_boltzmann_methods_for_multiphase_flow_and_phase-chan_2015",
+  "02_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf": "les_over_rans_in_building_simulation_for_outdoor_and_indoor__2018",
+  "FB07_LES_over_RANS_in_building_simulation_for_outdoor_and_indoor__2018.pdf": "les_over_rans_in_building_simulation_for_outdoor_and_indoor__2018",
+  "01_Machine_Learning_for_Fluid_Mechanics_2019.pdf": "machine_learning_for_fluid_mechanics_2019",
+  "04_Machine_Learning_for_Fluid_Mechanics_2019.pdf": "machine_learning_for_fluid_mechanics_2019",
+  "FB3_01_Machine_Learning_for_Fluid_Mechanics_2019.pdf": "machine_learning_for_fluid_mechanics_2019",
+  "FB05_Machine_learning_in_materials_informatics_recent_application_2017.pdf": "machine_learning_in_materials_informatics_recent_application_2017",
+  "FB3_01_Machine_learning_in_materials_informatics_recent_application_2017.pdf": "machine_learning_in_materials_informatics_recent_application_2017",
+  "04_Macroscopic_fluctuation_theory_2015.pdf": "macroscopic_fluctuation_theory_2015",
+  "FB2_06_Macroscopic_fluctuation_theory_2015.pdf": "macroscopic_fluctuation_theory_2015",
+  "matecconf_cscc2019_01027.pdf": "matecconf_cscc2019_01027.pdf",
+  "04_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf": "materials_science_aspects_of_zinc_air_batteries_a_review_2014",
+  "FB3_14_Materials_science_aspects_of_zinc_air_batteries_a_review_2014.pdf": "materials_science_aspects_of_zinc_air_batteries_a_review_2014",
+  "10_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf": "mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012",
+  "FB3_14_Mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012.pdf": "mathematical_modeling_of_a_three-phase_trickle_bed_reactor_2012",
+  "06_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf": "model_order_reduction_methods_for_geometrically_nonlinear_st_2021",
+  "07_Model_order_reduction_methods_for_geometrically_nonlinear_st_2021.pdf": "model_order_reduction_methods_for_geometrically_nonlinear_st_2021",
+  "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf": "need-for-control-instability-of-continuous-stirred-tank-polymerization-reactor-simulations.pdf",
+  "02_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf": "non-equilibrium_steady_states_in_supramolecular_polymerizati_2017",
+  "FB3_01_Non-equilibrium_steady_states_in_supramolecular_polymerizati_2017.pdf": "non-equilibrium_steady_states_in_supramolecular_polymerizati_2017",
+  "04_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf": "numerically_analysis_of_marangoni_convective_flow_of_hybrid__2023",
+  "08_Numerically_analysis_of_Marangoni_convective_flow_of_hybrid__2023.pdf": "numerically_analysis_of_marangoni_convective_flow_of_hybrid__2023",
+  "01_Physics_guided_machine_learning_using_simplified_theories_2021.pdf": "physics_guided_machine_learning_using_simplified_theories_2021",
+  "FB07_Physics_guided_machine_learning_using_simplified_theories_2021.pdf": "physics_guided_machine_learning_using_simplified_theories_2021",
+  "FB03_Redox_flow_batteries_a_review_2011.pdf": "redox_flow_batteries_a_review_2011",
+  "FB2_05_Redox_flow_batteries_a_review_2011.pdf": "redox_flow_batteries_a_review_2011",
+  "02_Review_liquid_phase_sintering_2008.pdf": "review_liquid_phase_sintering_2008",
+  "FB03_Review_liquid_phase_sintering_2008.pdf": "review_liquid_phase_sintering_2008",
+  "FB2_10_Review_liquid_phase_sintering_2008.pdf": "review_liquid_phase_sintering_2008",
+  "06_Roadmap_on_transformation_optics_2018.pdf": "roadmap_on_transformation_optics_2018",
+  "08_Roadmap_on_transformation_optics_2018.pdf": "roadmap_on_transformation_optics_2018",
+  "s41598-024-60757-5.pdf": "s41598-024-60757-5.pdf",
+  "01_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf": "state_of_the_art_for_the_biosorption_process_a_review_2013",
+  "FB2_07_State_of_the_Art_for_the_Biosorption_Process_a_Review_2013.pdf": "state_of_the_art_for_the_biosorption_process_a_review_2013",
+  "FB06_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf": "summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007",
+  "FB2_03_Summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007.pdf": "summer_heatwaves_promote_blooms_of_harmful_cyanobacteria_2007",
+  "01_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf": "the_future_of_pharmaceutical_manufacturing_sciences_2015",
+  "03_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf": "the_future_of_pharmaceutical_manufacturing_sciences_2015",
+  "FB05_The_Future_of_Pharmaceutical_Manufacturing_Sciences_2015.pdf": "the_future_of_pharmaceutical_manufacturing_sciences_2015",
+  "01_Theory_of_Star_Formation_2007.pdf": "theory_of_star_formation_2007",
+  "FB02_Theory_of_Star_Formation_2007.pdf": "theory_of_star_formation_2007",
+  "FB2_03_Theory_of_Star_Formation_2007.pdf": "theory_of_star_formation_2007",
+  "vol20no2p7.pdf": "vol20no2p7.pdf",
+  "04_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf": "water_desalination_using_a_humidification-dehumidification_t_2013",
+  "FB2_14_Water_Desalination_Using_a_Humidification-Dehumidification_T_2013.pdf": "water_desalination_using_a_humidification-dehumidification_t_2013",
+  "FB03_Wood_modification_by_heat_treatment_A_review_2008.pdf": "wood_modification_by_heat_treatment_a_review_2008",
+  "FB2_13_Wood_modification_by_heat_treatment_A_review_2008.pdf": "wood_modification_by_heat_treatment_a_review_2008"
+ },
+ "data_sha256": {
+  "unified_equations.json": "76ac100a2f6dbc464bbecdb4608455187c98216f763cb5c475b5ca92a4fc218c"
+ }
+}
