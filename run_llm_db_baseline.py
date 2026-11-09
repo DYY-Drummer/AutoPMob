@@ -1515,43 +1515,81 @@ def cmd_fix_order(args) -> None:
     print(f"wrote {DB_IDS_V3_JSON}: {len(keys)} equations, seed {V3_ORDER_SEED}")
 
 
-def cmd_count3(args) -> None:
-    """版 3 の 1 回分のトークン数（最も長いテストケースで要求そのものを数える）と、費用の見積もり（無料）.
+def count_task_tokens(client, model: str, texts: dict, workers: int = 8) -> dict:
+    """テストケースの部分（task_text）のトークン数を、1 件ずつ count_tokens で数える（無料）.
 
-    呼び出しは、異なるテストケースごとに 1 回（10 通りの分割と 3 通りの分割の 2 つの場合）。
+    ケースの文だけを 1 つのメッセージにして数え、「x」だけのメッセージとの差に 1 を足す（メッセージの区切りの分を除く）。
+    2026-11-04 の試し（版 3、Claude Haiku 5.5 の 3 件）では、実際の呼び出しのキャッシュの外の入力は、どのケースも
+    この値より 3 トークン多かった（キャッシュの区切りより後ろに付く分）。
+    """
+    def n(text):
+        return client.messages.count_tokens(model=model, messages=[
+            {"role": "user", "content": [{"type": "text", "text": text}]}]).input_tokens
+    x = n("x")
+    keys = list(texts)
+    with ThreadPoolExecutor(workers) as ex:
+        return dict(zip(keys, ex.map(lambda c: n(texts[c]) - x + 1, keys)))
+
+
+def task_means(m: dict) -> dict:
+    """token_counts の 1 モデル分から、分割の場合ごとのテストケースの平均トークン数.
+
+    版 4 の記録は全件を数えた平均（task_mean、task_mean_3splits）。版 3 の記録には、最も長いケースのトークン数を
+    文字数の比で縮めた見積もり（task_mean_est）しかない。
+    """
+    if "task_mean" in m:
+        return {"10splits": m["task_mean"], "3splits": m["task_mean_3splits"]}
+    return {"10splits": m["task_mean_est"], "3splits": m["task_mean_est"]}
+
+
+def cmd_count3(args) -> None:
+    """1 回分のトークン数と、費用の見積もり（無料）.
+
+    データベースの部分（prefix_tokens）は、要求そのものの、テストケースを「x」に替えたものを数える。テストケースの部分は、
+    全件を 1 件ずつ数えて平均する（task_mean。1 件ずつの値は task_tokens_<版>.json）。トークン数の最も多いケースでは、
+    要求そのものも数え、入力の上限に収まるかを確かめる。呼び出しは、異なるテストケースごとに 1 回
+    （10 通りの分割と 3 通りの分割の 2 つの場合）。
+    2026-11-09 まで、テストケースの平均は、最も長いケースのトークン数を文字数の比で縮めた見積もり（task_mean_est）だった。
+    最も長いケースの 1 文字あたりのトークン数を全件に当てはめるので、17% 大きく出ていた（354、全件を数えると 303.2）。
     """
     eqs, _, _ = load_db_v3()
     cases, splits = load_case_index(), load_splits()
     plans = {"10splits": v3_plan(splits, ALL_SEEDS, cases), "3splits": v3_plan(splits, [42, 123, 456], cases)}
+    assert set(plans["3splits"]) <= set(plans["10splits"])
     client = client_()
     db_block = db_text(eqs, "eqd", RUN_VERSION)
-    longest = max(plans["10splits"], key=lambda c: len(task_text(cases[c], RUN_VERSION)))
-    chars = [len(task_text(cases[c], RUN_VERSION)) for c in plans["10splits"]]
     out = {"time": datetime.now(timezone.utc).isoformat(timespec="seconds"), "prompt_version": RUN_VERSION,
            "n_calls": {k: len(v) for k, v in plans.items()}, "max_tokens": args.max_tokens, "limit": 1_000_000,
            "out_tokens_assumed": args.out_tokens, "models": {}}
+    per_case = {}
     for model in args.models.split(","):
         def count(task):
             p = build_params(model, args.effort, db_block, None, task, fmt="eqd", max_tokens=args.max_tokens,
                              version=RUN_VERSION)
             return client.messages.count_tokens(**{k: p[k] for k in ("model", "system", "messages",
                                                                      "output_config", "thinking") if k in p}).input_tokens
-        full_max = count(task_text(cases[longest], RUN_VERSION))
         base = count("x")
-        task_max = full_max - base + 1
-        task_mean = task_max * float(np.mean(chars)) / max(chars)
+        tok = count_task_tokens(client, model, {c: task_text(cases[c], RUN_VERSION) for c in plans["10splits"]})
+        longest = max(tok, key=tok.get)
+        full_max = count(task_text(cases[longest], RUN_VERSION))
+        task_mean = {name: round(float(np.mean([tok[c] for c in plan])), 1) for name, plan in plans.items()}
         p = price_for(model, base)
         cost = {}
         for name, plan in plans.items():
             for o in args.out_tokens:
-                per = (base * p["read"] + task_mean * p["in"] + o * p["out"]) / 1e6
+                per = (base * p["read"] + task_mean[name] * p["in"] + o * p["out"]) / 1e6
                 cost[f"{name}_out{o}"] = round(len(plan) * per + base * p["w5m"] / 1e6, 1)
-        out["models"][model] = {"prefix_tokens": base, "task_max": task_max, "task_mean_est": round(task_mean),
+        out["models"][model] = {"prefix_tokens": base, "task_mean": task_mean["10splits"],
+                                "task_mean_3splits": task_mean["3splits"],
+                                "task_median": float(np.median(list(tok.values()))), "task_min": min(tok.values()),
+                                "task_max": full_max - base + 1, "task_max_case": longest,
                                 "full_request_max": full_max, "room": 1_000_000 - full_max,
                                 "fits_with_max_tokens": full_max + args.max_tokens <= 1_000_000,
                                 "cost_usd": cost}
+        per_case[model] = tok
         print(model, json.dumps(out["models"][model]), flush=True)
     (OUT_DIR / f"token_counts_{RUN_VERSION}.json").write_text(json.dumps(out, indent=1), encoding="utf-8")
+    (OUT_DIR / f"task_tokens_{RUN_VERSION}.json").write_text(json.dumps(per_case, indent=1), encoding="utf-8")
 
 
 def cost_breakdown(prefix: float, task_mean: float, n_calls: int, out_tokens: float, price: dict) -> dict:
@@ -1635,14 +1673,16 @@ def cmd_costs3(args) -> None:
     plan_ids = v3_plan(splits, ALL_SEEDS, cases)
     out = {"source": f"token_counts_{RUN_VERSION}.json", "runs": args.runs,
            "n_cases": tc["n_calls"], "n_calls": {k: v * args.runs for k, v in tc["n_calls"].items()},
-           "out_tokens_assumed": tc["out_tokens_assumed"], "models": {}}
+           "out_tokens_assumed": tc["out_tokens_assumed"], "pilot_version": args.pilot_version, "models": {}}
     for model, m in tc["models"].items():
         p = price_for(model, m["prefix_tokens"])
+        tm = task_means(m)
         out["models"][model] = {
-            f"{name}_out{o}": cost_breakdown(m["prefix_tokens"], m["task_mean_est"], n, o, p)
+            f"{name}_out{o}": cost_breakdown(m["prefix_tokens"], tm[name], n, o, p)
             for name, n in out["n_calls"].items() for o in tc["out_tokens_assumed"]}
         meas = None
-        for v in dict.fromkeys((RUN_VERSION, "v3")):   # 今の版の試しがなければ、版 3 の試し（11/4）の出力で見積もる
+        # 今の版の試しがなければ、版 3 の試し（11/4）の出力で見積もる。--pilot-version で試しの版を決められる
+        for v in ([args.pilot_version] if args.pilot_version else dict.fromkeys((RUN_VERSION, "v3"))):
             cfg = {"model": model, "effort": "high", "db_format": "eqd", "examples": "none", "prompt_version": v}
             meas = measured_output_tokens([r for r in load_raw(cfg) if r.get("source") == "pilot"], cases,
                                           plan_ids)
@@ -1652,7 +1692,7 @@ def cmd_costs3(args) -> None:
         if meas:
             out["models"][model]["measured_output_tokens"] = meas
             out["models"][model]["10splits_out_measured"] = cost_breakdown(
-                m["prefix_tokens"], m["task_mean_est"], out["n_calls"]["10splits"], meas["weighted"], p)
+                m["prefix_tokens"], tm["10splits"], out["n_calls"]["10splits"], meas["weighted"], p)
             if meas["prompt_version"] == RUN_VERSION:   # 1 回ごとの実際の費用からの見積もりと 95% 区間
                 cfg = {"model": model, "effort": "high", "db_format": "eqd", "examples": "none",
                        "prompt_version": RUN_VERSION}
@@ -1665,7 +1705,8 @@ def cmd_costs3(args) -> None:
               f"{b['total']:.1f} USD（読み出し {b['read_share']:.0%}）"
               + (f"、実測の出力 {meas['weighted']:.0f} で {out['models'][model]['10splits_out_measured']['total']:.1f} USD"
                  if meas else ""))
-    f = OUT_DIR / f"costs_{RUN_VERSION}_runs{args.runs}.json"
+    suffix = f"_pilot{args.pilot_version}" if args.pilot_version else ""   # 11/4 の報告書の表は --pilot-version v3
+    f = OUT_DIR / f"costs_{RUN_VERSION}_runs{args.runs}{suffix}.json"
     f.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"wrote {f}")
 
@@ -1976,6 +2017,8 @@ def main() -> None:
     p.set_defaults(fn=cmd_evaluate3)
     p = sub.add_parser("costs3")
     p.add_argument("--runs", type=int, default=V3_RUNS)
+    p.add_argument("--pilot-version", default=None,
+                   help="出力のトークン数を見積もる試しの指示文の版（v3 なら 11/4 の報告書の表。既定は今の版、なければ v3）")
     p.set_defaults(fn=cmd_costs3)
     args = ap.parse_args()
     args.fn(args)

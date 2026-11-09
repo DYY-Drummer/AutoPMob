@@ -653,10 +653,31 @@ def test_cost_breakdown_matches_the_one_run_estimate_in_token_counts(version):
     tc = json.loads((ROOT / "experiments" / "llm_db_baseline" / f"token_counts_{version}.json")
                     .read_text(encoding="utf-8"))
     assert tc["prompt_version"] == version
+    from run_llm_db_baseline import task_means
     for model, m in tc["models"].items():
-        b = cost_breakdown(m["prefix_tokens"], m["task_mean_est"], tc["n_calls"]["10splits"], 2000,
+        b = cost_breakdown(m["prefix_tokens"], task_means(m)["10splits"], tc["n_calls"]["10splits"], 2000,
                            price_for(model, m["prefix_tokens"]))
         assert round(b["total"], 1) == m["cost_usd"]["10splits_out2000"]
+
+
+def test_count_task_tokens_subtracts_the_message_overhead():
+    from types import SimpleNamespace
+    from run_llm_db_baseline import count_task_tokens
+
+    class Messages:
+        def count_tokens(self, model, messages):
+            text = messages[0]["content"][0]["text"]
+            return SimpleNamespace(input_tokens=7 + len(text.split()))   # 区切りの 7 トークン + 1 語 1 トークン
+
+    got = count_task_tokens(SimpleNamespace(messages=Messages()), "m", {"a": "one two three", "b": "x y"})
+    assert got == {"a": 3, "b": 2}
+
+
+def test_task_means_uses_the_exact_mean_when_counted():
+    from run_llm_db_baseline import task_means
+    assert task_means({"task_mean": 303.2, "task_mean_3splits": 312.0, "task_mean_est": 354}) == \
+        {"10splits": 303.2, "3splits": 312.0}
+    assert task_means({"task_mean_est": 354}) == {"10splits": 354, "3splits": 354}
 
 
 def test_measured_output_tokens_weights_kinds_by_the_plan():

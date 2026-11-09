@@ -24,17 +24,19 @@
 %   - Recall@20 0.906 → 0.981 と Table 2: experiments/kato1021/main.json の table.{A,B}.{baseline_tfidf,proposed_static}.{Recall@20,MAP@20}
 %     （10 分割の平均と標本標準偏差）。提案手法は一括の並べ直し（N1 = 2,000、重み (0.3, 0.7)、検証で選んだ不正解の選び方）で、
 %     run_llm_db_baseline.py の REFERENCE と同じ。
-%   - 952,144、952,877、734、354、1,673、費用: experiments/llm_db_baseline/token_counts_v4.json（版 4 の指示文で、count_tokens で数えた。無料）。
-%     費用の内訳は n (P r_read + T r_in + O r_out) + P r_write（P = 952,144、T = 354、O = 2,000、n = 1,673）で計算し、合計は JSON と一致。
+%   - 952,144、303（303.2）、1,673: experiments/llm_db_baseline/token_counts_v4.json（版 4 の指示文で、count_tokens で数えた。無料）。
+%     テストケースは全件を 1 件ずつ数えた平均（task_mean。1 件ずつの値は task_tokens_v4.json）。
+%     費用の内訳は n (P r_read + T r_in + O r_out) + P r_write（P = 952,144、T = 303.2、O = 2,000（Claude Haiku 5.5 は試しの実測 972）、
+%     n = 5,019）で計算し、合計は experiments/llm_db_baseline/costs_v4_runs3_pilotv3.json と一致。
 %   - 延べ 4,229 件と 2,432 件、異なる 1,673 件（合成 994、出典横断 601、単一出典 78）、テストに入らない 58 件:
 %     experiments/llm_db_baseline/splits.json と training_cases.json から数えた。
 %   - 約 199 万トークン: experiments/llm_db_baseline/token_counts.json の system_db_eq+def = 1,986,253（出典の見出しを付けた版 1 の形）。
 %   - 料金: Anthropic の料金表（2026-11-01 に確認）。run_llm_db_baseline.py の PRICES と一致。
 % 本人の指示（2026-11-04）: 異なるテストケースごとに 3 回解かせ、ケースの値は 3 回の平均。ばらつきが大きければ回数を増やし、小さければ減らす。
-%   費用は experiments/llm_db_baseline/costs_v4_runs3.json（run_llm_db_baseline.py costs3、API を呼ばない）。
+%   費用は experiments/llm_db_baseline/costs_v4_runs3_pilotv3.json（run_llm_db_baseline.py costs3 --pilot-version v3、API を呼ばない）。
 %   試しの 0.600/0.800/0.000 は experiments/llm_db_baseline/variability_claude-haiku-5-5__eqd__ex-none__high__v3.json（dae_X5_000）。
 % 本人の指示（2026-11-04）: Haiku 5.5 の出力は試しの実測（種類の割合で重みを付けた平均 972 トークン）で見積もる。ほかは 2,000 の仮定。
-%   値は experiments/llm_db_baseline/costs_v4_runs3.json の claude-haiku-5-5.measured_output_tokens と 10splits_out_measured
+%   値は experiments/llm_db_baseline/costs_v4_runs3_pilotv3.json の claude-haiku-5-5.measured_output_tokens と 10splits_out_measured
 %   （試しは版 3 の指示文で解かせたので、measured_output_tokens.prompt_version = "v3"）。
 % 本人の指示（2026-11-04）: 1 節に、比較の目的を簡潔に書く。目的は精度を比べるだけでなく、提案手法と LLM のそれぞれの長所と短所を見つけること。
 % 本人の指示（2026-11-04）: LLM に与えたプロンプトだけは付録に載せる（Appendix A）。
@@ -43,6 +45,9 @@
 %   データベースの部分は 952,185 → 952,144 トークン。Table 3 で変わるのは、読み出しの 2 つのセル（Haiku 239.0 → 238.9、
 %   Fable 1,194.8 → 1,194.7）だけで、合計と割合は変わらない。2 モデルの費用の上限は 2,311 → 2,310 ドル。
 %   試し（3 件 × 3 回）は変える前の文（版 3）で解かせた。
+% 本人の指示（2026-11-09）: テストケースの平均を 354 から 303 に直す。354 は、最も長いケースのトークン数を文字数の比で縮めた
+%   見積もりで、全件を count_tokens で数えると 303.2。出力の仮定（Claude Haiku 5.5 は版 3 の試しの 972、ほかは 2,000）は
+%   11 月 4 日のまま（その後の版 4 の試しの出力は、この表には入れない）。費用は 1 モデル 252〜1,724、2 モデル 1,420〜2,307 ドル。
 % 本人の指示（2026-11-04）: 付録はいったん無くす（全体ゼミなので、具体的すぎる部分は議論しない）。
 % 本人の指示（2026-11-04）: 今後の計画は「ゼミでの議論を受けて…流す」の 1 項目だけを残す。
 %   - 出力 70 トークン: 2026-10-14 の試しの呼び出し 2 件（Opus 5.5、effort medium、思考 0、出力 71 と 64）。
@@ -111,7 +116,7 @@
 \begin{itemize}[leftmargin=1.5em]
   \item \textbf{比較の目的}：同じデータベースと同じ判定の規則のもとで、提案手法と大規模言語モデル（large language model, LLM）のそれぞれの長所と短所を見つける。精度を比べるだけでなく、どのようなケースでどちらが正解式を上位に選べるか、費用、答えの回ごとのばらつきも比べる。高性能と低コストの 2 つのモデルを使い、モデルの規模による違いも見る。
   \item LLM との比較の方法を決め、実行の準備を済ませた。LLM に、データベースの全 11{,}146 式と、テストケース 1 件のクエリ（作りたいモデルの説明文と入出力変数）を渡して式を 20 個選ばせ、選んだ式が正解式かを、提案手法と同じく式の ID で判定する。
-  \item テストケース 1{,}673 件を 2 つのモデルで 3 回ずつ解かせる費用を見積もった（モデルの組み合わせによって 1{,}421〜2{,}310 ドル）。有料のため、まだ実行していない。
+  \item テストケース 1{,}673 件を 2 つのモデルで 3 回ずつ解かせる費用を見積もった（モデルの組み合わせによって 1{,}420〜2{,}307 ドル）。有料のため、まだ実行していない。
   \item \textbf{議論したい点}：次の 2 点について、意見をいただきたい。
   \begin{enumerate}[label=(\arabic*), leftmargin=2em]
     \item この比較方法は公平か。この方法で、提案手法と LLM の性能を本当に比べられるか。
@@ -187,11 +192,12 @@ LLM（2 モデル） & \multicolumn{4}{c}{実行後に示す} \\
 \end{table}
 
 \subsection{費用}\label{sec:cost}
-1 回の入力は、指示文とデータベースの 952{,}144 トークンと、テストケースの平均 354 トークンである。データベースの部分は毎回同じなので、プロンプトキャッシュを使う。プロンプトキャッシュは、入力の先頭部分を保存しておき、次の呼び出しでは、その部分を通常の入力の 2.5〜10\%（モデルによる）の料金で読み出す仕組みである（保存には、通常の入力の 1.25 倍の料金がかかる）。出力のトークン数（答える前に考えた分を含む）は、Claude Haiku 5.5 では、3 件を 3 回ずつ解かせた試しの実測から 1 回約 970 トークンとし、ほかのモデルでは 1 回 2{,}000 トークンと仮定した。料金は、2026 年 11 月 1 日に確かめた料金表~\citep{AnthropicPricing}による。
+1 回の入力は、指示文とデータベースの 952{,}144 トークンと、テストケースの平均 303 トークンである。データベースの部分は毎回同じなので、プロンプトキャッシュを使う。プロンプトキャッシュは、入力の先頭部分を保存しておき、次の呼び出しでは、その部分を通常の入力の 2.5〜10\%（モデルによる）の料金で読み出す仕組みである（保存には、通常の入力の 1.25 倍の料金がかかる）。出力のトークン数（答える前に考えた分を含む）は、Claude Haiku 5.5 では、3 件を 3 回ずつ解かせた試しの実測から 1 回約 970 トークンとし、ほかのモデルでは 1 回 2{,}000 トークンと仮定した。料金は、2026 年 11 月 1 日に確かめた料金表~\citep{AnthropicPricing}による。
 
-見積もりを Table~\ref{tab:cost} に示す。1 モデルで 5{,}019 回を流す費用は 253〜1{,}726 ドルで、2 モデルでは、組み合わせによって 1{,}421〜2{,}310 ドルになる。どのモデルでも、費用の 69〜95\% は、呼び出しのたびにデータベースを読み出す料金である。出力が 1 回 70〜8{,}000 トークンの範囲で変わると、合計は Table~\ref{tab:cost} の右端の列のように変わる。
+見積もりを Table~\ref{tab:cost} に示す。1 モデルで 5{,}019 回を流す費用は 252〜1{,}724 ドルで、2 モデルでは、組み合わせによって 1{,}420〜2{,}307 ドルになる。どのモデルでも、費用の 69〜95\% は、呼び出しのたびにデータベースを読み出す料金である。出力が 1 回 70〜8{,}000 トークンの範囲で変わると、合計は Table~\ref{tab:cost} の右端の列のように変わる。
 
-% source: experiments/llm_db_baseline/token_counts_v3.json（合計と範囲は cost_usd の 10splits_out{70,2000,8000}）。内訳は run_llm_db_baseline.py costs3（costs_v3_runs3.json）で計算した。
+% source: experiments/llm_db_baseline/costs_v4_runs3_pilotv3.json（run_llm_db_baseline.py costs3 --pilot-version v3、API を呼ばない）。
+%   各列は 10splits_out2000（Claude Haiku 5.5 は 10splits_out_measured）、右端の範囲は 10splits_out70 と 10splits_out8000 の total。
 \begin{table}[t]\centering
 \footnotesize
 \caption{Estimated cost in US dollars of 5,019 calls (1,673 test cases $\times$ 3 runs), assuming 2,000 output tokens per call (about 970 for Claude Haiku 5.5, measured in a trial).}
@@ -201,10 +207,10 @@ LLM（2 モデル） & \multicolumn{4}{c}{実行後に示す} \\
 \toprule
 モデル & \shortstack{データベースの\\読み出し} & \shortstack{キャッシュ\\への保存} & \shortstack{テストケース\\の入力} & 出力 & 合計 & \shortstack{読み出し\\の割合} & \shortstack{合計（出力\\70〜8{,}000）} \\
 \midrule
-Claude Haiku 5.5 & 238.9 & 0.6 & 0.9 & 12.2 & 252.6 & 95\% & 241〜341 \\
-Claude Sonnet 5.5 & 477.9 & 2.4 & 3.6 & 100.4 & 584.2 & 82\% & 487〜885 \\
-Claude Opus 5.5 & 955.8 & 4.8 & 7.1 & 200.8 & 1{,}168.4 & 82\% & 975〜1{,}771 \\
-Claude Fable 5.1 & 1{,}194.7 & 11.9 & 17.8 & 501.9 & 1{,}726.3 & 69\% & 1{,}242〜3{,}232 \\
+Claude Haiku 5.5 & 238.9 & 0.6 & 0.8 & 12.2 & 252.5 & 95\% & 241〜341 \\
+Claude Sonnet 5.5 & 477.9 & 2.4 & 3.0 & 100.4 & 583.7 & 82\% & 487〜885 \\
+Claude Opus 5.5 & 955.8 & 4.8 & 6.1 & 200.8 & 1{,}167.4 & 82\% & 974〜1{,}770 \\
+Claude Fable 5.1 & 1{,}194.7 & 11.9 & 15.2 & 501.9 & 1{,}723.7 & 69\% & 1{,}239〜3{,}229 \\
 \bottomrule
 \end{tabular}
 \end{table}

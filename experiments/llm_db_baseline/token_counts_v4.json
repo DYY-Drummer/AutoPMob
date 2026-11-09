@@ -1,5 +1,5 @@
 {
- "time": "2026-11-04T11:11:12+00:00",
+ "time": "2026-11-09T03:31:11+00:00",
  "prompt_version": "v4",
  "n_calls": {
   "10splits": 1673,
@@ -15,10 +15,14 @@
  "models": {
   "claude-haiku-5-5": {
    "prefix_tokens": 952144,
-   "task_max": 734,
-   "task_mean_est": 354,
-   "full_request_max": 952877,
-   "room": 47123,
+   "task_mean": 303.2,
+   "task_mean_3splits": 312.0,
+   "task_median": 290.0,
+   "task_min": 82,
+   "task_max": 762,
+   "task_max_case": "dae_X10_090",
+   "full_request_max": 952905,
+   "room": 47095,
    "fits_with_max_tokens": true,
    "cost_usd": {
     "10splits_out70": 80.8,
@@ -31,50 +35,62 @@
   },
   "claude-sonnet-5-5": {
    "prefix_tokens": 952144,
-   "task_max": 734,
-   "task_mean_est": 354,
-   "full_request_max": 952877,
-   "room": 47123,
+   "task_mean": 303.2,
+   "task_mean_3splits": 312.0,
+   "task_median": 290.0,
+   "task_min": 82,
+   "task_max": 762,
+   "task_max_case": "dae_X10_090",
+   "full_request_max": 952905,
+   "room": 47095,
    "fits_with_max_tokens": true,
    "cost_usd": {
-    "10splits_out70": 164.0,
-    "10splits_out2000": 196.3,
-    "10splits_out8000": 296.7,
-    "3splits_out70": 128.7,
-    "3splits_out2000": 153.9,
-    "3splits_out8000": 232.3
+    "10splits_out70": 163.9,
+    "10splits_out2000": 196.1,
+    "10splits_out8000": 296.5,
+    "3splits_out70": 128.6,
+    "3splits_out2000": 153.8,
+    "3splits_out8000": 232.2
    }
   },
   "claude-opus-5-5": {
    "prefix_tokens": 952144,
-   "task_max": 734,
-   "task_mean_est": 354,
-   "full_request_max": 952877,
-   "room": 47123,
+   "task_mean": 303.2,
+   "task_mean_3splits": 312.0,
+   "task_median": 290.0,
+   "task_min": 82,
+   "task_max": 762,
+   "task_max_case": "dae_X10_090",
+   "full_request_max": 952905,
+   "room": 47095,
    "fits_with_max_tokens": true,
    "cost_usd": {
-    "10splits_out70": 328.1,
-    "10splits_out2000": 392.6,
-    "10splits_out8000": 593.4,
-    "3splits_out70": 257.3,
-    "3splits_out2000": 307.8,
-    "3splits_out8000": 464.6
+    "10splits_out70": 327.7,
+    "10splits_out2000": 392.3,
+    "10splits_out8000": 593.1,
+    "3splits_out70": 257.1,
+    "3splits_out2000": 307.6,
+    "3splits_out8000": 464.4
    }
   },
   "claude-fable-5-1": {
    "prefix_tokens": 952144,
-   "task_max": 734,
-   "task_mean_est": 354,
-   "full_request_max": 952877,
-   "room": 47123,
+   "task_mean": 303.2,
+   "task_mean_3splits": 312.0,
+   "task_median": 290.0,
+   "task_min": 82,
+   "task_max": 762,
+   "task_max_case": "dae_X10_090",
+   "full_request_max": 952905,
+   "room": 47095,
    "fits_with_max_tokens": true,
    "cost_usd": {
-    "10splits_out70": 421.9,
-    "10splits_out2000": 583.4,
-    "10splits_out8000": 1085.3,
-    "3splits_out70": 332.2,
-    "3splits_out2000": 458.3,
-    "3splits_out8000": 850.4
+    "10splits_out70": 421.1,
+    "10splits_out2000": 582.5,
+    "10splits_out8000": 1084.4,
+    "3splits_out70": 331.7,
+    "3splits_out2000": 457.8,
+    "3splits_out8000": 849.9
    }
   }
  }
