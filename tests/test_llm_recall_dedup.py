@@ -4,7 +4,7 @@
 """
 import pytest
 
-from llm_recall_dedup import dedup_ranks, dedup_metrics
+from llm_recall_dedup import dedup_ranks, dedup_metrics, parse_weight_label
 
 IDENT = {"a1": "A", "a2": "A", "b1": "B", "c1": "C", "d1": "D"}   # a1 と a2 は同じ式（別の ID）
 
@@ -40,6 +40,13 @@ def test_missing_correct_equation_gets_the_miss_rank():
 def test_key_without_identity_is_its_own_equation():
     ranks, k = dedup_ranks(["x9"], correct_keys=["x9"], identity=IDENT)
     assert (ranks, k) == ([1], 1)
+
+
+@pytest.mark.parametrize("label, weights", [("w40-60", (0.4, 0.6)), ("w30-70", (0.3, 0.7)), ("w05-95", (0.05, 0.95)),
+                                            ("w00-100", (0.0, 1.0)), ("w100-0", (1.0, 0.0))])
+def test_parse_weight_label_gives_text_and_variable_weights(label, weights):
+    # baseline の重みの名前（kato1020_baselines.wlabel の逆）：文章類似度の重みと変数の重複率の重み
+    assert parse_weight_label(label) == pytest.approx(weights)
 
 
 def test_dedup_metrics_recall_and_ap_over_distinct_equations():
