@@ -68,8 +68,7 @@ The target of 10 documents per field counted the PDFs obtained, not whether equa
 extracted from them. The searches yielded 306 PDFs, of which 290 contributed equations to the
 database, 7 to 10 per field. Nobody screened the documents by hand, so some have little to do with
 physical models --- a review of the theory of star formation, for instance, entered the field of
-chemical engineering fundamentals --- and different searches retrieved 35 documents more than once,
-adding 44 duplicate sources.
+chemical engineering fundamentals.
 % source: docs/加藤先生コメント2_事実確認_2026-10-20.md 項目 1（fetch_papers_32domains.py: filter・関連度の順・30 件・
 %         上位 10 件、fetch_papers_fallback{,2,3}.py・fetch_optics_only.py: 別の検索語・被引用数の順・10 個まで;
 %         PDF 306 個、DB に式がある 290 出典、分野ごとに 7〜10 報、duplicate_works.csv）。日本語版報告 §3.1 と同じ
@@ -172,8 +171,7 @@ program built 496 of these cases (500 built, minus 4 excluded below) in five ste
   \item It wrote each description by inserting the shared symbols into an English template fixed
     for each pair of categories; no language model took part.
 \end{enumerate}
-Ten of these cases pair two sources that hold the same document, including what appears to be a
-whole textbook and an excerpt of one of its chapters. The remaining 144 cases are 33 combinations that the language
+The remaining 144 cases are 33 combinations that the language
 model we used as a coding assistant (Claude) wrote directly into the program as physically
 meaningful, and 111 variants of them (198 built, minus 87 excluded below) with reselected input and
 output variables. No fixed prompt produced the 33 combinations, so we cannot show one; a check
@@ -246,12 +244,6 @@ which variables are constants.
 %         完全マッチングの判定。91 件すべて出典横断、multisource_random_io 87・multisource_v3 4、すべてで変数がすべて入力の
 %         正解式がある）; excluded_cases_v3.json（core_019_v1 を加えた 92 件）; 要件 3 が自明に成り立つ 1,724 件は
 %         training_cases.json から実測（2026-10-21）
-Standard equations also recur across documents: 386 of the 3,132 distinct ground-truth equations
-(12.3\%) have an identical \LaTeX{} string, ignoring white space and spacing and bracket-size
-commands, in another source, and Section~\ref{sec:metrics} explains how the evaluation counts them.
-% source: experiments/kato_0831_followup_stats.json gt_checks（gt_equations 3,132、identical_latex_in_other_source 386 = 12.3%）。
-%         91 件を除いても異なる正解式は 3,132 本のまま（2026-10-21 に実測）。同一文字列の判定は \left \right \, \; \! \quad と
-%         空白を除いた LaTeX の一致
 
 The families differ in provenance as well as in size. Every cross-source case spans two or three
 sources, every single-source case stays within one source, and the synthesized family does so in

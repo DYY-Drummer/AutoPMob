@@ -53,13 +53,8 @@ the present features cannot repair these misses.
 
 Several directions follow from the limitations of Section~\ref{sec:limitations}. First, the
 comparison with large language models should extend to models of other vendors and should examine
-the cases on which the LLM and the proposed method fail differently. Second,
-the treatment of duplicates remains open. The database holds the same document as several sources
-and identical equations from different documents; judged by identifiers, an identical equation from
-another source counts as incorrect, and identical equations can take up several of the top 20 places.
-Equations with identical strings can be merged mechanically, whereas the same equation written with
-other symbols is hard to recognize. The cases should also be reviewed for symbols that denote
-different quantities in different equations. Third,
+the cases on which the LLM and the proposed method fail differently. Second, the cases should be
+reviewed for symbols that denote different quantities in different equations. Third,
 the ranking errors that remain lie outside every current feature: an equation that determines the
 wrong variable calls for a feature that encodes which variable an equation determines, and the
 comparison between equations, which now reads only their variable sets, could borrow the tree-based

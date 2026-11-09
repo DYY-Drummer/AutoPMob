@@ -373,19 +373,11 @@ present features cannot repair these errors.
 %         stage1 0 + stage2 84、solved 365 / unsolved 42、n_correct 3.545 / 7.81、n_input 14.05 / 25.83、rescue_fraction
 %         svd 0.456・text 0.470・specificity 0.523・io_jaccard 0.328）
 
-Two types of error recur among the misses of the second stage. The first is an identical equation
-from another source. Standard equations appear in many documents, so the model may present an
-identical copy from another source: in one batch-fermentation case, the same growth equation
-$\mathrm{d}X/\mathrm{d}t = \mu X$ from another document ranked above the ground-truth one. The
-evaluation identifies equations by their identifiers and counts such a copy as incorrect, although
-it serves the engineer just as well. Counting the copies as correct raises the MAP of Setting~A from
-0.862 to 0.880 for static reranking and from 0.877 to 0.906 for learned greedy selection
-(Section~\ref{sec:overall}). The second type is the direction of an equation. The features read
-only sets of variables, so two equations that determine different variables from the same
-variables --- the equations for $\mathrm{d}C_A'/\mathrm{d}t$ and $\mathrm{d}T'/\mathrm{d}t$ of a
-linearized reactor, for example --- take the same value on every feature. This error misleads the
-engineer as well, and its repair calls for a feature that encodes which variable an equation
-determines.
+One type of error recurs among the misses of the second stage: the direction of an equation. The
+features read only sets of variables, so two equations that determine different variables from the
+same variables --- the equations for $\mathrm{d}C_A'/\mathrm{d}t$ and $\mathrm{d}T'/\mathrm{d}t$ of
+a linearized reactor, for example --- take the same value on every feature. This error misleads the
+engineer, and its repair calls for a feature that encodes which variable an equation determines.
 % source: docs/考察_特徴量の期待と結果_2026-08-09.md §5.5（dae_X1_040, dae_X1_089）; 日本語版報告 §8.2
 
 \section{Limitations}
@@ -408,13 +400,10 @@ has checked these judgments.
 Third, the evaluation is internal to the database: retrieval cannot find an equation that the
 database lacks. Fourth, the evaluation judges equations by their identifiers, so an identical
 equation from another source counts as an error, although we also reported the results with such
-equations counted as correct (Section~\ref{sec:overall}). The database holds the same document as
-several sources (36 documents) and identical equations from different documents, and identical
-equations can take up several of the top 20 places. Fifth, nobody screened the documents by hand,
+equations counted as correct (Section~\ref{sec:overall}). Fifth, nobody screened the documents by hand,
 so some
 have little to do with physical models, and a Gemini version that no record keeps extracted the
 equations of the 9 earliest documents (Section~\ref{sec:db}).
-% source: docs/appendix_materials/duplicate_works.csv（36 文献）
 Sixth, the six variable-overlap features alone decide most of the accuracy: shuffling them costs
 0.963 of Recall@20 (Section~\ref{sec:mechanism}). The construction of the data contributes to
 this, because every case takes its input and output variables from the symbols of its ground-truth
