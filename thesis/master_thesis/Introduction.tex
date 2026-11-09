@@ -125,8 +125,9 @@ their topic. The features that read variable overlap carry the improvement, and 
 set-aware features mainly raise the ground-truth equations within the top 20; permuting the
 variable-overlap features of the trained model collapses Recall@20 from 0.981 to 0.018, whereas
 permuting the topic features leaves it at 0.974. Learned greedy selection raises MAP over static reranking by
-$+0.032$ on the cases with eight or more ground-truth equations. A comparison with LLMs that read the whole
-database is prepared and remains to be run.
+$+0.032$ on the cases with eight or more ground-truth equations. Two LLMs that read the whole database, Claude Opus~5.5 and
+Claude Haiku~5.5, reach a Recall@20 of 0.932 and 0.530 under a judgment that counts equations with
+identical notation once, against 0.992 for the proposed method, which beats both in every split.
 % source: kato1021/mech.json; kato1021/pfi.json（GROUP_var → 0.0180、GROUP_topic → 0.9737）; kato1021/greedy.json（K>=8 train −
 %         static MAP A +0.0321・B +0.0319）
 

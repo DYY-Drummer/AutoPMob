@@ -137,3 +137,5 @@ experiments/kato1020/raw/
 
 # 2026-10-21（3 回目）出典横断の 113 件の説明文を書き直し、92 件を外した再実験：分割ごとの実行の生データ（KATO_OUT=experiments/kato1021 で kato1020_run.py を実行して再生成できる。統計 JSON のみコミット）
 experiments/kato1021/raw/
+# 31 MB。dump_proposed_top20.py --top 60 --out experiments/llm_db_baseline/proposed_top60 で作り直せる（2026-11-09）
+experiments/llm_db_baseline/proposed_top60/

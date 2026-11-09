@@ -65,13 +65,22 @@ its domain label, because adding the variable definitions and the context texts 
 input limit of one million tokens. We withhold the sources, shuffle the order of the equations,
 and renumber their identifiers: the proposed method does not read the sources, and the synthesized
 ground truths prefer equations of one source, so the sources would give the LLMs alone a clue to
-the answer. The models are Claude Haiku~5.5, Claude Sonnet~5.5, Claude Opus~5.5, and Claude
-Fable~5.1, which differ in scale, all with the reasoning effort set to high
-(\ref{app:prompts} gives the prompt). An LLM sees no training case, so its input for a
-case does not depend on the split; we therefore ask it once per case and use the answer in every
-split in which the case is a test case. We have prepared this comparison but have not yet run it.
-% source: run_llm_db_baseline.py（版 3: fix-order・count3・pilot3・run3・evaluate3、commit 322fc73 / 81e206e）;
-%         docs/appendix_materials/prompts/10_llm_db_baseline_v3_run_llm_db_baseline.txt。本実行は先生の返事と本人の承認待ち。
+the answer. The models are Claude Opus~5.5 and Claude Haiku~5.5, a large and a small model of one
+vendor, both with the reasoning effort set to high (\ref{app:prompts} gives the prompt). An LLM
+sees no training case, so its input for a case does not depend on the split; we therefore ask it
+three times per case, independently, and use the mean of the three answers in every split in which
+the case is a test case. The 20 splits of both settings hold 1,673 distinct test cases, so each
+model answered 5,019 calls; the two models cost 1,314 US dollars. Because the LLMs see neither the
+sources nor the context texts, they cannot tell apart equations that the database holds under
+several identifiers with the same notation. The comparison with LLMs therefore counts equations
+with identical notation (after removing white space and the \LaTeX{} spacing and bracket-size
+commands) as one equation, in the ground truth and in the answer: a repeated equation leaves the
+list, the list is refilled from the ranks below until it holds 20 equations, and $K$ counts
+distinct equations. The retrieval methods refill from their full rankings; an LLM can refill only
+when it listed more than 20 identifiers. Every method in that comparison is judged by this rule.
+% source: run_llm_db_baseline.py（版 4 の指示文、run3 --seeds all、1678633。1,673 件 × 3 回 = 5,019 回、費用は
+%         results_*__v4.json の quality.cost_usd_all_calls: Haiku 255.23 + Opus 1,058.93 = 1,314.16 ドル）;
+%         llm_recall_dedup.py（延べなし＋繰り上げの規則。本人の指示 2026-11-09）; docs/appendix_materials/prompts/。
 %         旧版（claude-sonnet-4-5 の直接生成、claude-opus-4-8 と claude-fable-5-1 の等価判定、各設定 50 件）の結果は
 %         2026-10-21 の本人の決定で本文と表から消した（git 履歴の 1d8c26a 以前を参照）
 

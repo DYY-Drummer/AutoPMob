@@ -102,7 +102,12 @@ def main() -> None:
     ap.add_argument("--setting", default="A", choices=["A", "B"])
     ap.add_argument("--seeds", default="all")
     ap.add_argument("--top", type=int, default=20)
+    ap.add_argument("--out", default=None,
+                    help="出力先（既定 experiments/llm_db_baseline/proposed_top20）。--top を変えるときは別の場所にする")
     args = ap.parse_args()
+    global OUT
+    if args.out:
+        OUT = Path(args.out) if Path(args.out).is_absolute() else ROOT / args.out
     seeds = rl.ALL_SEEDS if args.seeds == "all" else [int(s) for s in args.seeds.split(",")]
     for seed in seeds:
         if (OUT / f"{args.setting}__{seed}.json").exists():

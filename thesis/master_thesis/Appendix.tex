@@ -53,7 +53,7 @@ BM25 IDF & $\ln\{1 + (N - n + 0.5)/(n + 0.5)\}$ \\
 E5 & \texttt{intfloat/e5-base-v2}, mean pooling, $\ell_2$ norm, 512 tokens \\
 E5 query & description \\
 Text scores of BM25 and E5 & min--max normalized over the database, per query \\
-LLMs (prepared, not yet run) & Claude Haiku 5.5, Sonnet 5.5, Opus 5.5, Fable 5.1 \\
+LLMs & Claude Opus 5.5 and Claude Haiku 5.5, 3 runs per case \\
 LLM effort / answer & high / 20 identifiers, no solved example \\
 Random seeds & 42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999 \\
 \bottomrule
@@ -451,7 +451,7 @@ Rules:
 Return JSON: {"context": "<the rewritten description>"}.
 \end{Verbatim}
 
-\subsection*{Comparison with LLMs (prepared for the four models)}
+\subsection*{Comparison with LLMs}
 The system instruction, the database, and the test case go to the model in this order. The
 database part is the same for every call, so it uses prompt caching. The model returns the
 equation identifiers as a JSON list.
