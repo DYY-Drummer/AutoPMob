@@ -75,9 +75,8 @@ The gain of static reranking over the baseline in MAP hardly depends on the judg
 identifiers and $+0.173$ with identical equations counted as correct.
 % source: kato1021/main.json compare.A「proposed_static vs baseline_tfidf (equiv)」MAP +0.1731（wins 10）
 
-Table~\ref{tab:llm} compares the proposed method with the two LLMs under the judgment of
-Section~\ref{sec:compared}, which counts equations with identical notation once and refills the top
-20 from the ranks below; the baseline and static reranking are rescored under the same rule. In
+Table~\ref{tab:llm} compares the proposed method with the two LLMs under the judgment by notation of
+Section~\ref{sec:compared}; the baseline and static reranking are rescored under the same rule. In
 Setting~A, Recall@20 reached 0.992 for the proposed method, 0.932 for Claude Opus~5.5, and 0.530 for
 Claude Haiku~5.5, and the proposed method beat both LLMs in Recall@20 and in MAP@20 in all 10 splits
 of both settings (mean difference to Opus~5.5 in Setting~A: $0.060$ in Recall@20 and $0.084$ in
@@ -89,10 +88,7 @@ on the single-source cases (Recall@20 0.964 against 1.000) and fell behind on th
 gave the same Recall@20 for 73.2\% of the cases with Opus~5.5 and for 40.6\% with Haiku~5.5, and
 the mean standard deviation of Recall@20 over the three runs was 0.040 and 0.142. Opus~5.5 answered
 every call, whereas the safety filter of the API stopped 144 of the 5,019 calls of Haiku~5.5
-(2.9\%), which we scored as answers with no correct equation. Because an LLM lists 20 identifiers
-and the database holds the same notation under several identifiers, 3,013 answers of Opus~5.5 held
-fewer than 20 distinct equations after collapsing (17.9 on average), and only the 20 answers that
-listed more than 20 identifiers could be refilled.
+(2.9\%), which we scored as answers with no correct equation.
 % source: experiments/llm_db_baseline/recall_dedup.json（llm_recall_dedup.py、2026-11-09。proposed/baseline/models.*.{A,B}.dedup の
 %         recall@20・MAP@20、vs_proposed_dedup（wins 0/10、A diff −0.060・−0.084）、by_kind、runs_recall@20_sd_mean、
 %         cases_all_runs_same_recall@20、answers_with_fewer_than_20_distinct 3,013、mean_distinct_equations_listed 17.9、
@@ -100,10 +96,9 @@ listed more than 20 identifiers could be refilled.
 %         B +0.058・+0.157 (10/10)、Haiku 0/10）; results_claude-haiku-5-5__eqd__ex-none__high__v4.json quality.stop_reason.refusal 144
 
 \begin{table}[h]\centering
-\caption{Comparison with LLMs (mean $\pm$ SD over 10 stratified splits). Equations with identical
-notation count once, in the ground truth and in the answer, and each answer is refilled from the
-ranks below up to 20 equations. The LLMs answered each case three times; a case takes the mean of
-its three answers.}
+\caption{Comparison with LLMs (mean $\pm$ SD over 10 stratified splits), judged by the notation of
+the equations (Section~\ref{sec:compared}). The LLMs answered each case three times; a case takes
+the mean of its three answers.}
 \label{tab:llm}
 \footnotesize
 \setlength{\tabcolsep}{4pt}

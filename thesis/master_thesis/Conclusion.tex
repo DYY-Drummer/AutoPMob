@@ -37,9 +37,8 @@ validation cases choose, from 0.906 to 0.981 in the mixed setting and from 0.825
 synthesized-only setting, and MAP from 0.693 to 0.862 and from 0.626 to 0.832; it wins on every
 metric in all 10 splits and also beats the variants of the baseline with BM25 and E5. The lead grows
 with the numbers of ground-truth equations and input variables. Two LLMs that read the whole
-database, Claude Opus~5.5 and Claude Haiku~5.5, reach a Recall@20 of 0.932 and 0.530 under a
-judgment that counts equations with identical notation once, against 0.992 for the method, which
-beats both in every split. Third, the thesis explains the
+database, Claude Opus~5.5 and Claude Haiku~5.5, reach a Recall@20 of 0.932 and 0.530, judged by the
+notation of the equations, against 0.992 for the method, which beats both in every split. Third, the thesis explains the
 gain. Ablation and permutation importance agree that the features reading variable overlap ---
 specificity above all --- decide most of the accuracy, and that the set-aware features mainly raise
 the ground-truth equations within the top 20 (MAP $+0.073$). The topic features still separate the

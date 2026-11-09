@@ -70,17 +70,15 @@ vendor, both with the reasoning effort set to high (\ref{app:prompts} gives the 
 sees no training case, so its input for a case does not depend on the split; we therefore ask it
 three times per case, independently, and use the mean of the three answers in every split in which
 the case is a test case. The 20 splits of both settings hold 1,673 distinct test cases, so each
-model answered 5,019 calls; the two models cost 1,314 US dollars. Because the LLMs see neither the
-sources nor the context texts, they cannot tell apart equations that the database holds under
-several identifiers with the same notation. The comparison with LLMs therefore counts equations
-with identical notation (after removing white space and the \LaTeX{} spacing and bracket-size
-commands) as one equation, in the ground truth and in the answer: a repeated equation leaves the
-list, the list is refilled from the ranks below until it holds 20 equations, and $K$ counts
-distinct equations. The retrieval methods refill from their full rankings; an LLM can refill only
-when it listed more than 20 identifiers. Every method in that comparison is judged by this rule.
+model answered 5,019 calls; the two models cost 1,314 US dollars. In this comparison, every method
+is judged by the notation of the equations: an answered equation is correct when its notation, with
+white space and the \LaTeX{} spacing and bracket-size commands removed, equals that of a
+ground-truth equation, and each equation counts once. The retrieval methods present their 20
+highest-ranked distinct equations.
 % source: run_llm_db_baseline.py（版 4 の指示文、run3 --seeds all、1678633。1,673 件 × 3 回 = 5,019 回、費用は
 %         results_*__v4.json の quality.cost_usd_all_calls: Haiku 255.23 + Opus 1,058.93 = 1,314.16 ドル）;
-%         llm_recall_dedup.py（延べなし＋繰り上げの規則。本人の指示 2026-11-09）; docs/appendix_materials/prompts/。
+%         llm_recall_dedup.py（表記で照合、同じ式は 1 本、上位から異なる 20 式。手順の中身は本人の指示（2026-11-09）で書かない）;
+%         docs/appendix_materials/prompts/。
 %         旧版（claude-sonnet-4-5 の直接生成、claude-opus-4-8 と claude-fable-5-1 の等価判定、各設定 50 件）の結果は
 %         2026-10-21 の本人の決定で本文と表から消した（git 履歴の 1d8c26a 以前を参照）
 

@@ -1,0 +1,252 @@
+% 全体ゼミ資料：物理モデルの自動構築のための数式集合の検索 --- 大規模言語モデルとの比較の結果
+% ビルド: このディレクトリで latexmk（latexmkrc: platex → pbibtex → dvipdfmx）。外部画像なし。
+% 文献: progress_report_2026-11-17_llm_results.bib（11-04 の bib を写した。natbib + unsrtnat。本文は \citet / \citep）。
+% 本人の指示（2026-11-09）:
+%   - 日付は来週の火曜日（11 月 17 日）。
+%   - 「前回の振り返り」に、前のゼミ（11 月 4 日）で発表した LLM と比較する案の内容を簡潔に書く。
+%   - 今後の計画に期限は付けない。
+%   - Opus 5.5 が提案手法を上回ったケースの分析（11 月 8 日）は入れず、今後の計画にする。
+%   - 判定の内部の手順（表記が同じ式を 1 本に詰め、21 位以降から 20 本まで補充する）は書かない。本文には、判定の定義として
+%     「答えた式が正解集合の式と同じ表記なら正解。同じ式は 1 回だけ数える」「提案手法と baseline は上位から異なる 20 式を提示する」
+%     の 2 文だけを置く（この 2 文は数値の定義に必要なので残した。2026-11-09 の Claude の判断。本人の確認待ち）。
+%   - データベースの文献や式の重複には触れない（本人の決定、2026-11-09）。
+% 数値の出典:
+%   - 全体・合成・種類別の Recall@20 と MAP@20（平均と標本標準偏差）、何通りの分割で上回ったか:
+%     experiments/llm_db_baseline/recall_dedup.json（llm_recall_dedup.py）の proposed.{A,B}、baseline.{A,B}、
+%     models.{Opus 5.5,Haiku 5.5}.{A,B}.dedup と by_kind、vs_proposed_dedup。baseline との比較は per_seed から
+%     run_llm_db_baseline.compare_splits で計算（A: Opus Recall@20 +0.010 で 9 勝、MAP@20 +0.089 で 10 勝。B: +0.058・+0.157 で 10 勝。
+%     Haiku は A・B とも 0 勝）。提案手法との差（A: Recall@20 −0.060、MAP@20 −0.084。B: −0.074、−0.073。いずれも LLM の勝ち 0）。
+%   - 回の間のばらつき: recall_dedup.json の models.*.runs_recall@20_sd_mean（0.040、0.142）と cases_all_runs_same_recall@20（0.732、0.406）、
+%     results_*__v4.json の variability.jaccard_mean（0.573、0.324）と same_list_share（0.0006、0.0197）。
+%   - 答えの形: results_*__v4.json の quality（Opus: answers_with_20 4,838、answers_with_invalid_id 21。Haiku: stop_reason.refusal 144、
+%     answers_with_20 4,412、answers_over_20 645、answers_with_duplicates 626）。
+%   - 費用: quality.cost_usd_all_calls（255.23、1,058.93）、output_tokens_mean（1,150、876）。読み出しの割合は raw/*.jsonl の usage と
+%     run_llm_db_baseline.PRICES から（Haiku 238.84/255.23 = 93.6%、Opus 955.38/1,058.93 = 90.2%）。見積もり 1,420〜2,307 は 11-04 の報告。
+%   - 11,146 式、361 出典、1,731 件、合成 1,000 件、1,673 件、952,144 トークン: 11-04 の報告と同じ出典。
+%   - 1 通りの分け方のテスト用のケースの数（単一出典 10〜32、出典横断 119〜200、合成 160〜304）: recall_dedup.json の by_kind.n_per_split。
+\documentclass[a4j,dvipdfmx,10pt]{jresume}
+\usepackage[T1]{fontenc} % タイプライターの一部文字（_等）が数式フォントになることを避ける
+
+\usepackage{graphicx}
+\usepackage[top=25truemm,bottom=25truemm,left=25truemm,right=25truemm]{geometry}
+\usepackage{amsmath, amssymb, array, bm}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{xcolor} % コメント用（blue!55!black などの色の指定にも使う）
+\usepackage{ulem} % コメント用
+\normalem
+\usepackage[numbers,square,sort&compress]{natbib}
+\usepackage{hyperref}
+\usepackage{doi}
+\usepackage{enumitem}
+\usepackage{fvextra}
+
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{4pt}
+\hypersetup{colorlinks=true, linkcolor=blue!55!black, urlcolor=blue!55!black, citecolor=blue!55!black}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%  User-defined commands  %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\refname}{References}
+\renewcommand{\abstractname}{Abstract}
+
+%% コメント用
+\newcommand{\kato}[1]{\textcolor[rgb]{0.9,0,0}{#1}}
+\DeclareRobustCommand{\katoerase}{\bgroup\markoverwith{\textcolor[rgb]{0.9,0,0}{\rule[.5ex]{2pt}{0.8pt}}}\ULon}
+
+\newcommand{\Top}{\mathrm{Top}}
+\setlist{nosep}
+\renewcommand{\bibfont}{\footnotesize}
+\setlength{\bibsep}{1pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{myresume}
+
+\begin{document}
+%%%%%     DATE     %%%%%
+\西暦 % この行の有無で年表示が変わる
+\markright{{\footnotesize 研究進捗報告 \hfill 2026 年 11 月 17 日}}
+
+%%%%%     TITLE     %%%%%
+\medskip
+\begin{center}
+  {\Large 物理モデルの自動構築のための数式集合の検索\\ 大規模言語モデルとの比較の結果}
+\end{center}
+
+%%%%%     AUTHOR     %%%%%
+\begin{flushright}
+  報告者：M2\; 一洋 \\
+\end{flushright}
+
+\begin{abstract}
+本研究の目的は、複数の情報源から収集した数式の中から、作りたいモデルに使える可能性の高い数式を提示する手法を開発することである。提案手法は、第 1 段で数式を作りたいモデルの説明文との近さと入出力変数の重複率で採点して上位 $N_1$ 件に絞り、第 2 段で多層パーセプトロンで並べ直して上位 20 件を提示する。本報告では、2 つの大規模言語モデルに全 11{,}146 式を渡して式を選ばせ、提案手法と比べた。1{,}731 ケースで評価した結果、上位 20 件に入った正解式の割合は、提案手法が 0.992、Claude Opus 5.5 が 0.932、Claude Haiku 5.5 が 0.530 であり、提案手法が 10 通りの分け方すべてで両モデルを上回った。Opus 5.5 は、1 つの文献から作ったケースでは提案手法に近く、複数の文献の式を組み合わせたケースと合成のケースで下回った。
+\end{abstract}
+
+%%%%%%     BODY START     %%%%%
+\section{進捗と議論のポイント}
+\begin{itemize}[leftmargin=1.5em]
+  \item 前回（11 月 4 日）に示した方法で、大規模言語モデル（large language model, LLM）との比較を行なった。Claude Opus 5.5 と Claude Haiku 5.5 に、データベースの全 11{,}146 式とテストケース 1 件のクエリ（作りたいモデルの説明文と入出力変数）を渡して式を 20 個選ばせ、選んだ式が正解式かを、提案手法と同じ規則で判定した。テストケース 1{,}673 件を 3 回ずつ解かせ、費用は 2 モデルで 1{,}314 ドルだった。
+  \item 全ケースの Recall@20（上位 20 件に入った正解式の割合）は、提案手法が 0.992、Opus 5.5 が 0.932、Haiku 5.5 が 0.530、古典的な情報検索手法（以下 baseline）が 0.922 で、提案手法は 10 通りの分け方すべてで両モデルを上回った。Opus 5.5 は baseline を、MAP@20 では 10 通りすべてで、Recall@20 では 10 通りのうち 9 通りで上回り、Haiku 5.5 は 10 通りすべてで下回った。
+  \item ケースの種類別では、Opus 5.5 は 1 つの文献から作ったケースでは提案手法に近く（Recall@20 は 0.964 と 1.000）、複数の文献の式を組み合わせたケース（0.950 と 1.000）と合成のケース（0.916 と 0.986）で下回った。同じケースを 3 回解かせたときの答えのぶれは、Opus 5.5 が小さく、Haiku 5.5 が大きかった。
+  \item \textbf{議論したい点}：次の 2 点について、意見をいただきたい。
+  \begin{enumerate}[label=(\arabic*), leftmargin=2em]
+    \item Opus 5.5 は、1 つの文献から作ったケースでは提案手法に近く、複数の文献の式を組み合わせたケースと合成のケースでは下回った。この差を、提案手法と LLM のそれぞれの長所と短所としてどうまとめるか。LLM には変数記号の一覧と式周辺の文章を渡していないので、この比較が公平かも含めて意見をいただきたい。
+    \item 2 モデルの費用は 1{,}314 ドルで、その 90〜94\% は、呼び出しのたびにデータベース（952{,}144 トークン。トークンは LLM が文字列を数える単位）を読み出す料金だった。規模の違うほかのモデル（Claude Sonnet 5.5、Claude Fable 5.1）も試す価値があるか。
+  \end{enumerate}
+\end{itemize}
+
+
+\section{前回の振り返り}
+\subsection{前回の報告と計画の達成状況}
+前回（11 月 4 日）は、LLM との比較の方法と費用の見積もりを報告した。方法は次のとおりである。LLM に、データベースの全 11{,}146 式（式ごとに ID、式の表記、分野ラベル）と、テストケース 1 件のクエリを渡し、作りたいモデルに使う式の ID を、可能性の高い順に 20 個答えさせる。変数記号の一覧と式周辺の文章は、入力の上限（100 万トークン）を超えるので渡さず、出典も渡さない。正解の分かっているケースは例として見せない（ゼロショット）。選ばれた式は、提案手法と同じ規則で判定し、提案手法と同じ 10 通りの分け方で Recall@20 と MAP@20 を比べる。LLM の答えは分け方によらないので、異なるテストケース 1{,}673 件を 3 回ずつ解かせ、ケースの値は 3 回の平均とする。費用は、使う 2 モデルの組み合わせによって 1{,}420〜2{,}307 ドルと見積もった。計画は「ゼミでの議論を受けて、比べ方と使う 2 つのモデルを決め、承認を得てから流す」であり、11 月 7 日に、高性能のモデルとして Claude Opus 5.5、低コストのモデルとして Claude Haiku 5.5 を使って実行した（達成）。
+
+
+\section{大規模言語モデルとの比較}\label{sec:body}
+\subsection{比べたもの}
+評価用の各ケースには、クエリと、作りたいモデルを構成する式の集合（正解集合。その式を正解式とよぶ）を決めてある。ケースは、1 つの文献の式から正解集合を作った単一出典のケース、複数の文献の式を組み合わせた出典横断のケース、微分方程式から始めてプログラムで式を足して作った合成のケース（1{,}000 件）の 3 種類で、合わせて 1{,}731 件ある。ケースは出典の単位で訓練用、検証用、テスト用に分け、分け方を 10 通り変えて評価する。評価は、全 1{,}731 件を使う場合と、合成のケースだけを使う場合の 2 つで行なう。
+
+比べた手法は 4 つである。提案手法は、第 1 段で全式を説明文と式周辺の文章の近さと入出力変数の重複率で採点して上位 $N_1 = 2{,}000$ 件に絞り、第 2 段で 10 個の特徴量を持つ多層パーセプトロンで並べ直す。baseline は、第 1 段と同じ採点（文章の近さと変数の重複率の重みつき和）で全式を並べる古典的な情報検索手法で、重みは分け方ごとに検証用のケースで選ぶ。LLM は Claude Opus 5.5 と Claude Haiku 5.5 で、答える前に考える量の設定（effort）はどちらも high にそろえた。各手法が使う情報を Table~\ref{tab:inputs} にまとめる。LLM への指示文は Appendix~A に示す。
+
+\begin{table}[t]\centering
+\footnotesize
+\caption{Information used by each method.}
+\label{tab:inputs}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+情報 & 提案手法 & baseline & LLM \\
+\midrule
+クエリ（説明文、入力変数、出力変数） & ○ & ○ & ○ \\
+式の表記と分野ラベル & ○ & ○ & ○ \\
+式の変数記号の一覧 & ○ & ○ & × \\
+式周辺の文章 & ○ & ○ & × \\
+出典 & × & × & × \\
+正解の分かっているケース & 訓練用と検証用 & 検証用 & × \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{判定と指標}
+\textbf{判定}：手法が答えた式が、正解集合の式のどれかと同じ表記（空白と、\LaTeX{} の間隔や括弧の大きさの命令を除いて同じ文字列）なら正解、そうでなければ不正解とする。同じ式を 2 回以上答えたときは 1 回だけ数える。データベースにない ID は不正解とし、その順位を占めるものとする。式を変形すると同じになる式は、同じ式とみなさない。提案手法と baseline は、上位から異なる 20 式を提示する。
+
+\textbf{指標}：正解集合の式の数を $K$、手法が提示した上位 20 件を $\Top_{20}(q)$（$q$ はクエリ、$R_q$ は正解集合）として、テスト用のケースごとに
+\begin{equation*}
+  \mathrm{Recall@20}(q) = \frac{|R_q \cap \Top_{20}(q)|}{K}, \qquad
+  \mathrm{AP@20}(q) = \frac{1}{K} \sum_{e \in R_q} P(e)
+\end{equation*}
+を求める。$P(e)$ は、正解式 $e$ が上位 20 件にあれば、$e$ の順位までの式のうち正解式の割合、なければ 0 である。AP@20 のケースの平均を MAP@20（mean average precision）とよび、正解式がどれだけ上位に集まっているかを表す。LLM には 20 件を答えさせるので、どの手法も上位 20 件で比べる。
+
+\textbf{比べ方}：分け方ごとにテスト用のケースで平均した値を求め、10 通りの平均 $\pm$ 標準偏差と、10 通りのうち何通りで一方が上回ったかを示す。検定はしない。LLM のケースの値は、3 回の答えの平均である。
+
+\subsection{結果}
+% source: recall_dedup.json（冒頭のコメント参照）
+\textbf{全ケースと合成のケース}：Table~\ref{tab:results} に示す。全ケースの評価では、提案手法は Recall@20 と MAP@20 のどちらでも、10 通りの分け方すべてで両モデルを上回った（Opus 5.5 との差は、10 通りの平均で Recall@20 が 0.060、MAP@20 が 0.084）。Opus 5.5 は baseline を、Recall@20 では 10 通りのうち 9 通り（差は 0.010）、MAP@20 では 10 通りすべて（差は 0.089）で上回り、Haiku 5.5 はどちらの指標でも 10 通りすべてで baseline を下回った。合成のケースだけの評価でも順位は同じで、Opus 5.5 は baseline を両方の指標で 10 通りすべてで上回った（Recall@20 の差は 0.058）。
+
+\begin{table}[t]\centering
+\footnotesize
+\caption{Recall@20 and MAP@20 of the four methods (mean $\pm$ SD over 10 splits).}
+\label{tab:results}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{全ケース（1{,}731 件）} & \multicolumn{2}{c}{合成のケース（1{,}000 件）} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+手法 & Recall@20 & MAP@20 & Recall@20 & MAP@20 \\
+\midrule
+baseline & $0.922 \pm 0.012$ & $0.733 \pm 0.033$ & $0.854 \pm 0.025$ & $0.636 \pm 0.027$ \\
+提案手法 & $0.992 \pm 0.003$ & $0.906 \pm 0.024$ & $0.985 \pm 0.005$ & $0.867 \pm 0.026$ \\
+Claude Opus 5.5 & $0.932 \pm 0.015$ & $0.823 \pm 0.034$ & $0.912 \pm 0.013$ & $0.794 \pm 0.025$ \\
+Claude Haiku 5.5 & $0.530 \pm 0.056$ & $0.331 \pm 0.046$ & $0.562 \pm 0.046$ & $0.339 \pm 0.033$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{ケースの種類別}：Table~\ref{tab:kind} に、全ケースの評価をケースの種類ごとに示す。1 通りの分け方のテスト用のケースは、単一出典が 10〜32 件、出典横断が 119〜200 件、合成が 160〜304 件である。Opus 5.5 は、単一出典のケースでは提案手法に近い値（Recall@20 0.964、MAP@20 0.926）であったが、出典横断と合成のケースでは提案手法を下回った。baseline と比べると、Opus 5.5 は合成のケースでは Recall@20 と MAP@20 の両方で上回ったが、単一出典のケースでは両方で下回り、出典横断のケースでは MAP@20 で上回って Recall@20 で下回った。Haiku 5.5 はどの種類でも baseline を下回り、出典横断のケースの Recall@20 は 0.429 であった。
+
+\begin{table}[t]\centering
+\footnotesize
+\caption{Recall@20 and MAP@20 by case type, all cases (mean $\pm$ SD over 10 splits).}
+\label{tab:kind}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{単一出典} & \multicolumn{2}{c}{出典横断} & \multicolumn{2}{c}{合成} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+手法 & Recall@20 & MAP@20 & Recall@20 & MAP@20 & Recall@20 & MAP@20 \\
+\midrule
+baseline & $1.000 \pm 0.000$ & $0.957 \pm 0.039$ & $0.989 \pm 0.007$ & $0.802 \pm 0.024$ & $0.870 \pm 0.020$ & $0.668 \pm 0.038$ \\
+提案手法 & $1.000 \pm 0.000$ & $0.967 \pm 0.020$ & $1.000 \pm 0.000$ & $0.944 \pm 0.016$ & $0.986 \pm 0.004$ & $0.877 \pm 0.032$ \\
+Claude Opus 5.5 & $0.964 \pm 0.033$ & $0.926 \pm 0.050$ & $0.950 \pm 0.026$ & $0.833 \pm 0.053$ & $0.916 \pm 0.011$ & $0.807 \pm 0.025$ \\
+Claude Haiku 5.5 & $0.823 \pm 0.047$ & $0.463 \pm 0.054$ & $0.429 \pm 0.111$ & $0.278 \pm 0.080$ & $0.575 \pm 0.044$ & $0.354 \pm 0.036$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{回の間のばらつきと答えの形}：同じケースを 3 回解かせたときの Recall@20 の回の間の標準偏差は、ケースの平均で Opus 5.5 が 0.040、Haiku 5.5 が 0.142 であった。3 回とも Recall@20 が同じ値だったケースは、Opus 5.5 が 73.2\%、Haiku 5.5 が 40.6\% である。3 回の答えから 2 回ずつ組を作って求めた、答えた ID の集合の Jaccard 係数（共通の ID の数を、どちらかの答えにある ID の数で割った値）の平均は、Opus 5.5 が 0.573、Haiku 5.5 が 0.324 で、3 回とも同じ並びを答えたケースは、Opus 5.5 が 0.06\%、Haiku 5.5 が 2.0\% であった。Opus 5.5 は 5{,}019 回すべてで答えを返し、4{,}838 回（96.4\%）で指示どおり 20 個の ID を答えた。データベースにない ID を含む答えは 21 回あった。Haiku 5.5 は、144 回（2.9\%）で API の安全機能が応答を止めたため答えが得られず、この回は正解式が 1 本も入らなかったものとして数えた。20 個の ID を答えたのは 4{,}412 回（87.9\%）で、20 個を超えて答えた回が 645 回、同じ ID を重ねた答えが 626 回あった。
+
+\textbf{費用}：5{,}019 回の費用は、Claude Haiku 5.5 が 255.23 ドル、Claude Opus 5.5 が 1{,}058.93 ドル、合計 1{,}314.16 ドルであった。そのうち、呼び出しのたびにデータベースを読み出す料金は、Haiku 5.5 で 93.6\%、Opus 5.5 で 90.2\% を占めた。出力は 1 回平均で Opus 5.5 が 876 トークン、Haiku 5.5 が 1{,}150 トークンであった。
+
+\subsection{考察}
+Opus 5.5 は、変数記号の一覧と式周辺の文章を見ずに、式の表記と分野ラベルとクエリだけから、全ケースの Recall@20 で 0.932 を出した。単一出典のケース（Recall@20 0.964、MAP@20 0.926）では提案手法に近く、1 つの文献のモデルを構成する式は、式の表記とクエリだけから 0.964 の割合で上位 20 件に入れられた。一方、出典横断と合成のケース、すなわち正解集合が複数の文献の式や多くの式から成るケースでは、提案手法との差が開いた。提案手法は、入出力変数と式の変数記号の重複率を特徴量として使うので、正解式が多いケースでも、変数の重なりで式を集められる。この違いが、2 つの手法の長所と短所の中心だと考えている。
+
+Haiku 5.5 は全ケースの Recall@20 が 0.530 で baseline を下回り、答えのぶれも大きかった。2 つのモデルの差は大きく、この課題ではモデルの規模が結果を左右した。費用の面では、Opus 5.5 の 5{,}019 回に 1{,}059 ドルかかり、その 9 割はデータベースの読み出しの料金であった。提案手法の学習は 1 通りの分け方につき 2 分以内で終わり、ケースを解くのに API の料金はかからない。
+% source: 学習時間は 2026-11-09 の学習し直し（experiments/doc_split/logs/train_{A,B}.log: 1 分割 50〜100 秒。同じ設定の reranker-10S）
+
+
+\section{今後の計画}\label{sec:plan}
+\begin{itemize}[leftmargin=1.5em]
+  \item Opus 5.5 が提案手法を上回ったケースを調べ、その特徴をまとめる。
+  \item 提案手法と LLM のそれぞれが上位 20 件に入れられなかった正解式を、ケースの種類と正解式の数ごとに調べ、2 つの手法の長所と短所をまとめる。
+\end{itemize}
+
+
+%----------------------------------------------------------------------
+% References（bib ファイルを使う。表示順は本文の初出順）
+\bibliographystyle{unsrtnat}
+\bibliography{progress_report_2026-11-17_llm_results}
+
+
+%======================================================================
+\appendix
+\def\thesection{Appendix \Alph{section}}
+%======================================================================
+\section{LLM に与えた指示文と入力の形}\label{app:prompt}
+system として指示文を、user の 1 つ目のブロックとしてデータベースを、2 つ目のブロックとしてテストケースを、この順に送った。データベースのブロックの末尾にキャッシュの区切りを置き、2 回目以降の呼び出しでは、指示文とデータベースをキャッシュから読み出した。どちらのモデルにも同じ指示文を使った。指示文には、モデルの式の組が満たす条件として、\citet{CombineEq} の要件のうち変数と式の数え方に関する 3 つを書いた。\texttt{<TAB>} はタブ文字を表す。データベースは、11{,}146 行のうち先頭の 1 行だけを示す。テストケースの \texttt{< >} の部分には、そのケースの説明文と変数記号を入れる。
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
+[system]
+You are an expert in physical modeling. You select equations from an equation database for building a physical model.
+
+# Task
+An engineer wants to build a physical model: a set of equations with which the output variables can be computed once the input variables are given. The engineer describes the model and lists its input variables and output variables. Choose, from the equation database, the equations that the engineer should use.
+
+The set of equations that forms the model satisfies these conditions:
+1. Every input variable and every output variable appears in at least one equation of the set.
+2. The number of equations equals the number of variables of the set that are not input variables.
+3. Every variable of the set that is neither an input nor an output variable appears in at least two equations of the set.
+
+# Equation database
+<equation_database> lists equations extracted from the literature, in no particular order. Each line has three fields separated by tabs: the equation ID, the domain label of the equation, and the equation in LaTeX.
+
+# Answer
+For the task in <task>, list 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
+
+[user, block 1: equation database, cached]
+<equation_database count="11146">
+1<TAB>Educational Psychology Time-Series Analysis<TAB>MSSD = \frac{1}{N-1} \sum_{t=2}^{N} (x_t - x_{t-1})^2
+...
+</equation_database>
+
+[user, block 2: test case]
+<task>
+Description: <description of the model>
+Input variables: <symbol> ; <symbol> ; ...
+Output variables: <symbol> ; ...
+</task>
+
+List the IDs of the database equations for this task.
+
+[output format (JSON schema)]
+{"type": "object", "properties": {"equation_ids": {"type": "array", "items": {"type": "integer"}}}, "required": ["equation_ids"], "additionalProperties": false}
+\end{Verbatim}
+
+%=============================%
+\end{document}
