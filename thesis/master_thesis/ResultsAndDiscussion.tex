@@ -392,15 +392,15 @@ has checked these judgments.
 Third, the evaluation is internal to the database: retrieval cannot find an equation that the
 database lacks. Fourth, the evaluation judges equations by their identifiers, so an identical
 equation from another source counts as an error, although we also reported the results with such
-equations counted as correct (Section~\ref{sec:overall}). Fifth, nobody screened the documents by hand,
+equations counted as correct (Section~\ref{sec:overall}). Fifth, nobody screened the PDF files by hand,
 so some
 have little to do with physical models, and a Gemini version that no record keeps extracted the
-equations of the 9 earliest documents (Section~\ref{sec:db}).
+equations of the 9 earliest files (Section~\ref{sec:db}).
 Sixth, the six variable-overlap features alone decide most of the accuracy: shuffling them costs
 0.963 of Recall@20 (Section~\ref{sec:mechanism}). The construction of the data contributes to
 this, because every case takes its input and output variables from the symbols of its ground-truth
-equations, so the query and the answer share one notation; whether the method stays as accurate
-for queries written in another notation remains untested. Seventh, learned greedy selection trains
+equations, so the query and the answer share one notation, and the experiments cover only queries
+that share the notation of the ground truth. Seventh, learned greedy selection trains
 with teacher forcing: the reference set holds ground-truth equations during training but the model's
 own selections, which may include mistakes, at inference. Eighth, among the hyperparameters, we
 compared no alternative values of the reference-set size $m$, the margin $\gamma$, the number of

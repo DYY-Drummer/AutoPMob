@@ -90,12 +90,12 @@ form a model remains for the engineer to check.
 
 To evaluate the method on realistic data, we construct a large equation database and test cases
 whose ground truths all meet the input--output and degree-of-freedom requirements that Kato and
-Kano formulated for model building\cite{CombineEq}, and we split them so that no document leaks
-between training and testing.
+Kano formulated for model building\cite{CombineEq}, and we split them by source, so that no source
+spans training and testing.
 % source: experiments/kato_0831_followup_stats.json gt_checks; experiments/kato1020/excluded_cases.json（91 件を除いた
 %         1,732 件はすべて要件 1〜3 を満たし、未知の変数と式の 1 対 1 の割り当てがある）
 The database holds 11,146 equations from 361 sources: a large language model (LLM), Gemini,
-extracted 10,476 of them from 329 documents, and Gemini 2.5 Pro generated the other 670 as
+extracted 10,476 of them from 329 PDF files, and Gemini 2.5 Pro generated the other 670 as
 reference sets of textbook fundamentals. The 1,731 evaluation cases fall into three families by how
 their ground truths were formed --- picked by an LLM, combined from two or three sources, or
 synthesized by a program. The 1,000 synthesized cases grow by a program that adds

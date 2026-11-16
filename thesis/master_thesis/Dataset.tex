@@ -34,20 +34,21 @@
 \section{Equation Database Construction}
 \label{sec:db}
 
-We built an equation database of 11,146 equations drawn from 361 sources. Of these sources, 329
-are documents and contribute 10,476 equations. The remaining 32 sources are reference equation
+We built an equation database of 11,146 equations drawn from 361 sources; a source is one PDF file
+or one generated reference set. Of these sources, 329 are PDF files of papers, textbooks, and
+reports and contribute 10,476 equations. The remaining 32 sources are reference equation
 sets that Gemini 2.5 Pro\cite{Gemini25} generated field by field to cover textbook fundamentals;
 these 670 equations have no source document.
 % source: unified_equations.json 実測（式 11,146、source_id 361 種。handbook_* 以外 329 種 = 10,476 式、
 %         handbook_* 32 種 = 670 式。handbook_chemeng は build_equation_graph.py、他 31 種は expand_dataset.py、gemini-2.5-pro）
 
-We collected the documents in three steps; \ref{app:papers} lists the search terms of
+We collected the PDF files in three steps; \ref{app:papers} lists the search terms of
 every field.
 \begin{enumerate}
-  \item Early in this work, we collected 24 papers and textbooks on continuous stirred-tank
-    reactors (CSTRs), biodiesel reactions, and process control by hand, and added 15 papers that a
-    search on the scholarly search service Semantic Scholar retrieved automatically, 39 documents
-    in all.
+  \item Early in this work, we collected 24 PDF files of papers and textbooks on continuous
+    stirred-tank reactors (CSTRs), biodiesel reactions, and process control by hand, and added 15
+    papers that a search on the scholarly search service Semantic Scholar retrieved automatically,
+    39 files in all.
   \item To extend the database beyond chemical engineering, we chose one search term for each of
     32 fields, such as reaction engineering, heat transfer, electrochemistry, bioprocesses, and
     acoustics, and searched the scholarly database OpenAlex for ``\textit{search term}
@@ -64,9 +65,9 @@ every field.
     merged the results, ordered them by citation count, and downloaded PDFs until the field held
     10.
 \end{enumerate}
-The target of 10 documents per field counted the PDFs obtained, not whether equations could be
+The target of 10 files per field counted the PDFs obtained, not whether equations could be
 extracted from them. The searches yielded 306 PDFs, of which 290 contributed equations to the
-database, 7 to 10 per field. Nobody screened the documents by hand, so some have little to do with
+database, 7 to 10 per field. Nobody screened the files by hand, so some have little to do with
 physical models --- a review of the theory of star formation, for instance, entered the field of
 chemical engineering fundamentals.
 % source: docs/加藤先生コメント2_事実確認_2026-10-20.md 項目 1（fetch_papers_32domains.py: filter・関連度の順・30 件・
@@ -74,8 +75,8 @@ chemical engineering fundamentals.
 %         PDF 306 個、DB に式がある 290 出典、分野ごとに 7〜10 報、duplicate_works.csv）。日本語版報告 §3.1 と同じ
 
 A large language model, Gemini, extracted the equations. Gemini 2.5 Pro extracted those of 320 of
-the 329 documents; Gemini extracted the 9 earliest documents before we standardized on Gemini 2.5
-Pro, and no record keeps the version used for them. The model read the PDF of a document and wrote
+the 329 PDF files; Gemini extracted the 9 earliest files before we standardized on Gemini 2.5
+Pro, and no record keeps the version used for them. The model read a PDF file and wrote
 out its numbered equations, those of the appendices included, in \LaTeX{}, and for each equation
 it returned, in a prescribed JSON format, the variable symbols with their definitions, a context
 text that explains the physical meaning of the equation from the surrounding passage, and a domain
@@ -86,7 +87,7 @@ variable sets of 277 equations.
 %         （当時のコードの既定は gemini-2.5-flash）。extract_equations.py EXTRACTION_PROMPT（"all numbered equations and equations
 %         found in the appendices"、記号は印刷どおり）; fix_dataset_quality.py（277 式に s と t を規則で追加）。
 %         旧記載（2026-10-12、cc9301e）「追加した文献は Claude で抽出」は誤り。
-The database grew from 3,244 to 11,146 equations during this work, and the added documents span
+The database grew from 3,244 to 11,146 equations during this work, and the added files span
 engineering fields beyond chemical engineering.
 
 Two properties of the database govern the difficulty of retrieval, and we state them here because

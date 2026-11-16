@@ -242,7 +242,7 @@ Setting B & 50 & 0.9335 & $0.924 \pm 0.020$ & $0.798 \pm 0.041$ & $0.745 \pm 0.0
 \section{Literature Collection}
 \label{app:papers}
 Table~\ref{tab:search} gives the search term of each field and the numbers of PDFs obtained, and
-Table~\ref{tab:papers} lists the 329 documents among the sources of the database (types follow the
+Table~\ref{tab:papers} lists the 329 PDF files among the sources of the database (types follow the
 OpenAlex classification as of 20 October 2026).
 
 \input{appendix_search_terms}
@@ -283,7 +283,7 @@ program-built cross-source cases. Claude Opus 4.8 rewrote the descriptions of 11
 with the prompt given below.
 
 \subsection*{Equation extraction (Gemini)}
-The prompt went with the PDF of a document, and \texttt{\{source\_id\}} received the file name.
+The prompt went with one PDF file, and \texttt{\{source\_id\}} received the file name.
 \begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single]
 Extract all numbered equations and equations found in the appendices from this textbook in LaTeX format. For each equation, identify the "variable definitions" and the "physical meaning (context)" from the surrounding text. Output the result in the JSON format specified below.
 

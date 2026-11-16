@@ -100,7 +100,8 @@ def dataset(augmented=True, out_dir=None):
     if not augmented:
         keys, labels, colors = keys[:3], labels[:3], colors[:3]
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.0))
+    # 論文用（拡張ケースなし）は横幅を詰め、凡例を図全体の下に置く（(a) の下に置くと (a) だけが縮んで余白が空く）
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.0) if augmented else (11, 4.6))
     ypos = np.arange(len(keys))
     for y, k, col in zip(ypos, keys, colors):
         v = used[k]
@@ -125,8 +126,10 @@ def dataset(augmented=True, out_dir=None):
     if augmented:
         handles.append(Patch(facecolor="white", edgecolor="black", hatch="//",
                              label=f"Augmented: used for neither training nor testing ({used['aug']:,})"))
-    ax1.legend(handles=handles, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13),
-               ncol=2 if augmented else 3, framealpha=1.0)
+    if augmented:
+        ax1.legend(handles=handles, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=2, framealpha=1.0)
+    else:
+        fig.legend(handles=handles, fontsize=10, loc="lower center", ncol=3, framealpha=1.0)
 
     ev = [c for c in cases if c["case_id"] not in ex and _family(c) != "aug"]
     nc = Counter(len(c.get("correct_model_ids", [])) for c in ev)
@@ -142,7 +145,10 @@ def dataset(augmented=True, out_dir=None):
     ax2.legend(handles=[Patch(facecolor=C_BASE, edgecolor="black", label="One equation"),
                         Patch(facecolor=C_PROP, edgecolor="black", label="Two or more equations")],
                fontsize=10, loc="upper right")
-    fig.tight_layout()
+    if augmented:
+        fig.tight_layout()
+    else:
+        fig.tight_layout(rect=(0, 0.08, 1, 1))
     save(fig, "fig_dataset", out_dir)
     return labels
 
@@ -175,7 +181,7 @@ def split_balance(seed=42, out_dir=None, paper=False):
               else ["#Equations", "#Input variables", "#Output variables", "#Sources spanned"])
     legend = ["Training", "Test"] if paper else ["Train", "Test"]
     panels = list(zip(titles, [nc, nin, nout, nsrc]))
-    fig, axes = plt.subplots(1, 4, figsize=(13, 3.3))
+    fig, axes = plt.subplots(1, 4, figsize=(10.5, 3.0) if paper else (13, 3.3))
     for ax, (name, vals) in zip(axes, panels):
         allv = sorted(set(vals))
         if len(allv) > 12:

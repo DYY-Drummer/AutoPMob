@@ -24,7 +24,7 @@ ground-truth equations that share few variables with the query, and on the cross
 MAP@20 hardly depended on the variable overlap; where it had the higher MAP@20, its first-ranked
 equation was a ground-truth equation in \RankOneCrossOpus\% of its answers on the cross-source cases
 and \RankOneSynthOpus\% on the synthesized cases. Its weaknesses are of four kinds. First, it is less accurate
-overall, most clearly on the models with several sources or many equations. Second, it costs money
+overall, and the gap is widest on the models with several sources or many equations. Second, it costs money
 at every query: one answer of Opus~5.5 cost \CostPerCallOpus{} US dollars on average,
 \ReadShareOpus\% of it for reading the database, and this cost grows with the database and with the
 number of queries. Third,
@@ -96,8 +96,8 @@ of the cross-source cases, whose style may differ from requests written by engin
 fixed the equations, inputs, and outputs of the synthesized cases.
 \todo{Manual verification of the data produced by language models: scope and result.}
 Second, the evaluation is internal to the database: retrieval cannot find an equation that the
-database lacks, and nobody screened the documents by hand, so some have little to do with physical
-models. Third, the queries share the notation of their ground truths
+database lacks, and nobody screened the collected files by hand, so some have little to do with
+physical models. Third, the queries share the notation of their ground truths
 (Section~\ref{sec:symbols}). Fourth, among the hyperparameters, we compared no alternative values of
 the reference-set size, the margin, the number of incorrect candidates, the number of epochs, or
 the learning rate. Fifth, the comparison with LLMs covers two models of one vendor, three runs per
