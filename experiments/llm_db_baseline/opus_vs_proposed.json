@@ -59,6 +59,12 @@
     "10": 10
    },
    "R_win_from_dup_books": 25,
+   "R_win_copies": {
+    "n_cases": 36,
+    "n_with_copies_in_both": 28,
+    "copies_per_list_prop": 3.2629629629629635,
+    "copies_per_list_opus": 3.305555555555556
+   },
    "R_win_means": {
     "opus_R": 0.8518849206349206,
     "prop_R": 0.7126166593180482,
@@ -260,6 +266,12 @@
     "10": 13
    },
    "R_win_from_dup_books": 28,
+   "R_win_copies": {
+    "n_cases": 44,
+    "n_with_copies_in_both": 32,
+    "copies_per_list_prop": 2.946969696969697,
+    "copies_per_list_opus": 2.977272727272727
+   },
    "R_win_means": {
     "opus_R": 0.8498045935545936,
     "prop_R": 0.7177985209235209,

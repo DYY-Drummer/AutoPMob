@@ -107,6 +107,16 @@ def built():
     ("ShareHaikuRefusals", "2.9"), ("OpusWithTwenty", "4{,}838"), ("ShareOpusWithTwenty", "96.4"),
     ("RunSdOpus", "0.042"), ("RunSameOpus", "72.0"), ("JaccardHaiku", "0.324"), ("SameListOpus", "0.06"),
     ("TrainMinAMax", "8.2"), ("TrainMinAMin", "2.4"), ("EvalSecAMax", "9"),              # id_summary.json proposed_time_sec
+    ("DiffRecAPropBase", "+0.075"), ("DiffMapBPropBase", "+0.205"),                     # kato1021/main.json compare
+    ("DiffRecKTen", "+0.238"), ("MapKOneBase", "0.934"), ("NRecordsA", "4{,}229"),      # kato1021/main.json buckets
+    ("RecARSeven", "0.975"), ("DiffMapStepThree", "+0.073"), ("WinsRecStepOne", "3"),   # kato1021/mech.json
+    ("DiffRecLatent", "-0.021"), ("LiftMapKMax", "+0.095"),
+    ("PfiRecVar", "0.018"), ("PfiRecTopic", "0.974"), ("PfiRecSpec", "0.089"),          # kato1021/pfi.json
+    ("MapAEightGreedy", "0.822"), ("DiffMapAEight", "+0.032"), ("NRecEightA", "698"),   # kato1021/greedy.json
+    ("AucCandLatent", "0.909"), ("AucFullIoJac", "0.999"),                              # kato1021/topic_diag_final.json
+    ("NMissed", "84"), ("MeanKUnsolved", "7.81"), ("RescueSpec", "0.52"),               # kato1021/case_outcomes_final.json
+    ("NOpusWinRec", "36"), ("NOpusWinCopies", "28"), ("NOpusWinSevenPlus", "26"),       # llm_db_baseline/opus_vs_proposed.json
+    ("NOnlyOpusEq", "58"), ("WrongInIoProp", "9.2"), ("TerLowWin", "19.5"),
 ])
 def test_build_has_known_values(built, name, value):
     assert built[name] == value
@@ -122,3 +132,15 @@ def test_check_detects_stale_file(tmp_path):
     lines[-1] = lines[-1].replace("}{", "}{9", 1)
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     assert mn.main(["--check", "--out", str(out)]) == 1
+
+
+def test_require_stops_when_a_claim_of_the_text_no_longer_holds():
+    mn.require(True, "x")
+    with pytest.raises(ValueError, match="all 10 splits"):
+        mn.require(False, "the method wins in all 10 splits")
+
+
+def test_sdiff_formats_a_raw_difference_with_its_sign():
+    assert mn.sdiff(0.0749) == "+0.075"
+    assert mn.sdiff(-0.0209) == "-0.021"
+    assert mn.sdiff(0.0001) == "0.000"

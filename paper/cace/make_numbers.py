@@ -113,6 +113,17 @@ def load(path: Path):
 
 # ---- macro groups -----------------------------------------------------------------------------
 
+def sdiff(delta: float, nd: int = 3) -> str:
+    """A signed difference that is already a raw difference (for math mode)."""
+    return diff(delta, 0.0, nd)
+
+
+def require(cond: bool, claim: str) -> None:
+    """Stop when the data no longer support a sentence that the text states without a number."""
+    if not cond:
+        raise ValueError(f"the text claims: {claim} -- the data no longer support it")
+
+
 def _dataset(r: Registry) -> None:
     eqs = load(ROOT / "unified_equations.json")
     eqs = eqs if isinstance(eqs, list) else eqs.get("equations", [])
@@ -177,6 +188,12 @@ def _llm(r: Registry) -> None:
                     c = get(st, ("compare", f"{llm} vs {ref}", key), name)
                     r.add(f"Gap{code}{s}{lc}{rc}", fmt(abs(c["mean_diff"])))
                     r.add(f"Wins{code}{s}{lc}{rc}", str(c["wins"]))
+                    if ref == "proposed":
+                        require(c["losses"] == 10, f"the proposed method beats {llm} on {key} in all 10 splits of Setting {s}")
+                    elif llm == "Opus 5.5":
+                        require(c["wins"] == 10, f"Opus 5.5 beats the baseline on {key} in all 10 splits of Setting {s}")
+                    else:
+                        require(c["losses"] == 10, f"Haiku 5.5 is below the baseline on {key} in all 10 splits of Setting {s}")
     st = get(d, ("settings", "A"), name)
     for kind, kc in KINDS.items():
         n = get(st, ("n_test_by_kind", kind), name)
@@ -187,6 +204,18 @@ def _llm(r: Registry) -> None:
                 e = get(st, ("methods", meth, "by_kind", kind, key), name)
                 r.add(f"{code}{kc}{mc}", fmt(e["mean"]))
                 r.add(f"{code}{kc}{mc}SD", fmt(e["sd"]))
+
+    def km(meth, kind, key):
+        return st["methods"][meth]["by_kind"][kind][key]["mean"]
+    for key in ("recall@20", "AP@20"):
+        require(km("Opus 5.5", "synth", key) > km("baseline", "synth", key), f"Opus is above the baseline on the synthesized cases ({key})")
+        require(km("Opus 5.5", "single", key) < km("baseline", "single", key), f"Opus is below the baseline on the single-source cases ({key})")
+        for kind in KINDS:
+            require(km("Haiku 5.5", kind, key) < km("baseline", kind, key), f"Haiku is below the baseline on the {kind} cases ({key})")
+            require(km("Opus 5.5", kind, key) < km("proposed", kind, key), f"Opus is below the proposed method on the {kind} cases ({key})")
+    require(km("Opus 5.5", "cross", "AP@20") > km("baseline", "cross", "AP@20")
+            and km("Opus 5.5", "cross", "recall@20") < km("baseline", "cross", "recall@20"),
+            "on the cross-source cases Opus is above the baseline in MAP@20 and below it in Recall@20")
 
 
 def power_of_ten(x: float) -> str:
@@ -336,6 +365,8 @@ def _llm_setup(r: Registry) -> None:
         r.add(f"{lc}InvalidId", count(m["answers_with_invalid_id"]))
         r.add(f"{lc}RepeatedId", count(m["answers_with_duplicates"]))
         r.add(f"{lc}Refusals", count(m["refusals"]))
+        if lc == "Opus":
+            require(m["refusals"] == 0, "Opus 5.5 answered every call")
         r.add(f"Share{lc}Refusals", pct(m["refusals"] / n))
         r.add(f"OutTokens{lc}", count(round(m["output_tokens_mean"])))
         r.add(f"RunSd{lc}", fmt(m["recall@20_sd_mean"]))
@@ -356,6 +387,194 @@ def _llm_setup(r: Registry) -> None:
         r.add(f"EvalSec{s}Max", count(round(t["eval"]["max"])))
 
 
+def _results_overall(r: Registry) -> None:
+    name = "main.json"
+    m = load(KATO / name)
+    for s in ("A", "B"):
+        cmp_ = get(m, ("compare", s), name)
+        for key, code in (("Recall@20", "Rec"), ("MAP", "Map")):
+            r.add(f"Diff{code}{s}PropBase", sdiff(cmp_["proposed_static vs baseline_tfidf"][key]["mean_delta"]))
+        for prop in ("proposed_static", "proposed_train"):
+            for base in ("baseline_tfidf", "baseline_bm25", "baseline_e5"):
+                for key in ("Recall@20", "MAP", "R-Precision"):
+                    require(cmp_[f"{prop} vs {base}"][key]["wins"] == 10,
+                            f"{prop} beats {base} on {key} in all 10 splits of Setting {s}")
+    for s in ("A", "B"):
+        for var in ("baseline_bm25", "baseline_e5"):
+            require(m["table"][s][var]["Recall@20"]["mean"] <= m["table"][s]["baseline_tfidf"]["Recall@20"]["mean"],
+                    f"the {var} variant ranks no better than the TF-IDF baseline in Setting {s}")
+    rule = load(KATO / "n1_rule.json")
+    w = get(load(KATO / "selected.json"), ("mode", "fix_weight"), "selected.json")
+    for s in ("A", "B"):
+        for seed, v in get(rule, ("settings", s), "n1_rule.json").items():
+            require(v[w]["test_coverage_at_N1"] == 1.0, f"candidate coverage 1.000 in every split (Setting {s}, seed {seed})")
+
+    # by case characteristics (Setting A, test records pooled over the 10 splits)
+    b = get(m, ("buckets", "A"), name)
+    nc, ni = b["n_correct"], b["n_input"]
+    r.add("NRecordsA", count(sum(v["n_records"] for v in nc.values())))
+    require(fmt(nc["1"]["proposed_static|Recall@20"]) == fmt(nc["1"]["baseline_tfidf|Recall@20"]) == "1.000",
+            "both methods reach Recall@20 1.000 on the cases with one ground-truth equation")
+    r.add("MapKOneProp", fmt(nc["1"]["proposed_static|MAP"]))
+    r.add("MapKOneBase", fmt(nc["1"]["baseline_tfidf|MAP"]))
+    for k, word in (("2", "Two"), ("5", "Five"), ("10", "Ten")):
+        r.add(f"DiffRecK{word}", diff(nc[k]["proposed_static|Recall@20"], nc[k]["baseline_tfidf|Recall@20"]))
+    r.add("DiffRecInLow", diff(ni["<=5"]["proposed_static|Recall@20"], ni["<=5"]["baseline_tfidf|Recall@20"]))
+    r.add("DiffRecInHigh", diff(ni[">=21"]["proposed_static|Recall@20"], ni[">=21"]["baseline_tfidf|Recall@20"]))
+    for s in ("A", "B"):
+        r.add(f"NRecEight{s}", count(sum(v["n_records"] for k, v in get(m, ("buckets", s, "n_correct"), name).items()
+                                         if int(k) >= 8)))
+
+
+def _results_mechanism(r: Registry) -> None:
+    name = "mech.json"
+    m = load(KATO / name)
+    summ, steps = get(m, "summary", name), get(m, "steps", name)
+    for key, code in (("Recall@20", "Rec"), ("MAP", "Map")):
+        r.add(f"{code}ASameW", fmt(summ["baseline_same_w"][key]["mean"]))
+        r.add(f"{code}ARTwo", fmt(summ["reranker-2"][key]["mean"]))
+        r.add(f"{code}ARSeven", fmt(summ["reranker-7"][key]["mean"]))
+        r.add(f"{code}ASpec", fmt(summ["reranker-2_Spec"][key]["mean"]))
+        r.add(f"Diff{code}ATotal", sdiff(steps["total baseline_same_w -> reranker-10S"][key]["mean_delta"]))
+        r.add(f"Wins{code}StepOne", str(steps["(i) baseline_same_w -> reranker-2"][key]["wins"]))
+        r.add(f"Diff{code}StepTwo", sdiff(steps["(ii) reranker-2 -> reranker-7"][key]["mean_delta"]))
+        r.add(f"Diff{code}Spec", sdiff(steps["(ii') reranker-2 -> reranker-2+Spec"][key]["mean_delta"]))
+        r.add(f"Diff{code}StepThree", sdiff(steps["(iii) reranker-7 -> reranker-10S"][key]["mean_delta"]))
+        r.add(f"Wins{code}StepThree", str(steps["(iii) reranker-7 -> reranker-10S"][key]["wins"]))
+        require(steps["(ii) reranker-2 -> reranker-7"][key]["wins"] == 10, f"step (ii) raises {key} in all 10 splits")
+    add = get(m, "single_set_additions", name)
+    r.add("DiffMapComp", sdiff(add["reranker-7_Comp"]["MAP"]["mean_delta"]))
+    r.add("DiffMapCoh", sdiff(add["reranker-7_Coh"]["MAP"]["mean_delta"]))
+    r.add("DiffMapDomAgree", sdiff(add["reranker-7_Dom"]["MAP"]["mean_delta"]))
+    r.add("WinsMapDomAgree", str(add["reranker-7_Dom"]["MAP"]["wins"]))
+    require(add["reranker-7_Comp"]["MAP"]["wins"] == 10 and add["reranker-7_Coh"]["MAP"]["wins"] == 10,
+            "complementarity and coherence each raise MAP in all 10 splits")
+    all3 = steps["(iii) reranker-7 -> reranker-10S"]["MAP"]["mean_delta"]
+    require(all(abs(all3 - add[k]["MAP"]["mean_delta"]) < 0.002 for k in ("reranker-7_Comp", "reranker-7_Coh")),
+            "the three set-aware features together add about what complementarity or coherence adds alone")
+    lift = get(m, ("lift_by_n_correct", "reranker-10S", "MAP"), name)
+    r.add("LiftMapKOne", sdiff(next(x for x in lift if x["bin"] == "1")["mean_delta"]))
+    many = [x for x in lift if x["bin"] != "1"]
+    r.add("LiftMapKMin", sdiff(min(x["mean_delta"] for x in many)))
+    r.add("LiftMapKMax", sdiff(max(x["mean_delta"] for x in many)))
+    require(all(x["wins"] == 10 for x in many), "the set-aware features raise MAP in all 10 splits at every size above one")
+    # topic features added on their own, and merged domain labels
+    top = get(m, "topic_additions", name)
+    for key, code in (("x7", "DomMatch"), ("x3", "Latent"), ("x10", "DomAgree")):
+        r.add(f"DiffRec{code}", sdiff(top[key]["Recall@20"]["mean_delta"]))
+        r.add(f"WinsRec{code}", str(top[key]["Recall@20"]["wins"]))
+    merge = [v["Recall@20"]["mean_delta"] for k, v in get(m, "domain_merge", name).items() if isinstance(v, dict) and "Recall@20" in v]
+    r.add("DiffRecMergeBest", sdiff(max(merge)))
+    r.add("DiffRecMergeWorst", sdiff(min(merge)))
+
+    name = "pfi.json"
+    p = load(KATO / name)
+    r.add("NPerm", str(get(p, "n_perm", name)))
+    t = get(p, "targets", name)
+    for key, code in (("GROUP_var", "Var"), ("GROUP_topic", "Topic")):
+        r.add(f"PfiRec{code}", fmt(t[key]["Recall@20"]["shuffled_mean"]))
+        r.add(f"PfiMap{code}", fmt(t[key]["MAP"]["shuffled_mean"]))
+        r.add(f"PfiDropRec{code}", fmt(t[key]["Recall@20"]["drop_mean"]))
+        r.add(f"PfiDropMap{code}", fmt(t[key]["MAP"]["drop_mean"]))
+        require(t[key]["Recall@20"]["n_positive"] == 10 and t[key]["MAP"]["n_positive"] == 10,
+                f"shuffling {key} lowers Recall@20 and MAP in all 10 splits")
+    r.add("PfiRecSpec", fmt(t["specificity"]["Recall@20"]["shuffled_mean"]))
+
+
+def _results_greedy(r: Registry) -> None:
+    name = "greedy.json"
+    g = load(KATO / name)
+    codes = {"static": "Prop", "infer": "Infer", "train": "Greedy"}
+    for s in ("A", "B"):
+        for strat, mc in codes.items():
+            r.add(f"Map{s}Eight{mc}", fmt(get(g, ("summary", s, "K>=8", strat, "MAP", "mean"), name)))
+            for key, code in (("Recall@20", "Rec"), ("MAP", "Map"), ("R-Precision", "RPrec")):
+                if fmt(get(g, ("summary", s, "all", strat, key, "mean"), name)) != r.values[f"{code}{s}{mc}"]:
+                    raise ValueError(f"{name}: {strat} {key} of Setting {s} differs from main.json")
+        c = get(g, ("compare", s), name)
+        r.add(f"DiffMap{s}InferProp", sdiff(c["all"]["infer - static"]["MAP"]["mean_delta"]))
+        require(c["all"]["infer - static"]["MAP"]["wins"] == 10, f"greedy at inference raises MAP in all 10 splits of Setting {s}")
+        r.add(f"DiffMap{s}GreedyInfer", sdiff(c["all"]["train - infer"]["MAP"]["mean_delta"]))
+        r.add(f"WinsMap{s}GreedyInfer", str(c["all"]["train - infer"]["MAP"]["wins"]))
+        e = c["K>=8"]["train - static"]
+        r.add(f"DiffMap{s}Eight", sdiff(e["MAP"]["mean_delta"]))
+        r.add(f"DiffRPrec{s}Eight", sdiff(e["R-Precision"]["mean_delta"]))
+        r.add(f"DiffRec{s}Eight", sdiff(e["Recall@20"]["mean_delta"]))
+        r.add(f"WinsRec{s}Eight", str(e["Recall@20"]["wins"]))
+        require(e["MAP"]["wins"] == 10 and e["R-Precision"]["wins"] == 10,
+                f"learned greedy beats static in MAP and R-Precision on the large cases in all 10 splits of Setting {s}")
+
+
+def _results_topic(r: Registry) -> None:
+    name = "topic_diag_final.json"
+    t = load(KATO / name)
+    feats = {"x2_io_jaccard": "IoJac", "x6_specificity": "Spec", "x3_svd_sim": "Latent", "x1_text_sim": "Text",
+             "x10_dom_set": "DomAgree", "x7_domain": "DomMatch"}
+    for where, wc in (("auc_full_db", "Full"), ("auc_within_candidates", "Cand")):
+        for key, code in feats.items():
+            e = get(t, (where, key), name)
+            r.add(f"Auc{wc}{code}", fmt(e["mean"]))
+            r.add(f"Auc{wc}{code}SE", fmt(e["sem"]))
+
+
+def _results_errors(r: Registry) -> None:
+    name = "case_outcomes_final.json"
+    c = get(load(KATO / name), "top20", name)
+    require(c["stage1_miss"] == 0, "the candidates contained every ground-truth equation in the split with seed 42")
+    r.add("NErrCases", count(c["n_cases"]))
+    r.add("NErrGt", count(c["n_gt"]))
+    r.add("ErrRecall", fmt(c["mean_recall"]))
+    r.add("NMissed", count(c["missed_total"]))
+    r.add("NSolved", count(c["solved"]))
+    r.add("NUnsolved", count(c["unsolved"]))
+    sv = c["solved_vs_unsolved"]
+    r.add("MeanKSolved", fmt(sv["n_correct"]["mean_solved"], 2))
+    r.add("MeanKUnsolved", fmt(sv["n_correct"]["mean_unsolved"], 2))
+    r.add("MeanInSolved", fmt(sv["n_input"]["mean_solved"], 1))
+    r.add("MeanInUnsolved", fmt(sv["n_input"]["mean_unsolved"], 1))
+    for key, code in (("svd_sim", "Latent"), ("text_sim", "Text"), ("specificity", "Spec"), ("io_jaccard", "Jac")):
+        r.add(f"Rescue{code}", fmt(c["rescue_fraction"][key]["mean"], 2))
+
+    name = "opus_vs_proposed.json"
+    a = get(load(LLM / name), ("settings", "A"), name)
+    n = a["n_cases"]
+    r.add("NDistinctA", count(n))
+    for met, mc in (("R", "Rec"), ("AP", "Map")):
+        for grp, gc in (("win", "Win"), ("tie", "Tie"), ("loss", "Loss")):
+            r.add(f"NOpus{gc}{mc}", count(a[f"{met}_groups"][grp]))
+    r.add("ShareOpusWinRec", pct(a["R_groups"]["win"] / n))
+    by = a["R_groups_by_kind"]
+    require(by["single"].get("win", 0) == 0 and by["cross"].get("win", 0) == 0,
+            "every case in which Opus has the higher Recall@20 is a synthesized case")
+    r.add("NOpusWinSevenPlus", count(sum(v for k, v in a["R_win_K"].items() if int(k) >= 7)))
+    cp = a["R_win_copies"]
+    require(cp["n_cases"] == a["R_groups"]["win"], "the copies are counted over the cases in which Opus has the higher Recall@20")
+    r.add("NOpusWinCopies", count(cp["n_with_copies_in_both"]))
+    r.add("CopiesPerListProp", fmt(cp["copies_per_list_prop"], 1))
+    r.add("CopiesPerListOpus", fmt(cp["copies_per_list_opus"], 1))
+    w = a["wrong_items_per_list_synth_K7plus"]
+    r.add("WrongInIoProp", fmt(w["win"]["prop"]["all_vars_in_io"], 1))
+    r.add("WrongInIoOpus", fmt(w["win"]["opus"]["all_vars_in_io"], 1))
+    r.add("WrongInIoPropTie", fmt(w["tie"]["prop"]["all_vars_in_io"], 1))
+    r.add("WrongInIoPropLoss", fmt(w["loss"]["prop"]["all_vars_in_io"], 1))
+    e = a["R_win_correct_eqs"]
+    for grp, gc in (("only_opus", "OnlyOpus"), ("both", "Both")):
+        r.add(f"N{gc}Eq", count(e[grp]["n"]))
+        r.add(f"Jac{gc}", fmt(e[grp]["jaccard"], 2))
+        r.add(f"Text{gc}", fmt(e[grp]["text_sim"], 2))
+        r.add(f"Vars{gc}", fmt(e[grp]["n_vars"], 1))
+        med = e[grp]["stage1_rank_median"]
+        r.add(f"Rank{gc}", str(int(med)) if float(med).is_integer() else fmt(med, 1))
+    ter = a["cross_AP_by_min_jaccard_tercile"]
+    for x, tc in zip(ter, ("Low", "Mid", "High")):
+        r.add(f"Ter{tc}Prop", fmt(x["prop_AP"]))
+        r.add(f"Ter{tc}Opus", fmt(x["opus_AP"]))
+        r.add(f"Ter{tc}Win", pct(x["AP_win_rate"]))
+    for kind, kc in (("cross", "Cross"), ("synth", "Synth")):
+        r.add(f"RankOne{kc}Opus", pct(a[f"AP_win_rank1_{kind}"]["opus"]["correct"], 0))
+        r.add(f"RankOne{kc}Prop", pct(a[f"AP_win_rank1_{kind}"]["prop"]["correct"], 0))
+
+
 def build() -> Registry:
     r = Registry()
     _dataset(r)
@@ -364,6 +583,11 @@ def build() -> Registry:
     _llm_setup(r)
     _overall(r)
     _llm(r)
+    _results_overall(r)
+    _results_mechanism(r)
+    _results_greedy(r)
+    _results_topic(r)
+    _results_errors(r)
     return r
 
 

@@ -17,8 +17,9 @@ method uses.
 \centering
 \caption{Information used by each method. The baseline includes its variants with BM25 and E5.}
 \label{tab:inputs}
-\small
-\begin{tabular}{lccc}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{0.44\linewidth}ccc}
 \toprule
 Information & Proposed & Baseline & LLMs \\
 \midrule
@@ -58,8 +59,8 @@ not depend on the split; we therefore ask it three times per case, independently
 of the three answers in every split in which the case is a test case. The splits of the two
 settings hold \NTestDistinct{} distinct test cases, so each model answered \NCalls{} calls.
 
-\paragraph{Proposed method} We compared four first-stage weight pairs, $(0.7, 0.3)$, $(0.5, 0.5)$,
-$(0.3, 0.7)$, and $(0.0, 1.0)$, by the Recall@20 of the validation cases. Their validation
+\paragraph{Proposed method} We compared four pairs of first-stage weights, $(0.7, 0.3)$,
+$(0.5, 0.5)$, $(0.3, 0.7)$, and $(0.0, 1.0)$, by the Recall@20 of the validation cases. Their validation
 Recall@20 ranged only from \ValRecAMin{} to \ValRecAMax{} in Setting~A and from \ValRecBMin{} to
 \ValRecBMax{} in Setting~B, so we use the pair $(\WText, \WVar)$ in every split, whose candidate set
 admits every ground-truth equation with the smallest $N_1$. In each split we set $N_1$ to the

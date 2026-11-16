@@ -47,6 +47,19 @@ def cmp(o: float, p: float) -> str:
     return "win" if o > p + EPS else ("loss" if o < p - EPS else "tie")
 
 
+def copies_summary(rows: list) -> dict:
+    """ケースの集まりについて、正解式と同じ表記で ID の違う式（写し）が上位 20 件に入っていた件数と、1 リストあたりの本数.
+
+    rows の各ケースは wrong_prop["twin"] と wrong_opus["twin"]（そのケースのリストの平均の本数）を持つ.
+    """
+    if not rows:
+        return {"n_cases": 0, "n_with_copies_in_both": 0, "copies_per_list_prop": None, "copies_per_list_opus": None}
+    return {"n_cases": len(rows),
+            "n_with_copies_in_both": sum(r["wrong_prop"]["twin"] > 0 and r["wrong_opus"]["twin"] > 0 for r in rows),
+            "copies_per_list_prop": mean(r["wrong_prop"]["twin"] for r in rows),
+            "copies_per_list_opus": mean(r["wrong_opus"]["twin"] for r in rows)}
+
+
 def load_top(setting: str) -> dict:
     out = defaultdict(dict)
     for f in sorted(TOP.glob(f"{setting}__*.json")):
@@ -164,6 +177,7 @@ def main() -> None:
         win = [r for r in rows if r["g_R"] == "win"]
         S["R_win_K"] = dict(sorted(Counter(r["K"] for r in win).items()))
         S["R_win_from_dup_books"] = sum(r["dup_book"] for r in win)
+        S["R_win_copies"] = copies_summary(win)
         S["R_win_means"] = {k: mean(r[k] for r in win) for k in ("opus_R", "prop_R", "opus_AP", "prop_AP")}
         big = [r for r in rows if r["kind"] == "synth" and r["K"] >= 7]
         S["synth_K7plus"] = {name: {"n": len(s), "R_win_rate": mean(r["g_R"] == "win" for r in s),
