@@ -1,1 +1,72 @@
 \section{Related work}\label{sec:related}
+
+\paragraph{Automated physical model building} AutoPMoB collects documents about a target process,
+extracts equations, variables, and experimental data, judges the equivalence of the extracted
+information across documents, and reorganizes it into the desired model
+\citep{AutoPMoBCSTR,AutoPMoBProto}. For extraction, an annotation tool and an algorithm collect
+variable symbols from engineering documents \citep{VARAT}, and template sentences augment the data
+for extracting variable definitions \citep{Nagayama}. For equivalence judgment, ProcessBERT, a
+language model pre-trained on a chemical-engineering corpus, judges whether two variable
+definitions refer to the same quantity \citep{ProcessBERT}, and a computer-algebra algorithm judges
+whether two groups of equations are equivalent \citep{DAEEquiv,ZhangEquiv}. The work closest to
+this study addresses the model-building step itself: \citet{KatoESCAPE} proposed an algorithm that
+builds a model from extracted equations, and \citet{CombineEq} formulated model building as the
+combination of extracted equations into models that satisfy four predefined requirements and
+proposed an algorithm that finds every such model. This study differs in its input and output. The
+combination method takes equations and their variables and returns every combination that meets the
+requirements. This study also takes a description of the desired model, reads a context text for
+each equation, and ranks the equations that the description asks for above the rest. Finding the
+equations that concern the requested model does not by itself require context: in our benchmark,
+whose queries take their variables from the symbols of the ground-truth equations, variable overlap
+decides most of the ranking (Section~\ref{sec:mechanism}). Context is needed where variables cannot
+decide, as when several combinations meet the requirements and only the description tells which one
+the user wants, and this study does not show that it helps there.
+
+\paragraph{Equation discovery from numerical data} Symbolic regression searches for an equation
+that fits numerical data, determining its form as well as its coefficients \citep{AIFeynman}.
+\citet{SchmidtLipson} distilled conservation laws from motion-tracking data without prior knowledge
+of physics, sparse identification of nonlinear dynamics keeps the fewest terms of the governing
+equations that represent the data \citep{SINDy}, and ALAMO learns algebraic surrogate models that
+are as accurate and as simple as possible from few simulations or experiments \citep{ALAMO}. The
+difficulty lies in the search: the candidate forms span a very large combinatorial space, and
+methods that learn from data alone leave unused the knowledge that scientists rely on. LLM-SR
+brings that knowledge in by letting an LLM propose equation skeletons, whose parameters an
+optimizer fits to the data \citep{LLMSR}. This study differs in where its equations come from: it
+builds a model from equations collected from the literature, so it needs no data measured on the
+target process, and it reads context, which numbers do not carry. The two approaches can work
+together, because the retrieved equations, with their coefficients left free, can serve as
+candidate skeletons for symbolic regression.
+
+\paragraph{Information retrieval and reranking} Classical information retrieval ranks the items of
+a collection by their relevance to a query \citep{Manning}: term-weighting schemes such as TF-IDF
+score lexical overlap \citep{Salton}, BM25 refines such scores \citep{BM25}, and latent semantic
+analysis absorbs vocabulary mismatch in a low-dimensional space \citep{LSA}. Modern systems add a
+second stage, in which a learned model, today typically a pretrained language model, reranks the
+candidates of a fast first-stage retriever \citep{BERT,BERTrerank}, and dense retrievers perform
+the first stage with learned embeddings \citep{DPR}. Our method inherits this retrieve-then-rerank
+design and trains its reranker with a pairwise ranking loss \citep{LTR}. These methods score each
+item independently of the other retrieved items. The best-known departure, maximal marginal
+relevance, penalizes a candidate for resembling the items already selected and thereby diversifies
+the result list \citep{MMR}. Our task needs the opposite relation: a good candidate should connect
+to the equations already selected, by sharing their variables, and supply the query variables they
+still miss. Where maximal marginal relevance treats overlap as redundancy, equation-set retrieval
+treats shared variables as the links that make the equations a system.
+
+\paragraph{Generation by large language models} LLMs generate domain knowledge directly from a
+prompt \citep{GPT3}, so asking an LLM to write out the equations of the desired model is a natural
+alternative to retrieving them. Generation, however, carries no provenance: LLMs produce fluent
+output that no source supports \citep{Hallucination}, and a user cannot trace a generated equation
+to a source to check it. The check matters for physical models, whose equations are solved as one
+system, so that a single wrong equation can corrupt every variable connected to it. An LLM can
+instead select equations from a database, which keeps the link to the sources, and
+Section~\ref{sec:llmresults} compares the proposed method with LLMs used in this way.
+
+\paragraph{Mathematical information retrieval} Mathematical information retrieval searches for
+formulas with queries that contain text, formulas, or both \citep{MathSurvey}. Its methods compare
+formulas as strings of symbols, as operator trees whose paths are matched \citep{Approach0}, or as
+embeddings of those trees \citep{TangentCFT}. For this study such methods are components, not
+rivals: our second stage also compares equations, but it reads only the sets of variables that
+they contain. Shared tasks such as NTCIR-12 MathIR \citep{NTCIR12} and ARQMath \citep{ARQMath}
+retrieve single formulas ranked by similarity to the query. Our method presents equations meant to
+be used together, so the value of one equation depends on the equations presented with it, and we
+found no formula-search benchmark that imposes this joint condition.

@@ -1,1 +1,18 @@
-Abstract to be written.
+Building a physical model for a process outside the libraries of modeling tools requires an
+engineer to collect equations scattered across many documents and to assemble them into a model.
+This study addresses one step of automating this work: given a description of the desired model and
+its input and output variables, present the equations likely to serve in the model, drawn from a
+database of equations extracted from the literature. Because an equation that contains a variable
+other than the inputs and outputs is useful only together with an equation that determines that
+variable, we propose a two-stage retrieval method that judges each candidate by its relation to
+other equations. The first stage narrows the database by text similarity and variable overlap; the
+second reranks the candidates with a multilayer perceptron that reads seven query--equation
+features and three set-aware features. On a database of \NEq{} equations and \NCases{} cases split
+by source, the method raised Recall@20, the fraction of the ground-truth equations among the 20
+presented, from \RecABase{} for classical retrieval to \RecAProp, in all 10 splits. Ablation and
+permutation importance show that the features reading the variables shared among equations cause
+most of the gain, whereas topical similarity adds little. Two large language models that read the
+whole database without training reached \RecAOpus{} and \RecAHaiku; the proposed method beat both
+in every split. The larger model came close on models drawn from a single source and found
+equations that share few variables with the query, at \CostPerCallOpus{} US dollars per query and
+with answers that varied between runs.
