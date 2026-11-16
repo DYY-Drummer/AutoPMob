@@ -816,6 +816,64 @@ def _results_coverage(r: Registry) -> None:
 
 # ---- appendix tables whose rows are generated ----------------------------------------------------
 
+# groups of the test cases by what their ground truth shares with the training cases of the same split
+# (llm_id_summary.overlap_groups): key of id_summary.json -> part of the macro names
+OVERLAP_GROUPS = {"shared_equation": "Share", "no_shared_equation": "NoShare",
+                  "no_shared_equation_train_val": "NoShareTv", "no_shared_source": "NoShareSrc"}
+OVERLAP_CLAIMS = {"no_shared_equation": "share no ground-truth equation with a training case",
+                  "no_shared_equation_train_val": "share no ground-truth equation with a training or validation case",
+                  "no_shared_source": "share no source of a ground-truth equation with a training case"}
+FOUR_METHODS = (("baseline", "Baseline"), ("proposed", "Proposed"), ("Opus 5.5", "Opus 5.5"), ("Haiku 5.5", "Haiku 5.5"))
+
+
+def _results_overlap(r: Registry) -> None:
+    """The four methods on the test cases that share, and do not share, a ground-truth equation with a training case.
+    The splits, the trained models, and the answers of the LLMs are those of the main experiments."""
+    name = "id_summary.json"
+    d = load(LLM / name)
+    ov = get(load(LLM / "split_overlap.json"), "settings", "split_overlap.json")
+    for s in ("A", "B"):
+        st = get(d, ("settings", s), name)
+        bo = get(st, "by_overlap", name)
+        n_all = ov[s]["n_test_records"]
+        n = {g: sum(get(bo, (g, "n_test"), name).values()) for g in OVERLAP_GROUPS}
+        require(n["shared_equation"] == ov[s]["shared_equation"]
+                and n["shared_equation"] + n["no_shared_equation"] == n_all
+                and n["no_shared_source"] == n_all - ov[s]["shared_source"],
+                f"id_summary.json and split_overlap.json count the same groups of test cases (Setting {s})")
+        for g, claim in OVERLAP_CLAIMS.items():
+            for other in ("baseline", "Opus 5.5", "Haiku 5.5"):
+                for key in ("recall@20", "AP@20"):
+                    c = get(bo, (g, "compare", f"proposed vs {other}", key), name)
+                    require(c["wins"] == c["n"] == 10, f"the proposed method is above {other} on {key} in all 10 splits "
+                                                       f"on the test cases that {claim} (Setting {s})")
+        if s != "A":
+            continue
+        r.add("NTestShareEqA", count(n["shared_equation"]))
+        r.add("NTestShareEqCrossA", count(get(bo, ("shared_equation", "n_test_by_kind", "cross"), name)))
+        r.add("NTestShareEqSingleA", count(get(bo, ("shared_equation", "n_test_by_kind", "single"), name)))
+        r.add("PctNoShareEqA", pct(n["no_shared_equation"] / n_all))
+        r.add("PctNoShareEqTvA", pct(n["no_shared_equation_train_val"] / n_all))
+        r.add("PctNoShareSrcA", pct(n["no_shared_source"] / n_all))
+        for g in ("no_shared_equation", "no_shared_equation_train_val"):
+            for key, code in (("recall@20", "Rec"), ("AP@20", "MapTw")):
+                r.add(f"{code}A{OVERLAP_GROUPS[g]}Prop", fmt(get(bo, (g, "methods", "proposed", key, "mean"), name)))
+        for kind in ("cross", "synth"):
+            for key in ("recall@20", "AP@20"):
+                sh = get(bo, ("shared_equation", "methods", "proposed", "by_kind", kind, key, "mean"), name)
+                no = get(bo, ("no_shared_equation", "methods", "proposed", "by_kind", kind, key, "mean"), name)
+                require(sh <= no + 1e-12, f"within the {kind} cases the proposed method scores no higher on the test cases "
+                                          f"that share a ground-truth equation with a training case ({key})")
+                if key == "AP@20":
+                    r.add(f"MapTw{KINDS[kind]}ShareProp", fmt(sh))
+                    r.add(f"MapTw{KINDS[kind]}NoShareProp", fmt(no))
+        for meth, _ in FOUR_METHODS:
+            for key in ("recall@20", "AP@20"):
+                require(get(bo, ("no_shared_source", "methods", meth, key, "mean"), name) > st["methods"][meth][key]["mean"],
+                        f"{meth} scores higher on the test cases that share no source with a training case than on all "
+                        f"test cases ({key})")
+
+
 def _pm(e: dict, sd: str = "std") -> str:
     return f"${fmt(e['mean'])} \\pm {fmt(e[sd])}$"
 
@@ -909,6 +967,27 @@ def tables() -> dict:
     totals = [sum(c[i] or 0 for _, _, c in srows) for i in range(7)]
     rows.append("Total & & " + " & ".join(map(str, totals)) + " \\\\")
     out["tab_search.tex"] = "\n".join(rows) + "\n"
+
+    # the four methods on groups of the test cases, by what the ground truth shares with the training cases
+    name = "id_summary.json"
+    st = get(load(LLM / name), "settings", name)
+    ov = get(load(LLM / "split_overlap.json"), "settings", "split_overlap.json")
+    rows = []
+    for g, label in ((None, "All test cases"),
+                     ("shared_equation", "Share a ground-truth equation with a training case"),
+                     ("no_shared_equation", "Share no ground-truth equation with a training case"),
+                     ("no_shared_source", "Share no source of a ground-truth equation with a training case")):
+        if rows:
+            rows.append("\\addlinespace")
+        part = {s: st[s] if g is None else get(st, (s, "by_overlap", g), name) for s in ("A", "B")}
+        n = {s: ov[s]["n_test_records"] if g is None else sum(part[s]["n_test"].values()) for s in ("A", "B")}
+        rows.append(f"\\multicolumn{{5}}{{@{{}}l}}{{{label}}} \\\\")
+        rows.append("Test cases in the 10 splits & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{count(n[s])}}}" for s in ("A", "B"))
+                    + " \\\\")
+        for meth, mlabel in FOUR_METHODS:
+            rows.append(" & ".join([mlabel] + [_pm(part[s]["methods"][meth][key], "sd")
+                                               for s in ("A", "B") for key in ("recall@20", "AP@20")]) + " \\\\")
+    out["tab_overlap.tex"] = "\n".join(rows) + "\n"
     return out
 
 
@@ -930,6 +1009,7 @@ def build() -> Registry:
     _results_topic(r)
     _results_errors(r)
     _results_coverage(r)
+    _results_overlap(r)
     return r
 
 

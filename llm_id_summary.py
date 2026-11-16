@@ -12,6 +12,9 @@
 提案手法と baseline の値が experiments/kato1021/main.json と、LLM の値が results_*__v4.json の summary と
 一致することを確かめ、食い違えば止める。
 
+各設定の by_overlap は、同じ値を、テスト用のケースのうち訓練用のケースと正解式を共有するもの・しないものに分けて
+平均したもの（分割、学習済みのモデル、LLM の答えは元のまま。分け方は overlap_groups）。
+
 出力: experiments/llm_db_baseline/id_summary.json。使い方: python3 llm_id_summary.py
 """
 from __future__ import annotations
@@ -26,13 +29,17 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
+import analyze_split_overlap as so  # noqa: E402
 import run_llm_db_baseline as rl  # noqa: E402
 
 OUT_JSON = rl.OUT_DIR / "id_summary.json"
 LLM_RESULTS = {"Opus 5.5": "results_claude-opus-5-5__eqd__ex-none__high__v4.json",
                "Haiku 5.5": "results_claude-haiku-5-5__eqd__ex-none__high__v4.json"}
 KINDS = ("single", "cross", "synth")
+KEYS = ("recall@20", "AP@20")
 MAIN_KEYS = {"proposed": "proposed_static", "baseline": "baseline_tfidf"}
+# テスト用のケースを、訓練用のケースとの正解式の共有で分けた組（overlap_groups）
+OVERLAP_GROUPS = ("shared_equation", "no_shared_equation", "no_shared_equation_train_val", "no_shared_source")
 
 
 def split_means(per_seed_cases: dict, key: str, kind_of: dict | None = None, kind: str | None = None) -> dict:
@@ -43,6 +50,61 @@ def split_means(per_seed_cases: dict, key: str, kind_of: dict | None = None, kin
         vals = [m[key] for c, m in per.items() if kind is None or kind_of[c] == kind]
         if vals:
             out[sd] = float(np.mean(vals))
+    return out
+
+
+def subset_means(per_seed_cases: dict, key: str, subset: dict) -> dict:
+    """{種: {case_id: 指標}} と {種: ケースの集合} → {種: その集合のケースの key の平均}。集合が空の分割は除く."""
+    out = {}
+    for sd, per in per_seed_cases.items():
+        vals = [per[c][key] for c in subset.get(sd, ())]
+        if vals:
+            out[sd] = float(np.mean(vals))
+    return out
+
+
+def overlap_groups(split: dict, gt_of: dict) -> dict:
+    """1 つの分割のテスト用のケースを、訓練用のケースとの正解式の共有で分ける（式は ID で照合する）.
+
+    shared_equation：正解式を 1 本以上、訓練用のケースの正解集合と共有する。no_shared_equation：1 本も共有しない。
+    no_shared_equation_train_val：訓練用と検証用のどのケースとも共有しない。
+    no_shared_source：正解式の出典のどれも、訓練用のケースの正解式の出典でない（no_shared_equation の一部）."""
+    test = set(split["test"])
+    tr = so.shared_with_training(split, gt_of)
+    tv = so.shared_with_training({**split, "train": list(split["train"]) + list(split["val"])}, gt_of)
+    return {"shared_equation": set(tr["cases_shared_equation"]),
+            "no_shared_equation": test - set(tr["cases_shared_equation"]),
+            "no_shared_equation_train_val": test - set(tv["cases_shared_equation"]),
+            "no_shared_source": test - set(tr["cases_shared_source"])}
+
+
+def by_overlap(psc: dict, splits_s: dict, gt_of: dict, kind_of: dict) -> dict:
+    """各手法を、overlap_groups の組ごとに採点する：{組: {n_test, n_test_by_kind, methods, compare}}.
+
+    分割も学習済みのモデルも LLM の答えも元のままで、平均を取るテスト用のケースだけを変える。methods は
+    {手法: {指標: 10 通りの平均 ± 標準偏差, by_kind}}（by_kind は、その種類のケースがある分割が 2 つ以上のときだけ）。
+    compare は「提案手法 − 他の手法」の差の平均と、提案手法が上回った分割の数."""
+    groups = {sd: overlap_groups(d, gt_of) for sd, d in splits_s.items()}
+    out = {}
+    for g in OVERLAP_GROUPS:
+        sub = {sd: groups[sd][g] for sd in groups}
+        methods = {}
+        for name, per in psc.items():
+            m = {key: mean_sd(subset_means(per, key, sub)) for key in KEYS}
+            m["by_kind"] = {}
+            for k in KINDS:
+                subk = {sd: {c for c in cs if kind_of[c] == k} for sd, cs in sub.items()}
+                vals = {key: subset_means(per, key, subk) for key in KEYS}
+                if len(vals[KEYS[0]]) >= 2:
+                    m["by_kind"][k] = {key: mean_sd(v) for key, v in vals.items()}
+            methods[name] = m
+        out[g] = {"n_test": {sd: len(cs) for sd, cs in sub.items()},
+                  "n_test_by_kind": {k: sum(1 for cs in sub.values() for c in cs if kind_of[c] == k) for k in KINDS},
+                  "methods": methods,
+                  "compare": {f"proposed vs {name}": {key: rl.compare_splits(methods["proposed"][key]["per_seed"],
+                                                                             methods[name][key]["per_seed"])
+                                                      for key in KEYS}
+                              for name in psc if name != "proposed"}}
     return out
 
 
@@ -194,6 +256,16 @@ def main() -> None:
         st["compare"]["proposed vs baseline"] = {
             key: rl.compare_splits(st["methods"]["proposed"][key]["per_seed"], st["methods"]["baseline"][key]["per_seed"])
             for key in ("recall@20", "AP@20")}
+        # 訓練用のケースと正解式を共有するテスト用のケース、共有しないテスト用のケースに分けた値
+        gt_of = {c: so.ground_truth_ids(cases[c]) for d in splits[s].values() for part in ("train", "val", "test")
+                 for c in d[part]}
+        st["by_overlap"] = by_overlap(psc, splits[s], gt_of, kind_of)
+        if so.OUT.exists():   # analyze_split_overlap.py の件数と一致すること
+            ref = json.loads(so.OUT.read_text(encoding="utf-8"))["settings"][s]
+            got = st["by_overlap"]
+            if (sum(got["shared_equation"]["n_test"].values()) != ref["shared_equation"]
+                    or sum(got["no_shared_source"]["n_test"].values()) != ref["n_test_records"] - ref["shared_source"]):
+                sys.exit(f"{s}: 正解式を共有するテスト用のケースの数が split_overlap.json と食い違う")
         out["settings"][s] = st
 
     out["created"] = datetime.now(timezone.utc).isoformat(timespec="seconds")

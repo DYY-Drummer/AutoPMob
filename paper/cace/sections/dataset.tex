@@ -74,8 +74,6 @@ input and output variables all appear in them, and whose ground truth has as man
 equations once the inputs are given. Each ground truth draws on one source. It is the set that the
 model judged minimal, not a model that a source presents; \NSingleOneEq{} of the \NSingle{} ground
 truths hold a single equation, and \NSingleRefOnly{} draw only on the generated equation sets.
-\todo{Manual verification of the ground truths that language models formed: who checked, how many
-cases, by what method, and with what result.}
 
 The cross-source family (\NCross{} cases) combines two or three equations from different sources. A
 program built \NCrossProgram{} of these cases. It grouped the domain labels into ten categories,
@@ -131,7 +129,9 @@ equation with a training case (\ShareSharedEqAMin\% to \ShareSharedEqAMax\% per 
 of the cross-source, \ShareSharedEqSynth\% of the synthesized, and \ShareSharedEqSingle\% of the
 single-source test cases. In Setting~B, \ShareSharedEqB\% do. The reranker reads ten features of a
 candidate, not its identity, so it cannot memorize an equation; the test cases are nevertheless not
-all new to it at the level of equations. Because sources hold different numbers of cases, the numbers of cases
+all new to it at the level of equations. \ref{app:overlap} therefore scores the methods separately
+on the test cases that share a ground-truth equation with a training case and on those that share
+none. Because sources hold different numbers of cases, the numbers of cases
 vary from split to split: \NTestAMin{} to \NTestAMax{} test cases and \NValAMin{} to \NValAMax{}
 validation cases in Setting~A.
 

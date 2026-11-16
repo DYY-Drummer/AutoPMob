@@ -286,6 +286,54 @@ densities; the other panels show fractions of cases.}
 \end{figure}
 
 \FloatBarrier
+\section{Test cases that share a ground-truth equation with a training case}\label{app:overlap}
+
+A test case can share ground-truth equations with a training case (Section~\ref{sec:split}).
+Table~\ref{tab:overlap} therefore scores the four methods of Section~\ref{sec:llmresults} on three
+groups of the test cases of each split: those that share at least one ground-truth equation with a
+training case, those that share none, and, among the latter, those whose ground truth draws on no
+source that supplies a ground-truth equation to a training case. The splits, the trained rerankers,
+and the answers of the LLMs are those of the main experiments; only the test cases over which a
+split averages differ. The LLMs receive no training case, so their answers do not depend on the
+split.
+
+\begin{table}[htbp]\centering
+\caption{Recall@20 and MAP@20 on groups of the test cases, formed by what the ground truth of a test
+case shares with the ground truths of the training cases of the same split (mean $\pm$ SD over 10
+stratified splits). The last group is part of the group before it.}
+\label{tab:overlap}
+\tightrows\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{Setting~A} & \multicolumn{2}{c}{Setting~B} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+ & Recall@20 & MAP@20 & Recall@20 & MAP@20 \\
+\midrule
+\rowsfrom{generated/tab_overlap}
+\bottomrule
+\end{tabular}
+\end{table}
+
+In Setting~A, \PctNoShareEqA\% of the test cases share no ground-truth equation with a training
+case. On them the proposed method reached a Recall@20 of \RecANoShareProp{} and a MAP@20 of
+\MapTwANoShareProp, against \RecAProp{} and \MapTwAProp{} on all test cases, and it was above the
+baseline, Opus~5.5, and Haiku~5.5 in all 10 splits in both metrics; the same holds in Setting~B.
+Leaving out also the test cases that share an equation with a validation case keeps
+\PctNoShareEqTvA\% of the test cases of Setting~A, on which the proposed method reached
+\RecANoShareTvProp{} and \MapTwANoShareTvProp.
+
+The groups differ in composition: \NTestShareEqCrossA{} of the \NTestShareEqA{} test cases of
+Setting~A that share an equation are cross-source cases, and \NTestShareEqSingleA{} are
+single-source cases. Within the cross-source family and within the synthesized family, the proposed
+method scored no higher on the cases that share an equation than on those that share none; its
+MAP@20 was \MapTwCrossShareProp{} against \MapTwCrossNoShareProp{} on the cross-source cases and
+\MapTwSynthShareProp{} against \MapTwSynthNoShareProp{} on the synthesized cases. On the
+\PctNoShareSrcA\% of the test cases of Setting~A that share no source with a training case, every
+method scored higher than on all test cases, and the proposed method was again above the others in
+all 10 splits.
+
+\FloatBarrier
 \section{Prompts}\label{app:prompts}
 
 This appendix gives the prompts with which language models built the data and the prompt used for

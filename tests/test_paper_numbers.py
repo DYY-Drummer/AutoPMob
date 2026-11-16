@@ -146,6 +146,36 @@ def test_build_has_known_values(built, name, value):
     assert built[name] == value
 
 
+@pytest.mark.parametrize("name, value", [
+    # llm_db_baseline/id_summary.json の by_overlap：テスト用のケースを、訓練用のケースとの正解式の共有で分けた値
+    ("NTestShareEqA", "1{,}568"), ("NTestShareEqCrossA", "1{,}143"), ("NTestShareEqSingleA", "9"),
+    ("PctNoShareEqA", "62.9"), ("PctNoShareEqTvA", "57.6"), ("PctNoShareSrcA", "21.7"),
+    ("RecANoShareProp", "0.977"), ("MapTwANoShareProp", "0.853"),
+    ("RecANoShareTvProp", "0.978"), ("MapTwANoShareTvProp", "0.861"),
+    ("MapTwCrossShareProp", "0.884"), ("MapTwCrossNoShareProp", "0.899"),
+    ("MapTwSynthShareProp", "0.824"), ("MapTwSynthNoShareProp", "0.834"),
+])
+def test_build_has_the_values_by_overlap_with_the_training_cases(built, name, value):
+    assert built[name] == value
+
+
+def test_overlap_claims_stop_the_build_when_they_no_longer_hold(monkeypatch):
+    """「共有しないテスト用のケースでも 10 通りすべてで上回る」が成り立たなくなったら、止まること."""
+    import copy
+    real = mn.load
+
+    def fake(path):
+        d = real(path)
+        if Path(path).name != "id_summary.json":
+            return d
+        d = copy.deepcopy(d)
+        d["settings"]["A"]["by_overlap"]["no_shared_equation"]["compare"]["proposed vs Opus 5.5"]["AP@20"]["wins"] = 9
+        return d
+    monkeypatch.setattr(mn, "load", fake)
+    with pytest.raises(ValueError, match="share no ground-truth equation"):
+        mn._results_overlap(mn.Registry())
+
+
 # ---- 古い numbers.tex の検出 -----------------------------------------------------------------
 
 def test_check_detects_stale_file(tmp_path):
@@ -175,7 +205,7 @@ def test_sdiff_formats_a_raw_difference_with_its_sign():
 def test_tables_have_the_expected_rows():
     t = mn.tables()
     assert set(t) == {"tab_baseline_weights.tex", "tab_stage1_grid.tex", "tab_bucket.tex", "tab_n1.tex",
-                      "tab_search.tex"}
+                      "tab_search.tex", "tab_overlap.tex"}
     rows = {k: [ln for ln in v.splitlines() if ln.rstrip().endswith("\\\\")] for k, v in t.items()}
     assert len(rows["tab_baseline_weights.tex"]) == 15       # 12 weight pairs + TF-IDF, BM25, E5 chosen per split
     assert len(rows["tab_stage1_grid.tex"]) == 16            # 2 settings x 4 weight pairs x 2 choices of incorrect candidates
@@ -191,6 +221,17 @@ def test_tables_have_the_expected_rows():
     assert len(rows["tab_search.tex"]) == 33                 # 32 fields + the total
     assert "Optics & optics lens equation diffraction wave Maxwell & 5 & --- & --- & 2 & 3 & 10 & 10 \\\\" in rows["tab_search.tex"]
     assert rows["tab_search.tex"][-1] == "Total & & 124 & 92 & 36 & 51 & 3 & 306 & 290 \\\\"
+    assert len(rows["tab_overlap.tex"]) == 24                # 4 groups of test cases x (heading + count + 4 methods)
+    ov = rows["tab_overlap.tex"]
+    assert ov[0] == "\\multicolumn{5}{@{}l}{All test cases} \\\\"
+    assert ov[1] == "Test cases in the 10 splits & \\multicolumn{2}{c}{4{,}229} & \\multicolumn{2}{c}{2{,}432} \\\\"
+    assert ov[4] == "Opus 5.5 & $0.924 \\pm 0.018$ & $0.761 \\pm 0.063$ & $0.899 \\pm 0.013$ & $0.744 \\pm 0.044$ \\\\"
+    assert ov[6] == "\\multicolumn{5}{@{}l}{Share a ground-truth equation with a training case} \\\\"
+    assert ov[12] == "\\multicolumn{5}{@{}l}{Share no ground-truth equation with a training case} \\\\"
+    assert ov[13] == "Test cases in the 10 splits & \\multicolumn{2}{c}{2{,}661} & \\multicolumn{2}{c}{2{,}227} \\\\"
+    assert ov[15] == "Proposed & $0.977 \\pm 0.011$ & $0.853 \\pm 0.054$ & $0.969 \\pm 0.013$ & $0.827 \\pm 0.042$ \\\\"
+    assert ov[18] == "\\multicolumn{5}{@{}l}{Share no source of a ground-truth equation with a training case} \\\\"
+    assert ov[19] == "Test cases in the 10 splits & \\multicolumn{2}{c}{916} & \\multicolumn{2}{c}{1{,}136} \\\\"
 
 
 def test_code_constant_names_the_file_when_the_pattern_is_missing(tmp_path):

@@ -95,8 +95,11 @@ Six limitations qualify the results. First, language models produced parts of th
 extracted the equations, wrote the \NEqRef{} equations of the generated equation sets, picked the ground
 truths of the single-source cases, and wrote the descriptions of the synthesized cases and of part
 of the cross-source cases, whose style may differ from requests written by engineers; a program
-fixed the equations, inputs, and outputs of the synthesized cases.
-\todo{Manual verification of the data produced by language models: scope and result.}
+fixed the equations, inputs, and outputs of the synthesized cases. One of the authors checked a
+sample of 50 items of this data by hand.
+\todo{Complete the sentence above: which items the 50 were (extracted equations, generated
+equations, ground truths, descriptions), how they were sampled, what they were compared with, and
+how many were correct.}
 Second, the evaluation is internal to the database: retrieval cannot find an equation that the
 database lacks, and nobody screened the collected files by hand, so some have little to do with
 physical models. Third, the queries share the notation of their ground truths
@@ -105,7 +108,10 @@ the ground truth, which makes specificity decisive (Section~\ref{sec:mechanism})
 \NWithIntermediate{} cases resemble the example of Fig.~\ref{fig:overview}, whose query omits the
 intermediate variables of the model. Fourth, the split keeps the cases assigned to one source
 together, but \ShareSharedEqA\% of the test cases of Setting~A share a ground-truth equation with a
-training case (Section~\ref{sec:split}). Fifth, among the hyperparameters, we compared no
+training case (Section~\ref{sec:split}). On the test cases that share none, the proposed method
+reached a Recall@20 of \RecANoShareProp{} and a MAP@20 of \MapTwANoShareProp{} and stayed above the
+baseline and both LLMs in all 10 splits (\ref{app:overlap}); we did not retrain the reranker
+without the training cases that share an equation with a test case. Fifth, among the hyperparameters, we compared no
 alternative values of the reference-set size, the margin, the number of incorrect candidates, the
 number of epochs, or the learning rate. Sixth, the comparison with LLMs covers two models of one
 vendor, three runs per case, and one way of presenting the database.

@@ -1,5 +1,5 @@
 """analyze_split_overlap.py（テスト用のケースが訓練用のケースと正解式を共有する割合）の単体テスト."""
-from analyze_split_overlap import shared_with_training, summarize
+from analyze_split_overlap import ground_truth_ids, shared_with_training, summarize
 
 
 GT = {"t1": ["s1__a", "s2__b"], "t2": ["s5__k"],
@@ -11,7 +11,8 @@ GT = {"t1": ["s1__a", "s2__b"], "t2": ["s5__k"],
 
 def test_shared_with_training_counts_equations_and_sources_separately():
     out = shared_with_training({"train": ["t1", "t2"], "val": ["v"], "test": ["x", "y", "z"]}, GT)
-    assert out == {"n_test": 3, "shared_equation": 1, "shared_source": 2, "cases_shared_equation": ["y"]}
+    assert out == {"n_test": 3, "shared_equation": 1, "shared_source": 2, "cases_shared_equation": ["y"],
+                   "cases_shared_source": ["y", "z"]}
 
 
 def test_shared_with_training_ignores_validation_cases():
@@ -27,3 +28,9 @@ def test_summarize_pools_the_splits_and_reports_the_range():
     assert out["shared_equation"] == 4 and out["shared_equation_share"] == 0.4
     assert out["shared_equation_share_min"] == 0.25 and out["shared_equation_share_max"] == 0.5
     assert out["shared_source_share"] == 0.8
+
+
+def test_ground_truth_ids_reads_a_list_or_its_string_form():
+    assert ground_truth_ids({"correct_model_ids": ["s1__a ", " s2__b"]}) == ["s1__a", "s2__b"]
+    assert ground_truth_ids({"correct_model_ids": "['s1__a', 's2__b']"}) == ["s1__a", "s2__b"]
+    assert ground_truth_ids({}) == []

@@ -1,7 +1,8 @@
 """llm_id_summary.py（LLM との比較を式の ID で判定した値の集計）の単体テスト."""
 import pytest
 
-from llm_id_summary import answer_format, cost_breakdown, runs_agreement, split_means, time_range
+from llm_id_summary import (answer_format, by_overlap, cost_breakdown, overlap_groups, runs_agreement, split_means,
+                            subset_means, time_range)
 
 
 PER_SEED = {
@@ -70,3 +71,54 @@ def test_answer_format_partitions_the_answers():
              "ranked_ids": [1] * min(n, 20), "stop_reason": "end_turn"} for n in (0, 5, 19, 20, 20, 21, 40)]
     out = answer_format(rows)
     assert out["exactly_20_distinct"] + out["more_than_20_distinct"] + out["fewer_than_20_distinct"] == out["n"] == 7
+
+
+# ---- 訓練用のケースと正解式を共有するテスト用のケース、共有しないテスト用のケースに分けた集計 ---------------
+
+OV_GT = {"t1": ["s1__a", "s2__b"], "t2": ["s5__k"], "v": ["s6__m"],
+         "x": ["s3__c"],              # 共有なし（出典も共有しない）
+         "y": ["s2__b", "s4__d"],     # 訓練用のケース t1 と式 s2__b を共有
+         "z": ["s2__e"],              # 式は共有しないが、出典 s2 は訓練用の正解式の出典でもある
+         "u": ["s6__m"]}              # 検証用のケース v とだけ式を共有
+
+
+def test_overlap_groups_split_the_test_cases_of_one_split():
+    g = overlap_groups({"train": ["t1", "t2"], "val": ["v"], "test": ["x", "y", "z", "u"]}, OV_GT)
+    assert g["shared_equation"] == {"y"}
+    assert g["no_shared_equation"] == {"x", "z", "u"}
+    assert g["no_shared_equation_train_val"] == {"x", "z"}
+    assert g["no_shared_source"] == {"x", "u"}
+    assert g["shared_equation"] | g["no_shared_equation"] == {"x", "y", "z", "u"}
+
+
+def test_subset_means_averages_only_the_given_cases_and_skips_empty_splits():
+    assert subset_means(PER_SEED, "recall@20", {"42": {"b"}, "123": {"a", "c"}}) == {"42": 0.5, "123": pytest.approx(0.5)}
+    assert subset_means(PER_SEED, "AP@20", {"42": set(), "123": {"c"}}) == {"123": 1.0}
+
+
+def test_by_overlap_scores_every_method_on_each_group_of_test_cases():
+    def m(r, a):
+        return {"recall@20": r, "AP@20": a}
+    splits = {"1": {"train": ["t1", "t2"], "val": ["v"], "test": ["x", "y"]},
+              "2": {"train": ["t1", "t2"], "val": ["v"], "test": ["x", "y", "z"]}}
+    kind = {"x": "synth", "y": "cross", "z": "synth"}
+    psc = {"proposed": {"1": {"x": m(1.0, 0.8), "y": m(1.0, 1.0)}, "2": {"x": m(0.5, 0.5), "y": m(1.0, 0.5), "z": m(1.0, 1.0)}},
+           "baseline": {"1": {"x": m(0.5, 0.4), "y": m(1.0, 1.0)}, "2": {"x": m(0.5, 0.5), "y": m(0.0, 0.0), "z": m(0.5, 0.5)}}}
+    out = by_overlap(psc, splits, OV_GT, kind)
+    assert set(out) == {"shared_equation", "no_shared_equation", "no_shared_equation_train_val", "no_shared_source"}
+    no = out["no_shared_equation"]
+    assert no["n_test"] == {"1": 1, "2": 2}
+    assert no["n_test_by_kind"] == {"single": 0, "cross": 0, "synth": 3}
+    assert no["methods"]["proposed"]["recall@20"]["per_seed"] == {"1": 1.0, "2": 0.75}
+    assert no["methods"]["proposed"]["recall@20"]["mean"] == pytest.approx(0.875)
+    assert no["methods"]["baseline"]["AP@20"]["per_seed"] == {"1": 0.4, "2": 0.5}
+    # 提案手法が上回った分割の数：種 1 は 1.0 > 0.5、種 2 は 0.75 > 0.5
+    assert no["compare"]["proposed vs baseline"]["recall@20"]["wins"] == 2
+    assert no["compare"]["proposed vs baseline"]["recall@20"]["n"] == 2
+    sh = out["shared_equation"]
+    assert sh["n_test"] == {"1": 1, "2": 1} and sh["n_test_by_kind"]["cross"] == 2
+    assert sh["compare"]["proposed vs baseline"]["recall@20"] == {"n": 2, "mean_diff": 0.5, "wins": 1, "ties": 1, "losses": 0}
+    # 種類ごとの値は、その種類のケースがある分割が 2 つ以上あるときだけ出す
+    assert sh["methods"]["proposed"]["by_kind"]["cross"]["AP@20"]["per_seed"] == {"1": 1.0, "2": 0.5}
+    assert "synth" not in sh["methods"]["proposed"]["by_kind"]
+    assert out["no_shared_source"]["n_test"] == {"1": 1, "2": 1}

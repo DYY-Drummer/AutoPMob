@@ -24,16 +24,25 @@ def source_of(eq_id: str) -> str:
     return eq_id.split("__", 1)[0]
 
 
+def ground_truth_ids(case: dict) -> list:
+    """ケースの正解式の ID（リスト、またはリストを文字列にしたもの）を、前後の空白を除いたリストで返す."""
+    ids = case.get("correct_model_ids") or []
+    ids = ast.literal_eval(ids) if isinstance(ids, str) else ids
+    return [i.strip() for i in ids]
+
+
 def shared_with_training(split: dict, gt_of: dict) -> dict:
     """テスト用のケースのうち、(a) 正解式（同じ ID）を訓練用のケースの正解集合と共有するもの、
     (b) 正解式の出典が訓練用のケースの正解式の出典でもあるもの、を数える。検証用のケースは数えない."""
     train_eq = {i for c in split["train"] for i in gt_of[c]}
     train_src = {source_of(i) for i in train_eq}
     shared = [c for c in split["test"] if any(i in train_eq for i in gt_of[c])]
+    shared_src = [c for c in split["test"] if any(source_of(i) in train_src for i in gt_of[c])]
     return {"n_test": len(split["test"]),
             "shared_equation": len(shared),
-            "shared_source": sum(1 for c in split["test"] if any(source_of(i) in train_src for i in gt_of[c])),
-            "cases_shared_equation": shared}
+            "shared_source": len(shared_src),
+            "cases_shared_equation": shared,
+            "cases_shared_source": shared_src}
 
 
 def summarize(per_seed: dict) -> dict:
@@ -55,12 +64,9 @@ def case_kind(case: dict) -> str:
 def main() -> None:
     cases = {c["case_id"]: c for c in json.loads((ROOT / "training_cases.json").read_text(encoding="utf-8"))}
 
-    def gt(cid):
-        ids = cases[cid].get("correct_model_ids") or []
-        ids = ast.literal_eval(ids) if isinstance(ids, str) else ids
-        return [i.strip() for i in ids]
     splits = json.loads(SPLITS.read_text(encoding="utf-8"))["splits"]
-    gt_of = {c: gt(c) for s in splits.values() for d in s.values() for part in ("train", "val", "test") for c in d[part]}
+    gt_of = {c: ground_truth_ids(cases[c]) for s in splits.values() for d in s.values()
+             for part in ("train", "val", "test") for c in d[part]}
     out = {"definition": __doc__.split("入力:")[0].strip(), "settings": {}}
     for setting, by_seed in splits.items():
         per_seed = {seed: shared_with_training(d, gt_of) for seed, d in by_seed.items()}
@@ -74,7 +80,7 @@ def main() -> None:
             **summarize(per_seed),
             "by_kind": {k: {"n_test_records": n, "shared_equation": e, "shared_equation_share": e / n}
                         for k, (n, e) in sorted(kinds.items())},
-            "per_seed": {seed: {k: v for k, v in d.items() if k != "cases_shared_equation"} for seed, d in per_seed.items()},
+            "per_seed": {seed: {k: v for k, v in d.items() if not k.startswith("cases_")} for seed, d in per_seed.items()},
         }
         s = out["settings"][setting]
         print(f"setting {setting}: {s['shared_equation']}/{s['n_test_records']} test records share a ground-truth equation "
