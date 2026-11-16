@@ -14,7 +14,7 @@ with BM25 and E5 ranked no better than the TF-IDF baseline --- Recall@20 of \Rec
 \RecAEFive{} in Setting~A and \RecBBm{} and \RecBEFive{} in Setting~B --- and the proposed method
 beat them, too, on every metric in all 10 splits (\ref{app:weights}).
 
-\begin{table}[t]\centering
+\begin{table}[tbp]\centering
 \caption{Overall comparison (mean $\pm$ SD over 10 stratified splits). The baseline ranks the whole
 database by the weighted sum of the TF-IDF text similarity and the variable overlap, with the
 weights chosen on the validation cases of each split.}
@@ -36,7 +36,7 @@ B & Baseline & $\RecBBase \pm \RecBBaseSD$ & $\MapBBase \pm \MapBBaseSD$ & $\RPr
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.95\linewidth]{figures/fig_method_comparison.pdf}
 \caption{(a) Recall@20 and (b) MAP of the classical baseline and of the proposed method with static
 reranking and with learned greedy selection in Settings~A and~B. Boxes show the 10 stratified
@@ -55,7 +55,7 @@ splits of both settings, by \GapRecAOpusBase{} in Recall@20 and \GapMapTwAOpusBa
 Setting~A and by \GapRecBOpusBase{} and \GapMapTwBOpusBase{} in Setting~B. Haiku~5.5 fell below the
 baseline in both metrics in all 10 splits.
 
-\begin{table}[t]\centering
+\begin{table}[tbp]\centering
 \caption{Comparison with LLMs (mean $\pm$ SD over 10 stratified splits). The LLMs answered each case
 three times; a case takes the mean of its three answers.}
 \label{tab:llm}
@@ -77,15 +77,15 @@ Claude Haiku 5.5 & $\RecAHaiku \pm \RecAHaikuSD$ & $\MapTwAHaiku \pm \MapTwAHaik
 
 Table~\ref{tab:llmkind} breaks Setting~A down by family; a split holds \NTestSingleMin{} to
 \NTestSingleMax{} single-source, \NTestCrossMin{} to \NTestCrossMax{} cross-source, and
-\NTestSynthMin{} to \NTestSynthMax{} synthesized test cases. Opus~5.5 came close to the proposed
-method on the single-source cases (Recall@20 \RecSingleOpus{} against \RecSingleProp) and fell
+\NTestSynthMin{} to \NTestSynthMax{} synthesized test cases. On the single-source cases, Opus~5.5
+came close to the proposed method (Recall@20 \RecSingleOpus{} against \RecSingleProp); it fell
 behind on the cross-source cases (\RecCrossOpus{} against \RecCrossProp) and the synthesized cases
 (\RecSynthOpus{} against \RecSynthProp). Against the baseline, Opus~5.5 was higher in both metrics
 on the synthesized cases, lower in both on the single-source cases, and higher in MAP@20 but lower
 in Recall@20 on the cross-source cases. Haiku~5.5 was below the baseline in every family; its
 Recall@20 on the cross-source cases was \RecCrossHaiku.
 
-\begin{table}[t]\centering
+\begin{table}[tbp]\centering
 \caption{Comparison with LLMs by family in Setting~A (mean $\pm$ SD over 10 stratified splits).}
 \label{tab:llmkind}
 \scriptsize
@@ -125,7 +125,7 @@ database at every call made up \ReadShareOpus\% and \ReadShareHaiku\% of these a
 Fig.~\ref{fig:characteristic} breaks the comparison with the baseline down by the number of
 ground-truth equations and by the number of input variables in Setting~A, pooling the test cases of
 the 10 splits: \NRecordsA{} records of \NDistinctA{} distinct cases. On the cases with one
-ground-truth equation, both methods reach a Recall@20 of 1.000, and their MAP is nearly the same:
+ground-truth equation, both methods reach a Recall@20 of \RecKOneProp, and their MAP is nearly the same:
 \MapKOneProp{} for static reranking and \MapKOneBase{} for the baseline. From two equations on, the
 gap grows with the number of equations: Recall@20 differs by $\DiffRecKTwo$ at two equations,
 $\DiffRecKFive$ at five, and $\DiffRecKTen$ at ten. By the number of input variables, the gap in
@@ -133,7 +133,7 @@ Recall@20 grows from $\DiffRecInLow$ at five or fewer to $\DiffRecInHigh$ at 21 
 variable-weighted ranking finds a single equation as well as the proposed method does, and the lead
 of the proposed method grows with the numbers of ground-truth equations and input variables.
 
-\begin{figure}[t]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.95\linewidth]{figures/fig_characteristic.pdf}
 \caption{Recall@20 (a, b) and MAP (c, d) in Setting~A by the number of ground-truth equations
 (a, c) and by the number of input variables (b, d). Each point pools the test cases of the 10
@@ -157,7 +157,7 @@ growing the feature set of the reranker, retraining it at every step, and evalua
     \RecARSeven{} ($\DiffRecStepTwo$) and MAP to \MapARSeven{} ($\DiffMapStepTwo$), in all 10
     splits. Specificity $f_6$ alone carries nearly all of this step: adding it alone reaches a
     Recall@20 of \RecASpec{} ($\DiffRecSpec$) and a MAP of \MapASpec{} ($\DiffMapSpec$).
-  \item Set-aware features: adding the three set-aware features raises Recall@20 to \RecAProp{}
+  \item Set-aware features: adding the three of them raises Recall@20 to \RecAProp{}
     ($\DiffRecStepThree$, in \WinsRecStepThree{} of the 10 splits) and MAP to \MapAProp{}
     ($\DiffMapStepThree$, in all 10). Recall@20 leaves little room at \RecARSeven, so the set-aware
     features mainly raise the ground-truth equations within the top 20.
@@ -183,7 +183,7 @@ splits. Ablation asks what a feature adds when the model is retrained with it, a
 importance asks how much a fixed model relies on it; both reach the same conclusion: the features
 that read variable overlap decide most of the accuracy.
 
-\begin{figure}[t]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.78\linewidth]{figures/fig_pfi.pdf}
 \caption{Recall@20 after the values of a feature are shuffled among the candidates of each case
 (Setting~A, static reranking). Bars show the mean over the 10 splits, error bars the SD of the drop
@@ -195,7 +195,8 @@ each group shuffles all its features together.}
 \subsection{Sequential selection}\label{sec:greedyresults}
 
 We compared static reranking, greedy selection at inference, and learned greedy selection
-(Section~\ref{sec:seq}) on the same 10 splits (Table~\ref{tab:greedy}). Recall@20 hardly differs
+(Section~\ref{sec:seq}) on the same 10 splits (Table~\ref{tab:greedy}; \ref{app:bucket} shows the
+spread across the splits). Recall@20 hardly differs
 among the three, because the top 20 already hold nearly every ground-truth equation; the strategies
 differ in how they order the equations within the top 20. Greedy selection at inference beats
 static reranking in MAP by $\DiffMapAInferProp$ in Setting~A and $\DiffMapBInferProp$ in Setting~B,
@@ -209,7 +210,7 @@ $\DiffRPrecBEight$ (all 10 splits), and in Recall@20 by $\DiffRecAEight$ and $\D
 (\WinsRecAEight{} and \WinsRecBEight{} of the 10 splits). Sequential selection thus pays off on the
 cases with many ground-truth equations, the cases that motivated it.
 
-\begin{table}[t]\centering
+\begin{table}[tbp]\centering
 \caption{The three selection strategies (mean over 10 splits). The rows ``eight or more'' average
 only the cases with eight or more ground-truth equations.}
 \label{tab:greedy}
@@ -255,7 +256,7 @@ incorrect equations drawn either from the whole database or from the candidates
 \AucCandText{} of the text similarity. The topic features do separate the ground-truth equations,
 but less sharply than features the model already has.
 
-\begin{table}[t]\centering
+\begin{table}[tbp]\centering
 \caption{How well one feature alone separates the ground-truth equations from the incorrect ones
 (AUC; mean $\pm$ standard error over the cases of Setting~A). The columns differ in where the
 incorrect equations come from.}

@@ -106,7 +106,17 @@ def built():
     ("ReadShareOpus", "90.2"), ("ReadShareHaiku", "93.6"), ("HaikuRefusals", "144"),
     ("ShareHaikuRefusals", "2.9"), ("OpusWithTwenty", "4{,}838"), ("ShareOpusWithTwenty", "96.4"),
     ("RunSdOpus", "0.042"), ("RunSameOpus", "72.0"), ("JaccardHaiku", "0.324"), ("SameListOpus", "0.06"),
-    ("TrainMinAMax", "8.2"), ("TrainMinAMin", "2.4"), ("EvalSecAMax", "9"),              # id_summary.json proposed_time_sec
+    ("TimeRunA", "161"), ("TimeRunAFifty", "66"), ("RecAFiveHundredCand", "0.981"),      # kato1021/sweep.json
+    ("TimeRatioA", "2.4"),
+    ("BaseValRecATextOnly", "0.362"), ("BaseValRecALowMin", "0.889"),                   # kato1021/baselines.json by_weight
+    ("BaseValRecALowMax", "0.906"),
+    ("Dropout", "0.1"), ("BmKOne", "1.5"), ("BmB", "0.75"), ("SvdDim", "256"),          # constants in the code
+    ("NSearchPdf", "306"), ("NPerFieldMin", "7"), ("NPerFieldMax", "10"),               # appendix_materials/search_terms.csv
+    ("RecKOneProp", "1.000"), ("RecKOneBase", "1.000"),                                 # kato1021/main.json buckets
+    ("NBasePairs", "12"), ("BasePairFirst", "(1.0, 0.0)"), ("BasePairLast", "(0.0, 1.0)"),  # kato1021/baselines.json weights
+    ("StagePairs", "$(0.7, 0.3)$, $(0.5, 0.5)$, $(0.3, 0.7)$, and $(0.0, 1.0)$"),      # kato1021/n1_rule.json weights
+    ("Seeds", "42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999"),                # llm_db_baseline/splits.json
+    ("NTrainFirstSplit", "975"), ("NTestFirstSplit", "407"), ("FirstSeed", "42"),
     ("DiffRecAPropBase", "+0.075"), ("DiffMapBPropBase", "+0.205"),                     # kato1021/main.json compare
     ("DiffRecKTen", "+0.238"), ("MapKOneBase", "0.934"), ("NRecordsA", "4{,}229"),      # kato1021/main.json buckets
     ("RecARSeven", "0.975"), ("DiffMapStepThree", "+0.073"), ("WinsRecStepOne", "3"),   # kato1021/mech.json
@@ -146,3 +156,49 @@ def test_sdiff_formats_a_raw_difference_with_its_sign():
     assert mn.sdiff(0.0749) == "+0.075"
     assert mn.sdiff(-0.0209) == "-0.021"
     assert mn.sdiff(0.0001) == "0.000"
+
+
+# ---- 付録の表（行を生成する） ----------------------------------------------------------------
+
+def test_tables_have_the_expected_rows():
+    t = mn.tables()
+    assert set(t) == {"tab_baseline_weights.tex", "tab_stage1_grid.tex", "tab_bucket.tex", "tab_n1.tex",
+                      "tab_search.tex"}
+    rows = {k: [ln for ln in v.splitlines() if ln.rstrip().endswith("\\\\")] for k, v in t.items()}
+    assert len(rows["tab_baseline_weights.tex"]) == 15       # 12 weight pairs + TF-IDF, BM25, E5 chosen per split
+    assert len(rows["tab_stage1_grid.tex"]) == 16            # 2 settings x 4 weight pairs x 2 choices of incorrect candidates
+    assert len(rows["tab_bucket.tex"]) == 15                 # 10 sizes + 5 bins of input variables
+    assert len(rows["tab_n1.tex"]) == 10                     # 2 settings x 5 values of N1
+    assert any(ln.startswith("$(0.3, 0.7)$ & 0.906 & $0.907 \\pm 0.020$ & $0.693 \\pm 0.061$")
+               for ln in rows["tab_baseline_weights.tex"])
+    assert rows["tab_baseline_weights.tex"][-2].startswith("BM25, per split & --- & $0.905 \\pm 0.019$")
+    assert any("$(0.3, 0.7)$ & hard negatives & 2{,}000 & 0.982 & 0.981 & 0.862" in ln for ln in rows["tab_stage1_grid.tex"])
+    assert any(ln.startswith("21 or more input variables & 996 & 0.757 & 0.943 & 0.947 & 0.573 & 0.819 & 0.846")
+               for ln in rows["tab_bucket.tex"])
+    assert any(ln.startswith("Setting A & 50 & 0.9644 & $0.959 \\pm 0.013$") for ln in rows["tab_n1.tex"])
+    assert len(rows["tab_search.tex"]) == 33                 # 32 fields + the total
+    assert "Optics & optics lens equation diffraction wave Maxwell & 5 & --- & --- & 2 & 3 & 10 & 10 \\\\" in rows["tab_search.tex"]
+    assert rows["tab_search.tex"][-1] == "Total & & 124 & 92 & 36 & 51 & 3 & 306 & 290 \\\\"
+
+
+def test_code_constant_names_the_file_when_the_pattern_is_missing(tmp_path):
+    f = tmp_path / "model.py"
+    f.write_text("nn.Dropout(0.1)\n", encoding="utf-8")
+    assert mn.code_constant(f, r"nn\.Dropout\(([0-9.]+)\)") == "0.1"
+    with pytest.raises(ValueError, match="model.py"):
+        mn.code_constant(f, r"k1: float = ([0-9.]+)")
+
+
+def test_code_constant_rejects_two_different_values(tmp_path):
+    f = tmp_path / "model.py"
+    f.write_text("nn.Dropout(0.1)\nnn.Dropout(0.2)\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="model.py"):
+        mn.code_constant(f, r"nn\.Dropout\(([0-9.]+)\)")
+
+
+def test_check_covers_the_generated_tables(tmp_path):
+    out = tmp_path / "numbers.tex"
+    assert mn.main(["--out", str(out)]) == 0
+    f = tmp_path / "generated" / "tab_bucket.tex"
+    f.write_text(f.read_text(encoding="utf-8") + "x", encoding="utf-8")
+    assert mn.main(["--check", "--out", str(out)]) == 1

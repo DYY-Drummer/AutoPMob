@@ -7,3 +7,15 @@ def test_dataset_figure_without_augmented_cases_goes_to_the_given_directory(tmp_
     assert labels == ["Single-source", "Cross-source", "Synthesized"]
     assert (tmp_path / "fig_dataset.pdf").exists()
     assert (tmp_path / "fig_dataset.png").exists()
+
+
+def test_split_balance_for_the_paper_shows_the_recorded_split(tmp_path):
+    """論文用の図：種 42 の分割が、実験で使った分割（splits.json）と同じ件数で、軸の名前が本文の呼び名であること."""
+    import json
+    rec = json.load(open(gft.ROOT / "experiments" / "llm_db_baseline" / "splits.json"))["splits"]["A"]["42"]
+    info = gft.split_balance(seed=42, out_dir=tmp_path, paper=True)
+    assert info["n_train"] == len(rec["train"])
+    assert info["n_test"] == len(rec["test"])
+    assert info["titles"] == ["Ground-truth equations", "Input variables", "Output variables", "Sources spanned"]
+    assert info["legend"] == ["Training", "Test"]
+    assert (tmp_path / "fig_split_balance.pdf").exists()

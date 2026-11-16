@@ -1,7 +1,501 @@
+% Appendices. Table rows under generated/ and all numbers come from make_numbers.py; do not edit them by hand.
+% The prompts are copied verbatim from the scripts that ran them (see the note at each prompt).
+
+\FloatBarrier
 \section{Hyperparameters}\label{app:hyper}
+
+Table~\ref{tab:hyper} lists the hyperparameters of the methods, all fixed before training, together
+with the other settings of the experiments. Section~\ref{sec:compared} explains which of them the
+validation cases chose.
+
+\begin{table}[htbp]\centering
+\caption{Hyperparameters and other settings of the methods (identical across settings and splits).}
+\label{tab:hyper}
+\tightrows\footnotesize
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{0.46\linewidth}@{}}
+\toprule
+Item & Value \\
+\midrule
+MLP hidden layers / units / dropout & 2 / \Hidden{} / \Dropout \\
+Loss / margin $\gamma$ & pairwise ranking / \Margin \\
+Optimizer / epochs / batch & AdamW / \Epochs{} / \BatchSize{} training cases \\
+Learning rate / weight decay & $\LearnRate$ / $\WeightDecay$ \\
+Incorrect candidates $n_{\mathrm{neg}}$ & \NNeg{} per training case \\
+Choice of incorrect candidates & chosen on validation: hard negatives in all \NSplitsAll{} splits \\
+Stage-1 weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & $(\WText, \WVar)$ \\
+Stage-1 candidates $N_1$ & \NOne \\
+Reference set size $m$ & \RefSize \\
+Equations presented / greedy selection cap & 20 / 20 \\
+Training steps of learned greedy selection & at most 8 per case \\
+TF-IDF vocabulary & word unigrams and bigrams \\
+Latent similarity & truncated SVD, \SvdDim{} dimensions \\
+Classical baseline weights & best of \NBasePairs{} pairs on validation, per split \\
+BM25 & $k_1 = \BmKOne$, $b = \BmB$, word unigrams \\
+BM25 IDF & $\ln\{1 + (N - n + \tfrac{1}{2})/(n + \tfrac{1}{2})\}$ \\
+E5 & \texttt{intfloat/e5-base-v2}, mean pooling, $\ell_2$ norm, 512 tokens \\
+E5 query & description \\
+Text scores of BM25 and E5 & min--max normalized over the database, per query \\
+LLMs & Claude Opus~5.5 and Claude Haiku~5.5, 3 runs per case \\
+LLM effort / answer & high / 20 identifiers, no solved example \\
+Random seeds & \Seeds \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
 \section{Weights of the baseline and of the first stage}\label{app:weights}
+
+Table~\ref{tab:weights} lists the classical baseline under each of the \NBasePairs{} weight pairs.
+Its validation Recall@20 hardly changes while the text weight $w_{\mathrm{t}}$ is one half or less
+(\BaseValRecALowMin{} to \BaseValRecALowMax{} in Setting~A), and the text term alone,
+$\BasePairFirst$, reaches only \BaseValRecATextOnly. The baseline of Section~\ref{sec:results}
+takes, in each split, the pair with the highest validation Recall@20. When BM25 or E5 replaces the
+TF-IDF text similarity, rescaled to $[0, 1]$ over the database before it is mixed with the variable
+overlap, and the weights are again chosen per split, the test Recall@20 is \RecABm{} (Setting~A)
+and \RecBBm{} (Setting~B) for BM25 and \RecAEFive{} and \RecBEFive{} for E5, no higher than with
+TF-IDF (\RecABase{} and \RecBBase).
+
+\begin{table}[htbp]\centering
+\caption{The classical baseline under \NBasePairs{} weight pairs. ``Validation'' gives the
+Recall@20 of the validation cases and ``test'' the values of the test cases (both means over 10
+splits; test values with $\pm$ SD). In the last three rows, each split uses the weight pair with the highest
+Recall@20 on its validation cases.}
+\label{tab:weights}
+\tightrows\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+ & \multicolumn{3}{c}{Setting A (\NCases{} cases)} & & \multicolumn{3}{c}{Setting B (\NSynth{} cases)} \\
+\cmidrule{2-4}\cmidrule{6-8}
+ & Validation & \multicolumn{2}{c}{Test} & & Validation & \multicolumn{2}{c}{Test} \\
+\cmidrule{3-4}\cmidrule{7-8}
+Weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@20 & Recall@20 & MAP & & Recall@20 & Recall@20 & MAP \\
+\midrule
+\rowsfrom{generated/tab_baseline_weights}
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:stage1grid} lists the proposed method (static reranking) for each combination of
+first-stage weights and choice of incorrect candidates. $N_1$ is, for each weight pair, the number
+of candidates that holds every ground-truth equation of the training and validation cases
+(Section~\ref{sec:compared}). Hard negatives beat random ones in validation Recall@20 for every
+weight pair in both settings. With hard negatives, the weights differ little: the validation
+Recall@20 is \ValRecAMin{} to \ValRecAMax{} in Setting~A and \ValRecBMin{} to \ValRecBMax{} in
+Setting~B. Only the pair $(\WText, \WVar)$ gave $N_1 = \NOne$ in every split and admitted every
+ground-truth equation of the test cases as well; under the other pairs, the $N_1$ fixed on the
+training and validation cases left a few ground-truth equations of the test cases out of the
+candidates in some splits.
+
+\begin{table}[htbp]\centering
+\caption{The proposed method (static reranking) for each combination of first-stage weights and
+choice of incorrect candidates (means over 10 splits). $N_1$ gives the range over the splits.}
+\label{tab:stage1grid}
+\tightrows\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lllrccc@{}}
+\toprule
+ & & & & Validation & \multicolumn{2}{c}{Test} \\
+\cmidrule{5-5}\cmidrule{6-7}
+Setting & Weights & Incorrect candidates & $N_1$ & Recall@20 & Recall@20 & MAP \\
+\midrule
+\rowsfrom{generated/tab_stage1_grid}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
 \section{Results by case characteristics}\label{app:bucket}
+
+Table~\ref{tab:bucket} gives the values behind Fig.~\ref{fig:characteristic} (Setting~A; means
+over the \NRecordsA{} test records of the 10 splits; the table does not show the spread across
+splits). Fig.~\ref{fig:mechanism} breaks the MAP gain of the set-aware features
+(Section~\ref{sec:mechanism}) down by the same two characteristics, and Fig.~\ref{fig:greedy} shows
+how the MAP of the three selection strategies (Section~\ref{sec:greedyresults}) spreads across the
+splits.
+
+\begin{table}[htbp]\centering
+\caption{Results by the number of ground-truth equations and by the number of input variables
+(Setting~A). ``Static'' and ``learned'' denote the proposed method with static reranking and with
+learned greedy selection.}
+\label{tab:bucket}
+\tightrows\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrcccccc@{}}
+\toprule
+ & & \multicolumn{3}{c}{Recall@20} & \multicolumn{3}{c}{MAP} \\
+\cmidrule(lr){3-5}\cmidrule(l){6-8}
+ & Records & Baseline & Static & Learned & Baseline & Static & Learned \\
+\midrule
+\rowsfrom{generated/tab_bucket}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_mechanism.pdf}
+\caption{MAP gain over the reranker with the seven query--equation features when the set-aware
+features are added one at a time or all three together (Setting~A), (a) by the number of
+ground-truth equations and (b) by the number of input variables. Points show the mean over the 10
+splits of the paired difference, and error bars its SD across the splits.}
+\label{fig:mechanism}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.95\linewidth]{figures/fig_greedy_3way.pdf}
+\caption{MAP of the three selection strategies in (a) Setting~A and (b) Setting~B, on all cases
+and on the cases with eight or more ground-truth equations. Boxes show the 10 splits.}
+\label{fig:greedy}
+\end{figure}
+
+\FloatBarrier
 \section{Number of first-stage candidates}\label{app:n1}
+
+Fig.~\ref{fig:n1} shows, for the first-stage weights $(\WText, \WVar)$, how the fraction of cases
+with every ground-truth equation among the candidates and the candidate coverage grow with $N_1$;
+every ground-truth equation of every case enters the candidates at $N_1 = \NOneAllGt$.
+Table~\ref{tab:n1} lists the proposed method (static reranking) trained and evaluated with
+different $N_1$. Beyond $N_1 = 500$, Recall@20 and MAP hardly change: in Setting~A, Recall@20 is
+\RecAFiveHundredCand{} at $N_1 = 500$ and \RecAProp{} at $N_1 = \NOne$. Only $N_1 = \NOne$,
+however, admits every ground-truth equation of the test cases in every split, and one run of
+training and evaluation then takes about \TimeRatioA{} times as long as at $N_1 = 50$ (\TimeRunA{}
+against \TimeRunAFifty{} seconds in Setting~A).
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth]{figures/fig_n1_coverage.pdf}
+\caption{Number of first-stage candidates $N_1$ (log scale) and (a) the fraction of cases with
+every ground-truth equation among the candidates and (b) the candidate coverage, the fraction of
+ground-truth equations among the candidates (first-stage weights $(\WText, \WVar)$). Dotted lines
+mark the values of $N_1$ compared in Table~\ref{tab:n1}, and the solid line the $N_1 = \NOne$ of
+this study. Every ground-truth equation of every case enters the candidates at
+$N_1 = \NOneAllGt$.}
+\label{fig:n1}
+\end{figure}
+
+\begin{table}[htbp]\centering
+\caption{The proposed method (static reranking) with different numbers of first-stage candidates
+$N_1$ (mean $\pm$ SD over 10 splits). Coverage is that of the test cases. Time is the wall-clock
+time of one run of training and evaluation, with six runs in parallel.}
+\label{tab:n1}
+\tightrows\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrccccr@{}}
+\toprule
+ & $N_1$ & Coverage & Recall@20 & MAP & R-Precision & Time (s) \\
+\midrule
+\rowsfrom{generated/tab_n1}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\FloatBarrier
 \section{Literature collection}\label{app:collection}
+
+We collected the PDF files in three steps; Table~\ref{tab:search} lists the search term of every
+field.
+\begin{enumerate}
+  \item Early in this work, we collected \NEarlyHand{} PDF files of papers and textbooks on
+    continuous stirred-tank reactors, biodiesel reactions, and process control by hand, and added
+    \NEarlySearch{} papers that a search on the scholarly search service Semantic Scholar retrieved
+    automatically, \NEarly{} files in all.
+  \item To extend the database beyond chemical engineering, we chose one search term for each of
+    \NFields{} fields and searched the scholarly database OpenAlex for the search term followed by
+    ``mathematical model differential equation.'' The search required open access to a PDF file,
+    publication in 2006 or later, and more than 10 citations, and it admitted articles, reviews,
+    book chapters, preprints, reference entries, and reports. We took the 30 results most relevant
+    to the search term, kept those whose title and abstract contain two or more words of the
+    search term (words of four or more letters) and that have the address of a PDF file, and tried
+    to download the top 10 of them, replacing none that failed.
+  \item For each field that still had fewer than 10 PDF files, we prepared three to five other
+    search terms (ten for optics), took the 20 results most relevant to each, relaxed the citation
+    condition to more than five and then to more than three citations (the latter also admitting
+    publication from 2001 on; for optics alone, we finally dropped the citation condition),
+    merged the results, ordered them by citation count, and downloaded PDF files until the field
+    held 10.
+\end{enumerate}
+The target of 10 files per field counted the PDF files obtained, not whether equations could be
+extracted from them. The searches yielded \NSearchPdf{} PDF files, of which \NOpenAlex{}
+contributed equations to the database, \NPerFieldMin{} to \NPerFieldMax{} per field. Nobody screened
+the files by hand, so some have little to do with physical models: a review of the theory of star
+formation, for instance, entered the field of chemical engineering fundamentals.
+
+\begingroup
+\tightrows\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.21\linewidth}>{\raggedright\arraybackslash}p{0.40\linewidth}rrrrrrr@{}}
+\caption{Search term of each field and the numbers of PDF files obtained. We sent each search term
+to OpenAlex followed by ``mathematical model differential equation.'' O counts the PDF files
+obtained by this search; F1--F3 count those obtained by the supplementary searches, which used
+three to five other search terms per field; P counts those obtained by the additional search for
+optics. The supplementary searches stopped when the field held 10 PDF files. ``DB'' counts the PDF
+files whose equations entered the database.}\label{tab:search}\\
+\toprule
+Field & Search term & O & F1 & F2 & F3 & P & Total & DB \\
+\midrule
+\endfirsthead
+\toprule
+Field & Search term & O & F1 & F2 & F3 & P & Total & DB \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+\rowsfrom{generated/tab_search}
+\end{longtable}
+\endgroup
+
+\FloatBarrier
 \section{Example of a synthesized case}\label{app:example}
+
+The synthesized case \texttt{dae\_X3\_016} ($X = 3$) draws its three ground-truth equations from
+one source, a PDF file of one chapter of a process-control textbook, and reads as follows; the
+description is the one that Claude Sonnet~4.5 wrote.
+\begin{itemize}
+  \item Description: ``This modeling scenario involves a stirred-tank system, likely a fed-batch
+    bioreactor or heated tank with variable holdup, where volume dynamics are governed by inlet and
+    outlet flow rates. Given the feed flow rate (F), temperature profile (T(t)), and inlet/outlet
+    mass flow rates (w\_i, w), the model computes the reactor volume (V), fluid density ($\rho$),
+    and time evolution (t). The coupled equations describe how volume changes over time due to
+    both volumetric feed addition and mass balance considerations, accounting for density effects
+    in the material accumulation within the tank.''
+  \item Input variables: $F$, $T(t)$, $w$, $w_i$. Output variables: $V$, $\rho$, $t$.
+  \item Ground-truth equations, in the order the program added them, with their domain labels:
+    $\frac{dV}{dt} = F$ (Fed-Batch Bioreactor);
+    $T(t) = 350 + 20 (1 - e^{-t/12})$ (Electrically Heated Stirred Tank);
+    $\frac{dV}{dt} = \frac{1}{\rho}(w_i - w)$ (Stirred-Tank Heating Process: Variable Holdup).
+\end{itemize}
+The program took the differentiated variable $V$ of the first equation as an output and then chose
+$t$ from the second equation and $\rho$ from the third. Time $t$ thus becomes an output that the
+temperature profile determines: the program fixes the inputs and outputs by counting variables,
+not by the physical roles of the variables.
+
+\FloatBarrier
+\section{Balance of a stratified split}\label{app:split}
+
+Fig.~\ref{fig:split} compares the training and test cases of one split of Setting~A in the four
+quantities that the stratification balances (Section~\ref{sec:split}).
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth]{figures/fig_split_balance.pdf}
+\caption{The four quantities that the stratification balances, in the \NTrainFirstSplit{} training
+cases and the \NTestFirstSplit{} test cases of one split of Setting~A (random seed \FirstSeed):
+the numbers of ground-truth equations, of input variables, of output variables, and of sources
+spanned per case. The panel of the input variables groups the numbers into bins and shows
+densities; the other panels show fractions of cases.}
+\label{fig:split}
+\end{figure}
+
+\FloatBarrier
 \section{Prompts}\label{app:prompts}
+
+This appendix gives the prompts with which language models built the data and the prompt used for
+the comparison with LLMs. Braces mark the parts filled in for each call. No fixed prompt produced
+the \NCrossPicked{} cross-source combinations, which the coding assistant Claude wrote directly
+into a program, and no language model took part in the descriptions of the program-built
+cross-source cases, which follow English templates.
+
+\subsection*{Equation extraction (Gemini)}
+The prompt went with one PDF file, and \texttt{\{source\_id\}} received the file name.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
+Extract all numbered equations and equations found in the appendices from this textbook in LaTeX format. For each equation, identify the "variable definitions" and the "physical meaning (context)" from the surrounding text. Output the result in the JSON format specified below.
+
+Constraints:
+- Extract the content EXACTLY as it appears in the literature. Do not make unauthorized corrections or modifications.
+- Preserve every variable symbol and subscript exactly as printed: e.g. if the source writes c_w (specific heat of water), do NOT change it to c_p; if it writes C_p or Cp, do not change to c_w. Never "normalize" or "standardize" notation.
+
+Output a single JSON array. Each element must have these fields:
+- source_id: string (e.g. PDF filename)
+- eq_id: string (e.g. "eq_1")
+- equation: string (LaTeX form)
+- variables: object with variable symbols as keys and their definitions (strings) as values
+- context_text: string (surrounding text explaining physical meaning)
+- domain: string (process or domain name, e.g. "CSTR Kinetics")
+
+
+Use source_id = "{source_id}" for all equations from this document.
+\end{Verbatim}
+
+\subsection*{Reference equation sets (Gemini 2.5 Pro)}
+The first set, 20 fundamental equations of chemical engineering, came from the following prompt.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
+You are an expert in chemical engineering and process modeling.
+Generate exactly 20 fundamental equations that are essential for process modeling, in LaTeX format.
+Include equations from the following areas:
+- CSTR (continuous stirred-tank reactor): mass balance, energy balance, design equation
+- Biodiesel production: transesterification kinetics, yield relations
+- Mass balance and heat balance (general)
+- Reaction kinetics: rate laws, Arrhenius equation, activation energy
+- Dimensionless numbers: Reynolds, Nusselt, Prandtl, Damköhler, Peclet, etc.
+- Heat transfer: convection, overall heat transfer coefficient
+- Fluid mechanics: pressure drop, flow relations
+
+For each equation provide:
+- source_id: use exactly "handbook_chemeng"
+- eq_id: "eq_1" through "eq_20"
+- equation: LaTeX form of the equation
+- variables: object with each variable symbol as key and its definition (string) as value
+- context_text: brief physical meaning or context (one or two sentences)
+- domain: short domain name (e.g. "CSTR", "Reaction Kinetics", "Heat Transfer")
+
+Output a single JSON array of exactly 20 equation objects. Use the exact field names above.
+Do not include any markdown or code fence, only the JSON array.
+\end{Verbatim}
+The other 31 sets came from the following prompt, field by field; \texttt{\{label\}} received the
+name of the field, \texttt{\{n\}} the number of equations, \texttt{\{topics\}} the topics fixed for
+the field, and \texttt{\{source\_id\}} the name of the set.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
+You are an expert in {label} and mathematical modeling.
+Generate exactly {n} fundamental equations used in {label}, in LaTeX format.
+
+Cover these topics:
+{topics}
+
+For each equation provide:
+- source_id: use exactly "{source_id}"
+- eq_id: "eq_1" through "eq_{n}" (sequential)
+- equation: LaTeX form of the equation (use standard notation)
+- variables: object with each variable symbol as key and its definition (with units where appropriate) as value
+- context_text: brief physical meaning or context (1-3 sentences, include when and where this equation is used)
+- domain: "{label}" or a more specific sub-domain (e.g., "{label}: Pipe Flow")
+
+IMPORTANT:
+- Each equation MUST be distinct (no duplicates).
+- Include both the differential form and algebraic form where applicable.
+- Use standard notation conventions for the field.
+- Variables dict must include ALL symbols that appear in the equation.
+
+Output a single JSON array of exactly {n} equation objects. No markdown fences.
+\end{Verbatim}
+
+\subsection*{Single-source cases (Gemini 2.5 Pro)}
+\texttt{\{catalog\_text\}} received the catalog of the batch in JSON (for each equation, its
+identifier, source name, number within the source, domain label, and variable symbols),
+\texttt{\{domain\_list\}} the first 20 domain labels of the batch, and \texttt{\{n\_cases\}} the
+number of cases requested (13). The prompt dates from an earlier stage of this work and therefore
+mentions a graph neural network.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
+You are helping to create training data for a graph neural network that selects
+relevant equations for physical process modeling.
+
+You are given a catalog of equations. Each equation has:
+- model_id: a unique ID in the form "<source_id>__<eq_id>"
+- domain: a short domain label
+- variable_symbols: list of variable symbols in the equation
+
+CATALOG ({len(batch_catalog)} equations, domains: {domain_list}):
+{catalog_text}
+
+TASK:
+Using ONLY the models listed above, create approximately {n_cases}
+realistic and physically meaningful core training cases.
+
+For each core case:
+- Pick one or more model_ids that together represent a coherent physical model.
+- Define a context string describing the physical scenario in natural language.
+- Choose input_variables and output_variables from variable_symbols of selected models.
+- correct_model_ids: list of model_ids forming a correct mathematical model.
+
+CONDITIONS FOR correct_model_ids:
+(1) Given input_variables values and the equations, it MUST be possible to solve for all output_variables.
+(2) The equation set MUST be sufficient and minimal (no redundant equations).
+
+REQUIREMENTS:
+- All correct_model_ids MUST exactly match entries from the catalog.
+- input/output variables MUST be subsets of variable_symbols from selected models.
+- Make cases diverse across the available domains.
+- Generate at least {n_cases} cases.
+
+OUTPUT: JSON object with "cases" array, each having:
+case_id, context, input_variables, output_variables, correct_model_ids
+\end{Verbatim}
+
+\subsection*{Descriptions of the synthesized cases (Claude Sonnet 4.5)}
+\texttt{\{eqs\_str\}} received one line per ground-truth equation with its source name, its number
+within the source, its domain label, and the first 200 characters of its expression; the prompt
+listed the first 10 input variables in alphabetical order and at most 10 lines of definitions of
+the output variables and of some input variables.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
+You are a chemical engineering expert. Given a set of equations from
+literature, and specified input/output variables, write a concise physical
+scenario description (2-3 sentences) in English describing the modeling task.
+
+EQUATIONS:
+{eqs_str}
+
+INPUT VARIABLES (known): {sorted(inputs)[:10]}
+OUTPUT VARIABLES (to be solved): {sorted(outputs)}
+
+VARIABLE DEFINITIONS (excerpt):
+{var_defs_str}
+
+Write a 2-3 sentence description of the physical modeling scenario. Focus on:
+- What system is being modeled (reactor, heat exchanger, etc.)
+- What is computed (the outputs) given the inputs
+- The physical meaning of the coupled equations
+
+Output only the description, no preamble or formatting.
+\end{Verbatim}
+
+\subsection*{Rewriting the descriptions of cross-source cases (Claude Opus 4.8)}
+For each of the \NCrossReselected{} variants with reselected input and output variables and each of
+two original combinations whose descriptions did not match their outputs, the model received in
+JSON the description of the original case, the original output variables, the new output
+variables, and the original outputs that the new choice makes inputs (\texttt{now\_given}); for the
+two original combinations, the original and the new outputs coincide. Each variable came with its
+symbol and its definitions in the ground-truth equations. The system prompt reads as follows.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
+You edit the problem descriptions of an evaluation set for retrieving process-model equations.
+A description states, in plain words, a physical system and which quantities must be determined.
+
+You receive a description written for one choice of quantities to determine (original_outputs) and a new choice for the same system (new_outputs). "now_given" lists the quantities that the original asked to determine but that are now given. Each quantity comes with its symbol and its meaning taken from the source equations. Rewrite the description for the new choice.
+
+Rules:
+- Describe the same physical system and keep the original wording, changing only what the new choice requires.
+- State every quantity in new_outputs as a quantity to determine.
+- The original may ask, explicitly or implicitly, to determine quantities that are not in new_outputs, including quantities that are not variables of the system at all (for example, "size a reactor" asks for its volume). Remove or reword every such request, so that only the quantities in new_outputs are to be determined. This applies even when new_outputs equals original_outputs.
+- Present every quantity in now_given as given. Do not name any other quantity as given unless the original already names it.
+- Never present a quantity in new_outputs as given.
+- Refer to quantities in plain words by their meaning, as the original does. Do not write symbols or equations.
+- Do not add information beyond the original description and the meanings of the quantities.
+- Write one or two sentences in English, as short as the changes allow.
+
+Return JSON: {"context": "<the rewritten description>"}.
+\end{Verbatim}
+
+\subsection*{Comparison with LLMs}
+The system instruction, the database, and the test case go to the model in this order. The
+database part is the same for every call, so it uses prompt caching. The model returns the
+equation identifiers as a JSON list.
+\begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
+[system]
+You are an expert in physical modeling. You select equations from an equation database for building a physical model.
+
+# Task
+An engineer wants to build a physical model: a set of equations with which the output variables can be computed once the input variables are given. The engineer describes the model and lists its input variables and output variables. Choose, from the equation database, the equations that the engineer should use.
+
+The set of equations that forms the model satisfies these conditions:
+1. Every input variable and every output variable appears in at least one equation of the set.
+2. The number of equations equals the number of variables of the set that are not input variables.
+3. Every variable of the set that is neither an input nor an output variable appears in at least two equations of the set.
+
+# Equation database
+<equation_database> lists equations extracted from the literature, in no particular order. Each line has three fields separated by tabs: the equation ID, the domain label of the equation, and the equation in LaTeX.
+
+# Answer
+For the task in <task>, list 20 equation IDs, from the most to the least likely to belong to the model. Put first the equations that you judge to form the model. Use only IDs from the database, and list each ID once. In the task, variable symbols in a list are separated by " ; ".
+
+[user, block 1: the database (cache_control: ephemeral)]
+<equation_database count="11146">
+1	<domain label>	<equation in LaTeX, with runs of white space collapsed>
+2	...
+...
+</equation_database>
+
+[user, block 2: the test case]
+<task>
+Description: <description>
+Input variables: <symbol> ; <symbol> ; ...
+Output variables: <symbol> ; ...
+</task>
+
+List the IDs of the database equations for this task.
+\end{Verbatim}

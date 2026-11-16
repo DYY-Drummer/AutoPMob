@@ -45,7 +45,7 @@ topic: the fraction of reference equations whose domain label equals the candida
 two encode how equations determine one another's variables, and the third encodes topical
 consistency.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{Features of the reranker. $\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ is the set of query
 variables, $t_j$ the text of equation $e_j$, $R$ the reference set, and
@@ -53,7 +53,8 @@ $V(R) = \bigcup_{e \in R} V(e)$. The group marks whether a feature reads variabl
 topical closeness.}
 \label{tab:features}
 \small
-\begin{tabular}{llll}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}llll@{}}
 \toprule
  & Feature & Definition & Group \\
 \midrule
@@ -73,7 +74,7 @@ $g_{\mathrm{Dom}}$  & Domain agreement & $|\{e \in R : \mathrm{dom}(e) = \mathrm
 \end{table}
 
 The latent similarity $f_3$ applies latent semantic analysis \citep{LSA}: a truncated
-singular-value decomposition factorizes the TF-IDF matrix of all equation texts into 256
+singular-value decomposition factorizes the TF-IDF matrix of all equation texts into \SvdDim{}
 dimensions, the query is projected into the same space, and $f_3$ is the cosine similarity there.
 The similarity grows when two texts contain words that appear in similar texts, even without shared
 words. Unlike $f_1$, the query text of $f_3$ also lists the input and output variable symbols.

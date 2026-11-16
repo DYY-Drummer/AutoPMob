@@ -113,6 +113,14 @@ def load(path: Path):
 
 # ---- macro groups -----------------------------------------------------------------------------
 
+def code_constant(path, pattern: str) -> str:
+    """The value that `pattern` (one group) captures in a source file. Stops when it is missing or ambiguous."""
+    found = set(re.findall(pattern, Path(path).read_text(encoding="utf-8")))
+    if len(found) != 1:
+        raise ValueError(f"{Path(path).name}: expected one value for {pattern!r}, found {sorted(found)}")
+    return found.pop()
+
+
 def sdiff(delta: float, nd: int = 3) -> str:
     """A signed difference that is already a raw difference (for math mode)."""
     return diff(delta, 0.0, nd)
@@ -333,8 +341,104 @@ def _setup(r: Registry) -> None:
         r.add(f"ValRec{s}Max", fmt(max(vals)))
     other = [v[k]["N1"] for s in ("A", "B") for v in get(rule, ("settings", s), "n1_rule.json").values()
              for k in v if k != w]
+    for s in ("A", "B"):
+        grid = get(sel, ("grid", s), name)
+        for k in get(rule, "weights", "n1_rule.json"):
+            require(grid[f"{k}|hard"]["val"]["Recall@20"]["mean"] > grid[f"{k}|random"]["val"]["Recall@20"]["mean"],
+                    f"hard negatives beat random ones in validation Recall@20 (Setting {s}, weights {k})")
+            if k != w:
+                require(any(v[k]["test_coverage_at_N1"] < 1.0 for v in rule["settings"][s].values()),
+                        f"under the weights {k}, some split leaves a ground-truth equation of a test case out (Setting {s})")
     r.add("NOneOtherMin", count(min(other)))
     r.add("NOneOtherMax", count(max(other)))
+
+
+def _code_constants(r: Registry) -> None:
+    """Settings that no result file records: read from the code that the experiments ran."""
+    r.add("Dropout", code_constant(ROOT / "two_stage_query_conditioned.py", r"nn\.Dropout\(([0-9.]+)\)"))
+    r.add("SvdDim", code_constant(ROOT / "set_aware_reranker.py", r"TruncatedSVD\(n_components=([0-9]+)"))
+    r.add("BmKOne", code_constant(ROOT / "external_baselines.py", r"k1: float = ([0-9.]+)"))
+    r.add("BmB", code_constant(ROOT / "external_baselines.py", r"b: float = ([0-9.]+)\)"))
+
+
+SEARCH_CSV = ROOT / "docs" / "appendix_materials" / "search_terms.csv"
+# columns of search_terms.csv (the header is Japanese): field, search term, PDFs of the first search,
+# of the three supplementary searches, of the search for optics alone, PDFs in the folder, PDFs with equations in the database
+SEARCH_COLS = {"field": 0, "term": 2, "counts": (8, 10, 12, 14, 16, 17, 18)}
+FIELD_LABELS = {
+    "化学工学基礎": "Chem.\\ eng.\\ fundamentals", "反応工学（基礎）": "Reaction eng.\\ (basic)",
+    "反応工学（応用）": "Reaction eng.\\ (applied)", "プロセス制御（基礎）": "Process control (basic)",
+    "プロセス制御（応用）": "Process control (applied)", "熱力学（基礎）": "Thermodynamics (basic)",
+    "熱力学（応用）": "Thermodynamics (applied)", "流体力学（基礎）": "Fluid mechanics (basic)",
+    "流体力学（応用）": "Fluid mechanics (applied)", "伝熱（基礎）": "Heat transfer (basic)",
+    "伝熱（応用）": "Heat transfer (applied)", "物質移動": "Mass transfer", "輸送現象": "Transport phenomena",
+    "分離プロセス": "Separation processes", "電気化学（基礎）": "Electrochemistry (basic)",
+    "電気化学（応用）": "Electrochemistry (applied)", "バイオプロセス": "Bioprocesses", "薬学": "Pharmaceutics",
+    "食品工学": "Food engineering", "高分子工学": "Polymer engineering", "半導体物理": "Semiconductor physics",
+    "燃焼工学": "Combustion", "原子力工学": "Nuclear engineering", "HVAC": "HVAC",
+    "環境工学": "Environmental eng.", "光学": "Optics", "音響学": "Acoustics", "空力": "Aerodynamics",
+    "振動学": "Mechanical vibration", "構造力学": "Structural mechanics", "電気工学": "Electrical engineering",
+    "地盤工学": "Geotechnical eng.",
+}
+
+
+@lru_cache(maxsize=None)
+def _search_rows() -> tuple:
+    """One tuple per field: (Japanese name, search term, seven counts; None where a search was not run)."""
+    with open(SEARCH_CSV, encoding="utf-8-sig") as f:
+        body = list(csv.reader(f))[1:]
+    rows = []
+    for row in body:
+        counts = tuple(int(row[i]) if row[i].strip() else None for i in SEARCH_COLS["counts"])
+        rows.append((row[SEARCH_COLS["field"]].strip(), row[SEARCH_COLS["term"]].strip(), counts))
+    return tuple(rows)
+
+
+def _collection(r: Registry) -> None:
+    rows = _search_rows()
+    require(len(rows) == int(r.values["NFields"]), "search_terms.csv has one row per field")
+    in_db = [c[6] for _, _, c in rows]
+    require(sum(in_db) == int(r.values["NOpenAlex"]), "the PDFs with equations in the database add up over the fields")
+    r.add("NSearchPdf", count(sum(c[5] for _, _, c in rows)))
+    r.add("NPerFieldMin", count(min(in_db)))
+    r.add("NPerFieldMax", count(max(in_db)))
+
+
+def _weights_and_seeds(r: Registry) -> None:
+    # the weight pairs compared for the baseline and for the first stage, and the random seeds
+    name = "baselines.json"
+    labels = list(get(load(KATO / name), ("settings", "A", "scorers", "tfidf", "by_weight"), name))
+    r.add("NBasePairs", str(len(labels)))
+    r.add("BasePairFirst", _weight_pair(labels[0]).strip("$"))
+    r.add("BasePairLast", _weight_pair(labels[-1]).strip("$"))
+    name = "n1_rule.json"
+    pairs = [_weight_pair(w) for w in get(load(KATO / name), "weights", name)]
+    r.add("StagePairs", ", ".join(pairs[:-1]) + ", and " + pairs[-1])
+    name = "splits.json"
+    sp = get(load(LLM / name), "splits", name)
+    require(list(sp["A"]) == list(sp["B"]), "the two settings use the same random seeds")
+    r.add("Seeds", ", ".join(sp["A"]))
+    # the split shown in the appendix figure (generate_figures_thesis.split_balance draws the first seed)
+    first = next(iter(sp["A"]))
+    r.add("FirstSeed", first)
+    r.add("NTrainFirstSplit", count(len(sp["A"][first]["train"])))
+    r.add("NTestFirstSplit", count(len(sp["A"][first]["test"])))
+
+
+def _appendix(r: Registry) -> None:
+    # validation Recall@20 of the classical baseline over the weight pairs (Setting A)
+    name = "baselines.json"
+    bw = get(load(KATO / name), ("settings", "A", "scorers", "tfidf", "by_weight"), name)
+    val = {k: v["val"]["Recall@20"]["mean"] for k, v in bw.items()}
+    wt = lambda k: int(k.lstrip("w").split("-")[0])  # noqa: E731
+    r.add("BaseValRecATextOnly", fmt(next(v for k, v in val.items() if wt(k) == 100)))
+    low = [v for k, v in val.items() if wt(k) <= 50]
+    r.add("BaseValRecALowMin", fmt(min(low)))
+    r.add("BaseValRecALowMax", fmt(max(low)))
+    # time of one run against the number of candidates
+    name = "sweep.json"
+    sw = get(load(KATO / name), ("N1", "A"), name)
+    r.add("TimeRatioA", fmt(sw["2000"]["time_total_sec"]["mean"] / sw["50"]["time_total_sec"]["mean"], 1))
 
 
 def _llm_setup(r: Registry) -> None:
@@ -382,13 +486,6 @@ def _llm_setup(r: Registry) -> None:
         total += round(m["cost"]["total"], 2)
     r.add("CostTotal", money(total))
 
-    # time of the proposed method (the runs that produced the reported values), per split
-    for s in ("A", "B"):
-        t = get(d, ("settings", s, "proposed_time_sec"), name)
-        r.add(f"TrainMin{s}Min", fmt(t["train"]["min"] / 60, 1))
-        r.add(f"TrainMin{s}Max", fmt(t["train"]["max"] / 60, 1))
-        r.add(f"EvalSec{s}Min", count(round(t["eval"]["min"])))
-        r.add(f"EvalSec{s}Max", count(round(t["eval"]["max"])))
 
 
 def _results_overall(r: Registry) -> None:
@@ -421,6 +518,8 @@ def _results_overall(r: Registry) -> None:
             "both methods reach Recall@20 1.000 on the cases with one ground-truth equation")
     r.add("MapKOneProp", fmt(nc["1"]["proposed_static|MAP"]))
     r.add("MapKOneBase", fmt(nc["1"]["baseline_tfidf|MAP"]))
+    r.add("RecKOneBase", fmt(nc["1"]["baseline_tfidf|Recall@20"]))
+    r.add("RecKOneProp", fmt(nc["1"]["proposed_static|Recall@20"]))
     for k, word in (("2", "Two"), ("5", "Five"), ("10", "Ten")):
         r.add(f"DiffRecK{word}", diff(nc[k]["proposed_static|Recall@20"], nc[k]["baseline_tfidf|Recall@20"]))
     r.add("DiffRecInLow", diff(ni["<=5"]["proposed_static|Recall@20"], ni["<=5"]["baseline_tfidf|Recall@20"]))
@@ -587,13 +686,125 @@ def _results_coverage(r: Registry) -> None:
     for n, word in (("50", "Fifty"), ("200", "TwoHundred"), ("500", "FiveHundred")):
         r.add(f"CovA{word}", fmt(a["at"][n]["coverage"]))
     require(a["at"]["2000"]["coverage"] == 1.0, "2,000 candidates hold every ground-truth equation of every case")
+    # the proposed method trained and evaluated with fewer candidates, and the time of one run (six runs in parallel)
+    name = "sweep.json"
+    sw = get(load(KATO / name), ("N1", "A"), name)
+    r.add("RecAFiveHundredCand", fmt(sw["500"]["Recall@20"]["mean"]))
+    for s in ("A", "B"):
+        cov = {n: v["coverage"]["mean"] for n, v in get(load(KATO / name), ("N1", s), name).items() if n.isdigit()}
+        require(cov["2000"] == 1.0 and all(c < 1.0 for n, c in cov.items() if n != "2000"),
+                f"among the compared numbers of candidates, only 2,000 admits every ground-truth equation of the test cases (Setting {s})")
+    r.add("TimeRunA", count(round(sw["2000"]["time_total_sec"]["mean"])))
+    r.add("TimeRunAFifty", count(round(sw["50"]["time_total_sec"]["mean"])))
+
+
+# ---- appendix tables whose rows are generated ----------------------------------------------------
+
+def _pm(e: dict, sd: str = "std") -> str:
+    return f"${fmt(e['mean'])} \\pm {fmt(e[sd])}$"
+
+
+def _weight_pair(label: str) -> str:
+    """w30-70 -> $(0.3, 0.7)$, w05-95 -> $(0.05, 0.95)$."""
+    a, b = label.lstrip("w").split("-")
+    f = lambda x: f"{int(x) / 100:.2f}".rstrip("0") if int(x) % 10 else f"{int(x) / 100:.1f}"  # noqa: E731
+    return f"$({f(a)}, {f(b)})$"
+
+
+def tables() -> dict:
+    out = {}
+    # baseline under 12 weight pairs, and the three text scorers with weights chosen per split
+    name = "baselines.json"
+    b = get(load(KATO / name), "settings", name)
+    rows = []
+    for w in b["A"]["scorers"]["tfidf"]["by_weight"]:
+        cells = [_weight_pair(w)]
+        for s in ("A", "B"):
+            e = b[s]["scorers"]["tfidf"]["by_weight"][w]
+            cells += [fmt(e["val"]["Recall@20"]["mean"]), _pm(e["test"]["Recall@20"]), _pm(e["test"]["MAP"])]
+            if s == "A":
+                cells.append("")
+        rows.append(" & ".join(cells) + " \\\\")
+    rows.append("\\midrule")
+    for scorer, label in (("tfidf", "TF-IDF"), ("bm25", "BM25"), ("e5", "E5")):
+        cells = [f"{label}, per split"]
+        for s in ("A", "B"):
+            e = b[s]["scorers"][scorer]["summary_test"]
+            cells += ["---", _pm(e["Recall@20"]), _pm(e["MAP"])]
+            if s == "A":
+                cells.append("")
+        rows.append(" & ".join(cells) + " \\\\")
+    out["tab_baseline_weights.tex"] = "\n".join(rows) + "\n"
+
+    # proposed method for each first-stage weight pair and choice of incorrect candidates
+    sel, rule = load(KATO / "selected.json"), load(KATO / "n1_rule.json")
+    rows = []
+    for s in ("A", "B"):
+        first = True
+        for w in rule["weights"]:
+            n1 = [v[w]["N1"] for v in rule["settings"][s].values()]
+            rng = count(min(n1)) if min(n1) == max(n1) else f"{count(min(n1))}--{count(max(n1))}"
+            for neg, label in (("random", "random"), ("hard", "hard negatives")):
+                e = get(sel, ("grid", s, f"{w}|{neg}"), "selected.json")
+                rows.append(" & ".join([s if first else "", _weight_pair(w), label, rng,
+                                        fmt(e["val"]["Recall@20"]["mean"]), fmt(e["test"]["Recall@20"]["mean"]),
+                                        fmt(e["test"]["MAP"]["mean"])]) + " \\\\")
+                first = False
+        if s == "A":
+            rows.append("\\midrule")
+    out["tab_stage1_grid.tex"] = "\n".join(rows) + "\n"
+
+    # by case characteristics (Setting A)
+    bk = get(load(KATO / "main.json"), ("buckets", "A"), "main.json")
+    rows = []
+
+    def brow(label, e):
+        cells = [label, count(e["n_records"])]
+        for key in ("Recall@20", "MAP"):
+            cells += [fmt(e[f"{m}|{key}"]) for m in ("baseline_tfidf", "proposed_static", "proposed_train")]
+        return " & ".join(cells) + " \\\\"
+    for k in sorted(bk["n_correct"], key=int):
+        rows.append(brow(f"{k} ground-truth equation" + ("" if k == "1" else "s"), bk["n_correct"][k]))
+    rows.append("\\midrule")
+    for k, label in (("<=5", "5 or fewer input variables"), ("6-10", "6--10 input variables"),
+                     ("11-15", "11--15 input variables"), ("16-20", "16--20 input variables"),
+                     (">=21", "21 or more input variables")):
+        rows.append(brow(label, bk["n_input"][k]))
+    out["tab_bucket.tex"] = "\n".join(rows) + "\n"
+
+    # number of first-stage candidates
+    sw = get(load(KATO / "sweep.json"), "N1", "sweep.json")
+    rows = []
+    for s in ("A", "B"):
+        for i, n in enumerate(("50", "200", "500", "1000", "2000")):
+            e = sw[s][n]
+            rows.append(" & ".join([f"Setting {s}" if i == 0 else "", count(int(n)), fmt(e["coverage"]["mean"], 4),
+                                    _pm(e["Recall@20"]), _pm(e["MAP"]), _pm(e["R-Precision"]),
+                                    count(round(e["time_total_sec"]["mean"]))]) + " \\\\")
+        if s == "A":
+            rows.append("\\midrule")
+    out["tab_n1.tex"] = "\n".join(rows) + "\n"
+
+    # search term of each field and the numbers of PDF files obtained
+    cell = lambda v: "---" if v is None else str(v)  # noqa: E731
+    srows = _search_rows()
+    rows = [" & ".join([FIELD_LABELS[f], term, *map(cell, c)]) + " \\\\" for f, term, c in srows]
+    rows.append("\\midrule")
+    totals = [sum(c[i] or 0 for _, _, c in srows) for i in range(7)]
+    rows.append("Total & & " + " & ".join(map(str, totals)) + " \\\\")
+    out["tab_search.tex"] = "\n".join(rows) + "\n"
+    return out
 
 
 def build() -> Registry:
     r = Registry()
     _dataset(r)
     _dataset_details(r)
+    _collection(r)
     _setup(r)
+    _code_constants(r)
+    _weights_and_seeds(r)
+    _appendix(r)
     _llm_setup(r)
     _overall(r)
     _llm(r)
@@ -613,13 +824,16 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     text = build().render()
     out = Path(args.out)
+    files = {out: text, **{out.parent / "generated" / k: v for k, v in tables().items()}}
     if args.check:
-        if not out.exists() or out.read_text(encoding="utf-8") != text:
-            print(f"{out} is stale: run python3 paper/cace/make_numbers.py", file=sys.stderr)
-            return 1
-        return 0
-    out.write_text(text, encoding="utf-8")
-    print(f"wrote {out}: {len(text.splitlines()) - 2} macros")
+        stale = [f for f, v in files.items() if not f.exists() or f.read_text(encoding="utf-8") != v]
+        for f in stale:
+            print(f"{f} is stale: run python3 paper/cace/make_numbers.py", file=sys.stderr)
+        return 1 if stale else 0
+    for f, v in files.items():
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(v, encoding="utf-8")
+    print(f"wrote {out}: {len(text.splitlines()) - 2} macros, and {len(files) - 1} tables in {out.parent / 'generated'}")
     return 0
 
 

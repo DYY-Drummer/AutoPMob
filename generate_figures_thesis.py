@@ -150,7 +150,9 @@ def dataset(augmented=True, out_dir=None):
 # ----------------------------------------------------------------------
 # split_balance() — ported from generate_figures_v6.py fig_split_balance() L586-635（本文では非表示）
 # ----------------------------------------------------------------------
-def split_balance(seed=42):
+def split_balance(seed=42, out_dir=None, paper=False):
+    """paper=True：軸と凡例を投稿論文の呼び名にする。out_dir：書き出し先（既定は修論の図）.
+    戻り値は訓練用とテスト用のケースの数、パネルの題、凡例の名前."""
     import sys
     sys.path.insert(0, str(ROOT))
     from set_aware_reranker import stratified_src_split
@@ -169,7 +171,10 @@ def split_balance(seed=42):
     tr = [i for i, s in enumerate(csrc) if s in sp["train"]]
     te = [i for i, s in enumerate(csrc) if s in sp["test"]]
 
-    panels = [("#Equations", nc), ("#Input variables", nin), ("#Output variables", nout), ("#Sources spanned", nsrc)]
+    titles = (["Ground-truth equations", "Input variables", "Output variables", "Sources spanned"] if paper
+              else ["#Equations", "#Input variables", "#Output variables", "#Sources spanned"])
+    legend = ["Training", "Test"] if paper else ["Train", "Test"]
+    panels = list(zip(titles, [nc, nin, nout, nsrc]))
     fig, axes = plt.subplots(1, 4, figsize=(13, 3.3))
     for ax, (name, vals) in zip(axes, panels):
         allv = sorted(set(vals))
@@ -179,8 +184,8 @@ def split_balance(seed=42):
             teh, _ = np.histogram([vals[i] for i in te], bins=bins, density=True)
             x = (bins[:-1] + bins[1:]) / 2
             w = (bins[1] - bins[0]) * 0.4
-            ax.bar(x - w / 2, trh, w, color=C_PROP, alpha=0.8, label="Train")
-            ax.bar(x + w / 2, teh, w, color="#d93025", alpha=0.8, label="Test")
+            ax.bar(x - w / 2, trh, w, color=C_PROP, alpha=0.8, label=legend[0])
+            ax.bar(x + w / 2, teh, w, color="#d93025", alpha=0.8, label=legend[1])
         else:
             ctr = Counter(vals[i] for i in tr)
             cte = Counter(vals[i] for i in te)
@@ -188,18 +193,19 @@ def split_balance(seed=42):
             nte = sum(cte.values())
             x = np.arange(len(allv))
             w = 0.38
-            ax.bar(x - w / 2, [ctr[v] / ntr for v in allv], w, color=C_PROP, alpha=0.85, label="Train")
-            ax.bar(x + w / 2, [cte[v] / nte for v in allv], w, color="#d93025", alpha=0.85, label="Test")
+            ax.bar(x - w / 2, [ctr[v] / ntr for v in allv], w, color=C_PROP, alpha=0.85, label=legend[0])
+            ax.bar(x + w / 2, [cte[v] / nte for v in allv], w, color="#d93025", alpha=0.85, label=legend[1])
             ax.set_xticks(x)
             ax.set_xticklabels(allv, fontsize=8)
         ax.set_title(name, fontsize=12)
-        ax.set_xlabel("Value", fontsize=9)
+        ax.set_xlabel("Number per case" if paper else "Value", fontsize=9)
         ax.grid(axis="y", alpha=0.3)
-    axes[0].set_ylabel("Fraction", fontsize=11)
+    axes[0].set_ylabel("Fraction of cases" if paper else "Fraction", fontsize=11)
     axes[0].legend(fontsize=10)
     fig.tight_layout()
-    save(fig, "fig_split_balance")
+    save(fig, "fig_split_balance", out_dir)
     print(f"split_balance: train/test = {len(tr)}/{len(te)}")
+    return {"n_train": len(tr), "n_test": len(te), "titles": titles, "legend": legend}
 
 
 # ----------------------------------------------------------------------

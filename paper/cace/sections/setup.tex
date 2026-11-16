@@ -13,7 +13,7 @@ We compare the proposed method with a classical information-retrieval baseline, 
 baseline with stronger text scorers, and two LLMs. Table~\ref{tab:inputs} lists the information each
 method uses.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{Information used by each method. The baseline includes its variants with BM25 and E5.}
 \label{tab:inputs}
@@ -35,8 +35,8 @@ Cases with known ground truth & training, validation & validation & none \\
 
 \paragraph{Classical baseline} The baseline ranks the whole database by the Stage-1 score of
 Eq.~\eqref{eq:stage1}, without a learned model and without a candidate set. Its weights decide how
-well it ranks, so we compare 12 weight pairs $(w_{\mathrm{t}}, w_{\mathrm{v}})$ from $(1.0, 0.0)$ to
-$(0.0, 1.0)$ and, in each split, evaluate on the test cases the pair with the highest Recall@20 on
+well it ranks, so we compare \NBasePairs{} weight pairs $(w_{\mathrm{t}}, w_{\mathrm{v}})$ from
+$\BasePairFirst$ to $\BasePairLast$ and, in each split, evaluate on the test cases the pair with the highest Recall@20 on
 the validation cases (\ref{app:weights}). Two variants test whether stronger text evidence alone
 would close the gap to the proposed method. The first replaces the TF-IDF cosine with BM25
 \citep{BM25}; the second replaces it with the cosine between dense embeddings of the description
@@ -59,8 +59,8 @@ not depend on the split; we therefore ask it three times per case, independently
 of the three answers in every split in which the case is a test case. The splits of the two
 settings hold \NTestDistinct{} distinct test cases, so each model answered \NCalls{} calls.
 
-\paragraph{Proposed method} We compared four pairs of first-stage weights, $(0.7, 0.3)$,
-$(0.5, 0.5)$, $(0.3, 0.7)$, and $(0.0, 1.0)$, by the Recall@20 of the validation cases. Their validation
+\paragraph{Proposed method} We compared four pairs of first-stage weights, \StagePairs, by the
+Recall@20 of the validation cases. Their validation
 Recall@20 ranged only from \ValRecAMin{} to \ValRecAMax{} in Setting~A and from \ValRecBMin{} to
 \ValRecBMax{} in Setting~B, so we use the pair $(\WText, \WVar)$ in every split, whose candidate set
 admits every ground-truth equation with the smallest $N_1$. In each split we set $N_1$ to the
@@ -88,8 +88,8 @@ $\Top_n(q)$ denotes the top $n$ equations that a method returns.
     $\mathrm{AP}(q) = \frac{1}{K} \sum_{e \in \mathcal{R}_q} P(e)$, where $P(e)$ is the fraction of
     ground-truth equations among the equations ranked at or above $e$, and $P(e) = 0$ when $e$ is
     not in the ranking. MAP shows how closely the ground-truth equations crowd at the top. Because
-    an LLM returns only 20 equations, the comparison with LLMs uses MAP@20, which sets $P(e) = 0$
-    for every ground-truth equation outside the top 20.
+    an LLM returns only 20 equations, the comparison with LLMs uses MAP@20, in which $P(e) = 0$ for
+    every ground-truth equation outside the top 20.
   \item R-Precision $= |\mathcal{R}_q \cap \Top_K(q)| / K$: the fraction of the ground-truth
     equations within the top $K$ \citep{Manning}.
 \end{itemize}
@@ -100,6 +100,5 @@ the 10 splits and the number of splits in which one beats the other.
 
 Every experiment runs as a deterministic script: the random seed fixes the split, the model
 initialization, and the choice of incorrect candidates. The proposed method calls no language model
-at inference. On the CPU of a laptop computer, training the reranker for one split of Setting~A took
-\TrainMinAMin{} to \TrainMinAMax{} minutes, and ranking the test cases of the split took
-\EvalSecAMin{} to \EvalSecAMax{} seconds.
+at inference. One run of training and evaluation for a split of Setting~A took \TimeRunA{} seconds on
+average, with six runs in parallel on the CPU of a laptop computer (\ref{app:n1}).

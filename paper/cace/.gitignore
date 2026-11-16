@@ -8,3 +8,4 @@
 *.spl
 *.synctex.gz
 build*.log
+figures/*.png

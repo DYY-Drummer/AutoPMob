@@ -24,7 +24,14 @@
 \newcommand{\AucFullSpecSE}{0.000}
 \newcommand{\AucFullText}{0.909}
 \newcommand{\AucFullTextSE}{0.004}
+\newcommand{\BasePairFirst}{(1.0, 0.0)}
+\newcommand{\BasePairLast}{(0.0, 1.0)}
+\newcommand{\BaseValRecALowMax}{0.906}
+\newcommand{\BaseValRecALowMin}{0.889}
+\newcommand{\BaseValRecATextOnly}{0.362}
 \newcommand{\BatchSize}{16}
+\newcommand{\BmB}{0.75}
+\newcommand{\BmKOne}{1.5}
 \newcommand{\CopiesPerListOpus}{3.3}
 \newcommand{\CopiesPerListProp}{3.3}
 \newcommand{\CostHaiku}{255.23}
@@ -70,12 +77,10 @@
 \newcommand{\DiffRecSpec}{+0.068}
 \newcommand{\DiffRecStepThree}{+0.006}
 \newcommand{\DiffRecStepTwo}{+0.071}
+\newcommand{\Dropout}{0.1}
 \newcommand{\Epochs}{15}
 \newcommand{\ErrRecall}{0.974}
-\newcommand{\EvalSecAMax}{9}
-\newcommand{\EvalSecAMin}{4}
-\newcommand{\EvalSecBMax}{3}
-\newcommand{\EvalSecBMin}{2}
+\newcommand{\FirstSeed}{42}
 \newcommand{\GapMapTwAHaikuBase}{0.380}
 \newcommand{\GapMapTwAHaikuProp}{0.558}
 \newcommand{\GapMapTwAOpusBase}{0.082}
@@ -213,6 +218,7 @@
 \newcommand{\MeanSrcCross}{2.01}
 \newcommand{\MeanSrcSingle}{1.00}
 \newcommand{\MeanSrcSynth}{1.10}
+\newcommand{\NBasePairs}{12}
 \newcommand{\NBothEq}{177}
 \newcommand{\NCalls}{5{,}019}
 \newcommand{\NCases}{1{,}731}
@@ -255,12 +261,15 @@
 \newcommand{\NOpusWinRec}{36}
 \newcommand{\NOpusWinSevenPlus}{26}
 \newcommand{\NPdf}{329}
+\newcommand{\NPerFieldMax}{10}
+\newcommand{\NPerFieldMin}{7}
 \newcommand{\NPerm}{20}
 \newcommand{\NRecEightA}{698}
 \newcommand{\NRecEightB}{753}
 \newcommand{\NRecordsA}{4{,}229}
 \newcommand{\NRefSets}{32}
 \newcommand{\NReqThreeTrivial}{1{,}724}
+\newcommand{\NSearchPdf}{306}
 \newcommand{\NSingle}{91}
 \newcommand{\NSolved}{365}
 \newcommand{\NSources}{361}
@@ -281,10 +290,12 @@
 \newcommand{\NTestCrossMax}{200}
 \newcommand{\NTestCrossMin}{119}
 \newcommand{\NTestDistinct}{1{,}673}
+\newcommand{\NTestFirstSplit}{407}
 \newcommand{\NTestSingleMax}{32}
 \newcommand{\NTestSingleMin}{10}
 \newcommand{\NTestSynthMax}{304}
 \newcommand{\NTestSynthMin}{160}
+\newcommand{\NTrainFirstSplit}{975}
 \newcommand{\NUnsolved}{42}
 \newcommand{\NValAMax}{349}
 \newcommand{\NValAMin}{216}
@@ -344,6 +355,7 @@
 \newcommand{\RecABmSD}{0.019}
 \newcommand{\RecAEFive}{0.892}
 \newcommand{\RecAEFiveSD}{0.023}
+\newcommand{\RecAFiveHundredCand}{0.981}
 \newcommand{\RecAGreedy}{0.983}
 \newcommand{\RecAGreedySD}{0.009}
 \newcommand{\RecAHaiku}{0.497}
@@ -382,6 +394,8 @@
 \newcommand{\RecCrossOpusSD}{0.026}
 \newcommand{\RecCrossProp}{1.000}
 \newcommand{\RecCrossPropSD}{0.000}
+\newcommand{\RecKOneBase}{1.000}
+\newcommand{\RecKOneProp}{1.000}
 \newcommand{\RecSingleBase}{1.000}
 \newcommand{\RecSingleBaseSD}{0.000}
 \newcommand{\RecSingleHaiku}{0.823}
@@ -409,6 +423,7 @@
 \newcommand{\RunSdOpus}{0.042}
 \newcommand{\SameListHaiku}{2.0}
 \newcommand{\SameListOpus}{0.06}
+\newcommand{\Seeds}{42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999}
 \newcommand{\ShareHaikuRefusals}{2.9}
 \newcommand{\ShareHaikuWithTwenty}{87.9}
 \newcommand{\ShareKTwoPlus}{90.4}
@@ -416,6 +431,8 @@
 \newcommand{\ShareOpusRefusals}{0.0}
 \newcommand{\ShareOpusWinRec}{2.3}
 \newcommand{\ShareOpusWithTwenty}{96.4}
+\newcommand{\StagePairs}{$(0.7, 0.3)$, $(0.5, 0.5)$, $(0.3, 0.7)$, and $(0.0, 1.0)$}
+\newcommand{\SvdDim}{256}
 \newcommand{\TerHighOpus}{0.769}
 \newcommand{\TerHighProp}{0.922}
 \newcommand{\TerHighWin}{5.8}
@@ -427,10 +444,9 @@
 \newcommand{\TerMidWin}{8.0}
 \newcommand{\TextBoth}{0.10}
 \newcommand{\TextOnlyOpus}{0.07}
-\newcommand{\TrainMinAMax}{8.2}
-\newcommand{\TrainMinAMin}{2.4}
-\newcommand{\TrainMinBMax}{1.6}
-\newcommand{\TrainMinBMin}{1.1}
+\newcommand{\TimeRatioA}{2.4}
+\newcommand{\TimeRunA}{161}
+\newcommand{\TimeRunAFifty}{66}
 \newcommand{\ValRecAMax}{0.983}
 \newcommand{\ValRecAMin}{0.980}
 \newcommand{\ValRecBMax}{0.975}

@@ -36,7 +36,7 @@ Fig.~\ref{fig:dataset}); the evaluation uses \NCases{} cases. Every case takes i
 variables from the symbols of its ground-truth equations, so a query and its answer share one
 notation.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{The three families of evaluation cases. ``Equations'' gives the mean and, in parentheses,
 the maximum number of ground-truth equations per case, and ``Sources'' the mean number of sources
@@ -55,7 +55,7 @@ Synthesized   & A program grew a set from a differential equation to a prescribe
 \end{tabular}
 \end{table}
 
-\begin{figure}[t]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.98\linewidth]{figures/fig_dataset.pdf}
 \caption{The evaluation cases. (a) Composition: Setting~A uses the single-source, cross-source, and
 synthesized cases, and Setting~B the synthesized cases alone; hatched bars mark the cases excluded
@@ -64,8 +64,9 @@ from training and evaluation. (b) Number of ground-truth equations per case in S
 \end{figure}
 
 A language model formed the ground truths of the single-source family (\NSingle{} cases). We gave
-Gemini 2.5 Pro a catalog that listed, for each equation, only its identifier, its domain label, and
-its variable symbols, and asked for physically meaningful cases: a description, input and output
+Gemini 2.5 Pro a catalog that listed, for each equation, only its identifier, which names its
+source, its domain label, and its variable symbols, and asked for physically meaningful cases: a
+description, input and output
 variables, and a ground-truth set that the inputs determine and that is sufficient and minimal
 (\ref{app:prompts}). We kept the cases whose ground-truth equations all exist in the database, whose
 input and output variables all appear in them, and whose ground truth has as many unknowns as
@@ -129,7 +130,8 @@ A random assignment of sources can put the cases with many equations on one side
 it. For one split, we draw \NSplitCandidates{} random assignments and take four quantities per
 case: the numbers of ground-truth equations, of input variables, of output variables, and of
 sources spanned. For each quantity we compute the $L_1$ distance between its training and test
-frequency distributions, and we select the assignment with the smallest sum of the four distances.
+frequency distributions, and we select the assignment with the smallest sum of the four distances
+(\ref{app:split} shows one split).
 Every experiment repeats this procedure over the same 10 random seeds and reports the mean and the
 standard deviation across them; the seed also fixes the initialization of the model and the choice
 of incorrect candidates. The validation cases choose the hyperparameters of the methods

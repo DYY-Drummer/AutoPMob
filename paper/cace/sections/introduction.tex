@@ -19,7 +19,7 @@ into the desired model. Its component technologies extract variable symbols and 
 \citep{ProcessBERT}, judge whether two equation systems are equivalent \citep{DAEEquiv}, and
 combine given equations into models that meet predefined requirements \citep{CombineEq}.
 
-\begin{figure}[t]\centering
+\begin{figure}[tbp]\centering
 \includegraphics[width=0.98\linewidth]{figures/fig_autopmob_overview.pdf}
 \caption{The automated physical model builder (AutoPMoB) and the position of this study. (a)
 AutoPMoB collects documents about a target process, extracts equations, variables, and data,
@@ -79,8 +79,8 @@ several sources or many equations.
 
 The contributions of this paper are fourfold:
 \begin{enumerate}
-  \item a formulation of equation selection for physical model building as equation-set retrieval,
-    with a benchmark of \NEq{} equations and \NCases{} cases split by source;
+  \item a formulation of equation selection for physical model building as the retrieval of an
+    equation set, with a benchmark of \NEq{} equations and \NCases{} cases split by source;
   \item a two-stage retrieval method with set-aware reranking that improves Recall@20 and mean
     average precision over classical retrieval in every split;
   \item an empirical account of the method: which features cause the improvement, where
