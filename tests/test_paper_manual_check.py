@@ -107,3 +107,93 @@ def test_recorded_sample_matches_a_fresh_draw():
     assert rec["n"] == 50 and len(rec["cases"]) == 50
     assert rec["population"] == {"single": 91, "cross": 640, "synth": 1000}
     assert rec["allocation"] == {"single": 3, "cross": 18, "synth": 29}
+
+
+# ---- 確認の結果の読み込み、集計、2 人の判定の一致（paper/cace/manual_check.py） ----------------------------
+
+import manual_check as chk  # noqa: E402
+
+CSV_HEAD = "case_id,C1,C2,C3,C4,note\n"
+
+
+def _write(tmp_path, body, name="r.csv"):
+    f = tmp_path / name
+    f.write_text(CSV_HEAD + body, encoding="utf-8")
+    return f
+
+
+def test_read_results_returns_the_judgments_by_case(tmp_path):
+    f = _write(tmp_path, 'a,Y,N,NA,Y,"理由, その 1"\nb,N,Y,Y,N,\n')
+    out = chk.read_results(f, ["a", "b"])
+    assert out["a"] == {"C1": "Y", "C2": "N", "C3": "NA", "C4": "Y", "note": "理由, その 1"}
+    assert list(out) == ["a", "b"]
+
+
+@pytest.mark.parametrize("body, message", [
+    ("a,Y,N,NA,Y,\n", "missing"),                       # b がない
+    ("a,Y,N,NA,Y,\nb,N,Y,Y,N,\nc,Y,Y,Y,Y,\n", "not in the sample"),
+    ("a,Y,,NA,Y,\nb,N,Y,Y,N,\n", "C2"),                 # 空欄
+    ("a,Y,N,NA,NA,\nb,N,Y,Y,N,\n", "C4"),               # 対象外は C3 だけ
+    ("a,Y,N,NA,Y,\na,N,Y,Y,N,\n", "twice"),
+])
+def test_read_results_rejects_incomplete_or_invalid_files(tmp_path, body, message):
+    with pytest.raises(ValueError, match=message):
+        chk.read_results(_write(tmp_path, body), ["a", "b"])
+
+
+def test_read_results_rejects_other_columns(tmp_path):
+    f = tmp_path / "r.csv"
+    f.write_text("case_id,C1,C2,C3,note\na,Y,N,NA,\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="columns"):
+        chk.read_results(f, ["a"])
+
+
+RES = {"a": {"C1": "Y", "C2": "Y", "C3": "NA", "C4": "Y", "note": ""},
+       "b": {"C1": "N", "C2": "Y", "C3": "Y", "C4": "N", "note": ""},
+       "c": {"C1": "Y", "C2": "N", "C3": "N", "C4": "Y", "note": ""}}
+KIND_OF = {"a": "single", "b": "cross", "c": "cross"}
+
+
+def test_summarize_counts_each_criterion_overall_and_by_family():
+    s = chk.summarize(RES, KIND_OF)
+    assert s["n"] == 3
+    assert s["criteria"]["C1"] == {"Y": 2, "N": 1, "NA": 0}
+    assert s["criteria"]["C3"] == {"Y": 1, "N": 1, "NA": 1}
+    assert s["by_kind"]["cross"]["C2"] == {"Y": 1, "N": 1, "NA": 0}
+    assert s["all_met"] == {"n": 1, "by_kind": {"single": 1, "cross": 0, "synth": 0}, "cases": ["a"]}
+    assert s["n_by_kind"] == {"single": 1, "cross": 2, "synth": 0}
+
+
+def test_cohen_kappa():
+    assert chk.cohen_kappa([("Y", "Y"), ("N", "N"), ("Y", "Y"), ("N", "N")]) == pytest.approx(1.0)
+    assert chk.cohen_kappa([("Y", "Y"), ("Y", "N"), ("N", "Y"), ("N", "N")]) == pytest.approx(0.0)
+    # 観測の一致 0.75、偶然の一致 0.5*0.25 + 0.5*0.75 = 0.5 → (0.75 - 0.5) / 0.5
+    assert chk.cohen_kappa([("Y", "Y"), ("Y", "N"), ("N", "N"), ("N", "N")]) == pytest.approx(0.5)
+    assert chk.cohen_kappa([("Y", "Y"), ("Y", "Y")]) is None      # どちらも 1 種類の答えだけ：定義できない
+
+
+def test_agreement_counts_matches_and_lists_the_cases_that_differ():
+    other = {"a": dict(RES["a"]), "b": dict(RES["b"], C4="Y", note="求まる"), "c": dict(RES["c"], C3="Y")}
+    out = chk.agreement(RES, other)
+    assert out["criteria"]["C1"]["n"] == 3 and out["criteria"]["C1"]["agree"] == 3
+    assert out["criteria"]["C4"]["agree"] == 2
+    assert out["criteria"]["C3"]["agree"] == 2
+    assert out["cases_all_four_agree"] == 1
+    assert out["judgments"] == {"n": 12, "agree": 10}
+    assert out["differences"] == [{"case_id": "b", "criterion": "C4", "a": "N", "b": "Y", "note_a": "", "note_b": "求まる"},
+                                  {"case_id": "c", "criterion": "C3", "a": "N", "b": "Y", "note_a": "", "note_b": ""}]
+
+
+def test_agreement_needs_the_same_cases():
+    with pytest.raises(ValueError, match="same cases"):
+        chk.agreement(RES, {"a": RES["a"]})
+
+
+def test_recorded_judgments_of_the_language_model_are_complete():
+    """Claude の判定（著者の結果と照合する相手）が、標本の 50 件をすべて含み、値が正しい形であること."""
+    sample = json.loads(mc.SAMPLE_JSON.read_text(encoding="utf-8"))
+    res = chk.read_results(chk.RESULTS_CLAUDE, sample["cases"])
+    s = chk.summarize(res, {c: ("synth" if c.startswith("dae_") else "single" if c.startswith("core_") else "cross") for c in res})
+    assert s["criteria"] == {"C1": {"Y": 38, "N": 12, "NA": 0}, "C2": {"Y": 23, "N": 27, "NA": 0},
+                             "C3": {"Y": 25, "N": 16, "NA": 9}, "C4": {"Y": 28, "N": 22, "NA": 0}}
+    assert s["all_met"]["n"] == 15 and s["all_met"]["by_kind"] == {"single": 3, "cross": 5, "synth": 7}
