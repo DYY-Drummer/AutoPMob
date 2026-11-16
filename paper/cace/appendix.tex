@@ -136,8 +136,9 @@ learned greedy selection.}
 \includegraphics[width=\linewidth]{figures/fig_mechanism.pdf}
 \caption{MAP gain over the reranker with the seven query--equation features when the set-aware
 features are added one at a time or all three together (Setting~A), (a) by the number of
-ground-truth equations and (b) by the number of input variables. Points show the mean over the 10
-splits of the paired difference, and error bars its SD across the splits.}
+ground-truth equations and (b) by the number of input variables, in bins that differ from those
+of Fig.~\ref{fig:characteristic}. Points show the mean over the 10 splits of the paired difference,
+and error bars its SD across the splits.}
 \label{fig:mechanism}
 \end{figure}
 
@@ -314,7 +315,7 @@ Output a single JSON array. Each element must have these fields:
 Use source_id = "{source_id}" for all equations from this document.
 \end{Verbatim}
 
-\subsection*{Reference equation sets (Gemini 2.5 Pro)}
+\subsection*{Generated equation sets (Gemini 2.5 Pro)}
 The first set, 20 fundamental equations of chemical engineering, came from the following prompt.
 \begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]
 You are an expert in chemical engineering and process modeling.
@@ -339,7 +340,7 @@ For each equation provide:
 Output a single JSON array of exactly 20 equation objects. Use the exact field names above.
 Do not include any markdown or code fence, only the JSON array.
 \end{Verbatim}
-The other 31 sets came from the following prompt, field by field; \texttt{\{label\}} received the
+The other \NRefSetsOther{} sets came from the following prompt, field by field; \texttt{\{label\}} received the
 name of the field, \texttt{\{n\}} the number of equations, \texttt{\{topics\}} the topics fixed for
 the field, and \texttt{\{source\_id\}} the name of the set.
 \begin{Verbatim}[fontsize=\scriptsize, breaklines=true, frame=single, baselinestretch=1]

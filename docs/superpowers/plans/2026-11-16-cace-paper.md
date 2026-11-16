@@ -17,6 +17,7 @@
 - Judgment is by equation identifier only; no equivalence or notation matching. LLM numbers come from `experiments/llm_db_baseline/id_summary.json`.
 - Do not describe duplicated documents or equations as a problem, limitation or future work. The only exception is one sentence in the error analysis (spec §5, 7.7).
 - "Source" means one PDF file or one generated reference set. Write "329 PDF files", never "329 documents"; write that no source spans training and testing, never that no document leaks.
+  - **Corrected after the final review (2026-11-16):** "no source spans training and testing" is false for ground truths that draw on several sources. Write that each case is assigned to the source that contributes most of its ground-truth equations, that cases assigned to one source stay in one part, and that 37.1% of the test cases of Setting A share a ground-truth equation with a training case (`experiments/llm_db_baseline/split_overlap.json`).
 - No statistical tests. Report mean ± SD over 10 splits and the number of splits in which one method beats another.
 - Do not mention the symbol-renaming experiment, the document-level split check, augmented cases, or the thesis as a document.
 - Do not write "untested" about other notations; write that the experiments cover only queries that share the notation of the ground truth.

@@ -40,6 +40,19 @@ def test_hand_typed_numbers_ignores_verbatim_blocks():
     assert cm.hand_typed_numbers(tex) == ["0.75"]
 
 
+def test_hand_typed_numbers_finds_integers_that_depend_on_the_data():
+    # 査読の指摘（2026-11-16）：区切りのない整数（36 cases、1731、90%）を見逃していた
+    tex = r"Opus was higher in 36 cases, 28 of the 36, on 1731 cases and 5019 calls, 90\% of them, with seed 42."
+    assert cm.hand_typed_numbers(tex) == ["36", "28", "36", "1731", "5019", "90", "42"]
+
+
+def test_hand_typed_numbers_accepts_the_constants_of_the_design():
+    tex = (r"in all 10 splits, the top 20, Recall@20, 100 cases for each $X$ from 1 to 10, $N_1 = 500$, "
+           r"20\% and 60\%, 512 tokens, in 2006, \citep{Gemini25}, \ref{tab:n1}, \texttt{dae\_X3\_016}, "
+           r"\texttt{intfloat/e5-base-v2}, NTCIR-12, \includegraphics[width=\linewidth]{figures/fig_greedy_3way.pdf}")
+    assert cm.hand_typed_numbers(tex) == []
+
+
 # ---- マクロの展開 ----------------------------------------------------------------------------
 
 def test_read_macros_parses_newcommand_lines():
@@ -57,6 +70,12 @@ def test_swallowed_spaces_finds_a_macro_followed_by_a_space():
     # TeX は制御語の後ろの空白を読み飛ばすので、\NPdf files は「329files」と印刷される
     macros = {"NPdf": "329"}
     assert cm.swallowed_spaces(r"The \NPdf files and the \NPdf{} files, \NPdf.", macros) == [r"\NPdf files"]
+
+
+def test_swallowed_spaces_finds_a_macro_at_the_end_of_a_line():
+    # 行末も空白と同じで、制御語の直後なら読み飛ばされる
+    macros = {"NPdf": "329"}
+    assert cm.swallowed_spaces("The \\NPdf\nfiles and \\NPdf{}\nfiles.", macros) == ["\\NPdf\nfiles"]
 
 
 # ---- 語数 ------------------------------------------------------------------------------------
@@ -81,6 +100,10 @@ def test_word_count_keeps_the_text_of_formatting_commands():
     assert cm.word_count(r"\paragraph{Proposed method} We call it \emph{set-aware} reranking, in 50\% of cases.") == 11
 
 
+def test_word_count_treats_an_escaped_dollar_as_text():
+    assert cm.word_count(r"It cost \$5 per query and \$7 per day in total.") == 11
+
+
 # ---- 書かない言い回し ------------------------------------------------------------------------
 
 def test_banned_phrases_finds_each_banned_wording():
@@ -97,7 +120,26 @@ def test_banned_phrases_accepts_the_agreed_wording():
 
 def test_banned_phrases_also_covers_what_the_paper_must_not_mention():
     text = "This thesis renamed the symbols of augmented cases and found a significant gain under a document-level split."
-    assert cm.banned_phrases(text) == ["augmented", "thesis", "renamed symbols", "document-level", "significant"]
+    assert cm.banned_phrases(text) == ["augmented cases", "thesis", "renamed symbols", "document-level", "significant"]
+
+
+def test_banned_phrases_allows_augmented_in_other_senses():
+    assert cm.banned_phrases("Retrieval-augmented generation is related work.") == []
+    assert cm.banned_phrases("The augmented cases were dropped.") == ["augmented cases"]
+
+
+# ---- 図の写し --------------------------------------------------------------------------------
+
+def test_stale_figures_reports_copies_that_differ_from_the_thesis(tmp_path):
+    thesis, paper = tmp_path / "thesis", tmp_path / "paper"
+    thesis.mkdir()
+    paper.mkdir()
+    (thesis / "a.pdf").write_bytes(b"new")
+    (paper / "a.pdf").write_bytes(b"old")
+    (thesis / "b.pdf").write_bytes(b"same")
+    (paper / "b.pdf").write_bytes(b"same")
+    (thesis / "c.pdf").write_bytes(b"only in the thesis")
+    assert cm.stale_figures(paper, thesis, ["a.pdf", "b.pdf", "c.pdf"]) == ["a.pdf", "c.pdf"]
 
 
 # ---- Highlights ------------------------------------------------------------------------------
@@ -110,7 +152,16 @@ def test_long_highlights_reports_items_over_the_limit():
 # ---- 原稿そのもの ----------------------------------------------------------------------------
 
 def test_manuscript_passes_the_checks():
-    assert cm.check() == []
+    # 図の写しの照合は外す：tests/test_fig_overview.py が実行中に修論の図を書き直すので、テストの順で結果が変わる。
+    # 図の照合そのものは下のテストと、python3 paper/cace/check_manuscript.py の実行で確かめる。
+    assert cm.check(figures=False) == []
+
+
+def test_check_reports_figures_that_differ_from_the_thesis(monkeypatch, tmp_path):
+    (tmp_path / "fig_pfi.pdf").write_bytes(b"a newer figure in the thesis")
+    monkeypatch.setattr(cm, "THESIS_FIGURES", tmp_path)
+    failures = cm.check()
+    assert len(failures) == 1 and "fig_pfi.pdf" in failures[0]
 
 
 def test_appendix_prints_the_prompt_that_the_llm_comparison_used():

@@ -32,8 +32,8 @@ difficulty lies in the search: the candidate forms span a large combinatorial sp
 methods that learn from data alone leave unused the knowledge that scientists rely on. LLM-SR
 brings that knowledge in by letting an LLM propose equation skeletons, whose parameters an
 optimizer fits to the data \citep{LLMSR}. This study differs in where its equations come from: it
-builds a model from equations collected from the literature, so it needs no data measured on the
-target process, and it reads context, which numbers do not carry. The two approaches can work
+selects equations collected from the literature, so it needs no data measured on the target
+process, and it reads context, which numbers do not carry. The two approaches can work
 together, because the retrieved equations, with their coefficients left free, can serve as
 candidate skeletons for symbolic regression.
 

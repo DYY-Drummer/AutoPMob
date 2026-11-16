@@ -1170,11 +1170,17 @@
    "jaccard_mean": 0.5726877453796267,
    "same_list_share": 0.0005977286312014345,
    "n_answers": 5019,
-   "answers_with_20": 4838,
-   "answers_over_20": 31,
-   "answers_with_invalid_id": 21,
-   "answers_with_duplicates": 75,
-   "refusals": 0,
+   "format": {
+    "n": 5019,
+    "as_instructed": 4788,
+    "exactly_20_distinct": 4807,
+    "more_than_20_distinct": 31,
+    "fewer_than_20_distinct": 181,
+    "empty": 0,
+    "with_repeats": 75,
+    "with_absent_id": 21,
+    "refusals": 0
+   },
    "output_tokens_mean": 875.5694361426579,
    "cost": {
     "n_calls": 5019,
@@ -1190,11 +1196,17 @@
    "jaccard_mean": 0.3235029418604581,
    "same_list_share": 0.01972504482964734,
    "n_answers": 5019,
-   "answers_with_20": 4412,
-   "answers_over_20": 645,
-   "answers_with_invalid_id": 31,
-   "answers_with_duplicates": 626,
-   "refusals": 144,
+   "format": {
+    "n": 5019,
+    "as_instructed": 3746,
+    "exactly_20_distinct": 3767,
+    "more_than_20_distinct": 645,
+    "fewer_than_20_distinct": 607,
+    "empty": 144,
+    "with_repeats": 626,
+    "with_absent_id": 31,
+    "refusals": 144
+   },
    "output_tokens_mean": 1149.8938035465233,
    "cost": {
     "n_calls": 5019,
@@ -1204,5 +1216,5 @@
    }
   }
  },
- "created": "2026-11-16T06:38:45+00:00"
+ "created": "2026-11-16T08:26:48+00:00"
 }

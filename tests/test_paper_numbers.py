@@ -104,7 +104,10 @@ def built():
     ("NTestDistinct", "1{,}673"), ("NCalls", "5{,}019"),                                # llm_db_baseline/id_summary.json, results
     ("CostOpus", "1{,}058.93"), ("CostHaiku", "255.23"), ("CostTotal", "1{,}314.16"),   # id_summary.json models.*.cost
     ("ReadShareOpus", "90.2"), ("ReadShareHaiku", "93.6"), ("HaikuRefusals", "144"),
-    ("ShareHaikuRefusals", "2.9"), ("OpusWithTwenty", "4{,}838"), ("ShareOpusWithTwenty", "96.4"),
+    ("ShareHaikuRefusals", "2.9"), ("OpusAsInstructed", "4{,}788"), ("ShareOpusAsInstructed", "95.4"),
+    ("HaikuAsInstructed", "3{,}746"), ("ShareHaikuAsInstructed", "74.6"),
+    ("OpusOverTwenty", "31"), ("OpusUnderTwenty", "181"), ("HaikuOverTwenty", "645"), ("HaikuUnderTwenty", "463"),
+    ("OpusRepeatedId", "75"), ("OpusInvalidId", "21"), ("HaikuRepeatedId", "626"),
     ("RunSdOpus", "0.042"), ("RunSameOpus", "72.0"), ("JaccardHaiku", "0.324"), ("SameListOpus", "0.06"),
     ("TimeRunA", "161"), ("TimeRunAFifty", "66"), ("RecAFiveHundredCand", "0.981"),      # kato1021/sweep.json
     ("TimeRatioA", "2.4"),
@@ -117,6 +120,15 @@ def built():
     ("StagePairs", "$(0.7, 0.3)$, $(0.5, 0.5)$, $(0.3, 0.7)$, and $(0.0, 1.0)$"),      # kato1021/n1_rule.json weights
     ("Seeds", "42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999"),                # llm_db_baseline/splits.json
     ("NTrainFirstSplit", "975"), ("NTestFirstSplit", "407"), ("FirstSeed", "42"),
+    ("ShareSharedEqA", "37.1"), ("ShareSharedEqAMin", "29.1"), ("ShareSharedEqAMax", "43.5"),   # split_overlap.json
+    ("ShareSharedEqCross", "69.9"), ("ShareSharedEqSynth", "17.3"), ("ShareSharedEqSingle", "4.7"),
+    ("ShareSharedEqB", "8.4"),
+    ("NSingleOneEq", "67"), ("NSingleRefOnly", "61"), ("NWithIntermediate", "7"),     # kato1021/data_counts.json
+    ("NOnlyPropEq", "16"), ("NRefSetsOther", "31"),
+    ("LeadRecSingle", "0.036"), ("LeadMapTwSingle", "0.031"), ("LeadRecCross", "0.050"),       # id_summary.json by_kind
+    ("LeadMapTwCross", "0.130"), ("LeadRecSynth", "0.063"), ("LeadMapTwSynth", "0.079"),
+    ("TerOpusMin", "0.769"), ("TerOpusMax", "0.780"),
+    ("NRuleAdded", "277"),                                                              # fix_dataset_quality_report.json
     ("DiffRecAPropBase", "+0.075"), ("DiffMapBPropBase", "+0.205"),                     # kato1021/main.json compare
     ("DiffRecKTen", "+0.238"), ("MapKOneBase", "0.934"), ("NRecordsA", "4{,}229"),      # kato1021/main.json buckets
     ("RecARSeven", "0.975"), ("DiffMapStepThree", "+0.073"), ("WinsRecStepOne", "3"),   # kato1021/mech.json
@@ -202,3 +214,62 @@ def test_check_covers_the_generated_tables(tmp_path):
     f = tmp_path / "generated" / "tab_bucket.tex"
     f.write_text(f.read_text(encoding="utf-8") + "x", encoding="utf-8")
     assert mn.main(["--check", "--out", str(out)]) == 1
+
+
+# ---- 査読の指摘（2026-11-16）：欠けたキー、欠損値、追跡されていない入力 --------------------------------
+
+def test_load_names_the_file_and_the_path_of_a_missing_key(tmp_path):
+    """get() を通さない素の添字でも、欠けたキーはファイル名とキーの道筋つきで止まること."""
+    import json
+    f = tmp_path / "result.json"
+    f.write_text(json.dumps({"table": {"A": {"MAP": {"mean": 0.5}}}, "rows": [{"x": 1}]}), encoding="utf-8")
+    d = mn.load(f)
+    assert d["table"]["A"]["MAP"]["mean"] == 0.5
+    assert [k for k, _ in d["table"].items()] == ["A"] and d["table"]["A"].get("absent", 0) == 0
+    with pytest.raises(KeyError, match=r"result\.json.*table\.A\.MAP\.mean_delta"):
+        d["table"]["A"]["MAP"]["mean_delta"]
+    with pytest.raises(KeyError, match=r"result\.json.*rows\[0\]\.y"):
+        d["rows"][0]["y"]
+    with pytest.raises(IndexError, match=r"result\.json.*rows\[3\]"):
+        d["rows"][3]
+
+
+@pytest.mark.parametrize("bad", [None, float("nan"), float("inf"), "0.5", True])
+def test_number_formats_reject_missing_and_non_finite_values(bad):
+    for f in (mn.fmt, mn.pct, mn.money, mn.count):
+        with pytest.raises(ValueError):
+            f(bad)
+
+
+@pytest.mark.parametrize("bad", ["None", "nan", "", "-nan", "inf", "0.5 and None"])
+def test_registry_rejects_placeholders_for_missing_values(bad):
+    with pytest.raises(ValueError, match="RecAProp"):
+        mn.Registry().add("RecAProp", bad)
+
+
+def test_registry_accepts_text_values_that_only_resemble_placeholders():
+    r = mn.Registry()
+    r.add("StagePairs", "$(0.7, 0.3)$, and $(0.0, 1.0)$")
+    r.add("Seeds", "42, 123")
+
+
+def test_database_counts_come_from_a_tracked_file():
+    """unified_equations.json は git で追跡していないので、数は追跡してある db_counts.json から読むこと."""
+    assert mn.DB_COUNTS.exists()
+    import subprocess
+    tracked = subprocess.run(["git", "ls-files", "--error-unmatch", str(mn.DB_COUNTS)], cwd=mn.ROOT,
+                             capture_output=True, text=True)
+    assert tracked.returncode == 0, "paper/cace/data/db_counts.json must be tracked by git"
+
+
+def test_build_does_not_need_the_untracked_database(monkeypatch, tmp_path):
+    monkeypatch.setattr(mn, "DB_FILE", tmp_path / "absent.json")
+    assert mn.build().values["NEq"] == "11{,}146"
+
+
+def test_build_stops_when_the_database_changed_after_the_counts(monkeypatch, tmp_path):
+    changed = tmp_path / "unified_equations.json"
+    changed.write_text("[]", encoding="utf-8")
+    monkeypatch.setattr(mn, "DB_FILE", changed)
+    with pytest.raises(ValueError, match="db_counts"):
+        mn.build()

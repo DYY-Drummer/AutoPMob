@@ -295,9 +295,17 @@ to retrieve it is a failure of the method rather than of the dataset.
 
 We split the cases into training, validation, and test cases by source. Each case belongs to the
 source that contributes most of its ground-truth equations. We shuffle the list of sources and
-assign 20\% of them to testing, 20\% to validation, and 60\% to training. If cases whose ground
-truths contain equations of the same source fell into both training and testing, the model would
-see the test answers during training; assigning whole sources prevents this. The ratio fixes the
+assign 20\% of them to testing, 20\% to validation, and 60\% to training. Two cases assigned to the
+same source therefore never fall into different parts. A ground truth that draws on several
+sources, however, can share equations with the cases of another part: in Setting~A, 37.1\% of the
+test cases share at least one ground-truth equation with a training case (29.1\% to 43.5\% across
+the splits; 69.9\% of the cross-source, 17.3\% of the synthesized, and 4.7\% of the single-source
+test cases), and in Setting~B 8.4\% do. The reranker reads ten features of a candidate, not its
+identity, so it cannot memorize an equation; the test cases are nevertheless not all new to it at
+the level of equations.
+% source: experiments/llm_db_baseline/split_overlap.json（analyze_split_overlap.py、2026-11-16。式は ID で照合。
+%         旧記載「assigning whole sources prevents this」は、複数の出典の式から成る正解集合には成り立たないので直した）
+The ratio fixes the
 number of sources, not of cases, and sources hold different numbers of cases, so the numbers of
 cases vary from split to split: 298 to 527 test cases and 216 to 349 validation cases in
 Setting~A. The validation cases choose hyperparameters of the methods (Section~\ref{sec:compared}).
@@ -317,8 +325,7 @@ test frequency distributions, as proportions, and select the candidate with the 
 four distances; the validation cases enter no comparison. Every experiment repeats this procedure
 over the same 10 random seeds and reports the mean and the standard deviation across them. Each
 seed draws its own 400 candidates, so the 10 splits come from 4,000 candidates in all; the seed
-also fixes the initialization of the model and the choice of negatives. Results therefore measure generalization to unseen sources rather than memorization of
-seen ones. Fig.~\ref{fig:dataset} summarizes the cases.
+also fixes the initialization of the model and the choice of negatives. Fig.~\ref{fig:dataset} summarizes the cases.
 
 \begin{figure}[H]\centering
 \includegraphics[width=0.98\linewidth]{figures/fig_dataset.pdf}

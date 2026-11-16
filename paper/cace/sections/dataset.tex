@@ -3,20 +3,21 @@
 \subsection{Equation database}\label{sec:db}
 
 We built a database of \NEq{} equations from \NSources{} sources. A source is one PDF file or one
-generated reference set. Of the sources, \NPdf{} are PDF files of papers, textbooks, and reports and
+generated equation set. Of the sources, \NPdf{} are PDF files of papers, textbooks, and reports and
 contribute \NEqPdf{} equations: \NEarly{} files that we collected early in this work, on continuous
 stirred-tank reactors, biodiesel reactions, and process control, and \NOpenAlex{} files that
 searches of a scholarly database retrieved for \NFields{} fields, from reaction engineering and heat
 transfer to electrochemistry and acoustics (\ref{app:collection}). The other \NRefSets{} sources are
-reference equation sets that Gemini 2.5 Pro \citep{Gemini25} generated field by field to cover
-textbook fundamentals; their \NEqRef{} equations have no source document.
+equation sets that Gemini 2.5 Pro \citep{Gemini25} generated field by field to cover textbook
+fundamentals; their \NEqRef{} equations have no source document.
 
 A large language model (LLM), Gemini, extracted the equations: Gemini 2.5 Pro for \NExtractPro{} of
-the PDF files, and an earlier version, which no record names, for the \NExtractEarliest{} earliest
+the PDF files, and a version of Gemini that no record names for the \NExtractEarliest{} earliest
 ones. The model read the PDF and wrote out its numbered equations in \LaTeX{}; for each equation it
 returned the variable symbols with their definitions, a context text that explains the physical
 meaning of the equation from the surrounding passage, and a domain label (\ref{app:prompts}). The
-model kept the symbols as printed, and we normalized none of them.
+model kept the symbols as printed, and we normalized none of them, except that a rule added the
+Laplace variable $s$ and time $t$ to the variable sets of \NRuleAdded{} equations.
 
 Two properties of the database bear on every later result. First, the database holds \NSymbols{}
 distinct variable symbols, and the method matches variables by symbol alone. Of the
@@ -28,9 +29,9 @@ Second, the domain labels are free text written by the language model, not entri
 taxonomy: the equations carry \NLabels{} distinct labels, \ShareLabelsOnce\% of which occur once,
 so two labels rarely agree exactly.
 
-\subsection{Test cases}\label{sec:cases}
+\subsection{Cases}\label{sec:cases}
 
-Each test case pairs a query with a ground-truth equation set for the requested model. We formed
+Each case pairs a query with a ground-truth equation set for the requested model. We formed
 the ground truths in three ways, which gives three families of cases (Table~\ref{tab:families} and
 Fig.~\ref{fig:dataset}); the evaluation uses \NCases{} cases. Every case takes its input and output
 variables from the symbols of its ground-truth equations, so a query and its answer share one
@@ -64,14 +65,15 @@ from training and evaluation. (b) Number of ground-truth equations per case in S
 \end{figure}
 
 A language model formed the ground truths of the single-source family (\NSingle{} cases). We gave
-Gemini 2.5 Pro a catalog that listed, for each equation, only its identifier, which names its
-source, its domain label, and its variable symbols, and asked for physically meaningful cases: a
-description, input and output
+Gemini 2.5 Pro a catalog of the database as it then stood, which listed for each equation only
+its domain label, its variable symbols, and its identifier, which names its source, and asked for
+physically meaningful cases: a description, input and output
 variables, and a ground-truth set that the inputs determine and that is sufficient and minimal
 (\ref{app:prompts}). We kept the cases whose ground-truth equations all exist in the database, whose
 input and output variables all appear in them, and whose ground truth has as many unknowns as
 equations once the inputs are given. Each ground truth draws on one source. It is the set that the
-model judged minimal, not a model that a source presents.
+model judged minimal, not a model that a source presents; \NSingleOneEq{} of the \NSingle{} ground
+truths hold a single equation, and \NSingleRefOnly{} draw only on the generated equation sets.
 \todo{Manual verification of the ground truths that language models formed: who checked, how many
 cases, by what method, and with what result.}
 
@@ -83,8 +85,8 @@ sources and share at least two variable symbols; and formed cases whose outputs 
 unique to each equation and whose inputs are all other variables. It wrote each description from an
 English template. The other cases are \NCrossPicked{} combinations that a coding-assistant language
 model (Claude) wrote as physically meaningful and \NCrossReselected{} variants of them with
-reselected input and output variables, whose descriptions Claude Opus 4.8 \citep{ClaudeOpus48}
-rewrote to match the new variables.
+reselected input and output variables. Claude Opus 4.8 \citep{ClaudeOpus48} rewrote the descriptions
+of these variants, and of two of the original combinations, to match their output variables.
 
 A program formed the ground truths of the synthesized family (\NSynth{} cases,
 Section~\ref{sec:synth}).
@@ -117,12 +119,19 @@ unknown can be matched to its own equation. We generated 100 cases for each $X$ 
 4.5 \citep{ClaudeSonnet45}, wrote only the description of each case; the equation set, the inputs,
 and the outputs all follow from the program (\ref{app:example} shows one case).
 
-\subsection{Stratified source-disjoint split}\label{sec:split}
+\subsection{Stratified split by source}\label{sec:split}
 
-We split the cases into training, validation, and test cases by source. Each case belongs to the
-source that contributes most of its ground-truth equations, and each source goes wholly to one
-part: 20\% of the sources to testing, 20\% to validation, and 60\% to training. No source therefore
-spans training and testing. Because sources hold different numbers of cases, the numbers of cases
+We split the cases into training, validation, and test cases by source. We assign each case to the
+source that contributes most of its ground-truth equations, and each source goes wholly, with the
+cases assigned to it, to one part: 20\% of the sources to testing, 20\% to validation, and 60\% to
+training. Two cases assigned to the same source therefore never fall into different parts. A ground
+truth that draws on several sources, however, can share equations with the cases of another part.
+In Setting~A, \ShareSharedEqA\% of the test cases of the 10 splits share at least one ground-truth
+equation with a training case (\ShareSharedEqAMin\% to \ShareSharedEqAMax\% per split): \ShareSharedEqCross\%
+of the cross-source, \ShareSharedEqSynth\% of the synthesized, and \ShareSharedEqSingle\% of the
+single-source test cases. In Setting~B, \ShareSharedEqB\% do. The reranker reads ten features of a
+candidate, not its identity, so it cannot memorize an equation; the test cases are nevertheless not
+all new to it at the level of equations. Because sources hold different numbers of cases, the numbers of cases
 vary from split to split: \NTestAMin{} to \NTestAMax{} test cases and \NValAMin{} to \NValAMax{}
 validation cases in Setting~A.
 

@@ -1,0 +1,17 @@
+{
+ "source": "unified_equations.json and training_cases.json (python3 paper/cace/db_counts.py)",
+ "unified_equations_sha256": "76ac100a2f6dbc464bbecdb4608455187c98216f763cb5c475b5ca92a4fc218c",
+ "training_cases_sha256": "3fe50a52313690da76cc52fdd8fd7fdc18a822f7ba5b8202f1cf1b784bf3b089",
+ "n_equations": 11146,
+ "n_sources": 361,
+ "n_reference_sets": 32,
+ "n_pdf": 329,
+ "n_equations_reference": 670,
+ "n_equations_pdf": 10476,
+ "n_symbols": 13220,
+ "n_symbols_shared": 6374,
+ "n_symbols_conflict": 4208,
+ "n_labels": 1998,
+ "share_labels_once": 0.27927927927927926,
+ "n_synth_one_source": 959
+}

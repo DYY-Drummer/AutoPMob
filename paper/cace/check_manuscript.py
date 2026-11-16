@@ -3,9 +3,12 @@
     python3 paper/cace/check_manuscript.py      # prints a report; exit 1 when a rule is broken
 
 Rules
-  - No number is typed by hand in sections/*.tex or appendix.tex: decimals (0.981) and counts (1{,}731)
-    must be macros of numbers.tex. Lengths, model names (Opus 5.5), comments and verbatim prompts are exempt.
-  - No number macro is followed by a bare space (TeX would swallow the space).
+  - No number is typed by hand in main.tex, sections/*.tex or appendix.tex: decimals (0.981), counts
+    (1{,}731) and integers of two or more digits must be macros of numbers.tex. Exempt are the constants
+    of the design (ALLOWED_INTEGERS), lengths, model names (Opus 5.5), identifiers in \texttt, comments
+    and verbatim prompts. Single digits cannot be checked: write them as macros when they depend on data.
+  - No number macro is followed by a bare space or line end (TeX would swallow it).
+  - The figures copied from the thesis are the files of the thesis (they are not regenerated here).
   - None of the wordings that the paper must not use (BANNED) appears, with the macros expanded.
   - The abstract has at most ABSTRACT_WORDS words, the main text MAIN_TEXT_WORDS words, and each
     highlight at most HIGHLIGHT_CHARS characters.
@@ -30,9 +33,22 @@ VERBATIM = ("Verbatim", "verbatim")
 NOT_PROSE = ("table", "figure", "equation", "align", "longtable", "tabular") + VERBATIM
 MODEL_NAME = re.compile(r"(?:Opus|Haiku|Sonnet|Gemini)[~\s]+\d\.\d")
 LENGTH = re.compile(r"\d+(?:\.\d+)?(?:\\linewidth|\\textwidth|\\columnwidth|pt|em|ex|cm|mm)\b")
-NUMBER = re.compile(r"\d{1,3}\{,\}\d{3}|\d{1,3},\d{3}|\d+\.\d+")
+# a count with a thousands separator, a decimal, or an integer of two or more digits that stands alone
+NUMBER = re.compile(r"\d{1,3}\{,\}\d{3}|\d{1,3},\d{3}|\d+\.\d+|(?<![A-Za-z0-9_\\^{}])\d{2,}(?![0-9A-Za-z])")
+# Integers that the design fixes, not the data: 10 splits, 12 weight pairs (and NTCIR-12), 13 cases asked per
+# batch, the top 20, bins "21 or more", 30 search results, 40 and 100 label clusters, candidate counts
+# 50/200/500, the 60% share for training, 100 cases per size, 512 tokens, the years of the search filter
+# and of the prices, and the constants of the example equation in Appendix F (350, 20, 12).
+ALLOWED_INTEGERS = {"10", "12", "13", "20", "21", "30", "40", "50", "60", "100", "200", "350", "500", "512",
+                    "2001", "2006", "2026"}
 NO_TEXT_COMMANDS = ("cite[a-z]*", "ref", "eqref", "label", "input", "includegraphics", "rowsfrom",
-                    "bibliography", "bibliographystyle", "setlength", "vspace", "hspace")
+                    "bibliography", "bibliographystyle", "setlength", "vspace", "hspace", "documentclass",
+                    "usepackage", "setcounter")
+NO_TEXT = re.compile(r"\\(?:%s)\*?(?:\[[^\]]*\])*(?:\{[^{}]*\})*" % "|".join(NO_TEXT_COMMANDS))
+# figures that are copies of the thesis figures (fig_dataset and fig_split_balance are drawn for the paper)
+COPIED_FIGURES = ["fig_autopmob_overview.pdf", "fig_characteristic.pdf", "fig_greedy_3way.pdf", "fig_mechanism.pdf",
+                  "fig_method_comparison.pdf", "fig_n1_coverage.pdf", "fig_pfi.pdf"]
+THESIS_FIGURES = HERE.parents[1] / "thesis" / "master_thesis" / "figures"
 
 # wording -> pattern (matched without regard to case, on text whose white space is collapsed)
 BANNED = {
@@ -41,7 +57,7 @@ BANNED = {
     "untested": r"untested",
     "guarantee": r"guarantee",
     "duplicate": r"duplicat",
-    "augmented": r"augmented",
+    "augmented cases": r"augmented (?:cases?|cop(?:y|ies)|variants?)",
     "thesis": r"\bthesis\b",
     "renamed symbols": r"\brenam",
     "document-level": r"document-level",
@@ -75,11 +91,12 @@ def drop_command(tex: str, name: str) -> str:
 
 
 def hand_typed_numbers(tex: str) -> list:
-    """Decimals and counts with a thousands separator that are typed in the text."""
+    """Decimals, counts with a thousands separator, and integers of two or more digits typed in the text."""
     tex = strip_comments(strip_environments(tex, VERBATIM))
     lines = [ln for ln in tex.splitlines() if "\\newcommand" not in ln and "\\renewcommand" not in ln]
-    text = MODEL_NAME.sub(" ", LENGTH.sub(" ", "\n".join(lines)))
-    return NUMBER.findall(text)
+    text = drop_command(NO_TEXT.sub(" ", "\n".join(lines)), "texttt")
+    text = MODEL_NAME.sub(" ", LENGTH.sub(" ", text))
+    return [n for n in NUMBER.findall(text) if n not in ALLOWED_INTEGERS]
 
 
 def read_macros(numbers_tex: str) -> dict:
@@ -96,18 +113,29 @@ def expand(tex: str, macros: dict) -> str:
 
 
 def swallowed_spaces(tex: str, macros: dict) -> list:
-    """Number macros followed by a bare space and a word: TeX drops the space."""
+    """Number macros followed by a bare space or a line end and then a word: TeX drops the space."""
     tex = strip_comments(strip_environments(tex, VERBATIM))
-    return [m.group(0) for m in re.finditer(r"\\([A-Za-z]+) [A-Za-z0-9(]+", tex) if m.group(1) in macros]
+    gap = r"(?:[ \t]+|[ \t]*\n[ \t]*)"      # spaces, or one line end (a blank line starts a paragraph instead)
+    return [m.group(0) for m in re.finditer(r"\\([A-Za-z]+)%s[A-Za-z0-9(]+" % gap, tex) if m.group(1) in macros]
+
+
+def stale_figures(paper_dir: Path, thesis_dir: Path, names) -> list:
+    """Copied figures that are missing here or differ from the thesis file of the same name."""
+    stale = []
+    for name in names:
+        source, copy = Path(thesis_dir) / name, Path(paper_dir) / name
+        if source.exists() and (not copy.exists() or copy.read_bytes() != source.read_bytes()):
+            stale.append(name)
+    return stale
 
 
 def word_count(tex: str) -> int:
     tex = strip_comments(strip_environments(tex, NOT_PROSE))
     tex = drop_command(tex, "todo")
-    tex = tex.replace("\\%", "%").replace("\\&", "&").replace("\\_", "_")
+    tex = tex.replace("\\%", "%").replace("\\&", "&").replace("\\_", "_").replace("\\$", "\x00")
     tex = re.sub(r"\\\[.*?\\\]", " ", tex, flags=re.S)
-    tex = re.sub(r"\$[^$]*\$", " ", tex)
-    tex = re.sub(r"\\(?:%s)\*?(?:\[[^\]]*\])*(?:\{[^{}]*\})*" % "|".join(NO_TEXT_COMMANDS), " ", tex)
+    tex = re.sub(r"\$[^$]*\$", " ", tex).replace("\x00", "$")
+    tex = NO_TEXT.sub(" ", tex)
     tex = re.sub(r"\\[A-Za-z]+\*?(?:\[[^\]]*\])?", " ", tex)
     tex = tex.replace("\\\\", " ").replace("~", " ").replace("{", "").replace("}", "")
     return sum(1 for w in tex.split() if re.search(r"[A-Za-z0-9]", w))
@@ -124,12 +152,13 @@ def long_highlights(tex: str, limit: int = HIGHLIGHT_CHARS) -> list:
     return [it for it in items if len(it) > limit]
 
 
-def check(root: Path = HERE, report: list | None = None) -> list:
-    """The broken rules, one line each. `report` collects the measured values."""
+def check(root: Path = HERE, report: list | None = None, figures: bool = True) -> list:
+    """The broken rules, one line each. `report` collects the measured values.
+    figures=False skips the comparison of the copied figures with the thesis figures."""
     report = [] if report is None else report
     macros = read_macros((root / "numbers.tex").read_text(encoding="utf-8"))
     failures = []
-    files = sorted((root / "sections").glob("*.tex")) + [root / "appendix.tex"]
+    files = [root / "main.tex"] + sorted((root / "sections").glob("*.tex")) + [root / "appendix.tex"]
     for f in files:
         tex = f.read_text(encoding="utf-8")
         name = f.relative_to(root)
@@ -150,7 +179,9 @@ def check(root: Path = HERE, report: list | None = None) -> list:
     highlights = expand((root / "sections" / "highlights.tex").read_text(encoding="utf-8"), macros)
     for item in long_highlights(highlights):
         failures.append(f"highlight over {HIGHLIGHT_CHARS} characters ({len(item)}): {item}")
-    n_todo = sum(strip_comments(f.read_text(encoding="utf-8")).count("\\todo{") for f in files + [root / "main.tex"])
+    n_todo = sum(strip_comments(f.read_text(encoding="utf-8")).count("\\todo{") for f in files)
+    if figures and (stale := stale_figures(root / "figures", THESIS_FIGURES, COPIED_FIGURES)):
+        failures.append(f"figures differ from the thesis figures (copy them again): {', '.join(stale)}")
     report.append(f"markers for the authors (\\todo): {n_todo}")
     sys.path.insert(0, str(root))
     import make_numbers

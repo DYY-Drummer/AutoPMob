@@ -128,7 +128,7 @@ Because an equation that contains a variable other than the inputs and outputs i
 We propose a two-stage retrieval method.
 The first stage narrows the database by text similarity and variable overlap, and the second stage reranks the candidates with a multilayer perceptron that reads, beside seven query--equation features, three set-aware features that compare each candidate with a reference set of equations: complementarity, coherence, and domain agreement.
 A learned greedy variant selects one equation at a time and compares each candidate with the equations already selected.
-To evaluate the method, we built a database of 11,146 equations from 361 sources and 1,731 evaluation cases, 1,000 of which a program synthesized by giving each equation an output variable of its own; we split the cases by source, so that no source spans training and testing, and we chose the hyperparameters of the methods, the values fixed before training, on validation cases.
+To evaluate the method, we built a database of 11,146 equations from 361 sources and 1,731 evaluation cases, 1,000 of which a program synthesized by giving each equation an output variable of its own; we split the cases by source, keeping the cases assigned to one source in one part, and we chose the hyperparameters of the methods, the values fixed before training, on validation cases.
 
 % source: experiments/kato1021/main.json（Recall@20 A 0.906 → 0.981・B 0.825 → 0.966、MAP A 0.693 → 0.862・B 0.626 → 0.832、
 %         wins 10）; mech.json; pfi.json; greedy.json（K>=8 train − static MAP +0.032）; case_outcomes_final.json

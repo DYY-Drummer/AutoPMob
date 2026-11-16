@@ -77,10 +77,11 @@ Claude Haiku 5.5 & $\RecAHaiku \pm \RecAHaikuSD$ & $\MapTwAHaiku \pm \MapTwAHaik
 
 Table~\ref{tab:llmkind} breaks Setting~A down by family; a split holds \NTestSingleMin{} to
 \NTestSingleMax{} single-source, \NTestCrossMin{} to \NTestCrossMax{} cross-source, and
-\NTestSynthMin{} to \NTestSynthMax{} synthesized test cases. On the single-source cases, Opus~5.5
-came close to the proposed method (Recall@20 \RecSingleOpus{} against \RecSingleProp); it fell
-behind on the cross-source cases (\RecCrossOpus{} against \RecCrossProp) and the synthesized cases
-(\RecSynthOpus{} against \RecSynthProp). Against the baseline, Opus~5.5 was higher in both metrics
+\NTestSynthMin{} to \NTestSynthMax{} synthesized test cases. In every family, Opus~5.5 was below
+the proposed method. The gap was smallest on the single-source cases (\LeadRecSingle{} in
+Recall@20 and \LeadMapTwSingle{} in MAP@20) and larger on the cross-source cases (\LeadRecCross{}
+and \LeadMapTwCross) and the synthesized cases (\LeadRecSynth{} and \LeadMapTwSynth). Against the
+baseline, Opus~5.5 was higher in both metrics
 on the synthesized cases, lower in both on the single-source cases, and higher in MAP@20 but lower
 in Recall@20 on the cross-source cases. Haiku~5.5 was below the baseline in every family; its
 Recall@20 on the cross-source cases was \RecCrossHaiku.
@@ -109,12 +110,18 @@ of Recall@20 averaged \RunSdOpus{} for Opus~5.5 and \RunSdHaiku{} for Haiku~5.5,
 gave the same Recall@20 in \RunSameOpus\% and \RunSameHaiku\% of the cases. The sets of identifiers
 agreed less than the scores: the Jaccard similarity between two runs averaged \JaccardOpus{} and
 \JaccardHaiku, and all three runs returned the same list in \SameListOpus\% and \SameListHaiku\% of
-the cases. Opus~5.5 answered every call and returned 20 identifiers, as instructed, in
-\OpusWithTwenty{} of its \NCalls{} answers (\ShareOpusWithTwenty\%); \OpusInvalidId{} answers
-contained an identifier absent from the database. For Haiku~5.5, the safety filter of the service
-stopped \HaikuRefusals{} calls (\ShareHaikuRefusals\%), which we scored as answers with no correct
-equation; \HaikuWithTwenty{} answers (\ShareHaikuWithTwenty\%) held 20 identifiers,
-\HaikuOverTwenty{} held more, and \HaikuRepeatedId{} repeated an identifier.
+the cases.
+
+The answers did not always take the form that the instruction asked for: 20 identifiers, each
+listed once and all taken from the database. Opus~5.5 answered every call and followed the
+instruction in \OpusAsInstructed{} of its \NCalls{} answers (\ShareOpusAsInstructed\%);
+\OpusUnderTwenty{} answers listed fewer than 20 distinct identifiers, \OpusOverTwenty{} listed
+more, \OpusRepeatedId{} repeated an identifier, and \OpusInvalidId{} contained an identifier absent
+from the database. For Haiku~5.5, the safety filter of the service stopped \HaikuRefusals{} calls
+(\ShareHaikuRefusals\%), which we scored as answers with no correct equation;
+\HaikuAsInstructed{} answers (\ShareHaikuAsInstructed\%) followed the instruction,
+\HaikuOverTwenty{} listed more than 20 distinct identifiers, \HaikuUnderTwenty{} listed fewer, and
+\HaikuRepeatedId{} repeated an identifier.
 
 The \NCalls{} calls cost \CostOpus{} US dollars for Opus~5.5 and \CostHaiku{} for Haiku~5.5,
 \CostTotal{} in all, at the prices of November 2026 \citep{AnthropicPricing}. Reading the cached
@@ -129,8 +136,8 @@ ground-truth equation, both methods reach a Recall@20 of \RecKOneProp, and their
 \MapKOneProp{} for static reranking and \MapKOneBase{} for the baseline. From two equations on, the
 gap grows with the number of equations: Recall@20 differs by $\DiffRecKTwo$ at two equations,
 $\DiffRecKFive$ at five, and $\DiffRecKTen$ at ten. By the number of input variables, the gap in
-Recall@20 grows from $\DiffRecInLow$ at five or fewer to $\DiffRecInHigh$ at 21 or more. A
-variable-weighted ranking finds a single equation as well as the proposed method does, and the lead
+Recall@20 grows from $\DiffRecInLow$ at five or fewer to $\DiffRecInHigh$ at 21 or more. The
+classical baseline finds a single equation as well as the proposed method does, and the lead
 of the proposed method grows with the numbers of ground-truth equations and input variables.
 
 \begin{figure}[tbp]\centering
@@ -156,10 +163,13 @@ growing the feature set of the reranker, retraining it at every step, and evalua
   \item Per-equation features: adding the other five query--equation features raises Recall@20 to
     \RecARSeven{} ($\DiffRecStepTwo$) and MAP to \MapARSeven{} ($\DiffMapStepTwo$), in all 10
     splits. Specificity $f_6$ alone carries nearly all of this step: adding it alone reaches a
-    Recall@20 of \RecASpec{} ($\DiffRecSpec$) and a MAP of \MapASpec{} ($\DiffMapSpec$).
+    Recall@20 of \RecASpec{} ($\DiffRecSpec$) and a MAP of \MapASpec{} ($\DiffMapSpec$). The
+    benchmark makes this feature decisive: in \NReqThreeTrivial{} of the \NCases{} cases the query
+    lists every variable of the ground truth (Section~\ref{sec:cases}), so every ground-truth
+    equation has a specificity of one.
   \item Set-aware features: adding the three of them raises Recall@20 to \RecAProp{}
     ($\DiffRecStepThree$, in \WinsRecStepThree{} of the 10 splits) and MAP to \MapAProp{}
-    ($\DiffMapStepThree$, in all 10). Recall@20 leaves little room at \RecARSeven, so the set-aware
+    ($\DiffMapStepThree$, in all \WinsMapStepThree). Recall@20 leaves little room at \RecARSeven, so the set-aware
     features mainly raise the ground-truth equations within the top 20.
 \end{enumerate}
 Added one at a time to the seven features, complementarity raises MAP by $\DiffMapComp$ and
@@ -237,13 +247,15 @@ Setting B & Recall@20 & \RecBProp & \RecBInfer & \RecBGreedy \\
 
 Four of the ten features read topical closeness: the text similarity $f_1$, the latent similarity
 $f_3$, the domain match $f_7$, and the domain agreement $g_{\mathrm{Dom}}$. They rest on a
-reasonable expectation, that the equations of one model share a topic, yet adding them did not
-raise the accuracy consistently in Setting~A. Added to the two-feature reranker, the domain match
+reasonable expectation, that the equations of one model share a topic, yet adding the latter three
+one at a time did not raise Recall@20 in Setting~A. Added to the two-feature reranker, the domain match
 changed Recall@20 by $\DiffRecDomMatch$ (higher in \WinsRecDomMatch{} of the 10 splits) and the
 latent similarity by $\DiffRecLatent$ (\WinsRecLatent{} of 10); added to the seven-feature reranker,
-the domain agreement changed Recall@20 by $\DiffRecDomAgree$ (\WinsRecDomAgree{} of 10). Coarser
-domain labels did not help either: after merging the labels in three ways, adding the domain match
-changed Recall@20 by $\DiffRecMergeWorst$ to $\DiffRecMergeBest$.
+the domain agreement changed Recall@20 by $\DiffRecDomAgree$ (\WinsRecDomAgree{} of 10), although
+it raised MAP by $\DiffMapDomAgree$ (Section~\ref{sec:mechanism}). Coarser domain labels did not
+help either: after we merged the labels in three ways, by unifying their spelling and by clustering
+them into 100 and into 40 groups, adding the domain match changed Recall@20 by $\DiffRecMergeWorst$
+to $\DiffRecMergeBest$.
 
 The topic features add little because the variable-overlap features alone nearly separate the
 correct candidates from the incorrect ones. We measured how well one feature alone separates them
@@ -278,21 +290,26 @@ Domain match $f_7$ & $\AucFullDomMatch \pm \AucFullDomMatchSE$ & $\AucCandDomMat
 
 \subsection{Error analysis}\label{sec:erroranalysis}
 
-\paragraph{Misses of the proposed method} We examined one split, that with seed 42: its
+\paragraph{Misses of the proposed method} We examined one split, that with seed \FirstSeed: its
 \NErrCases{} test cases hold \NErrGt{} ground-truth equations, and its Recall@20 is \ErrRecall.
 Static reranking left \NMissed{} of the ground-truth equations out of its top 20. The candidates
 contained every ground-truth equation, so the second stage, not the first, missed all of them. The
 \NSolved{} cases with every ground-truth equation in the top 20 average \MeanKSolved{} ground-truth
 equations and \MeanInSolved{} input variables, against \MeanKUnsolved{} and \MeanInUnsolved{} for
-the \NUnsolved{} cases with misses. We paired each missed equation with each incorrect equation
-ranked above it and counted the pairs in which the missed equation has the higher value of a
-feature: \RescueLatent{} of the pairs for the latent similarity, \RescueText{} for the text
-similarity, \RescueSpec{} for specificity, and \RescueJac{} for the I/O Jaccard. Every fraction
-lies near or below one half, so the present features cannot repair these errors. One type of error
-recurs: the direction of an equation. The features read only sets of variables, so two equations
-that determine different variables from the same variables --- the equations for
-$\mathrm{d}C_A'/\mathrm{d}t$ and $\mathrm{d}T'/\mathrm{d}t$ of a linearized reactor, for example
---- take the same value on every feature.
+the \NUnsolved{} cases with misses. In each of these cases we paired each missed equation with
+each incorrect equation in the top 20 and took the fraction of pairs in which the missed equation
+has the higher value of a feature, a tie counting one half. Averaged over the cases, the fraction
+is \RescueLatent{} for the latent similarity, \RescueText{} for the text similarity, \RescueSpec{}
+for specificity, and \RescueJac{} for the I/O Jaccard. Every fraction lies near or below one half,
+so the present features cannot repair these errors. Specificity cannot by construction: where the
+query lists every variable of the ground truth, as it does in \NReqThreeTrivial{} of the \NCases{}
+cases, every ground-truth equation has a specificity of one, and so has every other equation whose
+variables all belong to the query. The features that compare the variables of an equation with
+the query ($f_2$, $f_4$, $f_5$, $f_6$) also cannot order two equations that hold the same
+variables. For the one-equation case whose ground truth is the linearized balance of the
+concentration deviation $C_A'$ of a reactor, the database holds a second equation, the balance of
+the temperature deviation $T'$, with the same variable set, and these four features take the same
+values for both.
 
 \paragraph{Cases in which the LLM does better} We compared, case by case, the mean Recall@20 of
 Opus~5.5 over its three runs with that of static reranking over the splits in which the case is a
@@ -310,10 +327,12 @@ ground-truth equations in which Opus~5.5 was higher, static reranking placed \Wr
 incorrect equations per list whose variables all belong to the query variables, against
 \WrongInIoOpus{} for Opus~5.5. Static reranking placed about as many where Opus~5.5 was equal or
 lower (\WrongInIoPropTie{} and \WrongInIoPropLoss), so this is a general habit of the reranker:
-specificity, its strongest feature, rewards exactly such equations. The \NOnlyOpusEq{} ground-truth
-equations that Opus~5.5 placed in the top 20 in at least two of its three runs, but static
-reranking in fewer than half of the splits, overlap less with the query variables than the
-\NBothEq{} equations that both methods found (mean I/O Jaccard \JacOnlyOpus{} against \JacBoth),
+specificity, its strongest feature, rewards exactly such equations. In the \NOpusWinRec{} cases in
+which Opus~5.5 was higher, it placed \NOnlyOpusEq{} ground-truth equations in the top 20 in at
+least two of its three runs that static reranking placed in fewer than half of the splits, and
+static reranking placed \NOnlyPropEq{} that Opus~5.5 did not. The \NOnlyOpusEq{} equations overlap
+less with the query variables than the \NBothEq{} equations that both methods placed (mean I/O
+Jaccard \JacOnlyOpus{} against \JacBoth),
 resemble the description less (text similarity \TextOnlyOpus{} against \TextBoth), hold fewer
 variables (\VarsOnlyOpus{} against \VarsBoth), and rank lower in the first stage (median rank
 \RankOnlyOpus{} against \RankBoth). Examples are the steady-state form of a balance,
@@ -323,7 +342,7 @@ $\hat{H} = C (T - T_{\mathrm{ref}})$ for an enthalpy.
 The cross-source cases show the same dependence in MAP@20. We sorted them into thirds by the
 smallest I/O Jaccard among the ground-truth equations of a case. The MAP@20 of static reranking
 falls from \TerHighProp{} and \TerMidProp{} in the upper two thirds to \TerLowProp{} in the lowest,
-whereas that of Opus~5.5 stays between \TerHighOpus{} and \TerLowOpus; Opus~5.5 had the higher
+whereas that of Opus~5.5 stays between \TerOpusMin{} and \TerOpusMax; Opus~5.5 had the higher
 MAP@20 in \TerLowWin\% of the cases of the lowest third, against \TerMidWin\% and \TerHighWin\% of
 the other two. In the cross-source cases in which Opus~5.5 had the higher MAP@20, its first-ranked
 equation was a ground-truth equation in \RankOneCrossOpus\% of its answers, against

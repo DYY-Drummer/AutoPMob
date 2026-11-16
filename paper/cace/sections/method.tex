@@ -110,10 +110,11 @@ repeats until it has selected 20 equations; the unselected candidates follow in 
 static scores.
 
 Sequential selection comes in two variants that differ in how the MLP is trained. Greedy selection
-at inference uses the MLP trained for static reranking. Learned greedy selection also trains on the
-sequential contexts, with teacher forcing: it orders the ground-truth equations among the
-candidates of a training case by their Stage-1 rank, $e^{+}_1, e^{+}_2, \dots$, treats
+at inference uses the MLP trained for static reranking. Learned greedy selection trains the MLP on
+the sequential contexts instead, with teacher forcing: it orders the ground-truth equations among
+the candidates of a training case by their Stage-1 rank, $e^{+}_1, e^{+}_2, \dots$, treats
 $e^{+}_1, \dots, e^{+}_{t-1}$ as the equations already selected at step $t$, and adds the loss of
 Eq.~\eqref{eq:loss} for the next ground-truth equation $e^{+}_t$ with the features computed against
-that reference set. A case contributes at most eight steps. Training thus asks the same question as
+that reference set; at the first step the reference set is that of static reranking. A case
+contributes at most eight steps. Training thus asks the same question as
 inference: which equation to select next, given the ones already selected.

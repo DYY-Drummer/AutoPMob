@@ -30,7 +30,7 @@ The thesis makes three contributions. First, it provides a benchmark on which a 
 attributed to the method: all 1,731 evaluation ground truths meet the first three requirements of
 Kato and Kano and let each unknown be assigned to an equation of its own, 1,000 of them are
 synthesized by a program that grows a ground truth from a differential equation, and stratified
-source-disjoint splits with 10 seeds measure generalization to unseen sources, with validation
+splits by source with 10 seeds keep the cases assigned to one source in one part, with validation
 cases choosing the hyperparameters. Second, with a first stage that admits every ground-truth equation
 ($N_1 = 2{,}000$), the method raises Recall@20 over classical retrieval, whose weights the
 validation cases choose, from 0.906 to 0.981 in the mixed setting and from 0.825 to 0.966 in the

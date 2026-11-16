@@ -18,9 +18,8 @@ which pushes out ground-truth equations that share few variables with the query,
 definitions and steady-state forms (Section~\ref{sec:erroranalysis}).
 
 The LLM needs no training case. Without the variable lists and the context texts, Opus~5.5 placed
-\RecAOpus{} of the ground-truth equations in its top 20 in Setting~A, beat the classical baseline in
-every split, and came close to the proposed method on the single-source cases. It found
-ground-truth equations that share few variables with the query, and on the cross-source cases its
+\RecAOpus{} of the ground-truth equations in its top 20 in Setting~A and beat the classical baseline
+in every split. It found ground-truth equations that share few variables with the query, and on the cross-source cases its
 MAP@20 hardly depended on the variable overlap; where it had the higher MAP@20, its first-ranked
 equation was a ground-truth equation in \RankOneCrossOpus\% of its answers on the cross-source cases
 and \RankOneSynthOpus\% on the synthesized cases. Its weaknesses are of four kinds. First, it is less accurate
@@ -32,16 +31,19 @@ the input limit bounds what it can read: the database already takes \NDbTokens{}
 tokens, which is why the variable definitions and the context texts stayed out, and a larger
 database would not fit as it is. Fourth, its answers vary: between runs (the same list in
 \SameListOpus\% of the cases), with the scale of the model (Haiku~5.5 fell below the classical
-baseline), and in form (\ShareOpusWithTwenty\% of the answers of Opus~5.5 held the 20 identifiers
-asked for).
+baseline), and in form (\ShareOpusAsInstructed\% of the answers of Opus~5.5 and
+\ShareHaikuAsInstructed\% of those of Haiku~5.5 listed 20 identifiers as instructed).
 
 These differences suggest different uses. The proposed method suits a large database, models that
 draw on several sources or many equations, and repeated queries, provided that cases with known
-ground truths exist. An LLM suits a new field with no such cases and small models of the kind a
-single source presents. The two are also complementary: the \NOnlyOpusEq{} ground-truth equations
-that only Opus~5.5 found (Section~\ref{sec:erroranalysis}) are the ones the proposed method tends
-to push out, so an LLM that reranks or extends the candidates of the proposed method may recover
-them at the cost of one short prompt, not of the whole database. We have not tested this
+ground truths exist. An LLM suits a field with no such cases: without any, Opus~5.5 beat the
+classical baseline overall. In Recall@20, however, its advantage over the baseline came from the
+synthesized cases alone; on the single-source cases, most of which ask for one equation, the
+baseline was higher than Opus~5.5 in both metrics (Table~\ref{tab:llmkind}). The two approaches are also complementary. In the
+cases in which Opus~5.5 had the higher Recall@20, the \NOnlyOpusEq{} ground-truth equations that
+it alone placed (Section~\ref{sec:erroranalysis}) are of the kind that the proposed method tends to
+push out, so an LLM that reranks or extends the candidates of the proposed method may recover such
+equations at the cost of one short prompt, not of the whole database. We have not tested this
 combination. Nor does the comparison show what an LLM could do with more information per equation:
 we gave it the whole database at once, and the input limit left no room for the variable
 definitions and the context texts that the proposed method reads.
@@ -89,8 +91,8 @@ during training.
 
 \subsection{Limitations}\label{sec:limitations}
 
-Five limitations qualify the results. First, language models produced parts of the data: they
-extracted the equations, generated the \NEqRef{} equations of the reference sets, picked the ground
+Six limitations qualify the results. First, language models produced parts of the data: they
+extracted the equations, wrote the \NEqRef{} equations of the generated equation sets, picked the ground
 truths of the single-source cases, and wrote the descriptions of the synthesized cases and of part
 of the cross-source cases, whose style may differ from requests written by engineers; a program
 fixed the equations, inputs, and outputs of the synthesized cases.
@@ -98,7 +100,12 @@ fixed the equations, inputs, and outputs of the synthesized cases.
 Second, the evaluation is internal to the database: retrieval cannot find an equation that the
 database lacks, and nobody screened the collected files by hand, so some have little to do with
 physical models. Third, the queries share the notation of their ground truths
-(Section~\ref{sec:symbols}). Fourth, among the hyperparameters, we compared no alternative values of
-the reference-set size, the margin, the number of incorrect candidates, the number of epochs, or
-the learning rate. Fifth, the comparison with LLMs covers two models of one vendor, three runs per
-case, and one way of presenting the database.
+(Section~\ref{sec:symbols}) and, in \NReqThreeTrivial{} of the \NCases{} cases, list every variable of
+the ground truth, which makes specificity decisive (Section~\ref{sec:mechanism}); only
+\NWithIntermediate{} cases resemble the example of Fig.~\ref{fig:overview}, whose query omits the
+intermediate variables of the model. Fourth, the split keeps the cases assigned to one source
+together, but \ShareSharedEqA\% of the test cases of Setting~A share a ground-truth equation with a
+training case (Section~\ref{sec:split}). Fifth, among the hyperparameters, we compared no
+alternative values of the reference-set size, the margin, the number of incorrect candidates, the
+number of epochs, or the learning rate. Sixth, the comparison with LLMs covers two models of one
+vendor, three runs per case, and one way of presenting the database.

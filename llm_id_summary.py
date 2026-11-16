@@ -54,6 +54,27 @@ def runs_agreement(runs: dict) -> dict:
             "cases_all_runs_same": float(np.mean([len({round(x, 9) for x in v}) == 1 for v in multi.values()]))}
 
 
+def answer_format(rows: list, top_n: int = 20) -> dict:
+    """呼び出しごとの記録（per_case）から、答えの形を数える。指示は「top_n 個の ID を、どれも 1 回ずつ、データベースにあるものだけ」.
+
+    exactly / more / fewer は、重複を除いた ID の数で分けた 3 つで、足すと n になる（run_llm_db_baseline の
+    quality.answers_with_20 は「top_n 個以上」で、top_n 個を超えた答えも含むので、ここでは使わない）.
+    as_instructed は、返した ID がちょうど top_n 個で、重複もデータベースにない ID もない答え."""
+    def distinct(r):  # 重複を除いた ID の数（ranked_ids は top_n で打ち切ってあるので、切った分を足す）
+        return len(r["ranked_ids"]) + r["n_truncated"]
+    return {
+        "n": len(rows),
+        "as_instructed": sum(1 for r in rows if r["n_raw"] == top_n and r["n_duplicates"] == 0 and r["n_invalid"] == 0),
+        "exactly_20_distinct": sum(1 for r in rows if distinct(r) == top_n),
+        "more_than_20_distinct": sum(1 for r in rows if distinct(r) > top_n),
+        "fewer_than_20_distinct": sum(1 for r in rows if distinct(r) < top_n),
+        "empty": sum(1 for r in rows if not r["ranked_ids"]),
+        "with_repeats": sum(1 for r in rows if r["n_duplicates"] > 0),
+        "with_absent_id": sum(1 for r in rows if r["n_invalid"] > 0),
+        "refusals": sum(1 for r in rows if r["stop_reason"] == "refusal"),
+    }
+
+
 def cost_breakdown(usages: list, model: str) -> dict:
     """API の呼び出しの費用（ドル）と、そのうちキャッシュしたデータベースの読み出しの分.
 
@@ -104,11 +125,7 @@ def main() -> None:
                                "jaccard_mean": res["variability"]["jaccard_mean"],
                                "same_list_share": res["variability"]["same_list_share"],
                                "n_answers": res["n_scored"],
-                               "answers_with_20": q["answers_with_20"],
-                               "answers_over_20": q["answers_over_20"],
-                               "answers_with_invalid_id": q["answers_with_invalid_id"],
-                               "answers_with_duplicates": q["answers_with_duplicates"],
-                               "refusals": q["stop_reason"].get("refusal", 0),
+                               "format": answer_format(res["per_case"]),
                                "output_tokens_mean": q["output_tokens_mean"],
                                "cost": cost}
 

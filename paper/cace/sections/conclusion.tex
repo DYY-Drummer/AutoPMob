@@ -2,7 +2,8 @@
 
 We formulated one step of automated physical model building as a retrieval problem: given a
 description of the desired model and its input and output variables, present, from a database of
-\NEq{} equations extracted from the literature, the 20 equations most likely to serve in the model.
+\NEq{} equations drawn mostly from the literature, the 20 equations most likely to serve in the
+model.
 Because an equation that contains a variable other than the inputs and outputs is useful only
 together with an equation that determines that variable, the proposed two-stage method scores each
 candidate by its relation to other equations as well as by its relevance to the query.
@@ -14,15 +15,15 @@ importance agree on the cause: the features that read the variables shared by th
 equations decide most of the accuracy, the set-aware features raise the ground-truth equations
 within the top 20, and the features that read topical closeness add little. Two LLMs that read the
 whole database without training reached a Recall@20 of \RecAOpus{} and \RecAHaiku; the proposed
-method beat both in every split. The larger LLM beat the classical baseline, came close to the
-proposed method on models drawn from one source, and found ground-truth equations that share few
-variables with the query, which the proposed method tends to miss; it cost \CostPerCallOpus{} US
-dollars per query, and its answers varied between runs.
+method beat both in every split. The larger LLM beat the classical baseline and found ground-truth
+equations that share few variables with the query, which the proposed method tends to miss; it cost
+\CostPerCallOpus{} US dollars per query, and its answers varied between runs.
 
 Three directions follow. First, the two approaches should be combined, for example by letting an
 LLM rerank or extend the candidates of the proposed method. Second, the method should judge whether
 two variables denote the same quantity from their definitions, not from their symbols, so that it
-serves queries written in another notation. Third, the remaining errors call for a feature that
-encodes which variable an equation determines, and the method should then be joined to the
-combination method of \citet{CombineEq}, so that the presented equations can be assembled into a
-model, solved, and compared with plant data.
+serves queries written in another notation. Third, the features should tell apart equations that
+hold the same variables, for example by encoding which variable an equation determines, and the
+benchmark should add queries that omit the intermediate variables of a model. The method should
+then be joined to the combination method of \citet{CombineEq}, so that the presented equations can
+be assembled into a model, solved, and compared with plant data.

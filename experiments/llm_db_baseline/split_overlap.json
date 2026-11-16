@@ -1,0 +1,151 @@
+{
+ "definition": "分割の性質を数える：テスト用のケースのうち、正解式を訓練用のケースと共有するものの割合.\n\n分割は、各ケースを「正解式を最も多く出している出典」に割り当て、出典ごとに訓練用・検証用・テスト用に分ける\n（set_aware_reranker.stratified_src_split）。同じ出典に割り当てたケースは同じ側に入るが、複数の出典の式から成る\n正解集合（出典横断、合成の一部）は、割り当て先でない出典の式を含むので、その式を訓練用のケースの正解集合と共有しうる。\nこのスクリプトは、その件数を数える（式は ID で照合する。式の出典は ID の「出典__式番号」の前半）。",
+ "settings": {
+  "A": {
+   "n_test_records": 4229,
+   "shared_equation": 1568,
+   "shared_equation_share": 0.37077323244265786,
+   "shared_equation_share_min": 0.2911111111111111,
+   "shared_equation_share_max": 0.4348894348894349,
+   "shared_source": 3313,
+   "shared_source_share": 0.7834003310475289,
+   "by_kind": {
+    "cross": {
+     "n_test_records": 1635,
+     "shared_equation": 1143,
+     "shared_equation_share": 0.6990825688073394
+    },
+    "single": {
+     "n_test_records": 192,
+     "shared_equation": 9,
+     "shared_equation_share": 0.046875
+    },
+    "synth": {
+     "n_test_records": 2402,
+     "shared_equation": 416,
+     "shared_equation_share": 0.17318900915903415
+    }
+   },
+   "per_seed": {
+    "42": {
+     "n_test": 407,
+     "shared_equation": 177,
+     "shared_source": 321
+    },
+    "123": {
+     "n_test": 458,
+     "shared_equation": 186,
+     "shared_source": 373
+    },
+    "456": {
+     "n_test": 404,
+     "shared_equation": 175,
+     "shared_source": 331
+    },
+    "789": {
+     "n_test": 340,
+     "shared_equation": 143,
+     "shared_source": 282
+    },
+    "1024": {
+     "n_test": 483,
+     "shared_equation": 147,
+     "shared_source": 373
+    },
+    "2024": {
+     "n_test": 450,
+     "shared_equation": 131,
+     "shared_source": 361
+    },
+    "3141": {
+     "n_test": 527,
+     "shared_equation": 174,
+     "shared_source": 420
+    },
+    "5926": {
+     "n_test": 396,
+     "shared_equation": 149,
+     "shared_source": 293
+    },
+    "7777": {
+     "n_test": 298,
+     "shared_equation": 106,
+     "shared_source": 196
+    },
+    "9999": {
+     "n_test": 466,
+     "shared_equation": 180,
+     "shared_source": 363
+    }
+   }
+  },
+  "B": {
+   "n_test_records": 2432,
+   "shared_equation": 205,
+   "shared_equation_share": 0.08429276315789473,
+   "shared_equation_share_min": 0.06217616580310881,
+   "shared_equation_share_max": 0.10726643598615918,
+   "shared_source": 1296,
+   "shared_source_share": 0.5328947368421053,
+   "by_kind": {
+    "synth": {
+     "n_test_records": 2432,
+     "shared_equation": 205,
+     "shared_equation_share": 0.08429276315789473
+    }
+   },
+   "per_seed": {
+    "42": {
+     "n_test": 229,
+     "shared_equation": 18,
+     "shared_source": 121
+    },
+    "123": {
+     "n_test": 266,
+     "shared_equation": 25,
+     "shared_source": 165
+    },
+    "456": {
+     "n_test": 289,
+     "shared_equation": 31,
+     "shared_source": 194
+    },
+    "789": {
+     "n_test": 264,
+     "shared_equation": 28,
+     "shared_source": 157
+    },
+    "1024": {
+     "n_test": 213,
+     "shared_equation": 17,
+     "shared_source": 94
+    },
+    "2024": {
+     "n_test": 193,
+     "shared_equation": 12,
+     "shared_source": 49
+    },
+    "3141": {
+     "n_test": 248,
+     "shared_equation": 19,
+     "shared_source": 119
+    },
+    "5926": {
+     "n_test": 230,
+     "shared_equation": 20,
+     "shared_source": 136
+    },
+    "7777": {
+     "n_test": 234,
+     "shared_equation": 17,
+     "shared_source": 126
+    },
+    "9999": {
+     "n_test": 266,
+     "shared_equation": 18,
+     "shared_source": 135
+    }
+   }
+  }
+ }
+}
