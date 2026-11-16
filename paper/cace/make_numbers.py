@@ -213,6 +213,9 @@ def _llm(r: Registry) -> None:
         for kind in KINDS:
             require(km("Haiku 5.5", kind, key) < km("baseline", kind, key), f"Haiku is below the baseline on the {kind} cases ({key})")
             require(km("Opus 5.5", kind, key) < km("proposed", kind, key), f"Opus is below the proposed method on the {kind} cases ({key})")
+        lead = {kind: km("proposed", kind, key) - km("Opus 5.5", kind, key) for kind in KINDS}
+        require(lead["single"] < lead["cross"] and lead["single"] < lead["synth"],
+                f"the lead of the proposed method over Opus is smallest on the single-source cases ({key})")
     require(km("Opus 5.5", "cross", "AP@20") > km("baseline", "cross", "AP@20")
             and km("Opus 5.5", "cross", "recall@20") < km("baseline", "cross", "recall@20"),
             "on the cross-source cases Opus is above the baseline in MAP@20 and below it in Recall@20")
@@ -374,6 +377,7 @@ def _llm_setup(r: Registry) -> None:
         r.add(f"Jaccard{lc}", fmt(m["jaccard_mean"]))
         r.add(f"SameList{lc}", pct(m["same_list_share"], 2 if m["same_list_share"] < 0.001 else 1))
         r.add(f"Cost{lc}", money(m["cost"]["total"]))
+        r.add(f"CostPerCall{lc}", fmt(m["cost"]["total"] / m["cost"]["n_calls"], 2))
         r.add(f"ReadShare{lc}", pct(m["cost"]["read_share"]))
         total += round(m["cost"]["total"], 2)
     r.add("CostTotal", money(total))
@@ -575,6 +579,16 @@ def _results_errors(r: Registry) -> None:
         r.add(f"RankOne{kc}Prop", pct(a[f"AP_win_rank1_{kind}"]["prop"]["correct"], 0))
 
 
+def _results_coverage(r: Registry) -> None:
+    name = "n1_coverage_w30-70.json"
+    a = get(load(KATO / name), ("settings", "A"), name)
+    r.add("NOneAllGt", count(a["max_min_n1"]))          # smallest N1 that holds every ground-truth equation of every case
+    r.add("NGtAll", count(a["n_gt"]))
+    for n, word in (("50", "Fifty"), ("200", "TwoHundred"), ("500", "FiveHundred")):
+        r.add(f"CovA{word}", fmt(a["at"][n]["coverage"]))
+    require(a["at"]["2000"]["coverage"] == 1.0, "2,000 candidates hold every ground-truth equation of every case")
+
+
 def build() -> Registry:
     r = Registry()
     _dataset(r)
@@ -588,6 +602,7 @@ def build() -> Registry:
     _results_greedy(r)
     _results_topic(r)
     _results_errors(r)
+    _results_coverage(r)
     return r
 
 

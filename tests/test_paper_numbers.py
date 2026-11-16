@@ -117,6 +117,8 @@ def built():
     ("NMissed", "84"), ("MeanKUnsolved", "7.81"), ("RescueSpec", "0.52"),               # kato1021/case_outcomes_final.json
     ("NOpusWinRec", "36"), ("NOpusWinCopies", "28"), ("NOpusWinSevenPlus", "26"),       # llm_db_baseline/opus_vs_proposed.json
     ("NOnlyOpusEq", "58"), ("WrongInIoProp", "9.2"), ("TerLowWin", "19.5"),
+    ("NOneAllGt", "1{,}880"), ("CovATwoHundred", "0.992"),                              # kato1021/n1_coverage_w30-70.json
+    ("CostPerCallOpus", "0.21"), ("CostPerCallHaiku", "0.05"),                          # id_summary.json models.*.cost
 ])
 def test_build_has_known_values(built, name, value):
     assert built[name] == value
