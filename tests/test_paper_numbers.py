@@ -93,6 +93,20 @@ def built():
     ("NEq", "11{,}146"), ("NSources", "361"), ("NCases", "1{,}731"),        # データ
     ("RecABase", "0.906"), ("RecAProp", "0.981"), ("MapAProp", "0.862"),    # kato1021/main.json
     ("RecAOpus", "0.924"), ("MapTwAOpus", "0.761"), ("RecAHaiku", "0.497"),  # llm_db_baseline/id_summary.json
+    ("NSymbols", "13{,}220"), ("NSymbolsConflict", "4{,}208"), ("NLabels", "1{,}998"),  # unified_equations.json
+    ("NSynthOneSource", "959"), ("NOpenAlex", "290"), ("NEarly", "39"),                 # cases, papers.csv
+    ("NTestAMin", "298"), ("NTestAMax", "527"), ("NValAMin", "216"),                    # llm_db_baseline/splits.json
+    ("NOne", "2{,}000"), ("WText", "0.3"), ("WVar", "0.7"), ("RefSize", "5"),           # kato1021/selected.json, n1_rule.json
+    ("ValRecAMin", "0.980"), ("ValRecAMax", "0.983"), ("LearnRate", "10^{-3}"),
+    ("NSymbolCases", "1{,}299"), ("NMeaningCases", "596"),                              # kato1021/data_counts.json
+    ("NDbTokens", "952{,}144"), ("NTaskTokens", "303"),                                 # llm_db_baseline/token_counts_v4.json
+    ("NFields", "32"), ("MeanSrcSynth", "1.10"),                                        # paper_collection metadata, data_counts.json
+    ("NTestDistinct", "1{,}673"), ("NCalls", "5{,}019"),                                # llm_db_baseline/id_summary.json, results
+    ("CostOpus", "1{,}058.93"), ("CostHaiku", "255.23"), ("CostTotal", "1{,}314.16"),   # id_summary.json models.*.cost
+    ("ReadShareOpus", "90.2"), ("ReadShareHaiku", "93.6"), ("HaikuRefusals", "144"),
+    ("ShareHaikuRefusals", "2.9"), ("OpusWithTwenty", "4{,}838"), ("ShareOpusWithTwenty", "96.4"),
+    ("RunSdOpus", "0.042"), ("RunSameOpus", "72.0"), ("JaccardHaiku", "0.324"), ("SameListOpus", "0.06"),
+    ("TrainMinAMax", "8.2"), ("TrainMinAMin", "2.4"), ("EvalSecAMax", "9"),              # id_summary.json proposed_time_sec
 ])
 def test_build_has_known_values(built, name, value):
     assert built[name] == value

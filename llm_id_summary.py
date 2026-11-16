@@ -54,6 +54,24 @@ def runs_agreement(runs: dict) -> dict:
             "cases_all_runs_same": float(np.mean([len({round(x, 9) for x in v}) == 1 for v in multi.values()]))}
 
 
+def cost_breakdown(usages: list, model: str) -> dict:
+    """API の呼び出しの費用（ドル）と、そのうちキャッシュしたデータベースの読み出しの分.
+
+    usages は呼び出しごとの usage。料金は run_llm_db_baseline.cost_usd と price_for（プロンプトの長さで決まる）."""
+    total = read = 0.0
+    for u in usages:
+        total += rl.cost_usd(u, model)
+        n_prompt = sum(u.get(k) or 0 for k in ("input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"))
+        read += (u.get("cache_read_input_tokens") or 0) * rl.price_for(model, n_prompt)["read"] / 1e6
+    return {"n_calls": len(usages), "total": total, "read": read, "read_share": read / total if total else 0.0}
+
+
+def time_range(values) -> dict:
+    """秒数の最小と最大（記録のない None は除く）."""
+    v = [x for x in values if x is not None]
+    return {"min": min(v), "max": max(v), "n": len(v)}
+
+
 def case_kind(c: dict) -> str:
     v = c.get("variant_type", "")
     return "single" if v == "original" else "cross" if v.startswith("multisource_") else "synth" if v.startswith("dae_") else v
@@ -76,19 +94,37 @@ def main() -> None:
         by = defaultdict(list)
         for r in res["per_case"]:
             by[r["case_id"]].append(r["recall@20"])
+        q = res["quality"]
+        raw = rl.OUT_DIR / "raw" / LLM_RESULTS[name].replace("results_", "").replace(".json", ".jsonl")
+        usages = [json.loads(line)["usage"] for line in raw.read_text(encoding="utf-8").splitlines() if line.strip()]
+        cost = cost_breakdown(usages, res["config"]["model"])
+        if abs(cost["total"] - q["cost_usd_all_calls"]) > 0.01:
+            sys.exit(f"{name}: 費用の合計が results の quality.cost_usd_all_calls と食い違う")
         out["models"][name] = {**runs_agreement(by),
                                "jaccard_mean": res["variability"]["jaccard_mean"],
-                               "same_list_share": res["variability"]["same_list_share"]}
+                               "same_list_share": res["variability"]["same_list_share"],
+                               "n_answers": res["n_scored"],
+                               "answers_with_20": q["answers_with_20"],
+                               "answers_over_20": q["answers_over_20"],
+                               "answers_with_invalid_id": q["answers_with_invalid_id"],
+                               "answers_with_duplicates": q["answers_with_duplicates"],
+                               "refusals": q["stop_reason"].get("refusal", 0),
+                               "output_tokens_mean": q["output_tokens_mean"],
+                               "cost": cost}
 
     for s in ("A", "B"):
         psc = {}
         # 提案手法
         psc["proposed"] = {}
+        t_train, t_eval = [], []
         for sd in seeds:
             sel = rl._selected_ref(s, int(sd))
             f = rl.REF_RUN / "raw" / "select" / f"{s}_{sel['w']}_{sel['neg']}__{sd}.json"
-            recs = rl.split_test_records(json.loads(f.read_text(encoding="utf-8"))["results"]["reranker-10S"]["per_case"], int(sd))
+            res10 = json.loads(f.read_text(encoding="utf-8"))["results"]["reranker-10S"]
+            recs = rl.split_test_records(res10["per_case"], int(sd))
             psc["proposed"][sd] = {r["case_id"]: rl.metrics_from_ranks(r["ranks"]) for r in recs}
+            t_train.append(res10["per_seed"][0].get("time_train_sec"))
+            t_eval.append(res10["per_seed"][0].get("time_eval_sec"))
         # baseline
         psc["baseline"] = defaultdict(dict)
         pc = json.loads((rl.REF_RUN / "raw" / f"baselines_percase_{s}.json").read_text(encoding="utf-8"))
@@ -111,6 +147,8 @@ def main() -> None:
 
         st = {"n_test_by_kind": {k: {sd: sum(1 for c in splits[s][sd]["test"] if kind_of[c] == k) for sd in seeds}
                                  for k in KINDS},
+              # 提案手法（reranker-10S）の、1 つの分割の訓練とテストケースの採点にかかった秒数（結果を出した実行の記録）
+              "proposed_time_sec": {"train": time_range(t_train), "eval": time_range(t_eval)},
               "methods": {}, "compare": {}}
         for name, per in psc.items():
             m = {key: mean_sd(split_means(per, key)) for key in ("recall@20", "AP@20")}

@@ -1,1 +1,118 @@
 \section{Method}\label{sec:method}
+
+The method works in two stages. The first stage scores every equation of the database on its own
+and keeps the best as candidates. The second stage reranks the candidates with a learned model that
+compares each candidate with other equations.
+
+\subsection{Stage 1: candidate retrieval}\label{sec:stage1}
+
+The first stage keeps the $N_1$ equations with the highest score as the candidate set $C_q$. The
+score mixes one text term and one variable term,
+\begin{equation}
+  s_1(q, e_j) = w_{\mathrm{t}} \cos\!\big(\mathrm{tfidf}(c), \mathrm{tfidf}(t_j)\big)
+              + w_{\mathrm{v}} \, J\!\big(\mathcal{Q}, V(e_j)\big) ,
+  \label{eq:stage1}
+\end{equation}
+where $t_j$ joins the context text, the expression, and the domain label of equation $e_j$. The
+first term, the text similarity, compares the description with this text through
+term-frequency--inverse-document-frequency (TF-IDF) vectors \citep{Salton} over word unigrams and
+bigrams. The second term, the variable overlap, is the Jaccard similarity
+$J(A, B) = |A \cap B| / |A \cup B|$ between the query variables and the variables of the equation.
+Ranking the whole database by Eq.~\eqref{eq:stage1} is a classical information-retrieval method
+\citep{Manning}, and Section~\ref{sec:setup} uses it, without a learned model or a candidate set,
+as the baseline.
+
+The second stage reranks only the candidates, so the fraction of ground-truth equations among them,
+the candidate coverage, bounds what the second stage can achieve. We set $N_1$ so large that every
+ground-truth equation enters the candidates (Section~\ref{sec:compared}).
+
+\subsection{Stage 2: set-aware reranking}\label{sec:stage2}
+
+The second stage judges each candidate against the equations already at hand.
+Table~\ref{tab:features} lists its ten features. Seven compare the query with a single equation:
+two measure the topical closeness of the description ($f_1$, $f_3$), one matches the domain label
+against the description ($f_7$), and four measure how the variables of the equation relate to the
+query variables ($f_2$, $f_4$, $f_5$, $f_6$). The other three are the set-aware features that this
+study introduces. They compare the candidate with a reference set $R$: the top $m$ equations of
+Stage~1 in static reranking, and the equations already selected in sequential selection
+(Section~\ref{sec:seq}). A candidate that belongs to $R$ is compared with $R$ without itself.
+
+Complementarity $g_{\mathrm{Comp}}$ asks what the candidate adds: the fraction of query variables
+that appear in the candidate but in no equation of the reference set. Coherence $g_{\mathrm{Coh}}$
+asks whether the candidate connects to the reference set: the fraction of its variables shared
+with the set. Domain agreement $g_{\mathrm{Dom}}$ asks whether the candidate comes from the same
+topic: the fraction of reference equations whose domain label equals the candidate's. The first
+two encode how equations determine one another's variables, and the third encodes topical
+consistency.
+
+\begin{table}[t]
+\centering
+\caption{Features of the reranker. $\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ is the set of query
+variables, $t_j$ the text of equation $e_j$, $R$ the reference set, and
+$V(R) = \bigcup_{e \in R} V(e)$. The group marks whether a feature reads variable overlap or
+topical closeness.}
+\label{tab:features}
+\small
+\begin{tabular}{llll}
+\toprule
+ & Feature & Definition & Group \\
+\midrule
+$f_1$ & Text similarity     & $\cos(\mathrm{tfidf}(c), \mathrm{tfidf}(t_j))$ & topic \\
+$f_2$ & I/O Jaccard         & $J(\mathcal{Q}, V(e_j))$ & variable \\
+$f_3$ & Latent similarity   & $\cos(\mathrm{svd}(c, \mathcal{Q}), \mathrm{svd}(t_j))$ & topic \\
+$f_4$ & Input coverage      & $|\mathcal{I} \cap V(e_j)| / |\mathcal{I}|$ & variable \\
+$f_5$ & Output coverage     & $|\mathcal{O} \cap V(e_j)| / |\mathcal{O}|$ & variable \\
+$f_6$ & Specificity         & $|\mathcal{Q} \cap V(e_j)| / |V(e_j)|$ & variable \\
+$f_7$ & Domain match        & $1$ if $\mathrm{dom}(e_j)$ occurs in $c$ or $c$ in $\mathrm{dom}(e_j)$ & topic \\
+\midrule
+$g_{\mathrm{Comp}}$ & Complementarity  & $|(V(e_j) \cap \mathcal{Q}) \setminus V(R)| / |\mathcal{Q}|$ & variable \\
+$g_{\mathrm{Coh}}$  & Coherence        & $|V(e_j) \cap V(R)| / |V(e_j)|$ & variable \\
+$g_{\mathrm{Dom}}$  & Domain agreement & $|\{e \in R : \mathrm{dom}(e) = \mathrm{dom}(e_j)\}| / |R|$ & topic \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The latent similarity $f_3$ applies latent semantic analysis \citep{LSA}: a truncated
+singular-value decomposition factorizes the TF-IDF matrix of all equation texts into 256
+dimensions, the query is projected into the same space, and $f_3$ is the cosine similarity there.
+The similarity grows when two texts contain words that appear in similar texts, even without shared
+words. Unlike $f_1$, the query text of $f_3$ also lists the input and output variable symbols.
+
+A multilayer perceptron (MLP) with two hidden layers of \Hidden{} units maps the ten features
+$x(q, e)$ of a candidate to a score $f(x(q, e))$. We train it with a pairwise ranking loss
+\citep{LTR} that asks every correct candidate to outscore the incorrect candidates of the same case
+by at least a margin $\gamma$. For a training case $q$, a ground-truth equation
+$e^{+} \in \mathcal{R}_q \cap C_q$, and an incorrect candidate
+$e^{-} \in C_q \setminus \mathcal{R}_q$,
+\begin{equation}
+  \ell(q, e^{+}, e^{-}) = \max\!\big(0,\; \gamma - f(x(q, e^{+})) + f(x(q, e^{-}))\big) .
+  \label{eq:loss}
+\end{equation}
+For each training case we choose $n_{\mathrm{neg}}$ incorrect candidates and pair every correct
+candidate with each of them. We compare two ways of choosing them and let the validation cases
+decide (Section~\ref{sec:compared}): at random, or the incorrect candidates that the MLP scores
+highest at that point of training (hard negatives). With a large $N_1$, most randomly chosen
+incorrect candidates already trail the correct ones by more than the margin and contribute no loss.
+The hyperparameters of the method, the values fixed before training, are $N_1$, $m$, the
+first-stage weights, $\gamma$, $n_{\mathrm{neg}}$, the number of epochs, and the learning rate
+(\ref{app:hyper}).
+
+\subsection{Sequential selection}\label{sec:seq}
+
+Static reranking fixes the reference set to the top $m$ equations of Stage~1 and scores all
+candidates in one pass. When a case has many ground-truth equations, the equations that rise to
+the top drift away from this fixed set. Sequential selection therefore replaces the reference set
+with the equations selected so far and selects one equation at a time. It first takes the candidate
+with the highest static score. It then recomputes the set-aware features of the remaining
+candidates against the equations selected so far, takes the candidate with the highest score, and
+repeats until it has selected 20 equations; the unselected candidates follow in the order of their
+static scores.
+
+Sequential selection comes in two variants that differ in how the MLP is trained. Greedy selection
+at inference uses the MLP trained for static reranking. Learned greedy selection also trains on the
+sequential contexts, with teacher forcing: it orders the ground-truth equations among the
+candidates of a training case by their Stage-1 rank, $e^{+}_1, e^{+}_2, \dots$, treats
+$e^{+}_1, \dots, e^{+}_{t-1}$ as the equations already selected at step $t$, and adds the loss of
+Eq.~\eqref{eq:loss} for the next ground-truth equation $e^{+}_t$ with the features computed against
+that reference set. A case contributes at most eight steps. Training thus asks the same question as
+inference: which equation to select next, given the ones already selected.

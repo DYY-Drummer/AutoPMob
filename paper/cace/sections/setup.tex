@@ -1,1 +1,104 @@
 \section{Experimental setup}\label{sec:setup}
+
+\subsection{Settings}\label{sec:settings}
+
+We evaluate the methods in two settings. Setting~A holds all \NCases{} evaluation cases of the three
+families, and Setting~B the \NSynth{} synthesized cases alone, 100 for each number of ground-truth
+equations from 1 to 10. Every result uses the stratified source-disjoint split of
+Section~\ref{sec:split} with the same 10 random seeds.
+
+\subsection{Compared methods}\label{sec:compared}
+
+We compare the proposed method with a classical information-retrieval baseline, two variants of the
+baseline with stronger text scorers, and two LLMs. Table~\ref{tab:inputs} lists the information each
+method uses.
+
+\begin{table}[t]
+\centering
+\caption{Information used by each method. The baseline includes its variants with BM25 and E5.}
+\label{tab:inputs}
+\small
+\begin{tabular}{lccc}
+\toprule
+Information & Proposed & Baseline & LLMs \\
+\midrule
+Query (description, input and output variables) & yes & yes & yes \\
+Expression and domain label of each equation & yes & yes & yes \\
+Variable symbols of each equation, as a list & yes & yes & no \\
+Context text of each equation & yes & yes & no \\
+Source of each equation & no & no & no \\
+Cases with known ground truth & training, validation & validation & none \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Classical baseline} The baseline ranks the whole database by the Stage-1 score of
+Eq.~\eqref{eq:stage1}, without a learned model and without a candidate set. Its weights decide how
+well it ranks, so we compare 12 weight pairs $(w_{\mathrm{t}}, w_{\mathrm{v}})$ from $(1.0, 0.0)$ to
+$(0.0, 1.0)$ and, in each split, evaluate on the test cases the pair with the highest Recall@20 on
+the validation cases (\ref{app:weights}). Two variants test whether stronger text evidence alone
+would close the gap to the proposed method. The first replaces the TF-IDF cosine with BM25
+\citep{BM25}; the second replaces it with the cosine between dense embeddings of the description
+and of each equation text from the sentence encoder E5 \citep{E5}. Both rescale the text score to
+$[0, 1]$ over the database for every query, choose their weights on the validation cases in the
+same way, and train nothing.
+
+\paragraph{LLMs} An LLM receives the whole database and the query of one test case and returns the
+identifiers of 20 equations for the desired model, from the most to the least likely. It sees no
+solved case (zero-shot). Each equation reaches it only as its identifier, its expression, and its
+domain label: the prompt with the database holds \NDbTokens{} tokens, and adding the variable
+definitions and the context texts would exceed the input limit of one million tokens. We withhold
+the sources, shuffle the order of the equations, and renumber their identifiers, because the
+proposed method does not read the sources and the synthesized ground truths prefer equations of one
+source, so the sources would give the LLMs alone a clue to the answer. The prompt states the first
+three requirements of Section~\ref{sec:formulation} (\ref{app:prompts}). The models are Claude
+Opus~5.5 and Claude Haiku~5.5 \citep{ClaudeModels}, a large and a small model of one vendor, both
+with the reasoning effort set to high. An LLM sees no training case, so its input for a case does
+not depend on the split; we therefore ask it three times per case, independently, and use the mean
+of the three answers in every split in which the case is a test case. The splits of the two
+settings hold \NTestDistinct{} distinct test cases, so each model answered \NCalls{} calls.
+
+\paragraph{Proposed method} We compared four first-stage weight pairs, $(0.7, 0.3)$, $(0.5, 0.5)$,
+$(0.3, 0.7)$, and $(0.0, 1.0)$, by the Recall@20 of the validation cases. Their validation
+Recall@20 ranged only from \ValRecAMin{} to \ValRecAMax{} in Setting~A and from \ValRecBMin{} to
+\ValRecBMax{} in Setting~B, so we use the pair $(\WText, \WVar)$ in every split, whose candidate set
+admits every ground-truth equation with the smallest $N_1$. In each split we set $N_1$ to the
+smallest number of candidates that holds every ground-truth equation of the training and validation
+cases, rounded up to the next thousand; this gives $N_1 = \NOne$ in all 10 splits, whereas the
+other pairs need \NOneOtherMin{} to \NOneOtherMax. Between random and hard negatives, each split
+takes the one with the higher validation Recall@20, and hard negatives won in all \NSplitsAll{}
+splits of the two settings. The other hyperparameters are a reference set of $m = \RefSize$
+equations, the margin $\gamma = \Margin$, $n_{\mathrm{neg}} = \NNeg$ incorrect candidates, and
+\Epochs{} epochs of AdamW with learning rate $\LearnRate$; we have not compared them with other
+values.
+
+\subsection{Judgment and metrics}\label{sec:metrics}
+
+Every method returns identifiers of database equations: the retrieval methods rank the database,
+and the LLMs list identifiers. A returned equation is correct when its identifier belongs to the
+ground truth $\mathcal{R}_q$; an identifier absent from the database counts as incorrect and keeps
+its rank, and a repeated identifier counts only at its first occurrence. For each test case we
+compute the following quantities and average them over the test cases of a split;
+$\Top_n(q)$ denotes the top $n$ equations that a method returns.
+\begin{itemize}
+  \item Recall@20 $= |\mathcal{R}_q \cap \Top_{20}(q)| / K$, the primary metric: the fraction of
+    the ground-truth equations among the 20 equations presented.
+  \item Mean average precision (MAP): the mean over cases of the average precision
+    $\mathrm{AP}(q) = \frac{1}{K} \sum_{e \in \mathcal{R}_q} P(e)$, where $P(e)$ is the fraction of
+    ground-truth equations among the equations ranked at or above $e$, and $P(e) = 0$ when $e$ is
+    not in the ranking. MAP shows how closely the ground-truth equations crowd at the top. Because
+    an LLM returns only 20 equations, the comparison with LLMs uses MAP@20, which sets $P(e) = 0$
+    for every ground-truth equation outside the top 20.
+  \item R-Precision $= |\mathcal{R}_q \cap \Top_K(q)| / K$: the fraction of the ground-truth
+    equations within the top $K$ \citep{Manning}.
+\end{itemize}
+We run no statistical tests. To compare two methods, we report the mean of their difference over
+the 10 splits and the number of splits in which one beats the other.
+
+\subsection{Implementation}\label{sec:impl}
+
+Every experiment runs as a deterministic script: the random seed fixes the split, the model
+initialization, and the choice of incorrect candidates. The proposed method calls no language model
+at inference. On the CPU of a laptop computer, training the reranker for one split of Setting~A took
+\TrainMinAMin{} to \TrainMinAMax{} minutes, and ranking the test cases of the split took
+\EvalSecAMin{} to \EvalSecAMax{} seconds.

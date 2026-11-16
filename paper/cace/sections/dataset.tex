@@ -1,1 +1,135 @@
 \section{Dataset}\label{sec:dataset}
+
+\subsection{Equation database}\label{sec:db}
+
+We built a database of \NEq{} equations from \NSources{} sources. A source is one PDF file or one
+generated reference set. Of the sources, \NPdf{} are PDF files of papers, textbooks, and reports and
+contribute \NEqPdf{} equations: \NEarly{} files that we collected early in this work, on continuous
+stirred-tank reactors, biodiesel reactions, and process control, and \NOpenAlex{} files that
+searches of a scholarly database retrieved for \NFields{} fields, from reaction engineering and heat
+transfer to electrochemistry and acoustics (\ref{app:collection}). The other \NRefSets{} sources are
+reference equation sets that Gemini 2.5 Pro \citep{Gemini25} generated field by field to cover
+textbook fundamentals; their \NEqRef{} equations have no source document.
+
+A large language model (LLM), Gemini, extracted the equations: Gemini 2.5 Pro for \NExtractPro{} of
+the PDF files, and an earlier version, which no record names, for the \NExtractEarliest{} earliest
+ones. The model read the PDF and wrote out its numbered equations in \LaTeX{}; for each equation it
+returned the variable symbols with their definitions, a context text that explains the physical
+meaning of the equation from the surrounding passage, and a domain label (\ref{app:prompts}). The
+model kept the symbols as printed, and we normalized none of them.
+
+Two properties of the database bear on every later result. First, the database holds \NSymbols{}
+distinct variable symbols, and the method matches variables by symbol alone. Of the
+\NSymbolsShared{} symbols that appear in two or more equations, \NSymbolsConflict{} carry
+definitions that differ between equations. Most differences paraphrase one quantity, but some
+symbols name different quantities: $k$ denotes a reaction rate constant, a thermal conductivity,
+and a wavenumber in different equations. The method treats each such symbol as one variable.
+Second, the domain labels are free text written by the language model, not entries of a fixed
+taxonomy: the equations carry \NLabels{} distinct labels, \ShareLabelsOnce\% of which occur once,
+so two labels rarely agree exactly.
+
+\subsection{Test cases}\label{sec:cases}
+
+Each test case pairs a query with a ground-truth equation set for the requested model. We formed
+the ground truths in three ways, which gives three families of cases (Table~\ref{tab:families} and
+Fig.~\ref{fig:dataset}); the evaluation uses \NCases{} cases. Every case takes its input and output
+variables from the symbols of its ground-truth equations, so a query and its answer share one
+notation.
+
+\begin{table}[t]
+\centering
+\caption{The three families of evaluation cases. ``Equations'' gives the mean and, in parentheses,
+the maximum number of ground-truth equations per case, and ``Sources'' the mean number of sources
+that a ground truth draws on.}
+\label{tab:families}
+\small
+\begin{tabular}{lp{0.47\linewidth}rcc}
+\toprule
+Family & How the ground truth was formed & Cases & Equations & Sources \\
+\midrule
+Single-source & A language model picked a set it judged sufficient and minimal & \NSingle & \MeanKSingle{} (\MaxKSingle) & \MeanSrcSingle \\
+Cross-source  & We combined two or three equations from different sources & \NCross & \MeanKCross{} (\MaxKCross) & \MeanSrcCross \\
+Synthesized   & A program grew a set from a differential equation to a prescribed size & \NSynth & \MeanKSynth{} (\MaxKSynth) & \MeanSrcSynth \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]\centering
+\includegraphics[width=0.98\linewidth]{figures/fig_dataset.pdf}
+\caption{The evaluation cases. (a) Composition: Setting~A uses the single-source, cross-source, and
+synthesized cases, and Setting~B the synthesized cases alone; hatched bars mark the cases excluded
+from training and evaluation. (b) Number of ground-truth equations per case in Setting~A.}
+\label{fig:dataset}
+\end{figure}
+
+A language model formed the ground truths of the single-source family (\NSingle{} cases). We gave
+Gemini 2.5 Pro a catalog that listed, for each equation, only its identifier, its domain label, and
+its variable symbols, and asked for physically meaningful cases: a description, input and output
+variables, and a ground-truth set that the inputs determine and that is sufficient and minimal
+(\ref{app:prompts}). We kept the cases whose ground-truth equations all exist in the database, whose
+input and output variables all appear in them, and whose ground truth has as many unknowns as
+equations once the inputs are given. Each ground truth draws on one source. It is the set that the
+model judged minimal, not a model that a source presents.
+\todo{Manual verification of the ground truths that language models formed: who checked, how many
+cases, by what method, and with what result.}
+
+The cross-source family (\NCross{} cases) combines two or three equations from different sources. A
+program built \NCrossProgram{} of these cases. It grouped the domain labels into ten categories,
+such as reactor, heat transfer, and control, by hand-written word lists; took pairs of categories
+that chemical engineering often combines; collected pairs of equations that come from different
+sources and share at least two variable symbols; and formed cases whose outputs are one variable
+unique to each equation and whose inputs are all other variables. It wrote each description from an
+English template. The other cases are \NCrossPicked{} combinations that a coding-assistant language
+model (Claude) wrote as physically meaningful and \NCrossReselected{} variants of them with
+reselected input and output variables, whose descriptions Claude Opus 4.8 \citep{ClaudeOpus48}
+rewrote to match the new variables.
+
+A program formed the ground truths of the synthesized family (\NSynth{} cases,
+Section~\ref{sec:synth}).
+
+All ground truths meet requirements~1--3 of Section~\ref{sec:formulation}. Because these
+requirements only count variables and equations, we also checked that each unknown can be assigned
+to an equation of its own. We excluded \NExcluded{} generated cases from both training and
+evaluation: \NExcludedCross{} cross-source cases in which one ground-truth equation contains input
+variables only, so that some unknowns stay undetermined once the inputs are given, and one
+single-source case whose ground truth draws on two sources. Requirement~3 holds trivially in
+\NReqThreeTrivial{} of the \NCases{} cases, which contain no variable other than the inputs and
+outputs, and requirement~4 cannot be checked, because the database does not mark which variables are
+constants. Over all cases, \ShareKTwoPlus\% have two or more ground-truth equations, and the mean is
+\MeanKAll.
+
+\subsection{Synthesized cases}\label{sec:synth}
+
+The ground truths of the first two families hold at most \MaxKSingle{} equations, so a program
+generated larger ones that mix differential and algebraic equations. It fixes a target size $X$ and
+works in two phases. First, it picks a differential equation of the database at
+random and takes one of its differentiated variables as an output. It then repeatedly adds an
+equation that contains a variable, other than that output, of the equations collected so far,
+choosing at random among the equations of the first equation's source when any qualifies and among
+those of other sources otherwise, until the set holds $X$ equations. Second, it goes through the
+added equations, chooses at random one variable of each that is not yet an output, and adds it to
+the outputs; every variable left over becomes an input. The resulting sets have as many unknowns as
+equations once the inputs are given, and each equation contributes an output of its own, so every
+unknown can be matched to its own equation. We generated 100 cases for each $X$ from 1 to 10;
+\NSynthOneSource{} of the \NSynth{} cases draw on a single source. A language model, Claude Sonnet
+4.5 \citep{ClaudeSonnet45}, wrote only the description of each case; the equation set, the inputs,
+and the outputs all follow from the program (\ref{app:example} shows one case).
+
+\subsection{Stratified source-disjoint split}\label{sec:split}
+
+We split the cases into training, validation, and test cases by source. Each case belongs to the
+source that contributes most of its ground-truth equations, and each source goes wholly to one
+part: 20\% of the sources to testing, 20\% to validation, and 60\% to training. No source therefore
+spans training and testing. Because sources hold different numbers of cases, the numbers of cases
+vary from split to split: \NTestAMin{} to \NTestAMax{} test cases and \NValAMin{} to \NValAMax{}
+validation cases in Setting~A.
+
+A random assignment of sources can put the cases with many equations on one side, so we stratify
+it. For one split, we draw \NSplitCandidates{} random assignments and take four quantities per
+case: the numbers of ground-truth equations, of input variables, of output variables, and of
+sources spanned. For each quantity we compute the $L_1$ distance between its training and test
+frequency distributions, and we select the assignment with the smallest sum of the four distances.
+Every experiment repeats this procedure over the same 10 random seeds and reports the mean and the
+standard deviation across them; the seed also fixes the initialization of the model and the choice
+of incorrect candidates. The validation cases choose the hyperparameters of the methods
+(Section~\ref{sec:compared}).

@@ -1,7 +1,7 @@
 """llm_id_summary.py（LLM との比較を式の ID で判定した値の集計）の単体テスト."""
 import pytest
 
-from llm_id_summary import runs_agreement, split_means
+from llm_id_summary import cost_breakdown, runs_agreement, split_means, time_range
 
 
 PER_SEED = {
@@ -30,3 +30,18 @@ def test_runs_agreement_reports_mean_sd_and_share_of_identical_runs():
     assert out["recall@20_sd_mean"] == pytest.approx((0.0 + 0.5) / 2)
     assert out["cases_all_runs_same"] == pytest.approx(0.5)
     assert out["n_cases"] == 2
+
+
+def test_cost_breakdown_separates_the_cached_database_reads():
+    # Opus 5.5: input 4, cache read 0.20, output 20 dollars per million tokens (run_llm_db_baseline.PRICES)
+    usages = [{"input_tokens": 1000, "cache_read_input_tokens": 1_000_000, "cache_creation_input_tokens": 0,
+               "output_tokens": 1000}] * 2
+    out = cost_breakdown(usages, "claude-opus-5-5")
+    assert out["total"] == pytest.approx(2 * 0.224)
+    assert out["read"] == pytest.approx(2 * 0.2)
+    assert out["read_share"] == pytest.approx(0.2 / 0.224)
+    assert out["n_calls"] == 2
+
+
+def test_time_range_gives_min_and_max_and_ignores_missing_values():
+    assert time_range([67.05, None, 93.0, 80.0]) == {"min": 67.05, "max": 93.0, "n": 3}

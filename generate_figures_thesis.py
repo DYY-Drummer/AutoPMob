@@ -41,11 +41,12 @@ C_DAE = "#16A085"    # synthesized cases (Setting B)
 SEEDS = [42, 123, 456, 789, 1024, 2024, 3141, 5926, 7777, 9999]
 
 
-def save(fig, name):
+def save(fig, name, out_dir=None):
+    out = Path(out_dir) if out_dir else FIG
     for ext in ("png", "pdf"):
-        fig.savefig(FIG / f"{name}.{ext}", dpi=160, bbox_inches="tight")
+        fig.savefig(out / f"{name}.{ext}", dpi=160, bbox_inches="tight")
     plt.close(fig)
-    print(f"saved {FIG / name}.png/.pdf")
+    print(f"saved {out / name}.png/.pdf")
 
 
 def _box(ax, data, positions, colors, widths=0.55):
@@ -85,7 +86,9 @@ def _family(c):
 # ----------------------------------------------------------------------
 # dataset() — 評価に使う 1,731 件と、使わない 92 件・拡張 1,015 件
 # ----------------------------------------------------------------------
-def dataset():
+def dataset(augmented=True, out_dir=None):
+    """augmented=False：拡張ケースの棒と凡例を除く（投稿論文用。論文は拡張ケースを扱わない）。out_dir：書き出し先（既定は修論の図）.
+    戻り値は (a) の棒の名前."""
     cases = json.load(open(ROOT / "training_cases.json"))
     ex = _excluded_ids()
     used, dropped = Counter(), Counter()
@@ -94,6 +97,8 @@ def dataset():
     keys = ["single", "cross", "synth", "aug"]
     labels = ["Single-source", "Cross-source", "Synthesized", "Augmented"]
     colors = [C_PROP, C_PROP, C_DAE, "white"]
+    if not augmented:
+        keys, labels, colors = keys[:3], labels[:3], colors[:3]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.0))
     ypos = np.arange(len(keys))
@@ -113,13 +118,15 @@ def dataset():
     ax1.set_xlim(0, max(used[k] + dropped[k] for k in keys) * 1.45)
     ax1.set_title("(a) Composition of the cases", fontsize=12)
     n_eval = sum(used[k] for k in ("single", "cross", "synth"))
-    ax1.legend(handles=[Patch(facecolor=C_PROP, edgecolor="black", label=f"Setting A: evaluation ({n_eval:,} cases)"),
-                        Patch(facecolor=C_DAE, edgecolor="black", label=f"  of which synthesized = Setting B ({used['synth']:,})"),
-                        Patch(facecolor="white", edgecolor="black", hatch="xx",
-                              label=f"Excluded from training and evaluation ({sum(dropped.values()):,})"),
-                        Patch(facecolor="white", edgecolor="black", hatch="//",
-                              label=f"Augmented: used for neither training nor testing ({used['aug']:,})")],
-               fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=2, framealpha=1.0)
+    handles = [Patch(facecolor=C_PROP, edgecolor="black", label=f"Setting A: evaluation ({n_eval:,} cases)"),
+               Patch(facecolor=C_DAE, edgecolor="black", label=f"  of which synthesized = Setting B ({used['synth']:,})"),
+               Patch(facecolor="white", edgecolor="black", hatch="xx",
+                     label=f"Excluded from training and evaluation ({sum(dropped.values()):,})")]
+    if augmented:
+        handles.append(Patch(facecolor="white", edgecolor="black", hatch="//",
+                             label=f"Augmented: used for neither training nor testing ({used['aug']:,})"))
+    ax1.legend(handles=handles, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13),
+               ncol=2 if augmented else 3, framealpha=1.0)
 
     ev = [c for c in cases if c["case_id"] not in ex and _family(c) != "aug"]
     nc = Counter(len(c.get("correct_model_ids", [])) for c in ev)
@@ -136,7 +143,8 @@ def dataset():
                         Patch(facecolor=C_PROP, edgecolor="black", label="Two or more equations")],
                fontsize=10, loc="upper right")
     fig.tight_layout()
-    save(fig, "fig_dataset")
+    save(fig, "fig_dataset", out_dir)
+    return labels
 
 
 # ----------------------------------------------------------------------

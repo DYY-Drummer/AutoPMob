@@ -18,14 +18,20 @@ Conventions
 from __future__ import annotations
 
 import argparse
+import ast
+import csv
 import json
+import math
 import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+# Facts about how the data were built that no result file holds; each names its record.
+N_EARLIEST_DOCS = 9      # documents extracted before Gemini 2.5 Pro became the standard (docs/初期9報の抽出し直し_2026-11-04.md)
+N_SPLIT_CANDIDATES = 400  # candidate splits per seed (set_aware_reranker.stratified_src_split, n_try)
 OUT = Path(__file__).resolve().parent / "numbers.tex"
 KATO = ROOT / "experiments" / "kato1021"
 LLM = ROOT / "experiments" / "llm_db_baseline"
@@ -133,6 +139,8 @@ def _dataset(r: Registry) -> None:
     for jp, code in (("単一出典", "Single"), ("出典横断", "Cross"), ("合成", "Synth")):
         r.add(f"MeanK{code}", fmt(t2[jp]["mean_K"], 2))
         r.add(f"MaxK{code}", str(t2[jp]["max_K"]))
+    for jp, code in (("単一出典", "Single"), ("出典横断", "Cross"), ("合成", "Synth")):
+        r.add(f"MeanSrc{code}", fmt(t2[jp]["mean_sources"], 2))
     r.add("MeanKAll", fmt(get(d, "setting_A_mean_K", name), 2))
     r.add("ShareKTwoPlus", pct(get(d, "setting_A_share_K_ge_2", name)))
     r.add("NExcluded", count(len(load(ROOT / get(d, "exclude", name))["excluded_case_ids"])))
@@ -181,9 +189,179 @@ def _llm(r: Registry) -> None:
                 r.add(f"{code}{kc}{mc}SD", fmt(e["sd"]))
 
 
+def power_of_ten(x: float) -> str:
+    """0.001 -> 10^{-3} (for math mode). Stops if x is not a power of ten."""
+    e = round(math.log10(x))
+    if abs(10 ** e - x) > 1e-12 * max(1.0, abs(x)):
+        raise ValueError(f"not a power of ten: {x}")
+    return f"10^{{{e}}}"
+
+
+def _equations() -> list:
+    eqs = load(ROOT / "unified_equations.json")
+    return eqs if isinstance(eqs, list) else eqs.get("equations", [])
+
+
+def _dataset_details(r: Registry) -> None:
+    eqs = _equations()
+    # variable symbols and their definitions
+    n_eq_of, defs = Counter(), defaultdict(set)
+    for e in eqs:
+        v = e.get("variables") or {}
+        if isinstance(v, dict):
+            for k, d in v.items():
+                k = (k or "").strip()
+                if k:
+                    n_eq_of[k] += 1
+                    defs[k].add(d.strip() if isinstance(d, str) else json.dumps(d, ensure_ascii=False))
+    shared = [k for k, n in n_eq_of.items() if n >= 2]
+    r.add("NSymbols", count(len(n_eq_of)))
+    r.add("NSymbolsShared", count(len(shared)))
+    r.add("NSymbolsConflict", count(sum(1 for k in shared if len(defs[k]) > 1)))
+    labels = Counter((e.get("domain") or "").strip() for e in eqs)
+    r.add("NLabels", count(len(labels)))
+    r.add("ShareLabelsOnce", pct(sum(1 for n in labels.values() if n == 1) / len(labels)))
+
+    # how the documents were collected (docs/appendix_materials/papers.csv, one row per PDF file)
+    with open(ROOT / "docs" / "appendix_materials" / "papers.csv", encoding="utf-8-sig") as f:
+        route = Counter(row["route"] for row in csv.DictReader(f))
+    hand = sum(n for k, n in route.items() if k.startswith("初期・手作業"))
+    early_search = sum(n for k, n in route.items() if k.startswith("初期・Semantic Scholar"))
+    openalex = sum(n for k, n in route.items() if k.startswith("OpenAlex"))
+    n_pdf = int(r.values["NPdf"])
+    if hand + early_search + openalex != n_pdf:
+        raise ValueError("papers.csv: the routes do not add up to the number of PDF files")
+    r.add("NEarlyHand", count(hand))
+    r.add("NEarlySearch", count(early_search))
+    r.add("NEarly", count(hand + early_search))
+    r.add("NOpenAlex", count(openalex))
+    meta = "fetched_papers_metadata.json"
+    r.add("NFields", count(len(get(load(ROOT / "docs" / "paper_collection" / meta), "summary", meta))))
+    r.add("NExtractEarliest", count(N_EARLIEST_DOCS))
+    r.add("NExtractPro", count(n_pdf - N_EARLIEST_DOCS))
+
+    # cases
+    src_of = {}
+    for e in eqs:
+        eid, src = (e.get("eq_id") or "").strip(), (e.get("source_id") or "unknown").strip()
+        src_of[eid if "__" in eid else f"{src}__{eid}"] = src
+    one = 0
+    for c in load(ROOT / "training_cases.json"):
+        if c.get("variant_type", "").startswith("dae_"):
+            ids = c.get("correct_model_ids") or []
+            ids = ast.literal_eval(ids) if isinstance(ids, str) else ids
+            one += len({src_of[i.strip()] for i in ids if i.strip() in src_of}) == 1
+    r.add("NSynthOneSource", count(one))
+    name = "data_counts.json"
+    d = get(load(KATO / name), "new", name)
+    r.add("NExcludedCross", count(int(r.values["NExcluded"]) - 1))
+    r.add("NReqThreeTrivial", count(get(d, "req3_trivial_no_intermediate", name)))
+    r.add("NSymbolCases", count(get(d, "same_symbol_different_definition_cases", name)))
+    r.add("NMeaningCases", count(get(d, "llm_meaning_conflict_cases", name)))
+
+    # sizes of the splits
+    name = "splits.json"
+    sp = get(load(LLM / name), "splits", name)
+    for s in ("A", "B"):
+        for part, pc in (("test", "Test"), ("val", "Val")):
+            sizes = [len(p[part]) for p in sp[s].values()]
+            r.add(f"N{pc}{s}Min", count(min(sizes)))
+            r.add(f"N{pc}{s}Max", count(max(sizes)))
+    r.add("NSplitCandidates", count(N_SPLIT_CANDIDATES))
+
+
+def _setup(r: Registry) -> None:
+    name = "selected.json"
+    sel = load(KATO / name)
+    fx = get(sel, "fixed", name)
+    r.add("RefSize", str(fx["m"]))
+    r.add("Margin", str(fx["gamma"]))
+    r.add("NNeg", str(fx["n_neg"]))
+    r.add("Epochs", str(fx["epochs"]))
+    r.add("Hidden", str(fx["hidden"]))
+    r.add("BatchSize", str(fx["batch_size"]))
+    r.add("LearnRate", power_of_ten(fx["lr"]))
+    r.add("WeightDecay", power_of_ten(fx["weight_decay"]))
+    picks = [v for s in ("A", "B") for v in get(sel, ("selected", s), name).values()]
+    n1 = {v["N1"] for v in picks}
+    if len(n1) != 1:
+        raise ValueError(f"{name}: N1 differs between splits: {sorted(n1)}")
+    r.add("NOne", count(n1.pop()))
+    r.add("NSplitsHard", str(sum(v["neg"] == "hard" for v in picks)))
+    r.add("NSplitsAll", str(len(picks)))
+    rule = load(KATO / "n1_rule.json")
+    w = get(sel, ("mode", "fix_weight"), name)
+    wt, wv = get(rule, ("weights", w), "n1_rule.json")
+    r.add("WText", str(wt))
+    r.add("WVar", str(wv))
+    # validation Recall@20 of the first-stage weight pairs (hard negatives), and the N1 each pair needs
+    for s in ("A", "B"):
+        vals = [v["val"]["Recall@20"]["mean"] for k, v in get(sel, ("grid", s), name).items() if k.endswith("|hard")]
+        r.add(f"ValRec{s}Min", fmt(min(vals)))
+        r.add(f"ValRec{s}Max", fmt(max(vals)))
+    other = [v[k]["N1"] for s in ("A", "B") for v in get(rule, ("settings", s), "n1_rule.json").values()
+             for k in v if k != w]
+    r.add("NOneOtherMin", count(min(other)))
+    r.add("NOneOtherMax", count(max(other)))
+
+
+def _llm_setup(r: Registry) -> None:
+    name = "token_counts_v4.json"
+    models = get(load(LLM / name), "models", name)
+    prefix = {m["prefix_tokens"] for m in models.values()}
+    if len(prefix) != 1:
+        raise ValueError(f"{name}: the database prompt has different token counts across models")
+    r.add("NDbTokens", count(prefix.pop()))
+    r.add("NTaskTokens", count(round(get(models, ("claude-opus-5-5", "task_mean"), name))))
+    name = "id_summary.json"
+    n_cases = {get(load(LLM / name), ("models", m, "n_cases"), name) for m in LLMS}
+    name = "results_claude-opus-5-5__eqd__ex-none__high__v4.json"
+    n_calls = {get(load(LLM / f"results_claude-{m}-5-5__eqd__ex-none__high__v4.json"), "n_scored", name)
+               for m in ("opus", "haiku")}
+    if len(n_cases) != 1 or len(n_calls) != 1:
+        raise ValueError("the two LLMs answered different numbers of cases or calls")
+    r.add("NTestDistinct", count(n_cases.pop()))
+    r.add("NCalls", count(n_calls.pop()))
+
+    # answers, variability between the three runs, and cost (id_summary.json models.*)
+    name = "id_summary.json"
+    d = load(LLM / name)
+    total = 0.0
+    for llm, lc in LLMS.items():
+        m = get(d, ("models", llm), name)
+        n = m["n_answers"]
+        r.add(f"{lc}WithTwenty", count(m["answers_with_20"]))
+        r.add(f"Share{lc}WithTwenty", pct(m["answers_with_20"] / n))
+        r.add(f"{lc}OverTwenty", count(m["answers_over_20"]))
+        r.add(f"{lc}InvalidId", count(m["answers_with_invalid_id"]))
+        r.add(f"{lc}RepeatedId", count(m["answers_with_duplicates"]))
+        r.add(f"{lc}Refusals", count(m["refusals"]))
+        r.add(f"Share{lc}Refusals", pct(m["refusals"] / n))
+        r.add(f"OutTokens{lc}", count(round(m["output_tokens_mean"])))
+        r.add(f"RunSd{lc}", fmt(m["recall@20_sd_mean"]))
+        r.add(f"RunSame{lc}", pct(m["cases_all_runs_same"]))
+        r.add(f"Jaccard{lc}", fmt(m["jaccard_mean"]))
+        r.add(f"SameList{lc}", pct(m["same_list_share"], 2 if m["same_list_share"] < 0.001 else 1))
+        r.add(f"Cost{lc}", money(m["cost"]["total"]))
+        r.add(f"ReadShare{lc}", pct(m["cost"]["read_share"]))
+        total += round(m["cost"]["total"], 2)
+    r.add("CostTotal", money(total))
+
+    # time of the proposed method (the runs that produced the reported values), per split
+    for s in ("A", "B"):
+        t = get(d, ("settings", s, "proposed_time_sec"), name)
+        r.add(f"TrainMin{s}Min", fmt(t["train"]["min"] / 60, 1))
+        r.add(f"TrainMin{s}Max", fmt(t["train"]["max"] / 60, 1))
+        r.add(f"EvalSec{s}Min", count(round(t["eval"]["min"])))
+        r.add(f"EvalSec{s}Max", count(round(t["eval"]["max"])))
+
+
 def build() -> Registry:
     r = Registry()
     _dataset(r)
+    _dataset_details(r)
+    _setup(r)
+    _llm_setup(r)
     _overall(r)
     _llm(r)
     return r

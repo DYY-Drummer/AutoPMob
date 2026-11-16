@@ -1,2 +1,52 @@
 \section{Problem formulation}\label{sec:formulation}
-The requirements follow \citet{CombineEq}.
+
+A physical model is here a set of equations from which the output variables can be computed once
+the input variables are given. \citet{CombineEq} formulated model building from documents as the
+combination of extracted equations and defined four requirements that the equation set $S$ of a
+desired model must meet. Let $\mathcal{I}$ and $\mathcal{O}$ be the input and output variables, and
+let $V(S)$ be the variables that appear in the equations of $S$.
+\begin{enumerate}
+  \item Input--output completeness: every input and output variable appears in $S$, that is,
+    $\mathcal{I} \cup \mathcal{O} \subseteq V(S)$.
+  \item Degree-of-freedom consistency: the degrees of freedom of $S$, the number of variables minus
+    the number of equations \citep{Seborg},
+    \begin{equation}
+      N_{\mathrm{DoF}}(S) = |V(S)| - |S| ,
+      \label{eq:dof}
+    \end{equation}
+    equal the number of input variables. Under requirement~1 this is equivalent to
+    $|V(S) \setminus \mathcal{I}| = |S|$: once the inputs are given, $S$ has exactly as many
+    unknown variables as equations.
+  \item Solvability: every variable other than the input and output variables appears in at least
+    two equations of $S$.
+  \item Unique constant equations: each variable that represents a constant is defined by a single
+    equation that sets it to that constant.
+\end{enumerate}
+The four requirements are necessary conditions; a set that meets them need not serve as a model.
+
+The combination method of \citet{CombineEq} takes a given set of equations and returns every
+combination that meets the requirements. This study addresses the step before it: from a large
+database built from many documents, choose the equations needed to build the desired model. The
+proposed method can therefore sit upstream of the combination method.
+
+A query is a triple $q = (c, \mathcal{I}, \mathcal{O})$, where the description $c$ states the
+desired model in natural language and $\mathcal{I}$ and $\mathcal{O}$ list the symbols of the input
+and output variables; we write $\mathcal{Q} = \mathcal{I} \cup \mathcal{O}$ for the query
+variables. The database $\mathcal{E} = \{e_1, \dots, e_N\}$ stores five items for each equation
+$e_j$: its \LaTeX{} expression; its variable set $V(e_j)$, with a text that defines each symbol; a
+context text that explains the physical meaning of the equation from the passage around it; its
+source; and a domain label $\mathrm{dom}(e_j)$, a free-text name of the field or process
+(Section~\ref{sec:db}). Two variables are the same only when their symbols match exactly, both
+between the query and an equation and between two equations. The method normalizes no notation, so
+$C_A$ and $C_A(t)$ are different variables, and it does not read the definitions: two variables
+with the same symbol count as one even when their definitions differ.
+
+The method outputs a ranking of the database. It places the equations most likely to be needed for
+the desired model at the top and presents the top 20; the engineer assembles and checks the model
+from them.
+
+To evaluate the method, each test case designates one ground-truth set
+$\mathcal{R}_q \subset \mathcal{E}$, the equations of the requested model (Section~\ref{sec:cases}),
+and we write $K = |\mathcal{R}_q|$ for their number. Every equation of the database carries an
+identifier. A presented equation is correct when its identifier belongs to $\mathcal{R}_q$ and
+incorrect otherwise; we judge no equivalence between equations.

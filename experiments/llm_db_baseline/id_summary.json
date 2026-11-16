@@ -40,6 +40,18 @@
      "9999": 256
     }
    },
+   "proposed_time_sec": {
+    "train": {
+     "min": 141.14,
+     "max": 493.37,
+     "n": 10
+    },
+    "eval": {
+     "min": 3.83,
+     "max": 9.26,
+     "n": 10
+    }
+   },
    "methods": {
     "proposed": {
      "recall@20": {
@@ -748,6 +760,18 @@
      "9999": 266
     }
    },
+   "proposed_time_sec": {
+    "train": {
+     "min": 67.05,
+     "max": 93.0,
+     "n": 10
+    },
+    "eval": {
+     "min": 1.96,
+     "max": 3.24,
+     "n": 10
+    }
+   },
    "methods": {
     "proposed": {
      "recall@20": {
@@ -1144,15 +1168,41 @@
    "recall@20_sd_mean": 0.04247438802688954,
    "cases_all_runs_same": 0.7202630005977286,
    "jaccard_mean": 0.5726877453796267,
-   "same_list_share": 0.0005977286312014345
+   "same_list_share": 0.0005977286312014345,
+   "n_answers": 5019,
+   "answers_with_20": 4838,
+   "answers_over_20": 31,
+   "answers_with_invalid_id": 21,
+   "answers_with_duplicates": 75,
+   "refusals": 0,
+   "output_tokens_mean": 875.5694361426579,
+   "cost": {
+    "n_calls": 5019,
+    "total": 1058.9339986,
+    "read": 955.3762725999053,
+    "read_share": 0.902205684077566
+   }
   },
   "Haiku 5.5": {
    "n_cases": 1673,
    "recall@20_sd_mean": 0.14211284403635988,
    "cases_all_runs_same": 0.4088463837417812,
    "jaccard_mean": 0.3235029418604581,
-   "same_list_share": 0.01972504482964734
+   "same_list_share": 0.01972504482964734,
+   "n_answers": 5019,
+   "answers_with_20": 4412,
+   "answers_over_20": 645,
+   "answers_with_invalid_id": 31,
+   "answers_with_duplicates": 626,
+   "refusals": 144,
+   "output_tokens_mean": 1149.8938035465233,
+   "cost": {
+    "n_calls": 5019,
+    "total": 255.23086890000008,
+    "read": 238.84406814997632,
+    "read_share": 0.935796164387764
+   }
   }
  },
- "created": "2026-11-16T01:50:43+00:00"
+ "created": "2026-11-16T06:38:45+00:00"
 }
