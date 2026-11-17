@@ -29,6 +29,7 @@ def test_hand_typed_numbers_ignores_comments_definitions_lengths_and_model_names
         r"\begin{tabular}{p{0.44\linewidth}c}\setlength{\tabcolsep}{2.5pt}",
         r"Claude Opus~5.5, Claude Haiku 5.5, Gemini 2.5 Pro, Claude Opus 4.8, and Claude Sonnet~4.5",
         "A model name may break across lines in the source: Claude Sonnet\n4.5 wrote the descriptions.",
+        r"a language model, Claude Fable~5.2, judged the cases",
         r"The share is 50\% (an escaped percent sign starts no comment), and 0.5 follows.",
     ])
     assert cm.hand_typed_numbers(tex) == ["0.5"]

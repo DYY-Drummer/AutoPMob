@@ -55,7 +55,9 @@ the \NCases{} evaluation ground truths, a symbol that appears in two or more gro
 carries definitions that differ between them. Most differences are paraphrases, but a language
 model (Claude Opus~5.5) that compared the definitions judged that in \NMeaningCases{} cases an input
 or output symbol denotes different quantities in different equations.
-\todo{State whether these judgments were checked by hand, and with what result.}
+We report no manual check of these judgments. On a sample of cases, a second language model, which
+had not seen them, agreed with them in \NCheckFlagAgree{} of the \NCheckThreeApplicable{} cases that
+hold a symbol in two or more ground-truth equations (\ref{app:check}).
 Matching by symbol also ties the measured accuracy to the notation of the queries: every case takes
 its input and output variables from the symbols of its ground-truth equations, so the experiments
 cover only queries that share the notation of the ground truth. Because the six variable-overlap
@@ -95,14 +97,18 @@ Six limitations qualify the results. First, language models produced parts of th
 extracted the equations, wrote the \NEqRef{} equations of the generated equation sets, picked the ground
 truths of the single-source cases, and wrote the descriptions of the synthesized cases and of part
 of the cross-source cases, whose style may differ from requests written by engineers; a program
-fixed the equations, inputs, and outputs of the synthesized cases. One of the authors drew 50 cases
-at random, in proportion to the sizes of the three families, and checked them by hand.
-\todo{State the criteria that the check applied and the number of cases that met each. The author
-reports that all 50 cases were correct, but the result can be written only together with the
-criteria: Section~\ref{sec:symbols} reports that a language model judged an input or output symbol
-to denote different quantities in different equations in \NMeaningCases{} of the \NCases{} cases. A sheet for
-a recorded check of 50 cases against four written criteria is prepared
-(\texttt{paper/cace/make\_manual\_check\_sheet.py}).}
+fixed the equations, inputs, and outputs of the synthesized cases. We report no manual verification
+of this data. A language model, Claude Fable~5.2 \citep{ClaudeModels}, judged \NCheckCases{} cases,
+drawn at random in proportion to the sizes of the three families, against four criteria
+(\ref{app:check}). It judged that the ground-truth equations describe the model that the
+description asks for in \NCheckOneYes{} cases, that the output variables are the quantities that
+the description asks for in \NCheckTwoYes, that every symbol shared by two or more ground-truth
+equations denotes one quantity in \NCheckThreeYes{} of the \NCheckThreeApplicable{} cases with such
+a symbol, and that the equations determine the outputs once the inputs are given in
+\NCheckFourYes. Only \NCheckAllMet{} cases met all four criteria, and none of the \NCheckProgram{}
+cross-source cases that the program built did. The ground truths are therefore sets of equations
+that the requirements of Section~\ref{sec:formulation} admit, not models that an engineer has
+validated, and the reported accuracy measures how well a method recovers such sets.
 Second, the evaluation is internal to the database: retrieval cannot find an equation that the
 database lacks, and nobody screened the collected files by hand, so some have little to do with
 physical models. Third, the queries share the notation of their ground truths

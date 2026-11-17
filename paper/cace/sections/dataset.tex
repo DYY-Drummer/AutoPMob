@@ -91,7 +91,8 @@ Section~\ref{sec:synth}).
 
 All ground truths meet requirements~1--3 of Section~\ref{sec:formulation}. Because these
 requirements only count variables and equations, we also checked that each unknown can be assigned
-to an equation of its own. We excluded \NExcluded{} generated cases from both training and
+to an equation of its own. This check, too, only counts: whether the equations then determine the
+outputs was judged on a sample alone (Section~\ref{sec:limitations}). We excluded \NExcluded{} generated cases from both training and
 evaluation: \NExcludedCross{} cross-source cases in which one ground-truth equation contains input
 variables only, so that some unknowns stay undetermined once the inputs are given, and one
 single-source case whose ground truth draws on two sources. Requirement~3 holds trivially in

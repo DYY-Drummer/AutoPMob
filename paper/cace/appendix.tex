@@ -334,6 +334,69 @@ method scored higher than on all test cases, and the proposed method was again a
 all 10 splits.
 
 \FloatBarrier
+\section{Judgments of a language model on a sample of cases}\label{app:check}
+
+We report no manual verification of the cases (Section~\ref{sec:limitations}). As a partial
+substitute, a language model, Claude Fable~5.2 \citep{ClaudeModels}, judged \NCheckCases{} of the
+\NCases{} cases. We drew them at random with a fixed seed, in proportion to the sizes of the three
+families: \NCheckSingle{} single-source, \NCheckCross{} cross-source, and \NCheckSynth{}
+synthesized cases. For each case the model read the description, the input and output variables,
+and, for every ground-truth equation, its notation, source, domain label, context text, and
+variable definitions. It answered four questions:
+\begin{enumerate}
+  \item Do the ground-truth equations describe the model that the description asks for?
+  \item Are the output variables the quantities that the description asks for?
+  \item Does every symbol that appears in two or more ground-truth equations denote the same
+    quantity in each of them? The question does not apply to a case without such a symbol.
+  \item Do the equations determine the output variables once the input variables are given?
+\end{enumerate}
+The model judged the cases one by one in an interactive session of a coding assistant, following
+written rules, not through a scripted call, and recorded a reason for every negative answer. It had
+not seen the judgments of Section~\ref{sec:symbols}. Whether an equation was extracted faithfully
+from its source lay outside the questions.
+
+\begin{table}[htbp]\centering
+\caption{Judgments of a language model (Claude Fable~5.2) on a random sample of \NCheckCases{}
+cases: number of cases that met each criterion, out of the cases to which the criterion applies.
+The cross-source cases are divided into those that the program built and those that descend from
+the combinations written by Claude.}
+\label{tab:check}
+\tightrows\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\linewidth}ccccc@{}}
+\toprule
+ & & \multicolumn{2}{c}{Cross-source} & & \\
+\cmidrule(lr){3-4}
+Criterion & Single-source & Program & Written & Synthesized & All \\
+\midrule
+\rowsfrom{generated/tab_check}
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:check} gives the answers. In all, \NCheckAllMet{} of the \NCheckCases{} cases met
+all four criteria: all \NCheckSingle{} single-source cases, all \NCheckWritten{} cross-source cases that
+descend from the combinations written by Claude, none of the \NCheckProgram{} cross-source cases
+that the program built, and \NCheckAllMetSynth{} of the \NCheckSynth{} synthesized cases. The
+program-built cases failed criterion~2 without exception: their template descriptions name the
+variables that the two equations share and do not ask for the output variables. In
+\NCheckProgramOneNo{} of them, the equations do not describe the phenomenon that the description
+names. Among the synthesized cases, criterion~4 failed most often, in \NCheckSynthFourNo{} cases,
+for example because an output was the independent variable of a derivative, such as time or a
+coordinate; because a ground-truth relation was not an equation but an inequality, an
+order-of-magnitude relation, or an if--then rule; because one equation had to determine several
+unknowns; or because two equations could not hold together. Criterion~2 failed in
+\NCheckSynthTwoNo{} synthesized cases, whose outputs included, for example, independent variables,
+quantities that the description treats as given, or quantities that it does not mention, and
+criterion~3 failed in \NCheckSynthThreeNo.
+
+For criterion~3, the answers can be compared with the earlier judgments of Claude Opus~5.5
+(Section~\ref{sec:symbols}). Of the \NCheckThreeApplicable{} sampled cases that hold a symbol in
+two or more ground-truth equations, Opus~5.5 had flagged \NCheckFlagged, and the two models agreed
+on \NCheckFlagAgree. Both sets of judgments come from language models of one vendor, and we report
+no manual check of either.
+
+\FloatBarrier
 \section{Prompts}\label{app:prompts}
 
 This appendix gives the prompts with which language models built the data and the prompt used for

@@ -4,6 +4,9 @@
   data/manual_check_results.csv          著者がチェックシートで付けた判定（論文に書く値のもと）
   data/manual_check_results_claude.csv   同じ 50 件を言語モデル（Claude Fable 5.2）が判定したもの（照合の相手。人手の確認ではない）
 出力: data/manual_check_summary.json（著者の結果があるときだけ）。使い方: python3 paper/cace/manual_check.py
+
+2026-11-17 の本人の選択：論文には、人手の確認ではなく「言語モデルが判定した」結果として書く。論文の数値は
+make_numbers._sample_check が data/manual_check_results_claude.csv から作る。著者の結果のファイルはない。
 """
 from __future__ import annotations
 

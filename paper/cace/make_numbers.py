@@ -874,6 +874,77 @@ def _results_overlap(r: Registry) -> None:
                         f"test cases ({key})")
 
 
+# the sample of cases that a language model judged against four criteria (paper/cace/manual_check.py)
+CHECK_CRITERIA = (("C1", "One", "1. The equations describe the requested model"),
+                  ("C2", "Two", "2. The outputs are the requested quantities"),
+                  ("C3", "Three", "3. Shared symbols keep one meaning"),
+                  ("C4", "Four", "4. The equations determine the outputs"))
+CHECK_GROUPS = ("single", "program", "written", "synth")   # cross-source cases: built by the program / written by Claude
+FLAGS_FILE = ROOT / "experiments" / "var_descriptions.json"   # earlier judgments of Claude Opus 5.5 (meaning_conflict)
+
+
+def _sample_judgments() -> tuple:
+    """(judgments, group of each case) of the sampled cases that Claude Fable 5.2 judged. These are the judgments of a
+    language model, not a manual verification (the author's decision of 2026-11-17: report them as such)."""
+    import manual_check as chk
+    sample = load(chk.mc.SAMPLE_JSON)
+    cases = chk.mc.load_cases()
+    res = chk.read_results(chk.RESULTS_CLAUDE, list(sample["cases"]))
+    require(len(res) == sample["n"], "the judgments cover every case of the sample")
+
+    def group(c):
+        v = cases[c]["variant_type"]
+        return ("synth" if v.startswith("dae_") else "program" if v == "multisource_v3"
+                else "written" if v.startswith("multisource_") else "single")
+    return res, {c: group(c) for c in res}
+
+
+def _check_counts(res: dict, cases) -> dict:
+    """Per criterion: the cases that met it and the cases to which it applies; and the cases that met all four."""
+    out = {c: (sum(1 for k in cases if res[k][c] == "Y"), sum(1 for k in cases if res[k][c] != "NA"))
+           for c, _, _ in CHECK_CRITERIA}
+    out["all"] = (sum(1 for k in cases if all(res[k][c] in ("Y", "NA") for c, _, _ in CHECK_CRITERIA)), len(list(cases)))
+    return out
+
+
+def _sample_check(r: Registry) -> None:
+    res, group = _sample_judgments()
+    by = {g: [k for k in res if group[k] == g] for g in CHECK_GROUPS}
+    total = _check_counts(res, list(res))
+    part = {g: _check_counts(res, by[g]) for g in CHECK_GROUPS}
+    r.add("NCheckCases", count(len(res)))
+    r.add("NCheckSingle", count(len(by["single"])))
+    r.add("NCheckCross", count(len(by["program"]) + len(by["written"])))
+    r.add("NCheckSynth", count(len(by["synth"])))
+    r.add("NCheckProgram", count(len(by["program"])))
+    r.add("NCheckWritten", count(len(by["written"])))
+    for c, word, _ in CHECK_CRITERIA:
+        r.add(f"NCheck{word}Yes", count(total[c][0]))
+    r.add("NCheckThreeApplicable", count(total["C3"][1]))
+    r.add("NCheckAllMet", count(total["all"][0]))
+    r.add("NCheckAllMetSynth", count(part["synth"]["all"][0]))
+    r.add("NCheckProgramOneNo", count(part["program"]["C1"][1] - part["program"]["C1"][0]))
+    no_synth = {c: part["synth"][c][1] - part["synth"][c][0] for c, _, _ in CHECK_CRITERIA}
+    for c, word, _ in CHECK_CRITERIA[1:]:
+        r.add(f"NCheckSynth{word}No", count(no_synth[c]))
+    # claims of the text
+    require(part["single"]["all"][0] == len(by["single"]), "every sampled single-source case met the four criteria")
+    require(part["written"]["all"][0] == len(by["written"]),
+            "every sampled cross-source case that descends from a written combination met the four criteria")
+    require(part["program"]["C2"][0] == 0 and part["program"]["all"][0] == 0,
+            "no sampled cross-source case that the program built met criterion 2")
+    require(no_synth["C4"] == max(no_synth.values()), "among the synthesized cases, criterion 4 failed most often")
+    require(all(f"{c}:" in res[k]["note"] for k in res for c, _, _ in CHECK_CRITERIA if res[k][c] == "N"),
+            "the record gives a reason for every negative answer")
+    # agreement of criterion 3 with the earlier judgments of Claude Opus 5.5
+    flags = get(load(FLAGS_FILE), "cases", FLAGS_FILE.name)
+    flagged = {k for k in res if any(v.get("meaning_conflict") for v in flags[k]["variables"].values())}
+    applicable = [k for k in res if res[k]["C3"] != "NA"]
+    require(flagged <= set(applicable), "every sampled case that Opus 5.5 flagged holds a symbol in two or more equations")
+    r.add("NCheckFlagged", count(len(flagged)))
+    r.add("NCheckFlagAgree", count(sum(1 for k in applicable if (k in flagged) == (res[k]["C3"] == "N"))))
+
+
 def _pm(e: dict, sd: str = "std") -> str:
     return f"${fmt(e['mean'])} \\pm {fmt(e[sd])}$"
 
@@ -988,6 +1059,14 @@ def tables() -> dict:
             rows.append(" & ".join([mlabel] + [_pm(part[s]["methods"][meth][key], "sd")
                                                for s in ("A", "B") for key in ("recall@20", "AP@20")]) + " \\\\")
     out["tab_overlap.tex"] = "\n".join(rows) + "\n"
+
+    # judgments of a language model on a sample of cases: met / cases to which the criterion applies
+    res, group = _sample_judgments()
+    parts = [_check_counts(res, [k for k in res if group[k] == g]) for g in CHECK_GROUPS] + [_check_counts(res, list(res))]
+    rows = [" & ".join([label] + [f"{p[c][0]}/{p[c][1]}" for p in parts]) + " \\\\" for c, _, label in CHECK_CRITERIA]
+    rows.append("\\midrule")
+    rows.append(" & ".join(["All four"] + [f"{p['all'][0]}/{p['all'][1]}" for p in parts]) + " \\\\")
+    out["tab_check.tex"] = "\n".join(rows) + "\n"
     return out
 
 
@@ -1010,6 +1089,7 @@ def build() -> Registry:
     _results_errors(r)
     _results_coverage(r)
     _results_overlap(r)
+    _sample_check(r)
     return r
 
 

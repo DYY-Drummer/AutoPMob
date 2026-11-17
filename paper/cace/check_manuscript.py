@@ -31,7 +31,7 @@ HIGHLIGHT_CHARS = 85              # assumed from the publisher's general rule; t
 
 VERBATIM = ("Verbatim", "verbatim")
 NOT_PROSE = ("table", "figure", "equation", "align", "longtable", "tabular") + VERBATIM
-MODEL_NAME = re.compile(r"(?:Opus|Haiku|Sonnet|Gemini)[~\s]+\d\.\d")
+MODEL_NAME = re.compile(r"(?:Opus|Haiku|Sonnet|Fable|Gemini)[~\s]+\d\.\d")
 LENGTH = re.compile(r"\d+(?:\.\d+)?(?:\\linewidth|\\textwidth|\\columnwidth|pt|em|ex|cm|mm)\b")
 # a count with a thousands separator, a decimal, or an integer of two or more digits that stands alone
 NUMBER = re.compile(r"\d{1,3}\{,\}\d{3}|\d{1,3},\d{3}|\d+\.\d+|(?<![A-Za-z0-9_\\^{}])\d{2,}(?![0-9A-Za-z])")

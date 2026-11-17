@@ -176,6 +176,33 @@ def test_overlap_claims_stop_the_build_when_they_no_longer_hold(monkeypatch):
         mn._results_overlap(mn.Registry())
 
 
+@pytest.mark.parametrize("name, value", [
+    # paper/cace/data/manual_check_results_claude.csv：言語モデル（Claude Fable 5.2）が標本の 50 件を 4 つの基準で判定した結果
+    ("NCheckCases", "50"), ("NCheckSingle", "3"), ("NCheckCross", "18"), ("NCheckSynth", "29"),
+    ("NCheckProgram", "13"), ("NCheckWritten", "5"),
+    ("NCheckOneYes", "38"), ("NCheckTwoYes", "23"), ("NCheckThreeYes", "25"), ("NCheckThreeApplicable", "41"),
+    ("NCheckFourYes", "28"), ("NCheckAllMet", "15"), ("NCheckAllMetSynth", "7"),
+    ("NCheckProgramOneNo", "10"), ("NCheckSynthTwoNo", "14"), ("NCheckSynthThreeNo", "11"), ("NCheckSynthFourNo", "17"),
+    ("NCheckFlagged", "15"), ("NCheckFlagAgree", "40"),       # 以前の Opus 5.5 の判定（experiments/var_descriptions.json）との一致
+])
+def test_build_has_the_judgments_of_the_language_model_on_the_sample(built, name, value):
+    assert built[name] == value
+
+
+def test_sample_check_claims_stop_the_build_when_they_no_longer_hold(monkeypatch):
+    """「人が書いた出典横断のケースは 4 つとも満たした」が成り立たなくなったら、止まること."""
+    import manual_check as chk
+    real = chk.read_results
+
+    def fake(path, sample_cases):
+        res = real(path, sample_cases)
+        res["ms_cstr_heat_001"] = {**res["ms_cstr_heat_001"], "C1": "N", "note": "C1: changed by the test"}
+        return res
+    monkeypatch.setattr(chk, "read_results", fake)
+    with pytest.raises(ValueError, match="written combination"):
+        mn._sample_check(mn.Registry())
+
+
 # ---- 古い numbers.tex の検出 -----------------------------------------------------------------
 
 def test_check_detects_stale_file(tmp_path):
@@ -205,7 +232,7 @@ def test_sdiff_formats_a_raw_difference_with_its_sign():
 def test_tables_have_the_expected_rows():
     t = mn.tables()
     assert set(t) == {"tab_baseline_weights.tex", "tab_stage1_grid.tex", "tab_bucket.tex", "tab_n1.tex",
-                      "tab_search.tex", "tab_overlap.tex"}
+                      "tab_search.tex", "tab_overlap.tex", "tab_check.tex"}
     rows = {k: [ln for ln in v.splitlines() if ln.rstrip().endswith("\\\\")] for k, v in t.items()}
     assert len(rows["tab_baseline_weights.tex"]) == 15       # 12 weight pairs + TF-IDF, BM25, E5 chosen per split
     assert len(rows["tab_stage1_grid.tex"]) == 16            # 2 settings x 4 weight pairs x 2 choices of incorrect candidates
@@ -232,6 +259,13 @@ def test_tables_have_the_expected_rows():
     assert ov[15] == "Proposed & $0.977 \\pm 0.011$ & $0.853 \\pm 0.054$ & $0.969 \\pm 0.013$ & $0.827 \\pm 0.042$ \\\\"
     assert ov[18] == "\\multicolumn{5}{@{}l}{Share no source of a ground-truth equation with a training case} \\\\"
     assert ov[19] == "Test cases in the 10 splits & \\multicolumn{2}{c}{916} & \\multicolumn{2}{c}{1{,}136} \\\\"
+    # the judgments of the language model on the sample: met / cases to which the criterion applies
+    assert rows["tab_check.tex"] == [
+        "1. The equations describe the requested model & 3/3 & 3/13 & 5/5 & 27/29 & 38/50 \\\\",
+        "2. The outputs are the requested quantities & 3/3 & 0/13 & 5/5 & 15/29 & 23/50 \\\\",
+        "3. Shared symbols keep one meaning & 1/1 & 8/13 & 3/3 & 13/24 & 25/41 \\\\",
+        "4. The equations determine the outputs & 3/3 & 8/13 & 5/5 & 12/29 & 28/50 \\\\",
+        "All four & 3/3 & 0/13 & 5/5 & 7/29 & 15/50 \\\\"]
 
 
 def test_code_constant_names_the_file_when_the_pattern_is_missing(tmp_path):
