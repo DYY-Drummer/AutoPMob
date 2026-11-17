@@ -32,6 +32,13 @@
 \newcommand{\BatchSize}{16}
 \newcommand{\BmB}{0.75}
 \newcommand{\BmKOne}{1.5}
+\newcommand{\CompCorrectAOpus}{3.5}
+\newcommand{\CompCorrectAProp}{3.8}
+\newcommand{\CompCoveredAOpus}{2.4}
+\newcommand{\CompCoveredAProp}{10.2}
+\newcommand{\CompOutsideAHaiku}{16.1}
+\newcommand{\CompOutsideAOpus}{14.0}
+\newcommand{\CompOutsideAProp}{6.0}
 \newcommand{\CopiesPerListOpus}{3.3}
 \newcommand{\CopiesPerListProp}{3.3}
 \newcommand{\CostHaiku}{255.23}
@@ -105,6 +112,8 @@
 \newcommand{\HaikuUnderTwenty}{463}
 \newcommand{\Hidden}{64}
 \newcommand{\JacBoth}{0.22}
+\newcommand{\JacGtInHigh}{0.21}
+\newcommand{\JacGtInLow}{0.70}
 \newcommand{\JacOnlyOpus}{0.17}
 \newcommand{\JaccardHaiku}{0.324}
 \newcommand{\JaccardOpus}{0.573}
@@ -112,6 +121,8 @@
 \newcommand{\LeadMapTwSingle}{0.031}
 \newcommand{\LeadMapTwSynth}{0.079}
 \newcommand{\LeadRecCross}{0.050}
+\newcommand{\LeadRecKHighOpus}{0.095}
+\newcommand{\LeadRecKOneOpus}{0.030}
 \newcommand{\LeadRecSingle}{0.036}
 \newcommand{\LeadRecSynth}{0.063}
 \newcommand{\LearnRate}{10^{-3}}
@@ -254,6 +265,8 @@
 \newcommand{\NCheckThreeYes}{25}
 \newcommand{\NCheckTwoYes}{23}
 \newcommand{\NCheckWritten}{5}
+\newcommand{\NCovMedianA}{24}
+\newcommand{\NCovOverA}{969}
 \newcommand{\NCross}{640}
 \newcommand{\NCrossPicked}{33}
 \newcommand{\NCrossProgram}{496}
@@ -350,6 +363,10 @@
 \newcommand{\OpusUnderTwenty}{181}
 \newcommand{\OutTokensHaiku}{1{,}150}
 \newcommand{\OutTokensOpus}{876}
+\newcommand{\PctCompleteABase}{73.9}
+\newcommand{\PctCompleteAOpus}{75.8}
+\newcommand{\PctCompleteAProp}{92.2}
+\newcommand{\PctCovOverA}{56.0}
 \newcommand{\PctNoShareEqA}{62.9}
 \newcommand{\PctNoShareEqTvA}{57.6}
 \newcommand{\PctNoShareSrcA}{21.7}
@@ -362,6 +379,8 @@
 \newcommand{\PfiRecSpec}{0.089}
 \newcommand{\PfiRecTopic}{0.974}
 \newcommand{\PfiRecVar}{0.018}
+\newcommand{\QueryVarsInHigh}{35.0}
+\newcommand{\QueryVarsInLow}{5.7}
 \newcommand{\RPrecABase}{0.607}
 \newcommand{\RPrecABaseSD}{0.059}
 \newcommand{\RPrecABm}{0.599}
@@ -411,12 +430,18 @@
 \newcommand{\RecANoShareTvProp}{0.978}
 \newcommand{\RecAOpus}{0.924}
 \newcommand{\RecAOpusSD}{0.018}
+\newcommand{\RecAOverBase}{0.847}
+\newcommand{\RecAOverOpus}{0.892}
+\newcommand{\RecAOverProp}{0.968}
 \newcommand{\RecAProp}{0.981}
 \newcommand{\RecAPropSD}{0.010}
 \newcommand{\RecARSeven}{0.975}
 \newcommand{\RecARTwo}{0.904}
 \newcommand{\RecASameW}{0.907}
 \newcommand{\RecASpec}{0.973}
+\newcommand{\RecAWithinBase}{0.987}
+\newcommand{\RecAWithinOpus}{0.970}
+\newcommand{\RecAWithinProp}{1.000}
 \newcommand{\RecBBase}{0.825}
 \newcommand{\RecBBaseSD}{0.024}
 \newcommand{\RecBBm}{0.819}
@@ -442,6 +467,7 @@
 \newcommand{\RecCrossProp}{1.000}
 \newcommand{\RecCrossPropSD}{0.000}
 \newcommand{\RecKOneBase}{1.000}
+\newcommand{\RecKOneOpus}{0.970}
 \newcommand{\RecKOneProp}{1.000}
 \newcommand{\RecSingleBase}{1.000}
 \newcommand{\RecSingleBaseSD}{0.000}
@@ -508,6 +534,8 @@
 \newcommand{\ValRecBMax}{0.975}
 \newcommand{\ValRecBMin}{0.974}
 \newcommand{\VarsBoth}{7.0}
+\newcommand{\VarsGtInHigh}{7.3}
+\newcommand{\VarsGtInLow}{4.3}
 \newcommand{\VarsOnlyOpus}{5.4}
 \newcommand{\WText}{0.3}
 \newcommand{\WVar}{0.7}
@@ -544,3 +572,4 @@
 \newcommand{\WrongInIoProp}{9.2}
 \newcommand{\WrongInIoPropLoss}{8.6}
 \newcommand{\WrongInIoPropTie}{8.1}
+\newcommand{\ours}{SERVE}

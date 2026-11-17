@@ -9,7 +9,7 @@ Section~\ref{sec:split} with the same 10 random seeds.
 
 \subsection{Compared methods}\label{sec:compared}
 
-We compare the proposed method with a classical information-retrieval baseline, two variants of the
+We compare \ours{} with a classical information-retrieval baseline, two variants of the
 baseline with stronger text scorers, and two LLMs. Table~\ref{tab:inputs} lists the information each
 method uses.
 
@@ -21,7 +21,7 @@ method uses.
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{p{0.44\linewidth}ccc}
 \toprule
-Information & Proposed & Baseline & LLMs \\
+Information & \ours{} & Baseline & LLMs \\
 \midrule
 Query (description, input and output variables) & yes & yes & yes \\
 Expression and domain label of each equation & yes & yes & yes \\
@@ -38,7 +38,7 @@ Eq.~\eqref{eq:stage1}, without a learned model and without a candidate set. Its 
 well it ranks, so we compare \NBasePairs{} weight pairs $(w_{\mathrm{t}}, w_{\mathrm{v}})$ from
 $\BasePairFirst$ to $\BasePairLast$ and, in each split, evaluate on the test cases the pair with the highest Recall@20 on
 the validation cases (\ref{app:weights}). Two variants test whether stronger text evidence alone
-would close the gap to the proposed method. The first replaces the TF-IDF cosine with BM25
+would close the gap to \ours{}. The first replaces the TF-IDF cosine with BM25
 \citep{BM25}; the second replaces it with the cosine between dense embeddings of the description
 and of each equation text from the sentence encoder E5 \citep{E5}. Both rescale the text score to
 $[0, 1]$ over the database for every query, choose their weights on the validation cases in the
@@ -49,8 +49,7 @@ identifiers of 20 equations for the desired model, from the most to the least li
 solved case (zero-shot). Each equation reaches it only as its identifier, its expression, and its
 domain label: the prompt with the database holds \NDbTokens{} tokens, and adding the variable
 definitions and the context texts would exceed the input limit of one million tokens. We withhold
-the sources, shuffle the order of the equations, and renumber their identifiers, because the
-proposed method does not read the sources and the synthesized ground truths prefer equations of one
+the sources, shuffle the order of the equations, and renumber their identifiers, because \ours{} does not read the sources and the synthesized ground truths prefer equations of one
 source, so the sources would give the LLMs alone a clue to the answer. The prompt states the first
 three requirements of Section~\ref{sec:formulation} (\ref{app:prompts}). The models are Claude
 Opus~5.5 and Claude Haiku~5.5 \citep{ClaudeModels}, a large and a small model of one vendor, both
@@ -59,7 +58,7 @@ not depend on the split; we therefore ask it three times per case, independently
 of the three answers in every split in which the case is a test case. The splits of the two
 settings hold \NTestDistinct{} distinct test cases, so each model answered \NCalls{} calls.
 
-\paragraph{Proposed method} We compared four pairs of first-stage weights, \StagePairs, by the
+\paragraph{\ours} We compared four pairs of first-stage weights, \StagePairs, by the
 Recall@20 of the validation cases. Their validation
 Recall@20 ranged only from \ValRecAMin{} to \ValRecAMax{} in Setting~A and from \ValRecBMin{} to
 \ValRecBMax{} in Setting~B, so we use the pair $(\WText, \WVar)$ in every split, whose candidate set
@@ -99,6 +98,6 @@ the 10 splits and the number of splits in which one beats the other.
 \subsection{Implementation}\label{sec:impl}
 
 Every experiment runs as a deterministic script: the random seed fixes the split, the model
-initialization, and the choice of incorrect candidates. The proposed method calls no language model
+initialization, and the choice of incorrect candidates. \ours{} calls no language model
 at inference. One run of training and evaluation for a split of Setting~A took \TimeRunA{} seconds on
 average, with six runs in parallel on the CPU of a laptop computer (\ref{app:n1}).

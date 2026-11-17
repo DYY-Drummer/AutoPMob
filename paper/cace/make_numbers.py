@@ -30,6 +30,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 # Facts about how the data were built that no result file holds; each names its record.
+METHOD_NAME = "SERVE"    # set-aware retrieval of variable-linked equations (the author's choice of 2026-11-17); macro \ours
 N_EARLIEST_DOCS = 9      # documents extracted before Gemini 2.5 Pro became the standard (docs/初期9報の抽出し直し_2026-11-04.md)
 N_SPLIT_CANDIDATES = 400  # candidate splits per seed (set_aware_reranker.stratified_src_split, n_try)
 OUT = Path(__file__).resolve().parent / "numbers.tex"
@@ -734,6 +735,10 @@ def _results_errors(r: Registry) -> None:
     for key, code in (("svd_sim", "Latent"), ("text_sim", "Text"), ("specificity", "Spec"), ("io_jaccard", "Jac")):
         r.add(f"Rescue{code}", fmt(c["rescue_fraction"][key]["mean"], 2))
         require(c["rescue_fraction"][key]["mean"] <= 0.55, f"the rescue fraction of {key} lies near or below one half")
+    rescue = {k: c["rescue_fraction"][k]["mean"] for k in ("svd_sim", "text_sim", "specificity", "io_jaccard")}
+    require(max(rescue["svd_sim"], rescue["text_sim"], rescue["io_jaccard"]) < 0.5 and 0.45 <= rescue["specificity"] <= 0.55,
+            "the latent similarity, the text similarity, and the I/O Jaccard favor a missed equation in fewer than half "
+            "of the pairs, and specificity in about half")
 
     name = "opus_vs_proposed.json"
     a = get(load(LLM / name), ("settings", "A"), name)
@@ -823,7 +828,7 @@ OVERLAP_GROUPS = {"shared_equation": "Share", "no_shared_equation": "NoShare",
 OVERLAP_CLAIMS = {"no_shared_equation": "share no ground-truth equation with a training case",
                   "no_shared_equation_train_val": "share no ground-truth equation with a training or validation case",
                   "no_shared_source": "share no source of a ground-truth equation with a training case"}
-FOUR_METHODS = (("baseline", "Baseline"), ("proposed", "Proposed"), ("Opus 5.5", "Opus 5.5"), ("Haiku 5.5", "Haiku 5.5"))
+FOUR_METHODS = (("baseline", "Baseline"), ("proposed", "\\ours{}"), ("Opus 5.5", "Opus 5.5"), ("Haiku 5.5", "Haiku 5.5"))
 
 
 def _results_overlap(r: Registry) -> None:
@@ -872,6 +877,77 @@ def _results_overlap(r: Registry) -> None:
                 require(get(bo, ("no_shared_source", "methods", meth, key, "mean"), name) > st["methods"][meth][key]["mean"],
                         f"{meth} scores higher on the test cases that share no source with a training case than on all "
                         f"test cases ({key})")
+
+
+COMPOSITION = LLM / "list_composition.json"   # analyze_list_composition.py
+K_BINS = (("1", "1", "One"), ("2-3", "2--3", "Low"), ("4-6", "4--6", "Mid"), ("7-10", "7--10", "High"))
+INPUT_BINS = ("<=5", "6-10", "11-15", "16-20", ">=21")
+
+
+def _results_composition(r: Registry) -> None:
+    """The counts behind the three questions of the discussion: why the proposed method falls short of complete
+    retrieval, why it beats the baseline, and why it beats the LLMs (Setting A; guards also read Setting B)."""
+    name = COMPOSITION.name
+    d = get(load(COMPOSITION), "settings", name)
+    top_n = load(COMPOSITION)["top_n"]
+    require(top_n == 20, "the lists hold 20 equations")
+    a = d["A"]
+    # the equations of the database whose variables all belong to the query
+    r.add("NCovMedianA", count(int(a["cases"]["n_cov_median"])))
+    r.add("NCovOverA", count(a["cases"]["n_cov_over"]))
+    r.add("PctCovOverA", pct(a["cases"]["share_cov_over"]))
+    counts = load(KATO / "data_counts.json")["new"]
+    require(a["cases"]["gt_all_covered"] == counts["req3_trivial_no_intermediate"],
+            "the cases whose ground truth holds only query variables are those without intermediate variables")
+    for s in ("A", "B"):
+        m = d[s]["methods"]["proposed"]
+        require(m["by_cov"]["within"]["recall"]["mean"] == 1.0 and m["missed"]["share_over"] == 1.0,
+                f"the proposed method missed no ground-truth equation in a test case with at most 20 equations "
+                f"that hold only query variables (Setting {s})")
+    for meth, code in (("proposed", "Prop"), ("baseline", "Base"), ("Opus 5.5", "Opus")):
+        m = get(a, ("methods", meth), name)
+        r.add(f"PctCompleteA{code}", pct(m["complete"]["mean"]))
+        r.add(f"RecAWithin{code}", fmt(m["by_cov"]["within"]["recall"]["mean"]))
+        r.add(f"RecAOver{code}", fmt(m["by_cov"]["over"]["recall"]["mean"]))
+    meths = a["methods"]
+    require(meths["baseline"]["complete"]["mean"] < meths["Opus 5.5"]["complete"]["mean"] < meths["proposed"]["complete"]["mean"],
+            "complete retrieval is most frequent for the proposed method, then Opus 5.5, then the baseline")
+    require(meths["Opus 5.5"]["by_cov"]["within"]["recall"]["mean"] < meths["baseline"]["by_cov"]["within"]["recall"]["mean"],
+            "where at most 20 equations hold only query variables, Opus 5.5 is below the baseline")
+    # what fills the 20 places of a list
+    for meth, code in (("proposed", "Prop"), ("Opus 5.5", "Opus")):
+        for part, pc in (("correct", "Correct"), ("covered", "Covered"), ("outside", "Outside")):
+            r.add(f"Comp{pc}A{code}", fmt(get(a, ("methods", meth, "composition", part, "mean"), name), 1))
+    r.add("CompOutsideAHaiku", fmt(a["methods"]["Haiku 5.5"]["composition"]["outside"]["mean"], 1))
+    comp = {k: {p: v["composition"][p]["mean"] for p in ("correct", "covered", "outside")}
+            for k, v in meths.items() if k != "baseline"}
+    require(comp["Opus 5.5"]["outside"] > 2 * comp["proposed"]["outside"]
+            and comp["Opus 5.5"]["covered"] < comp["proposed"]["covered"] / 2,
+            "Opus 5.5 lists more than twice as many equations with a variable outside the query as the proposed method, "
+            "and fewer than half as many incorrect equations that hold only query variables")
+    # Recall@20 by the number of ground-truth equations
+    by_k = a["by_k"]
+    lead = {b: by_k[b]["proposed"] - by_k[b]["Opus 5.5"] for b, _, _ in K_BINS}
+    r.add("RecKOneOpus", fmt(by_k["1"]["Opus 5.5"]))
+    r.add("LeadRecKOneOpus", fmt(lead["1"]))
+    r.add("LeadRecKHighOpus", fmt(lead["7-10"]))
+    require(lead["1"] < lead["2-3"] < lead["4-6"] < lead["7-10"],
+            "the lead of the proposed method over Opus 5.5 grows with the number of ground-truth equations")
+    require(by_k["1"]["Opus 5.5"] < by_k["1"]["baseline"] and by_k["2-3"]["Opus 5.5"] < by_k["2-3"]["baseline"]
+            and by_k["4-6"]["Opus 5.5"] > by_k["4-6"]["baseline"] and by_k["7-10"]["Opus 5.5"] > by_k["7-10"]["baseline"],
+            "Opus 5.5 is below the baseline up to three ground-truth equations and above it from four on")
+    require(by_k["1"]["proposed"] == 1.0 and by_k["1"]["baseline"] == 1.0,
+            "the proposed method and the baseline find every single ground-truth equation")
+    # the I/O Jaccard of the ground-truth equations falls as the query grows
+    jac = a["gt_jaccard_by_inputs"]
+    require(all(jac[x]["jaccard"] > jac[y]["jaccard"] for x, y in zip(INPUT_BINS, INPUT_BINS[1:])),
+            "the I/O Jaccard of the ground-truth equations falls with the number of input variables")
+    r.add("JacGtInLow", fmt(jac["<=5"]["jaccard"], 2))
+    r.add("JacGtInHigh", fmt(jac[">=21"]["jaccard"], 2))
+    r.add("VarsGtInLow", fmt(jac["<=5"]["n_vars"], 1))
+    r.add("VarsGtInHigh", fmt(jac[">=21"]["n_vars"], 1))
+    r.add("QueryVarsInLow", fmt(jac["<=5"]["n_query_vars"], 1))
+    r.add("QueryVarsInHigh", fmt(jac[">=21"]["n_query_vars"], 1))
 
 
 # the sample of cases that a language model judged against four criteria (paper/cace/manual_check.py)
@@ -1067,11 +1143,18 @@ def tables() -> dict:
     rows.append("\\midrule")
     rows.append(" & ".join(["All four"] + [f"{p['all'][0]}/{p['all'][1]}" for p in parts]) + " \\\\")
     out["tab_check.tex"] = "\n".join(rows) + "\n"
+
+    # Recall@20 by the number of ground-truth equations, four methods (Setting A, test cases of the 10 splits pooled)
+    by_k = get(load(COMPOSITION), ("settings", "A", "by_k"), COMPOSITION.name)
+    out["tab_byk.tex"] = "\n".join(
+        " & ".join([label, count(by_k[b]["n_records"])] + [fmt(by_k[b][m]) for m, _ in FOUR_METHODS]) + " \\\\"
+        for b, label, _ in K_BINS) + "\n"
     return out
 
 
 def build() -> Registry:
     r = Registry()
+    r.add("ours", METHOD_NAME)
     _dataset(r)
     _dataset_details(r)
     _collection(r)
@@ -1090,6 +1173,7 @@ def build() -> Registry:
     _results_coverage(r)
     _results_overlap(r)
     _sample_check(r)
+    _results_composition(r)
     return r
 
 

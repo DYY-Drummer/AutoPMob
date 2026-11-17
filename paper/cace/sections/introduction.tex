@@ -50,8 +50,10 @@ together determine the concentration from the inputs. A method that scores each 
 similarity to the description cannot see these dependencies. Retrieval must therefore evaluate
 candidate equations as a set, not one by one.
 
-We propose a two-stage retrieval method whose second stage evaluates each candidate against other
-equations. The first stage ranks the whole database by a mixture of text similarity and variable
+We propose \ours{} (set-aware retrieval of variable-linked equations), a two-stage retrieval method
+whose second stage evaluates each candidate against other equations. The name states its two ideas:
+it judges a candidate as a member of a set, and it reads the variables that link the equations to
+the query and to one another. The first stage ranks the whole database by a mixture of text similarity and variable
 overlap and keeps the top candidates. The second stage reranks the candidates with a multilayer
 perceptron that reads ten features per candidate: seven features of the query--equation pair and
 three set-aware features that compare the candidate with a reference set of equations. The
@@ -68,7 +70,7 @@ ground-truth equation set that meets the input--output and degree-of-freedom req
 validation, and test cases, repeat every experiment over 10 stratified splits, and choose the
 hyperparameters on the validation cases.
 
-The proposed method outperforms classical retrieval. Recall@20, the fraction of the ground-truth
+\ours{} outperforms classical retrieval. Recall@20, the fraction of the ground-truth
 equations among the 20 equations presented, rises from \RecABase{} to \RecAProp{} on all cases and
 from \RecBBase{} to \RecBProp{} on the \NSynth{} cases that a program synthesized, in all 10 splits,
 and the gain grows with the numbers of ground-truth equations and input variables. Ablation and
@@ -76,15 +78,15 @@ permutation importance locate the cause in the variables that the query and the 
 not in their topic.
 We also compare the method with LLMs that receive the whole database and select equations without
 training. The larger model, Claude Opus~5.5, reaches a Recall@20 of \RecAOpus{} and beats classical
-retrieval, but the proposed method beats it in every split, by the widest margins on models that
+retrieval, but \ours{} beats it in every split, by the widest margins on models that
 combine several sources or many equations.
 
 The contributions of this paper are fourfold:
 \begin{enumerate}
   \item a formulation of equation selection for physical model building as the retrieval of an
     equation set, with a benchmark of \NEq{} equations and \NCases{} cases split by source;
-  \item a two-stage retrieval method with set-aware reranking that improves Recall@20 and mean
-    average precision over classical retrieval in every split;
+  \item \ours, a two-stage retrieval method with set-aware reranking that improves Recall@20 and
+    mean average precision over classical retrieval in every split;
   \item an empirical account of the method: which features cause the improvement, where
     sequential selection helps, why topical similarity adds little, and where the remaining errors
     arise;

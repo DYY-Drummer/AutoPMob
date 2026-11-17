@@ -1,10 +1,11 @@
 Building a physical model for a process outside the libraries of modeling tools requires an
-engineer to collect and assemble equations scattered across many documents. This study
-automates one step of this work: given a description of the desired model and its input and output
+engineer to collect and assemble equations scattered across many documents. We automate one
+step of this work: given a description of the desired model and its input and output
 variables, present the equations likely to serve in the model from an equation database built from
 the literature. An equation that contains a variable other than the inputs and outputs is useful
-only with an equation that determines that variable, so we propose a two-stage retrieval method
-that judges each candidate by its relation to other equations. The first stage narrows the
+only with an equation that determines that variable, so we propose \ours{} (set-aware retrieval of
+variable-linked equations), a two-stage method that judges each candidate by its relation to other
+equations. The first stage narrows the
 database by text similarity and variable overlap; the second reranks the candidates with a
 multilayer perceptron that reads seven query--equation and three set-aware features. On a database
 of \NEq{} equations and \NCases{} cases split by source, the method raised Recall@20, the fraction
@@ -12,7 +13,6 @@ of ground-truth equations retrieved in the 20 presented, from \RecABase{} for cl
 retrieval to \RecAProp, in all 10 splits. Ablation and permutation importance show that the
 features reading the variables shared by the query and the equations cause most of the gain;
 topical similarity adds little. Two large language models given every equation of the database,
-without training, reached \RecAOpus{} and \RecAHaiku, below the proposed method in
-every split. The larger model beat classical retrieval and found equations that share few
+without training, reached \RecAOpus{} and \RecAHaiku, below \ours{} in every split. The larger model beat classical retrieval and found equations that share few
 variables with the query, but it cost \CostPerCallOpus{} US dollars per query, and its answers
 varied between runs.

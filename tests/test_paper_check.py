@@ -169,3 +169,17 @@ def test_appendix_prints_the_prompt_that_the_llm_comparison_used():
     rl = pytest.importorskip("run_llm_db_baseline")
     appendix = (ROOT / "paper" / "cace" / "appendix.tex").read_text(encoding="utf-8")
     assert rl.system_prompt("eqd", "v4") in appendix
+
+
+def test_banned_phrases_include_the_unnamed_method():
+    """手法に名称（\\ours）を付けたあとは、「the proposed method」と書かないこと."""
+    assert cm.banned_phrases("We compare the proposed method with LLMs.") == ["proposed method"]
+    assert cm.banned_phrases("The combination method that they proposed finds every model.") == []
+
+
+def test_paper_figures_use_the_name_of_the_method_of_the_manuscript():
+    """図の凡例の名称は、原稿のマクロ \\ours と同じもの（make_numbers.METHOD_NAME）であること."""
+    import make_figures as mf
+    import make_numbers as mn
+    assert mf.METHOD_NAME == mn.METHOD_NAME == "SERVE"
+    assert mn.build().values["ours"] == "SERVE"

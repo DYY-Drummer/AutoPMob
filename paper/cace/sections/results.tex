@@ -2,16 +2,16 @@
 
 \subsection{Overall comparison}\label{sec:overall}
 
-Table~\ref{tab:overall} and Fig.~\ref{fig:comparison} compare the proposed method with the
+Table~\ref{tab:overall} and Fig.~\ref{fig:comparison} compare \ours{} with the
 classical baseline. With $N_1 = \NOne$, the first stage admitted every ground-truth equation of
-every test case in all 10 splits. The proposed method beat the baseline on every metric, in both
+every test case in all 10 splits. \ours{} beat the baseline on every metric, in both
 settings, and in all 10 splits. Static reranking raised Recall@20 from \RecABase{} to \RecAProp{}
 ($\DiffRecAPropBase$) and MAP from \MapABase{} to \MapAProp{} ($\DiffMapAPropBase$) in Setting~A,
 and Recall@20 from \RecBBase{} to \RecBProp{} ($\DiffRecBPropBase$) and MAP from \MapBBase{} to
 \MapBProp{} ($\DiffMapBPropBase$) in Setting~B. Learned greedy selection raised MAP further, to
 \MapAGreedy{} and \MapBGreedy{} (Section~\ref{sec:greedyresults}). The variants of the baseline
 with BM25 and E5 ranked no better than the TF-IDF baseline --- Recall@20 of \RecABm{} and
-\RecAEFive{} in Setting~A and \RecBBm{} and \RecBEFive{} in Setting~B --- and the proposed method
+\RecAEFive{} in Setting~A and \RecBBm{} and \RecBEFive{} in Setting~B --- and \ours{}
 beat them, too, on every metric in all 10 splits (\ref{app:weights}).
 
 \begin{table}[tbp]\centering
@@ -26,19 +26,19 @@ weights chosen on the validation cases of each split.}
 Setting & Method & Recall@20 & MAP & R-Precision \\
 \midrule
 A & Baseline & $\RecABase \pm \RecABaseSD$ & $\MapABase \pm \MapABaseSD$ & $\RPrecABase \pm \RPrecABaseSD$ \\
- & Proposed, static reranking & $\RecAProp \pm \RecAPropSD$ & $\MapAProp \pm \MapAPropSD$ & $\RPrecAProp \pm \RPrecAPropSD$ \\
- & Proposed, learned greedy & $\RecAGreedy \pm \RecAGreedySD$ & $\MapAGreedy \pm \MapAGreedySD$ & $\RPrecAGreedy \pm \RPrecAGreedySD$ \\
+ & \ours, static reranking & $\RecAProp \pm \RecAPropSD$ & $\MapAProp \pm \MapAPropSD$ & $\RPrecAProp \pm \RPrecAPropSD$ \\
+ & \ours, learned greedy & $\RecAGreedy \pm \RecAGreedySD$ & $\MapAGreedy \pm \MapAGreedySD$ & $\RPrecAGreedy \pm \RPrecAGreedySD$ \\
 \midrule
 B & Baseline & $\RecBBase \pm \RecBBaseSD$ & $\MapBBase \pm \MapBBaseSD$ & $\RPrecBBase \pm \RPrecBBaseSD$ \\
- & Proposed, static reranking & $\RecBProp \pm \RecBPropSD$ & $\MapBProp \pm \MapBPropSD$ & $\RPrecBProp \pm \RPrecBPropSD$ \\
- & Proposed, learned greedy & $\RecBGreedy \pm \RecBGreedySD$ & $\MapBGreedy \pm \MapBGreedySD$ & $\RPrecBGreedy \pm \RPrecBGreedySD$ \\
+ & \ours, static reranking & $\RecBProp \pm \RecBPropSD$ & $\MapBProp \pm \MapBPropSD$ & $\RPrecBProp \pm \RPrecBPropSD$ \\
+ & \ours, learned greedy & $\RecBGreedy \pm \RecBGreedySD$ & $\MapBGreedy \pm \MapBGreedySD$ & $\RPrecBGreedy \pm \RPrecBGreedySD$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\linewidth]{figures/fig_method_comparison.pdf}
-\caption{(a) Recall@20 and (b) MAP of the classical baseline and of the proposed method with static
+\caption{(a) Recall@20 and (b) MAP of the classical baseline and of \ours{} with static
 reranking and with learned greedy selection in Settings~A and~B. Boxes show the 10 stratified
 splits, and dots the individual splits.}
 \label{fig:comparison}
@@ -47,8 +47,8 @@ splits, and dots the individual splits.}
 \subsection{Comparison with LLMs}\label{sec:llmresults}
 
 Table~\ref{tab:llm} compares static reranking and the baseline with the two LLMs. In Setting~A,
-Recall@20 reached \RecAProp{} for the proposed method, \RecAOpus{} for Claude Opus~5.5, and
-\RecAHaiku{} for Claude Haiku~5.5. The proposed method beat both LLMs in Recall@20 and in MAP@20 in
+Recall@20 reached \RecAProp{} for \ours{}, \RecAOpus{} for Claude Opus~5.5, and
+\RecAHaiku{} for Claude Haiku~5.5. \ours{} beat both LLMs in Recall@20 and in MAP@20 in
 all 10 splits of both settings; its lead over Opus~5.5 in Setting~A averaged \GapRecAOpusProp{} in
 Recall@20 and \GapMapTwAOpusProp{} in MAP@20. Opus~5.5 beat the baseline in both metrics in all 10
 splits of both settings, by \GapRecAOpusBase{} in Recall@20 and \GapMapTwAOpusBase{} in MAP@20 in
@@ -68,7 +68,7 @@ three times; a case takes the mean of its three answers.}
 Method & Recall@20 & MAP@20 & Recall@20 & MAP@20 \\
 \midrule
 Baseline & $\RecABase \pm \RecABaseSD$ & $\MapTwABase \pm \MapTwABaseSD$ & $\RecBBase \pm \RecBBaseSD$ & $\MapTwBBase \pm \MapTwBBaseSD$ \\
-Proposed, static reranking & $\RecAProp \pm \RecAPropSD$ & $\MapTwAProp \pm \MapTwAPropSD$ & $\RecBProp \pm \RecBPropSD$ & $\MapTwBProp \pm \MapTwBPropSD$ \\
+\ours, static reranking & $\RecAProp \pm \RecAPropSD$ & $\MapTwAProp \pm \MapTwAPropSD$ & $\RecBProp \pm \RecBPropSD$ & $\MapTwBProp \pm \MapTwBPropSD$ \\
 Claude Opus 5.5 & $\RecAOpus \pm \RecAOpusSD$ & $\MapTwAOpus \pm \MapTwAOpusSD$ & $\RecBOpus \pm \RecBOpusSD$ & $\MapTwBOpus \pm \MapTwBOpusSD$ \\
 Claude Haiku 5.5 & $\RecAHaiku \pm \RecAHaikuSD$ & $\MapTwAHaiku \pm \MapTwAHaikuSD$ & $\RecBHaiku \pm \RecBHaikuSD$ & $\MapTwBHaiku \pm \MapTwBHaikuSD$ \\
 \bottomrule
@@ -78,7 +78,7 @@ Claude Haiku 5.5 & $\RecAHaiku \pm \RecAHaikuSD$ & $\MapTwAHaiku \pm \MapTwAHaik
 Table~\ref{tab:llmkind} breaks Setting~A down by family; a split holds \NTestSingleMin{} to
 \NTestSingleMax{} single-source, \NTestCrossMin{} to \NTestCrossMax{} cross-source, and
 \NTestSynthMin{} to \NTestSynthMax{} synthesized test cases. In every family, Opus~5.5 was below
-the proposed method. The gap was smallest on the single-source cases (\LeadRecSingle{} in
+\ours{}. The gap was smallest on the single-source cases (\LeadRecSingle{} in
 Recall@20 and \LeadMapTwSingle{} in MAP@20) and larger on the cross-source cases (\LeadRecCross{}
 and \LeadMapTwCross) and the synthesized cases (\LeadRecSynth{} and \LeadMapTwSynth). Against the
 baseline, Opus~5.5 was higher in both metrics
@@ -98,9 +98,29 @@ Recall@20 on the cross-source cases was \RecCrossHaiku.
 Method & Recall@20 & MAP@20 & Recall@20 & MAP@20 & Recall@20 & MAP@20 \\
 \midrule
 Baseline & $\RecSingleBase \pm \RecSingleBaseSD$ & $\MapTwSingleBase \pm \MapTwSingleBaseSD$ & $\RecCrossBase \pm \RecCrossBaseSD$ & $\MapTwCrossBase \pm \MapTwCrossBaseSD$ & $\RecSynthBase \pm \RecSynthBaseSD$ & $\MapTwSynthBase \pm \MapTwSynthBaseSD$ \\
-Proposed & $\RecSingleProp \pm \RecSinglePropSD$ & $\MapTwSingleProp \pm \MapTwSinglePropSD$ & $\RecCrossProp \pm \RecCrossPropSD$ & $\MapTwCrossProp \pm \MapTwCrossPropSD$ & $\RecSynthProp \pm \RecSynthPropSD$ & $\MapTwSynthProp \pm \MapTwSynthPropSD$ \\
+\ours{} & $\RecSingleProp \pm \RecSinglePropSD$ & $\MapTwSingleProp \pm \MapTwSinglePropSD$ & $\RecCrossProp \pm \RecCrossPropSD$ & $\MapTwCrossProp \pm \MapTwCrossPropSD$ & $\RecSynthProp \pm \RecSynthPropSD$ & $\MapTwSynthProp \pm \MapTwSynthPropSD$ \\
 Opus 5.5 & $\RecSingleOpus \pm \RecSingleOpusSD$ & $\MapTwSingleOpus \pm \MapTwSingleOpusSD$ & $\RecCrossOpus \pm \RecCrossOpusSD$ & $\MapTwCrossOpus \pm \MapTwCrossOpusSD$ & $\RecSynthOpus \pm \RecSynthOpusSD$ & $\MapTwSynthOpus \pm \MapTwSynthOpusSD$ \\
 Haiku 5.5 & $\RecSingleHaiku \pm \RecSingleHaikuSD$ & $\MapTwSingleHaiku \pm \MapTwSingleHaikuSD$ & $\RecCrossHaiku \pm \RecCrossHaikuSD$ & $\MapTwCrossHaiku \pm \MapTwCrossHaikuSD$ & $\RecSynthHaiku \pm \RecSynthHaikuSD$ & $\MapTwSynthHaiku \pm \MapTwSynthHaikuSD$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:byk} breaks Setting~A down by the number of ground-truth equations. \ours{} and the baseline found every single ground-truth equation, whereas Opus~5.5 reached a
+Recall@20 of \RecKOneOpus. Opus~5.5 was below the baseline up to three ground-truth equations and
+above it from four on, and the lead of \ours{} over Opus~5.5 grew from
+\LeadRecKOneOpus{} at one equation to \LeadRecKHighOpus{} at seven to ten.
+
+\begin{table}[tbp]\centering
+\caption{Recall@20 in Setting~A by the number of ground-truth equations. Each row pools the test
+cases of the 10 splits; an LLM takes the mean of its three answers to a case.}
+\label{tab:byk}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{crcccc}
+\toprule
+Ground-truth equations & Test cases & Baseline & \ours{} & Opus 5.5 & Haiku 5.5 \\
+\midrule
+\rowsfrom{generated/tab_byk}
 \bottomrule
 \end{tabular}
 \end{table}
@@ -136,9 +156,7 @@ ground-truth equation, both methods reach a Recall@20 of \RecKOneProp, and their
 \MapKOneProp{} for static reranking and \MapKOneBase{} for the baseline. From two equations on, the
 gap grows with the number of equations: Recall@20 differs by $\DiffRecKTwo$ at two equations,
 $\DiffRecKFive$ at five, and $\DiffRecKTen$ at ten. By the number of input variables, the gap in
-Recall@20 grows from $\DiffRecInLow$ at five or fewer to $\DiffRecInHigh$ at 21 or more. The
-classical baseline finds a single equation as well as the proposed method does, and the lead
-of the proposed method grows with the numbers of ground-truth equations and input variables.
+Recall@20 grows from $\DiffRecInLow$ at five or fewer to $\DiffRecInHigh$ at 21 or more.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\linewidth]{figures/fig_characteristic.pdf}
@@ -189,9 +207,8 @@ and MAP from \MapAProp{} to \PfiMapVar, in all 10 splits. Among single features,
 most: shuffling it alone lowers Recall@20 to \PfiRecSpec. Shuffling the four topic features ($f_1$,
 $f_3$, $f_7$, $g_{\mathrm{Dom}}$) together leaves Recall@20 at \PfiRecTopic{} and MAP at
 \PfiMapTopic; the drops, \PfiDropRecTopic{} and \PfiDropMapTopic, are small but appear in all 10
-splits. Ablation asks what a feature adds when the model is retrained with it, and permutation
-importance asks how much a fixed model relies on it; both reach the same conclusion: the features
-that read variable overlap decide most of the accuracy.
+splits. Ablation, which retrains the model, and permutation importance, which does not, agree:
+the features that read variable overlap decide most of the accuracy.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=0.78\linewidth]{figures/fig_pfi.pdf}
@@ -290,26 +307,28 @@ Domain match $f_7$ & $\AucFullDomMatch \pm \AucFullDomMatchSE$ & $\AucCandDomMat
 
 \subsection{Error analysis}\label{sec:erroranalysis}
 
-\paragraph{Misses of the proposed method} We examined one split, that with seed \FirstSeed: its
-\NErrCases{} test cases hold \NErrGt{} ground-truth equations, and its Recall@20 is \ErrRecall.
-Static reranking left \NMissed{} of the ground-truth equations out of its top 20. The candidates
-contained every ground-truth equation, so the second stage, not the first, missed all of them. The
-\NSolved{} cases with every ground-truth equation in the top 20 average \MeanKSolved{} ground-truth
-equations and \MeanInSolved{} input variables, against \MeanKUnsolved{} and \MeanInUnsolved{} for
-the \NUnsolved{} cases with misses. In each of these cases we paired each missed equation with
-each incorrect equation in the top 20 and took the fraction of pairs in which the missed equation
-has the higher value of a feature, a tie counting one half. Averaged over the cases, the fraction
-is \RescueLatent{} for the latent similarity, \RescueText{} for the text similarity, \RescueSpec{}
-for specificity, and \RescueJac{} for the I/O Jaccard. Every fraction lies near or below one half,
-so the present features cannot repair these errors. Specificity cannot by construction: where the
-query lists every variable of the ground truth, as it does in \NReqThreeTrivial{} of the \NCases{}
-cases, every ground-truth equation has a specificity of one, and so has every other equation whose
-variables all belong to the query. The features that compare the variables of an equation with
-the query ($f_2$, $f_4$, $f_5$, $f_6$) also cannot order two equations that hold the same
-variables. For the one-equation case whose ground truth is the linearized balance of the
-concentration deviation $C_A'$ of a reactor, the database holds a second equation, the balance of
-the temperature deviation $T'$, with the same variable set, and these four features take the same
-values for both.
+\paragraph{Misses of \ours{}} The candidates contained every ground-truth equation, so
+the second stage, not the first, caused every miss. Over the 10 splits, static reranking placed
+every ground-truth equation of a case in its top 20 in \PctCompleteAProp\% of the test cases of
+Setting~A, against \PctCompleteABase\% for the baseline and \PctCompleteAOpus\% for Opus~5.5.
+Whether it missed an equation depended on the number of equations of the database that hold only
+query variables, that is, whose specificity is one. A case has a median of \NCovMedianA{} such
+equations, and \NCovOverA{} of the \NCases{} cases (\PctCovOverA\%) have more than 20, the length
+of the list. In the test cases with at most 20, static reranking missed no ground-truth equation in
+any split; in those with more, its Recall@20 was \RecAOverProp. The baseline reached
+\RecAWithinBase{} and \RecAOverBase{} in the two groups, and Opus~5.5 \RecAWithinOpus{} and
+\RecAOverOpus. In Setting~B, too, static reranking missed nothing in the cases with at most 20.
+
+For one split, that with seed \FirstSeed, we asked whether a feature could have rescued the missed
+equations. Its \NErrCases{} test cases hold \NErrGt{} ground-truth equations, of which static
+reranking left \NMissed{} out of its top 20 (Recall@20 of \ErrRecall). The \NSolved{} cases without
+misses average \MeanKSolved{} ground-truth equations and \MeanInSolved{} input variables, against
+\MeanKUnsolved{} and \MeanInUnsolved{} for the \NUnsolved{} cases with misses. In each of the
+latter we paired each missed equation with each incorrect equation in the top 20 and took the
+fraction of pairs in which the missed equation has the higher value of a feature, a tie counting
+one half. Averaged over the cases, the fraction is \RescueLatent{} for the latent similarity,
+\RescueText{} for the text similarity, \RescueSpec{} for specificity, and \RescueJac{} for the I/O
+Jaccard: every fraction lies near or below one half.
 
 \paragraph{Cases in which the LLM does better} We compared, case by case, the mean Recall@20 of
 Opus~5.5 over its three runs with that of static reranking over the splits in which the case is a
@@ -322,12 +341,12 @@ equation but another identifier appeared in the top 20 of both methods (\CopiesP
 list for static reranking and \CopiesPerListOpus{} for Opus~5.5), and the judgment by identifiers
 counts them as incorrect.
 
-The two methods fill the rest of the list differently. On the synthesized cases with seven or more
-ground-truth equations in which Opus~5.5 was higher, static reranking placed \WrongInIoProp{}
-incorrect equations per list whose variables all belong to the query variables, against
-\WrongInIoOpus{} for Opus~5.5. Static reranking placed about as many where Opus~5.5 was equal or
-lower (\WrongInIoPropTie{} and \WrongInIoPropLoss), so this is a general habit of the reranker:
-specificity, its strongest feature, rewards exactly such equations. In the \NOpusWinRec{} cases in
+The two methods fill the 20 places differently. Over the test cases of Setting~A, a list of static
+reranking held on average \CompCorrectAProp{} ground-truth equations, \CompCoveredAProp{} incorrect
+equations that hold only query variables, and \CompOutsideAProp{} equations with a variable that
+the query does not list. A list of Opus~5.5 held \CompCorrectAOpus, \CompCoveredAOpus, and
+\CompOutsideAOpus, and a list of Haiku~5.5 \CompOutsideAHaiku{} of the last kind.
+In the \NOpusWinRec{} cases in
 which Opus~5.5 was higher, it placed \NOnlyOpusEq{} ground-truth equations in the top 20 in at
 least two of its three runs that static reranking placed in fewer than half of the splits, and
 static reranking placed \NOnlyPropEq{} that Opus~5.5 did not. The \NOnlyOpusEq{} equations overlap

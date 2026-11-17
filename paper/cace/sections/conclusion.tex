@@ -5,7 +5,7 @@ description of the desired model and its input and output variables, present, fr
 \NEq{} equations drawn mostly from the literature, the 20 equations most likely to serve in the
 model.
 Because an equation that contains a variable other than the inputs and outputs is useful only
-together with an equation that determines that variable, the proposed two-stage method scores each
+together with an equation that determines that variable, the proposed two-stage method, \ours{} (set-aware retrieval of variable-linked equations), scores each
 candidate by its relation to other equations as well as by its relevance to the query.
 
 On \NCases{} cases split by source, the method raised Recall@20 over a classical retrieval baseline
@@ -13,14 +13,15 @@ from \RecABase{} to \RecAProp{} and MAP from \MapABase{} to \MapAProp, in all 10
 lead grew with the numbers of ground-truth equations and input variables. Ablation and permutation
 importance agree on the cause: the features that read the variables shared by the query and the
 equations decide most of the accuracy, the set-aware features raise the ground-truth equations
-within the top 20, and the features that read topical closeness add little. Two LLMs that read the
-whole database without training reached a Recall@20 of \RecAOpus{} and \RecAHaiku; the proposed
-method beat both in every split. The larger LLM beat the classical baseline and found ground-truth
-equations that share few variables with the query, which the proposed method tends to miss; it cost
+within the top 20, and the features that read topical closeness add little. The method missed
+ground-truth equations only in cases for which more than 20 equations of the database hold only
+query variables. Two LLMs that read the
+whole database without training reached a Recall@20 of \RecAOpus{} and \RecAHaiku; \ours{} beat both in every split. The larger LLM beat the classical baseline and found ground-truth
+equations that share few variables with the query, which \ours{} tends to miss; it cost
 \CostPerCallOpus{} US dollars per query, and its answers varied between runs.
 
 Three directions follow. First, the two approaches should be combined, for example by letting an
-LLM rerank or extend the candidates of the proposed method. Second, the method should judge whether
+LLM rerank or extend the candidates of \ours{}. Second, the method should judge whether
 two variables denote the same quantity from their definitions, not from their symbols, so that it
 serves queries written in another notation. Third, the features should tell apart equations that
 hold the same variables, for example by encoding which variable an equation determines, and the

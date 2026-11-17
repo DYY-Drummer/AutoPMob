@@ -25,7 +25,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 BODY = ["abstract", "introduction", "related", "formulation", "method", "dataset", "setup", "results",
         "discussion", "conclusion"]
-MAIN_TEXT_WORDS = (8500, 10000)   # Abstract to Conclusion (design document, success criterion 2)
+MAIN_TEXT_WORDS = (8500, 10700)   # Abstract to Conclusion. The design document aims at about 9,300 words and allows
+                                  # +-15%; the upper bound was 10,000 until 2026-11-17, when the discussion gained
+                                  # three subsections at the supervisor's direction
 ABSTRACT_WORDS = 250              # the author confirmed this limit in the guide for authors
 HIGHLIGHT_CHARS = 85              # assumed from the publisher's general rule; the journal's guide is unconfirmed
 
@@ -46,12 +48,15 @@ NO_TEXT_COMMANDS = ("cite[a-z]*", "ref", "eqref", "label", "input", "includegrap
                     "usepackage", "setcounter")
 NO_TEXT = re.compile(r"\\(?:%s)\*?(?:\[[^\]]*\])*(?:\{[^{}]*\})*" % "|".join(NO_TEXT_COMMANDS))
 # figures that are copies of the thesis figures (fig_dataset and fig_split_balance are drawn for the paper)
-COPIED_FIGURES = ["fig_autopmob_overview.pdf", "fig_characteristic.pdf", "fig_greedy_3way.pdf", "fig_mechanism.pdf",
-                  "fig_method_comparison.pdf", "fig_n1_coverage.pdf", "fig_pfi.pdf"]
+# fig_characteristic and fig_method_comparison carry the name of the method and are made for the paper
+# (make_figures.py), as are fig_dataset and fig_split_balance
+COPIED_FIGURES = ["fig_autopmob_overview.pdf", "fig_greedy_3way.pdf", "fig_mechanism.pdf", "fig_n1_coverage.pdf",
+                  "fig_pfi.pdf"]
 THESIS_FIGURES = HERE.parents[1] / "thesis" / "master_thesis" / "figures"
 
 # wording -> pattern (matched without regard to case, on text whose white space is collapsed)
 BANNED = {
+    "proposed method": r"proposed\s+method",          # the method has a name (\ours)
     "329 documents": r"329 documents",
     "no document leaks": r"no document leak",
     "untested": r"untested",

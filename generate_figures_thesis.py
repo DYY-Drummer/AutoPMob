@@ -222,7 +222,13 @@ MODES_MAIN = [("baseline_tfidf", "Baseline (classical IR)", C_BASE),
               ("proposed_train", "Proposed, learned greedy", C_TRAIN)]
 
 
-def method_comparison():
+def _modes_main(method_name: str) -> list:
+    """凡例の「Proposed」を手法の名称に替えた MODES_MAIN（修論は Proposed のまま、論文は名称）."""
+    return [(mode, lab.replace("Proposed", method_name), color) for mode, lab, color in MODES_MAIN]
+
+
+def method_comparison(method_name="Proposed", out_dir=None):
+    MODES_MAIN = _modes_main(method_name)
     tab = json.load(open(K21 / "main.json"))["table"]
     fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.4))
     centers = np.array([0.0, 3.4])
@@ -239,7 +245,8 @@ def method_comparison():
     fig.legend(handles=[Patch(facecolor=c, alpha=0.85, label=lab) for _, lab, c in MODES_MAIN],
                fontsize=10, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.06), framealpha=1.0)
     fig.tight_layout()
-    save(fig, "fig_method_comparison")
+    save(fig, "fig_method_comparison", out_dir)
+    return [lab for _, lab, _ in MODES_MAIN]
 
 
 # ----------------------------------------------------------------------
@@ -250,7 +257,8 @@ IN_LABELS = ["≤5", "6–10", "11–15", "16–20", "≥21"]
 MARK = {"baseline_tfidf": "o-", "proposed_static": "s-", "proposed_train": "^-"}
 
 
-def characteristic():
+def characteristic(method_name="Proposed", out_dir=None):
+    MODES_MAIN = _modes_main(method_name)
     b = json.load(open(K21 / "main.json"))["buckets"]["A"]
     nc_order = [str(k) for k in range(1, 11)]
     fig, axes = plt.subplots(2, 2, figsize=(11.5, 7.6), sharey="row")
@@ -272,7 +280,8 @@ def characteristic():
             ax.grid(alpha=0.3)
     axes[0, 0].legend(fontsize=9, loc="lower left")
     fig.tight_layout()
-    save(fig, "fig_characteristic")
+    save(fig, "fig_characteristic", out_dir)
+    return [lab for _, lab, _ in MODES_MAIN]
 
 
 # ----------------------------------------------------------------------

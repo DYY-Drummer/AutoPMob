@@ -203,6 +203,39 @@ def test_sample_check_claims_stop_the_build_when_they_no_longer_hold(monkeypatch
         mn._sample_check(mn.Registry())
 
 
+@pytest.mark.parametrize("name, value", [
+    # llm_db_baseline/list_composition.json：考察の 3 つの問い（なぜ 100% でないか、baseline との差、LLM との差）の集計
+    ("NCovMedianA", "24"), ("NCovOverA", "969"), ("PctCovOverA", "56.0"),
+    ("PctCompleteAProp", "92.2"), ("PctCompleteABase", "73.9"), ("PctCompleteAOpus", "75.8"),
+    ("RecAWithinProp", "1.000"), ("RecAOverProp", "0.968"), ("RecAWithinBase", "0.987"), ("RecAOverBase", "0.847"),
+    ("RecAWithinOpus", "0.970"), ("RecAOverOpus", "0.892"),
+    ("CompCorrectAProp", "3.8"), ("CompCoveredAProp", "10.2"), ("CompOutsideAProp", "6.0"),
+    ("CompCorrectAOpus", "3.5"), ("CompCoveredAOpus", "2.4"), ("CompOutsideAOpus", "14.0"), ("CompOutsideAHaiku", "16.1"),
+    ("JacGtInLow", "0.70"), ("JacGtInHigh", "0.21"), ("VarsGtInLow", "4.3"), ("VarsGtInHigh", "7.3"),
+    ("QueryVarsInLow", "5.7"), ("QueryVarsInHigh", "35.0"),
+    ("RecKOneOpus", "0.970"), ("LeadRecKOneOpus", "0.030"), ("LeadRecKHighOpus", "0.095"),
+])
+def test_build_has_the_counts_behind_the_three_questions_of_the_discussion(built, name, value):
+    assert built[name] == value
+
+
+def test_discussion_claims_stop_the_build_when_they_no_longer_hold(monkeypatch):
+    """「変数がすべてクエリに含まれる式が 20 本以下のケースでは 1 本も取りこぼさない」が成り立たなくなったら、止まること."""
+    import copy
+    real = mn.load
+
+    def fake(path):
+        d = real(path)
+        if Path(path).name != "list_composition.json":
+            return d
+        d = copy.deepcopy(d)
+        d["settings"]["A"]["methods"]["proposed"]["missed"]["share_over"] = 0.99
+        return d
+    monkeypatch.setattr(mn, "load", fake)
+    with pytest.raises(ValueError, match="at most 20"):
+        mn._results_composition(mn.Registry())
+
+
 # ---- 古い numbers.tex の検出 -----------------------------------------------------------------
 
 def test_check_detects_stale_file(tmp_path):
@@ -232,7 +265,7 @@ def test_sdiff_formats_a_raw_difference_with_its_sign():
 def test_tables_have_the_expected_rows():
     t = mn.tables()
     assert set(t) == {"tab_baseline_weights.tex", "tab_stage1_grid.tex", "tab_bucket.tex", "tab_n1.tex",
-                      "tab_search.tex", "tab_overlap.tex", "tab_check.tex"}
+                      "tab_search.tex", "tab_overlap.tex", "tab_check.tex", "tab_byk.tex"}
     rows = {k: [ln for ln in v.splitlines() if ln.rstrip().endswith("\\\\")] for k, v in t.items()}
     assert len(rows["tab_baseline_weights.tex"]) == 15       # 12 weight pairs + TF-IDF, BM25, E5 chosen per split
     assert len(rows["tab_stage1_grid.tex"]) == 16            # 2 settings x 4 weight pairs x 2 choices of incorrect candidates
@@ -256,7 +289,7 @@ def test_tables_have_the_expected_rows():
     assert ov[6] == "\\multicolumn{5}{@{}l}{Share a ground-truth equation with a training case} \\\\"
     assert ov[12] == "\\multicolumn{5}{@{}l}{Share no ground-truth equation with a training case} \\\\"
     assert ov[13] == "Test cases in the 10 splits & \\multicolumn{2}{c}{2{,}661} & \\multicolumn{2}{c}{2{,}227} \\\\"
-    assert ov[15] == "Proposed & $0.977 \\pm 0.011$ & $0.853 \\pm 0.054$ & $0.969 \\pm 0.013$ & $0.827 \\pm 0.042$ \\\\"
+    assert ov[15] == "\\ours{} & $0.977 \\pm 0.011$ & $0.853 \\pm 0.054$ & $0.969 \\pm 0.013$ & $0.827 \\pm 0.042$ \\\\"
     assert ov[18] == "\\multicolumn{5}{@{}l}{Share no source of a ground-truth equation with a training case} \\\\"
     assert ov[19] == "Test cases in the 10 splits & \\multicolumn{2}{c}{916} & \\multicolumn{2}{c}{1{,}136} \\\\"
     # the judgments of the language model on the sample: met / cases to which the criterion applies
@@ -266,6 +299,12 @@ def test_tables_have_the_expected_rows():
         "3. Shared symbols keep one meaning & 1/1 & 8/13 & 3/3 & 13/24 & 25/41 \\\\",
         "4. The equations determine the outputs & 3/3 & 8/13 & 5/5 & 12/29 & 28/50 \\\\",
         "All four & 3/3 & 0/13 & 5/5 & 7/29 & 15/50 \\\\"]
+    # Recall@20 by the number of ground-truth equations (Setting A, test cases of the 10 splits pooled)
+    assert rows["tab_byk.tex"] == [
+        "1 & 408 & 1.000 & 1.000 & 0.970 & 0.795 \\\\",
+        "2--3 & 2{,}164 & 0.981 & 0.999 & 0.954 & 0.446 \\\\",
+        "4--6 & 732 & 0.863 & 0.981 & 0.919 & 0.533 \\\\",
+        "7--10 & 925 & 0.714 & 0.928 & 0.832 & 0.434 \\\\"]
 
 
 def test_code_constant_names_the_file_when_the_pattern_is_missing(tmp_path):

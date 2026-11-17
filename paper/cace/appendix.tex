@@ -76,7 +76,7 @@ Weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@20 & Recall@20 & MAP & & Rec
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:stage1grid} lists the proposed method (static reranking) for each combination of
+Table~\ref{tab:stage1grid} lists \ours{} (static reranking) for each combination of
 first-stage weights and choice of incorrect candidates. $N_1$ is, for each weight pair, the number
 of candidates that holds every ground-truth equation of the training and validation cases
 (Section~\ref{sec:compared}). Hard negatives beat random ones in validation Recall@20 for every
@@ -88,7 +88,7 @@ training and validation cases left a few ground-truth equations of the test case
 candidates in some splits.
 
 \begin{table}[htbp]\centering
-\caption{The proposed method (static reranking) for each combination of first-stage weights and
+\caption{\ours{} (static reranking) for each combination of first-stage weights and
 choice of incorrect candidates (means over 10 splits). $N_1$ gives the range over the splits.}
 \label{tab:stage1grid}
 \tightrows\footnotesize
@@ -116,7 +116,7 @@ splits.
 
 \begin{table}[htbp]\centering
 \caption{Results by the number of ground-truth equations and by the number of input variables
-(Setting~A). ``Static'' and ``learned'' denote the proposed method with static reranking and with
+(Setting~A). ``Static'' and ``learned'' denote \ours{} with static reranking and with
 learned greedy selection.}
 \label{tab:bucket}
 \tightrows\footnotesize
@@ -155,7 +155,7 @@ and on the cases with eight or more ground-truth equations. Boxes show the 10 sp
 Fig.~\ref{fig:n1} shows, for the first-stage weights $(\WText, \WVar)$, how the fraction of cases
 with every ground-truth equation among the candidates and the candidate coverage grow with $N_1$;
 every ground-truth equation of every case enters the candidates at $N_1 = \NOneAllGt$.
-Table~\ref{tab:n1} lists the proposed method (static reranking) trained and evaluated with
+Table~\ref{tab:n1} lists \ours{} (static reranking) trained and evaluated with
 different $N_1$. Beyond $N_1 = 500$, Recall@20 and MAP hardly change: in Setting~A, Recall@20 is
 \RecAFiveHundredCand{} at $N_1 = 500$ and \RecAProp{} at $N_1 = \NOne$. Only $N_1 = \NOne$,
 however, admits every ground-truth equation of the test cases in every split, and one run of
@@ -174,7 +174,7 @@ $N_1 = \NOneAllGt$.}
 \end{figure}
 
 \begin{table}[htbp]\centering
-\caption{The proposed method (static reranking) with different numbers of first-stage candidates
+\caption{\ours{} (static reranking) with different numbers of first-stage candidates
 $N_1$ (mean $\pm$ SD over 10 splits). Coverage is that of the test cases. Time is the wall-clock
 time of one run of training and evaluation, with six runs in parallel.}
 \label{tab:n1}
@@ -316,21 +316,20 @@ stratified splits). The last group is part of the group before it.}
 \end{table}
 
 In Setting~A, \PctNoShareEqA\% of the test cases share no ground-truth equation with a training
-case. On them the proposed method reached a Recall@20 of \RecANoShareProp{} and a MAP@20 of
+case. On them \ours{} reached a Recall@20 of \RecANoShareProp{} and a MAP@20 of
 \MapTwANoShareProp, against \RecAProp{} and \MapTwAProp{} on all test cases, and it was above the
 baseline, Opus~5.5, and Haiku~5.5 in all 10 splits in both metrics; the same holds in Setting~B.
 Leaving out also the test cases that share an equation with a validation case keeps
-\PctNoShareEqTvA\% of the test cases of Setting~A, on which the proposed method reached
+\PctNoShareEqTvA\% of the test cases of Setting~A, on which \ours{} reached
 \RecANoShareTvProp{} and \MapTwANoShareTvProp.
 
 The groups differ in composition: \NTestShareEqCrossA{} of the \NTestShareEqA{} test cases of
 Setting~A that share an equation are cross-source cases, and \NTestShareEqSingleA{} are
-single-source cases. Within the cross-source family and within the synthesized family, the proposed
-method scored no higher on the cases that share an equation than on those that share none; its
+single-source cases. Within the cross-source family and within the synthesized family, \ours{} scored no higher on the cases that share an equation than on those that share none; its
 MAP@20 was \MapTwCrossShareProp{} against \MapTwCrossNoShareProp{} on the cross-source cases and
 \MapTwSynthShareProp{} against \MapTwSynthNoShareProp{} on the synthesized cases. On the
 \PctNoShareSrcA\% of the test cases of Setting~A that share no source with a training case, every
-method scored higher than on all test cases, and the proposed method was again above the others in
+method scored higher than on all test cases, and \ours{} was again above the others in
 all 10 splits.
 
 \FloatBarrier

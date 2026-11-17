@@ -19,3 +19,17 @@ def test_split_balance_for_the_paper_shows_the_recorded_split(tmp_path):
     assert info["titles"] == ["Ground-truth equations", "Input variables", "Output variables", "Sources spanned"]
     assert info["legend"] == ["Training", "Test"]
     assert (tmp_path / "fig_split_balance.pdf").exists()
+
+
+def test_method_figures_keep_the_thesis_labels_by_default(tmp_path):
+    labels = ["Baseline (classical IR)", "Proposed, static reranking", "Proposed, learned greedy"]
+    assert gft.method_comparison(out_dir=tmp_path) == labels
+    assert gft.characteristic(out_dir=tmp_path) == labels
+
+
+def test_method_figures_for_the_paper_carry_the_name_of_the_method(tmp_path):
+    """論文用の図：手法の名称（本人が 2026-11-17 に選んだ SERVE）を凡例に出せること."""
+    labels = ["Baseline (classical IR)", "SERVE, static reranking", "SERVE, learned greedy"]
+    assert gft.method_comparison(method_name="SERVE", out_dir=tmp_path) == labels
+    assert gft.characteristic(method_name="SERVE", out_dir=tmp_path) == labels
+    assert (tmp_path / "fig_method_comparison.pdf").exists() and (tmp_path / "fig_characteristic.pdf").exists()
