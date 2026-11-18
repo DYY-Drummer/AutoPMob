@@ -181,5 +181,5 @@ def test_paper_figures_use_the_name_of_the_method_of_the_manuscript():
     """図の凡例の名称は、原稿のマクロ \\ours と同じもの（make_numbers.METHOD_NAME）であること."""
     import make_figures as mf
     import make_numbers as mn
-    assert mf.METHOD_NAME == mn.METHOD_NAME == "SERVE"
-    assert mn.build().values["ours"] == "SERVE"
+    assert mf.METHOD_NAME == mn.METHOD_NAME == "TRACE"
+    assert mn.build().values["ours"] == "TRACE"

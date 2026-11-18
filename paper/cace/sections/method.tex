@@ -1,8 +1,9 @@
 \section{Method}\label{sec:method}
 
 \ours{} works in two stages. The first stage scores every equation of the database on its own
-and keeps the best as candidates. The second stage reranks the candidates with a learned model that
-compares each candidate with other equations.
+and keeps the best as candidates. The second stage evaluates the candidates again with a learned
+model and reranks them. The evaluation is conditioned on three attributes of an equation, its
+variable set, its domain label, and its text, and it compares each candidate with other equations.
 
 \subsection{Stage 1: candidate retrieval}\label{sec:stage1}
 
@@ -26,13 +27,13 @@ The second stage reranks only the candidates, so the fraction of ground-truth eq
 the candidate coverage, bounds what the second stage can achieve. We set $N_1$ so large that every
 ground-truth equation enters the candidates (Section~\ref{sec:compared}).
 
-\subsection{Stage 2: set-aware reranking}\label{sec:stage2}
+\subsection{Stage 2: attribute-conditioned evaluation}\label{sec:stage2}
 
-The second stage judges each candidate against the equations already at hand.
-Table~\ref{tab:features} lists its ten features. Seven compare the query with a single equation:
-two measure the topical closeness of the description ($f_1$, $f_3$), one matches the domain label
-against the description ($f_7$), and four measure how the variables of the equation relate to the
-query variables ($f_2$, $f_4$, $f_5$, $f_6$). The other three are the set-aware features that this
+The second stage evaluates each candidate by its three attributes and against the equations already
+at hand. Table~\ref{tab:features} lists its ten features. Seven compare the query with a single
+equation: two read its text and measure the topical closeness of the description ($f_1$, $f_3$),
+one matches its domain label against the description ($f_7$), and four measure how its variable set
+relates to the query variables ($f_2$, $f_4$, $f_5$, $f_6$). The other three are the set-aware features that this
 study introduces. They compare the candidate with a reference set $R$: the top $m$ equations of
 Stage~1 in static reranking, and the equations already selected in sequential selection
 (Section~\ref{sec:seq}). A candidate that belongs to $R$ is compared with $R$ without itself.

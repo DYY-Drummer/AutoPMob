@@ -50,17 +50,15 @@ together determine the concentration from the inputs. A method that scores each 
 similarity to the description cannot see these dependencies. Retrieval must therefore evaluate
 candidate equations as a set, not one by one.
 
-We propose \ours{} (set-aware retrieval of variable-linked equations), a two-stage retrieval method
-whose second stage evaluates each candidate against other equations. The name states its two ideas:
-it judges a candidate as a member of a set, and it reads the variables that link the equations to
-the query and to one another. The first stage ranks the whole database by a mixture of text similarity and variable
-overlap and keeps the top candidates. The second stage reranks the candidates with a multilayer
-perceptron that reads ten features per candidate: seven features of the query--equation pair and
-three set-aware features that compare the candidate with a reference set of equations. The
-set-aware features ask whether the candidate supplies query variables that the reference set still
-lacks, whether it shares variables with the set, and whether it comes from the same field. A
-learned greedy variant builds the ranking one equation at a time and compares each candidate with
-the equations already selected.
+We propose \ours{} (two-stage retrieval with attribute-conditioned evaluation). The first stage
+ranks the whole database by a mixture of text similarity and variable overlap and keeps the top
+candidates. The second stage evaluates each candidate again, conditioned on three attributes of an
+equation: its variable set, its domain label, and its text. A multilayer perceptron reads ten
+features of these attributes: seven compare a candidate with the query, and three, the set-aware
+features, compare it with a reference set of equations. The set-aware features ask whether the
+candidate supplies query variables that the reference set still lacks, whether it shares variables
+with the set, and whether it carries the same domain label. A learned greedy variant builds the
+ranking one equation at a time and compares each candidate with the equations already selected.
 
 To evaluate the method, we built a database of \NEq{} equations: \NEqPdf{} that a large language
 model (LLM) extracted from \NPdf{} PDF files of papers, textbooks, and reports, and \NEqRef{} that
@@ -85,8 +83,8 @@ The contributions of this paper are fourfold:
 \begin{enumerate}
   \item a formulation of equation selection for physical model building as the retrieval of an
     equation set, with a benchmark of \NEq{} equations and \NCases{} cases split by source;
-  \item \ours, a two-stage retrieval method with set-aware reranking that improves Recall@20 and
-    mean average precision over classical retrieval in every split;
+  \item \ours, a two-stage retrieval method with attribute-conditioned evaluation that improves
+    Recall@20 and mean average precision over classical retrieval in every split;
   \item an empirical account of the method: which features cause the improvement, where
     sequential selection helps, why topical similarity adds little, and where the remaining errors
     arise;

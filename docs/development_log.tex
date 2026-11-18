@@ -358,6 +358,11 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-11-18(1)（投稿論文：手法の名称を TRACE に決め、題名と本文を直した。修士論文の決まりを記録した）：
+    \textbf{名称}：11 月 17 日に仮に入れた SERVE は、加藤先生の指摘で取り下げた。指摘は、「set」が何の集合か分からない（提案手法は変数集合を見る）、「変数でつながる式」はモデル一般の説明である、「クエリの変数を補う式を見つける」は数式検索の問題の言い換えである、の 3 点で、先生は「変数集合に着目する」「分野ラベルを見る」「2 段階検索」が分かる名前を求め、TRACE、FORM、FIRM、FAVOR を挙げた。本人に、先生の案の検討（分野ラベルの特徴量は実験でほとんど効いていないこと、「Mathematical Formula Search」は既存の別の分野の名前であること、TRACE と FAVOR には同名のものがあること）と代案（REVISE、ADVISE）を伝え、本人は「案 A」を選んだ：TRACE（Two-stage Retrieval with Attribute-Conditioned Evaluation）で、題名は「TRACE: Two-stage retrieval with attribute-conditioned evaluation of equations for automated physical model building」（先生の案の末尾だけを変えた）。
+    \textbf{原稿}：\texttt{make\_numbers.py} の \texttt{METHOD\_NAME} を TRACE にし（マクロ \texttt{\textbackslash ours}）、題名、Abstract、Introduction、Method、Conclusion の名称の説明を直した。属性（attribute）は、式の変数集合、分野ラベル、文章の 3 つと定義し、10 個の特徴量がこの 3 つから計算されることを Method に書いた。4.2 節の表題は「Stage 2: attribute-conditioned evaluation」。凡例に名称が出る図 2 枚を作り直した。「set-aware features」は、参照集合と比べる 3 つの特徴量の呼び名として残した。
+    \textbf{修士論文の決まり（本人から）}：本文は 40 ページ以下で、付録は数えず、いくら書いてもよい。図表は必要なだけ使う。書き方は論文と同じでよい（筋を練り、途中の試行錯誤には触れず、結論とそれを支える結果を書く）。今の修論は全 72 ページで、本文は約 25 ページである。修論の本文を論文の今の内容にそろえる作業は、まだしていない。
+    \textbf{確認}：論文は \texttt{latexmk} が exit 0 で 76 ページ、本文 10,307 語、Abstract 248 語、原稿の点検は合格。全テストは 862 passed、3 skipped、1 failed（\texttt{tests/test\_fig\_overview.py}。この作業と関係のない、前からの失敗）。
   \item 2026-11-17(4)（投稿論文：加藤先生の方針に合わせ、考察を 3 つの問いで書き直し、手法の名称 SERVE と題名を入れた）：
     加藤先生の方針（Slack）は、(1) 提案手法を基準に「100\% に至らない理由」「baseline との比較と性能差の理由」「LLM との比較と性能差の理由」を考察する、(2) 年内の投稿を目標に論文を書く（Related work は以前のもの、Methods、Results、Discussion を書き、Introduction は最後）、(3) 手法の名称と題名を考える、の 3 点である。本人の指示「前の作業に含まれていたかを確認して、まだやっていない部分をやって」に対応した。
     \textbf{照合}：3 つの問いの材料は結果の節にあったが、「100\% に至らない理由」は分割 1 つ（種 42）だけの分析で、「LLM より高い理由」は書いていなかった（LLM が上回るケースの分析だけがあった）。名称と題名は未着手だった。

@@ -28,8 +28,8 @@ def test_method_figures_keep_the_thesis_labels_by_default(tmp_path):
 
 
 def test_method_figures_for_the_paper_carry_the_name_of_the_method(tmp_path):
-    """論文用の図：手法の名称（本人が 2026-11-17 に選んだ SERVE）を凡例に出せること."""
-    labels = ["Baseline (classical IR)", "SERVE, static reranking", "SERVE, learned greedy"]
-    assert gft.method_comparison(method_name="SERVE", out_dir=tmp_path) == labels
-    assert gft.characteristic(method_name="SERVE", out_dir=tmp_path) == labels
+    """論文用の図：手法の名称（2026-11-18 に先生の案から選んだ TRACE）を凡例に出せること."""
+    labels = ["Baseline (classical IR)", "TRACE, static reranking", "TRACE, learned greedy"]
+    assert gft.method_comparison(method_name="TRACE", out_dir=tmp_path) == labels
+    assert gft.characteristic(method_name="TRACE", out_dir=tmp_path) == labels
     assert (tmp_path / "fig_method_comparison.pdf").exists() and (tmp_path / "fig_characteristic.pdf").exists()

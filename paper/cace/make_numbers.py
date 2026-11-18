@@ -30,7 +30,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 # Facts about how the data were built that no result file holds; each names its record.
-METHOD_NAME = "SERVE"    # set-aware retrieval of variable-linked equations (the author's choice of 2026-11-17); macro \ours
+METHOD_NAME = "TRACE"    # two-stage retrieval with attribute-conditioned evaluation (the supervisor's proposal, chosen on
+                         # 2026-11-18); macro \ours. The attributes of an equation: variable set, domain label, text
 N_EARLIEST_DOCS = 9      # documents extracted before Gemini 2.5 Pro became the standard (docs/初期9報の抽出し直し_2026-11-04.md)
 N_SPLIT_CANDIDATES = 400  # candidate splits per seed (set_aware_reranker.stratified_src_split, n_try)
 OUT = Path(__file__).resolve().parent / "numbers.tex"
