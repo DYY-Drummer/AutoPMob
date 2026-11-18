@@ -18,7 +18,7 @@ requirements. This study also takes a description of the desired model, reads a 
 each equation, and ranks the equations that the description asks for above the rest. Finding the
 equations that concern the requested model does not by itself require context: in our benchmark,
 whose queries take their variables from the symbols of the ground-truth equations, variable overlap
-decides most of the ranking (Section~\ref{sec:mechanism}). Context is needed where variables cannot
+decides most of the ranking (\secref{sec:mechanism}). Context is needed where variables cannot
 decide, as when several combinations meet the requirements and only the description tells which one
 the user wants, and this study does not show that it helps there.
 
@@ -59,7 +59,7 @@ output that no source supports \citep{Hallucination}, and a user cannot trace a 
 to a source to check it. The check matters for physical models, whose equations are solved as one
 system, so that a single wrong equation can corrupt every variable connected to it. An LLM can
 instead select equations from a database, which keeps the link to the sources, and
-Section~\ref{sec:llmresults} compares \ours{} with LLMs used in this way.
+\secref{sec:llmresults} compares \ours{} with LLMs used in this way.
 
 \paragraph{Mathematical information retrieval} This field searches for formulas with queries that
 contain text, formulas, or both \citep{MathSurvey}. Its methods compare

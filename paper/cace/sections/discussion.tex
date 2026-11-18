@@ -6,19 +6,19 @@ retrieval, why it outperforms the baseline, and why it outperforms the LLMs.
 \subsection{Why \ours{} falls short of complete retrieval}\label{sec:whynot}
 
 The first stage is not the cause: with $N_1 = \NOne$ the candidates held every ground-truth
-equation (Section~\ref{sec:nonediscussion}). The cause lies in how the second stage fills a list of
+equation (\secref{sec:nonediscussion}). The cause lies in how the second stage fills a list of
 20 equations. Its strongest feature, specificity, puts first the equations that hold only query
 variables, and in this benchmark the rule seldom excludes a ground-truth equation, because the
 query lists every variable of the ground truth in \NReqThreeTrivial{} of the \NCases{} cases. Where
 the database holds at most 20 such equations for a query, the rule suffices, and the method missed
-no ground-truth equation (Section~\ref{sec:erroranalysis}). Where it holds more, as it does for
+no ground-truth equation (\secref{sec:erroranalysis}). Where it holds more, as it does for
 \PctCovOverA\% of the cases, the method must choose among equations that all have a specificity of
 one, and its other features choose poorly. The four features that compare the variables of an
 equation with the query take the same values for two equations with the same variables, such as
 the linearized balances of the concentration deviation and of the temperature deviation of a
 reactor. The latent similarity, the text similarity, and the I/O Jaccard favored a missed
 equation over an incorrect equation of the list in fewer than half of the pairs, and specificity
-in about half (Section~\ref{sec:erroranalysis}). A list therefore carries on average
+in about half (\secref{sec:erroranalysis}). A list therefore carries on average
 \CompCoveredAProp{} incorrect equations that hold only query variables, and they push out
 ground-truth equations that share few variables with the query, such as definitions and
 steady-state forms.
@@ -32,7 +32,7 @@ which variable an equation determines, which would tell apart equations with the
 \subsection{Why \ours{} outperforms the baseline}\label{sec:whybase}
 
 The two methods read the same query and the same fields of an equation, and relearning the weights
-of the two baseline terms adds nothing (Section~\ref{sec:mechanism}). The difference lies in how
+of the two baseline terms adds nothing (\secref{sec:mechanism}). The difference lies in how
 they measure variable overlap. The variable term of the baseline, the I/O Jaccard, divides the
 shared variables by the union of the query variables and the equation variables. A ground-truth
 equation holds few variables, whereas the query lists the variables of the whole model: in the
@@ -44,14 +44,14 @@ overtake it. Specificity divides the shared variables by the variables of the eq
 stays at one for such an equation however long the query is.
 
 This difference accounts for three observations. Specificity alone carries nearly all of the gain
-in Recall@20 (Section~\ref{sec:mechanism}). The gap between the methods grows with the numbers of
+in Recall@20 (\secref{sec:mechanism}). The gap between the methods grows with the numbers of
 input variables and of ground-truth equations (Fig.~\ref{fig:characteristic}). And the methods are
 equal where the ground truth is a single equation, because the query then lists the variables of
 that equation alone and its I/O Jaccard is one. The set-aware features add what a score of single
 equations cannot: by comparing a candidate with the equations ranked highest, they raise the
 ground-truth equations within the top 20 ($\DiffMapStepThree$ in MAP). The topic features add
 little, because the variable-overlap features already separate the candidates
-(Section~\ref{sec:nullresult}).
+(\secref{sec:nullresult}).
 
 The advantage rests on a property of the benchmark: a query that lists every variable of the
 ground truth. For a query that omits the intermediate variables of a model, specificity is below
@@ -60,16 +60,16 @@ one for the ground-truth equations that hold them, and the gain measured here ne
 \subsection{Why \ours{} outperforms the LLMs}\label{sec:strengths}
 
 Three differences explain the lead over Opus~5.5, the stronger of the two LLMs. The first is how
-the 20 places of a list are spent (Section~\ref{sec:erroranalysis}). Beside the ground-truth
+the 20 places of a list are spent (\secref{sec:erroranalysis}). Beside the ground-truth
 equations, a list of \ours{} holds mostly equations that hold only query variables,
 and a list of Opus~5.5 mostly equations with a variable that the query does not list
 (\CompOutsideAOpus{} of the 20 places, against \CompOutsideAProp). In this benchmark the latter can
 be ground-truth equations in only \NWithIntermediate{} cases. The instruction to the LLMs stated
-the requirements of Section~\ref{sec:formulation}, which allow intermediate variables, but not that
+the requirements of \secref{sec:formulation}, which allow intermediate variables, but not that
 the queries of the benchmark almost never omit a variable; the reranker learned this regularity
 from the training cases. Opus~5.5 therefore missed ground-truth equations even where the task is
 easiest, with a single ground-truth equation (Table~\ref{tab:byk}) and with at most 20 equations
-that hold only query variables (Section~\ref{sec:erroranalysis}); in both, the baseline was more
+that hold only query variables (\secref{sec:erroranalysis}); in both, the baseline was more
 accurate than it. The second difference is the information per equation. The input limit left room
 only for the identifier, the domain label, and the notation of each equation: the database took
 \NDbTokens{} of the one million tokens. The LLM thus read the variables from the notation, whereas
@@ -83,7 +83,7 @@ synthesized cases (Table~\ref{tab:llmkind}).
 The LLM does better where variable overlap is a weak signal. From four ground-truth equations on,
 Opus~5.5 beat the baseline without any training case. In
 \NOpusWinRec{} cases it also beat \ours{}, by placing ground-truth equations that share
-few variables with the query (Section~\ref{sec:erroranalysis}), and on the cross-source cases its
+few variables with the query (\secref{sec:erroranalysis}), and on the cross-source cases its
 MAP@20 hardly depended on the variable overlap. An LLM that reranks or extends the candidates of
 \ours{} may therefore recover such equations at the cost of one short prompt, not of
 the whole database. We have not tested this combination.
@@ -110,7 +110,7 @@ hold a symbol in two or more ground-truth equations (\ref{app:check}).
 Matching by symbol also ties the measured accuracy to the notation of the queries: every case takes
 its input and output variables from the symbols of its ground-truth equations, so the experiments
 cover only queries that share the notation of the ground truth. Because the six variable-overlap
-features decide most of the accuracy (Section~\ref{sec:mechanism}), a query written in another
+features decide most of the accuracy (\secref{sec:mechanism}), a query written in another
 notation would lose the evidence on which the method relies. Judging whether two definitions name
 the same quantity \citep{ProcessBERT} is the natural remedy and remains future work.
 
@@ -153,17 +153,17 @@ for (\NCheckTwoYes), whether every symbol shared by two or more ground-truth equ
 quantity (\NCheckThreeYes{} of the \NCheckThreeApplicable{} cases with such a symbol), and whether
 the equations determine the outputs once the inputs are given (\NCheckFourYes). Only \NCheckAllMet{} cases met all four criteria, and none of the \NCheckProgram{}
 cross-source cases that the program built did. The ground truths are therefore sets of equations
-that the requirements of Section~\ref{sec:formulation} admit, not models that an engineer has
+that the requirements of \secref{sec:formulation} admit, not models that an engineer has
 validated, and the reported accuracy measures how well a method recovers such sets.
 Second, the evaluation is internal to the database: retrieval cannot find an equation that the
 database lacks, and nobody screened the collected files by hand, so some have little to do with
 physical models. Third, the queries share the notation of their ground truths
-(Section~\ref{sec:symbols}) and, in \NReqThreeTrivial{} of the \NCases{} cases, list every variable of
-the ground truth, which makes specificity decisive (Section~\ref{sec:mechanism}); only
+(\secref{sec:symbols}) and, in \NReqThreeTrivial{} of the \NCases{} cases, list every variable of
+the ground truth, which makes specificity decisive (\secref{sec:mechanism}); only
 \NWithIntermediate{} cases resemble the example of Fig.~\ref{fig:overview}, whose query omits the
 intermediate variables of the model. Fourth, the split keeps the cases assigned to one source
 together, but \ShareSharedEqA\% of the test cases of Setting~A share a ground-truth equation with a
-training case (Section~\ref{sec:split}). On the test cases that share none, \ours{}
+training case (\secref{sec:split}). On the test cases that share none, \ours{}
 reached a Recall@20 of \RecANoShareProp{} and a MAP@20 of \MapTwANoShareProp{} and stayed above the
 baseline and both LLMs in all 10 splits (\ref{app:overlap}); we did not retrain the reranker
 without the training cases that share an equation with a test case. Fifth, among the hyperparameters, we compared no

@@ -5,7 +5,7 @@
 \section{Hyperparameters}\label{app:hyper}
 
 Table~\ref{tab:hyper} lists the hyperparameters of the methods, all fixed before training, together
-with the other settings of the experiments. Section~\ref{sec:compared} explains which of them the
+with the other settings of the experiments. \secref{sec:compared} explains which of them the
 validation cases chose.
 
 \begin{table}[htbp]\centering
@@ -48,7 +48,7 @@ Random seeds & \Seeds \\
 Table~\ref{tab:weights} lists the classical baseline under each of the \NBasePairs{} weight pairs.
 Its validation Recall@20 hardly changes while the text weight $w_{\mathrm{t}}$ is one half or less
 (\BaseValRecALowMin{} to \BaseValRecALowMax{} in Setting~A), and the text term alone,
-$\BasePairFirst$, reaches only \BaseValRecATextOnly. The baseline of Section~\ref{sec:results}
+$\BasePairFirst$, reaches only \BaseValRecATextOnly. The baseline of \secref{sec:results}
 takes, in each split, the pair with the highest validation Recall@20. When BM25 or E5 replaces the
 TF-IDF text similarity, rescaled to $[0, 1]$ over the database before it is mixed with the variable
 overlap, and the weights are again chosen per split, the test Recall@20 is \RecABm{} (Setting~A)
@@ -79,7 +79,7 @@ Weights $(w_{\mathrm{t}}, w_{\mathrm{v}})$ & Recall@20 & Recall@20 & MAP & & Rec
 Table~\ref{tab:stage1grid} lists \ours{} (static reranking) for each combination of
 first-stage weights and choice of incorrect candidates. $N_1$ is, for each weight pair, the number
 of candidates that holds every ground-truth equation of the training and validation cases
-(Section~\ref{sec:compared}). Hard negatives beat random ones in validation Recall@20 for every
+(\secref{sec:compared}). Hard negatives beat random ones in validation Recall@20 for every
 weight pair in both settings. With hard negatives, the weights differ little: the validation
 Recall@20 is \ValRecAMin{} to \ValRecAMax{} in Setting~A and \ValRecBMin{} to \ValRecBMax{} in
 Setting~B. Only the pair $(\WText, \WVar)$ gave $N_1 = \NOne$ in every split and admitted every
@@ -110,8 +110,8 @@ Setting & Weights & Incorrect candidates & $N_1$ & Recall@20 & Recall@20 & MAP \
 Table~\ref{tab:bucket} gives the values behind Fig.~\ref{fig:characteristic} (Setting~A; means
 over the \NRecordsA{} test records of the 10 splits; the table does not show the spread across
 splits). Fig.~\ref{fig:mechanism} breaks the MAP gain of the set-aware features
-(Section~\ref{sec:mechanism}) down by the same two characteristics, and Fig.~\ref{fig:greedy} shows
-how the MAP of the three selection strategies (Section~\ref{sec:greedyresults}) spreads across the
+(\secref{sec:mechanism}) down by the same two characteristics, and Fig.~\ref{fig:greedy} shows
+how the MAP of the three selection strategies (\secref{sec:greedyresults}) spreads across the
 splits.
 
 \begin{table}[htbp]\centering
@@ -273,7 +273,7 @@ not by the physical roles of the variables.
 \section{Balance of a stratified split}\label{app:split}
 
 Fig.~\ref{fig:split} compares the training and test cases of one split of Setting~A in the four
-quantities that the stratification balances (Section~\ref{sec:split}).
+quantities that the stratification balances (\secref{sec:split}).
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth]{figures/fig_split_balance.pdf}
@@ -288,8 +288,8 @@ densities; the other panels show fractions of cases.}
 \FloatBarrier
 \section{Test cases that share a ground-truth equation with a training case}\label{app:overlap}
 
-A test case can share ground-truth equations with a training case (Section~\ref{sec:split}).
-Table~\ref{tab:overlap} therefore scores the four methods of Section~\ref{sec:llmresults} on three
+A test case can share ground-truth equations with a training case (\secref{sec:split}).
+Table~\ref{tab:overlap} therefore scores the four methods of \secref{sec:llmresults} on three
 groups of the test cases of each split: those that share at least one ground-truth equation with a
 training case, those that share none, and, among the latter, those whose ground truth draws on no
 source that supplies a ground-truth equation to a training case. The splits, the trained rerankers,
@@ -335,7 +335,7 @@ all 10 splits.
 \FloatBarrier
 \section{Judgments of a language model on a sample of cases}\label{app:check}
 
-We report no manual verification of the cases (Section~\ref{sec:limitations}). As a partial
+We report no manual verification of the cases (\secref{sec:limitations}). As a partial
 substitute, a language model, Claude Fable~5.2 \citep{ClaudeModels}, judged \NCheckCases{} of the
 \NCases{} cases. We drew them at random with a fixed seed, in proportion to the sizes of the three
 families: \NCheckSingle{} single-source, \NCheckCross{} cross-source, and \NCheckSynth{}
@@ -351,7 +351,7 @@ variable definitions. It answered four questions:
 \end{enumerate}
 The model judged the cases one by one in an interactive session of a coding assistant, following
 written rules, not through a scripted call, and recorded a reason for every negative answer. It had
-not seen the judgments of Section~\ref{sec:symbols}. Whether an equation was extracted faithfully
+not seen the judgments of \secref{sec:symbols}. Whether an equation was extracted faithfully
 from its source lay outside the questions.
 
 \begin{table}[htbp]\centering
@@ -390,7 +390,7 @@ quantities that the description treats as given, or quantities that it does not 
 criterion~3 failed in \NCheckSynthThreeNo.
 
 For criterion~3, the answers can be compared with the earlier judgments of Claude Opus~5.5
-(Section~\ref{sec:symbols}). Of the \NCheckThreeApplicable{} sampled cases that hold a symbol in
+(\secref{sec:symbols}). Of the \NCheckThreeApplicable{} sampled cases that hold a symbol in
 two or more ground-truth equations, Opus~5.5 had flagged \NCheckFlagged, and the two models agreed
 on \NCheckFlagAgree. Both sets of judgments come from language models of one vendor, and we report
 no manual check of either.

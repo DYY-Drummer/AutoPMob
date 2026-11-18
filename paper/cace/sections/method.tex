@@ -20,12 +20,12 @@ term-frequency--inverse-document-frequency (TF-IDF) vectors \citep{Salton} over 
 bigrams. The second term, the variable overlap, is the Jaccard similarity
 $J(A, B) = |A \cap B| / |A \cup B|$ between the query variables and the variables of the equation.
 Ranking the whole database by Eq.~\eqref{eq:stage1} is a classical information-retrieval method
-\citep{Manning}, and Section~\ref{sec:setup} uses it, without a learned model or a candidate set,
+\citep{Manning}, and \secref{sec:setup} uses it, without a learned model or a candidate set,
 as the baseline.
 
 The second stage reranks only the candidates, so the fraction of ground-truth equations among them,
 the candidate coverage, bounds what the second stage can achieve. We set $N_1$ so large that every
-ground-truth equation enters the candidates (Section~\ref{sec:compared}).
+ground-truth equation enters the candidates (\secref{sec:compared}).
 
 \subsection{Stage 2: attribute-conditioned evaluation}\label{sec:stage2}
 
@@ -36,7 +36,7 @@ one matches its domain label against the description ($f_7$), and four measure h
 relates to the query variables ($f_2$, $f_4$, $f_5$, $f_6$). The other three are the set-aware features that this
 study introduces. They compare the candidate with a reference set $R$: the top $m$ equations of
 Stage~1 in static reranking, and the equations already selected in sequential selection
-(Section~\ref{sec:seq}). A candidate that belongs to $R$ is compared with $R$ without itself.
+(\secref{sec:seq}). A candidate that belongs to $R$ is compared with $R$ without itself.
 
 Complementarity $g_{\mathrm{Comp}}$ asks what the candidate adds: the fraction of query variables
 that appear in the candidate but in no equation of the reference set. Coherence $g_{\mathrm{Coh}}$
@@ -92,7 +92,7 @@ $e^{-} \in C_q \setminus \mathcal{R}_q$,
 \end{equation}
 For each training case we choose $n_{\mathrm{neg}}$ incorrect candidates and pair every correct
 candidate with each of them. We compare two ways of choosing them and let the validation cases
-decide (Section~\ref{sec:compared}): at random, or the incorrect candidates that the MLP scores
+decide (\secref{sec:compared}): at random, or the incorrect candidates that the MLP scores
 highest at that point of training (hard negatives). With a large $N_1$, most randomly chosen
 incorrect candidates already trail the correct ones by more than the margin and contribute no loss.
 The hyperparameters of the method, the values fixed before training, are $N_1$, $m$, the

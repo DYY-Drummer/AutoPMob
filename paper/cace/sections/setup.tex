@@ -5,7 +5,7 @@
 We evaluate the methods in two settings. Setting~A holds all \NCases{} evaluation cases of the three
 families, and Setting~B the \NSynth{} synthesized cases alone, 100 for each number of ground-truth
 equations from 1 to 10. Every result uses the stratified split by source of
-Section~\ref{sec:split} with the same 10 random seeds.
+\secref{sec:split} with the same 10 random seeds.
 
 \subsection{Compared methods}\label{sec:compared}
 
@@ -51,7 +51,7 @@ domain label: the prompt with the database holds \NDbTokens{} tokens, and adding
 definitions and the context texts would exceed the input limit of one million tokens. We withhold
 the sources, shuffle the order of the equations, and renumber their identifiers, because \ours{} does not read the sources and the synthesized ground truths prefer equations of one
 source, so the sources would give the LLMs alone a clue to the answer. The prompt states the first
-three requirements of Section~\ref{sec:formulation} (\ref{app:prompts}). The models are Claude
+three requirements of \secref{sec:formulation} (\ref{app:prompts}). The models are Claude
 Opus~5.5 and Claude Haiku~5.5 \citep{ClaudeModels}, a large and a small model of one vendor, both
 with the reasoning effort set to high. An LLM sees no training case, so its input for a case does
 not depend on the split; we therefore ask it three times per case, independently, and use the mean

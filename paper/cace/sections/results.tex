@@ -9,7 +9,7 @@ settings, and in all 10 splits. Static reranking raised Recall@20 from \RecABase
 ($\DiffRecAPropBase$) and MAP from \MapABase{} to \MapAProp{} ($\DiffMapAPropBase$) in Setting~A,
 and Recall@20 from \RecBBase{} to \RecBProp{} ($\DiffRecBPropBase$) and MAP from \MapBBase{} to
 \MapBProp{} ($\DiffMapBPropBase$) in Setting~B. Learned greedy selection raised MAP further, to
-\MapAGreedy{} and \MapBGreedy{} (Section~\ref{sec:greedyresults}). The variants of the baseline
+\MapAGreedy{} and \MapBGreedy{} (\secref{sec:greedyresults}). The variants of the baseline
 with BM25 and E5 ranked no better than the TF-IDF baseline --- Recall@20 of \RecABm{} and
 \RecAEFive{} in Setting~A and \RecBBm{} and \RecBEFive{} in Setting~B --- and \ours{}
 beat them, too, on every metric in all 10 splits (\ref{app:weights}).
@@ -183,7 +183,7 @@ growing the feature set of the reranker, retraining it at every step, and evalua
     splits. Specificity $f_6$ alone carries nearly all of this step: adding it alone reaches a
     Recall@20 of \RecASpec{} ($\DiffRecSpec$) and a MAP of \MapASpec{} ($\DiffMapSpec$). The
     benchmark makes this feature decisive: in \NReqThreeTrivial{} of the \NCases{} cases the query
-    lists every variable of the ground truth (Section~\ref{sec:cases}), so every ground-truth
+    lists every variable of the ground truth (\secref{sec:cases}), so every ground-truth
     equation has a specificity of one.
   \item Set-aware features: adding the three of them raises Recall@20 to \RecAProp{}
     ($\DiffRecStepThree$, in \WinsRecStepThree{} of the 10 splits) and MAP to \MapAProp{}
@@ -222,7 +222,7 @@ each group shuffles all its features together.}
 \subsection{Sequential selection}\label{sec:greedyresults}
 
 We compared static reranking, greedy selection at inference, and learned greedy selection
-(Section~\ref{sec:seq}) on the same 10 splits (Table~\ref{tab:greedy}; \ref{app:bucket} shows the
+(\secref{sec:seq}) on the same 10 splits (Table~\ref{tab:greedy}; \ref{app:bucket} shows the
 spread across the splits). Recall@20 hardly differs
 among the three, because the top 20 already hold nearly every ground-truth equation; the strategies
 differ in how they order the equations within the top 20. Greedy selection at inference beats
@@ -269,7 +269,7 @@ one at a time did not raise Recall@20 in Setting~A. Added to the two-feature rer
 changed Recall@20 by $\DiffRecDomMatch$ (higher in \WinsRecDomMatch{} of the 10 splits) and the
 latent similarity by $\DiffRecLatent$ (\WinsRecLatent{} of 10); added to the seven-feature reranker,
 the domain agreement changed Recall@20 by $\DiffRecDomAgree$ (\WinsRecDomAgree{} of 10), although
-it raised MAP by $\DiffMapDomAgree$ (Section~\ref{sec:mechanism}). Coarser domain labels did not
+it raised MAP by $\DiffMapDomAgree$ (\secref{sec:mechanism}). Coarser domain labels did not
 help either: after we merged the labels in three ways, by unifying their spelling and by clustering
 them into 100 and into 40 groups, adding the domain match changed Recall@20 by $\DiffRecMergeWorst$
 to $\DiffRecMergeBest$.

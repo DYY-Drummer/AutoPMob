@@ -1,4 +1,8 @@
 \documentclass[uplatex,a4j,onecolumn,11pt,openany,english,oneside]{jsbook}
+% 修士論文。本文（1 章から結論まで）と付録 A〜J は、投稿論文 paper/cace/ の節のファイルをそのまま読み込む
+% （2026-11-18。研究室の決まり：修論の本文は論文と同じ書き方でよい。本文は 40 ページ以下で、付録は数えない）。
+% 本文を直すときは paper/cace/sections/*.tex を直す。数値は paper/cace/numbers.tex のマクロ。
+% 組み方: このディレクトリで latexmk main.tex。確認: python3 thesis/master_thesis/check_thesis.py
 \usepackage{array,enumerate}
 \usepackage[dvipdfmx]{graphicx,color}
 \usepackage{amsmath}
@@ -22,12 +26,17 @@
 \usepackage{caption}
 \usepackage{booktabs}
 \usepackage{longtable}
-\usepackage{arydshln}
-\usepackage{enumitem}   % 骨子段階のコンパクト表示用（本文化後も維持可）
-\usepackage{fvextra}    % 付録のプロンプト（Verbatim の折り返し）。2026-10-21 追加
+% arydshln は読み込まない：longtable と一緒に使うと、表が続くページの柱（章の見出し）が前の章のままになる。
+% 破線の罫線はどの表も使っていない（2026-11-18）
+\usepackage{enumitem}
+\usepackage{fvextra}    % 付録のプロンプト（Verbatim の折り返し）
+\usepackage{placeins}   % \FloatBarrier
+\usepackage{refcount}   % \secref が参照先の番号を読む
+\usepackage[numbers,super,sort&compress]{natbib}   % 文献は引用順の番号（上付き）。書誌は paper/cace/refs.bib
 \setlist{nosep, leftmargin=1.6em}
 \captionsetup[table]{labelsep=period, labelfont=bf, justification=centering, singlelinecheck=off}
 \captionsetup[figure]{labelsep=period, labelfont=bf, justification=centering, singlelinecheck=off}
+\setlength{\LTcapwidth}{\linewidth}
 
 % 図表を通し番号にする（テンプレート踏襲）
 \makeatletter
@@ -40,7 +49,13 @@
 \makeatother
 \setlength{\textwidth}{\fullwidth}
 \setlength{\evensidemargin}{\oddsidemargin}
-\setstretch{1.0}   % 骨子段階はコンパクト表示。本文化時に 1.3 へ戻す（テンプレート既定）
+\setstretch{1.3}   % テンプレートの既定
+
+% 大きな図表が 1 ページの大半を占めてもよい（既定のままだと後ろへ送られる）
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
 
 \newcommand{\argmax}{\mathop{\rm arg~max}\limits}
 \newcommand{\argmin}{\mathop{\rm arg~min}\limits}
@@ -51,31 +66,40 @@
 \renewcommand{\contentsname}{Contents}
 \renewcommand{\prechaptername}{Chapter }
 \renewcommand{\postchaptername}{}
+\renewcommand{\jsParagraphMark}{}   % \paragraph の見出しに記号を付けない
 
-\makeatletter
- \def\@cite#1{\textsuperscript{#1)}}
- \def\@biblabel#1{#1)}
-\makeatother
+% 文献一覧の DOI：hyperref を読み込まないので \href を定義しておく（未定義だと、文献一覧が url パッケージの \path を
+% 上書きして、DOI の下線でエラーになる）
+\providecommand{\href}[2]{#2}
+% 文献の番号は「1)」の形（テンプレート踏襲）
+\setcitestyle{open={},close={)}}
+\renewcommand{\bibnumfmt}[1]{#1)}
 
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{5pt}
 
-% ===== 骨子段階のみ：章の強制改ページを抑制（本文化時にこのブロックを丸ごと削除） =====
+% ===== 論文（paper/cace/）の節のファイルを読み込むための定義 =====
+\newcommand{\PaperDir}{../../paper/cace/}
+\input{../../paper/cace/macros}    % \todo、\Top、\tightrows
+\input{../../paper/cace/numbers}   % 数値のマクロと、手法の名称 \ours
 \makeatletter
-\renewcommand{\chapter}{%
-  \par\vspace{1.2\baselineskip}%   % 改ページの代わりに縦スペース
-  \plainifnotempty
-  \global\@topnum\z@
-  \if@english \@afterindentfalse \else \@afterindenttrue \fi
-  \secdef
-    {\@omit@numberfalse\@chapter}%
-    {\@omit@numbertrue\@schapter}}
+% 生成した表の行（paper/cace/generated/）
+\newcommand{\rowsfrom}[1]{\@@input \PaperDir#1.tex }
+% 図は論文の図（paper/cace/figures/）を使う。節のファイルは figures/... と書いている
+\let\Thesis@includegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{\Thesis@includegraphics[#1]{\PaperDir#2}}
+% 節への参照：参照先が章なら Chapter、節なら Section と書く（番号に点があるかで見分ける）
+\newcommand{\secref}[1]{\edef\Thesis@number{\getrefnumber{#1}}\expandafter\Thesis@secref\Thesis@number.\@nil{#1}}
+\def\Thesis@secref#1.#2\@nil#3{\ifx\relax#2\relax Chapter~\ref{#3}\else Section~\ref{#3}\fi}
+% 論文の \section を章に、\subsection を節にする（本文と付録を読み込む間だけ）
+\newcommand{\PaperSectioning}{\let\subsection\section \let\section\chapter}
 \makeatother
-% ==================================================================================
+% ==============================================================
 
 \begin{document}
 \thispagestyle{empty}
-%%%%% 表紙 %%%%%
+%%%%% 表紙（行間は 1.0。本文の 1.3 のままだと 1 ページに収まらない） %%%%%
+\begin{spacing}{1.0}
 \begin{center}
 \vspace*{3mm}
 {\huge  修士論文}
@@ -104,15 +128,10 @@
 \vspace{12mm}
 {\huge 令和 9 年 2 月提出}
 \end{center}
+\end{spacing}
 
 \newpage
-%%%%% Abstract（2026-09-07 全章本文化後に書き直し。数値は第 6 章と同じ一次データ） %%%%%
-% 2026-10-12 改訂: 結果を最良の重みの baseline との差に。「閉じた系」「閉包率がオラクルより高い」を撤回。
-% 2026-10-21 改訂（日本語版 8/31 報告の 2 回目の改訂 4781cdd・再実験 c7c4feb にそろえた）: 自由度ゼロ停止、LLM 直接生成の数値、
-%   二つの介入による因果の主張を削除し、N_1 = 2,000・Recall@20・検証用のケースで選んだ定数の結果で書き直した。評価は 1,732 件。
-% 2026-10-21(2) 改訂（報告 f1076cd にそろえた）: 単一出典の 1 件（core_019_v1）を除いて評価は 1,731 件。手法の設定値を
-%   hyperparameters とよぶ。結果の数値は、説明文の書き直しと 1 件の除外を入れた再計算が終わるまで 1,732 件での値のまま。
-% 2026-10-27: 再計算（8b77e73、experiments/kato1021/、1,731 件）の値に差し替えた（MAP 0.690 → 0.693、0.860 → 0.862）。
+%%%%% Abstract（論文の Abstract と同じ） %%%%%
 \thispagestyle{empty}
 {\huge \bf Abstract}
 \\
@@ -120,278 +139,64 @@
 \\
 \\
 \\
-Physical models underpin process design, control, and digital twins, but building one for a process outside the libraries of modeling tools requires an engineer to collect the equations scattered across many documents and to assemble them into a model.
-Our group aims to automate this work with an automated physical model builder (AutoPMoB).
-This thesis addresses one of its steps: given a description of the desired model and its input and output variables, present the equations likely to serve in the model, drawn from an equation database built from multiple documents; the engineer then assembles and checks the model from these candidates.
-Because an equation that contains a variable other than the inputs and outputs is useful only together with an equation that determines that variable, the value of a candidate depends on the equations presented with it, so the method judges each candidate by its relation to other equations, not by its relevance to the query alone.
-
-We propose a two-stage retrieval method.
-The first stage narrows the database by text similarity and variable overlap, and the second stage reranks the candidates with a multilayer perceptron that reads, beside seven query--equation features, three set-aware features that compare each candidate with a reference set of equations: complementarity, coherence, and domain agreement.
-A learned greedy variant selects one equation at a time and compares each candidate with the equations already selected.
-To evaluate the method, we built a database of 11,146 equations from 361 sources and 1,731 evaluation cases, 1,000 of which a program synthesized by giving each equation an output variable of its own; we split the cases by source, keeping the cases assigned to one source in one part, and we chose the hyperparameters of the methods, the values fixed before training, on validation cases.
-
-% source: experiments/kato1021/main.json（Recall@20 A 0.906 → 0.981・B 0.825 → 0.966、MAP A 0.693 → 0.862・B 0.626 → 0.832、
-%         wins 10）; mech.json; pfi.json; greedy.json（K>=8 train − static MAP +0.032）; case_outcomes_final.json
-With a first stage that keeps every ground-truth equation among its 2,000 candidates, the method raises Recall@20 over classical retrieval from 0.906 to 0.981 in the mixed setting and from 0.825 to 0.966 in the synthesized-only setting, and mean average precision from 0.693 to 0.862 and from 0.626 to 0.832, on all 10 stratified splits.
-Analyses attribute most of the accuracy to the features that read the variables equations share, the specificity of an equation to the query variables above all; the set-aware features mainly raise the correct equations within the top 20, and topical similarity adds little.
-Selecting the equations one at a time with learned greedy selection raises mean average precision by a further 0.032 on the cases with eight or more ground-truth equations.
-Every remaining miss arises in the second stage, where no present feature separates the missed equations from the incorrect ones ranked above them.
+\input{../../paper/cace/sections/abstract}
 
 \newpage
 %%%%% 目次 %%%%%
 \pagenumbering{roman}
-\setcounter{tocdepth}{1}   % 骨子段階は章・節のみ。本文化時に 4 へ戻す
+\setcounter{tocdepth}{1}   % 章と節
 \tableofcontents
 \thispagestyle{empty}
 \newpage
 \pagenumbering{arabic}
-\chapter{Introduction}
-\label{Introduction}
-\input{Introduction}
-% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
 
-\chapter{Related Work}
-\label{RelatedWork}
-\input{RelatedWork}
-% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
+%%%%% 本文（40 ページ以下。check_thesis.py が、結論の終わりのページ番号を調べる） %%%%%
+\begingroup
+\PaperSectioning
+\input{../../paper/cace/sections/introduction}
+\input{../../paper/cace/sections/related}
+\input{../../paper/cace/sections/formulation}
+\input{../../paper/cace/sections/method}
+\input{../../paper/cace/sections/dataset}
+\input{../../paper/cace/sections/setup}
+\input{../../paper/cace/sections/results}
+\input{../../paper/cace/sections/discussion}
+\input{../../paper/cace/sections/conclusion}
+\label{thesis:endbody}
+\endgroup
 
-\chapter{Set-aware Equation-Set Retrieval}
-\label{Method}
-\input{Method}
-% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
-
-\chapter{Equation Database and Test Case Construction}
-\label{Dataset}
-\input{Dataset}
-% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
-
-\chapter{Experiments}
-\label{Experiment}
-\input{Experiment}
-% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
-
-\chapter{Results and Discussion}
-\label{ResultsAndDiscussion}
-\input{ResultsAndDiscussion}
-% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
-
-\chapter{Conclusion}
-\label{Conclusion}
-\input{Conclusion}
-% \clearpage  % 骨子段階は連続レイアウト（本文化時に戻す）
-
-%%%%% References（2026-08-31 拡充、2026-09-27 に SR 2 件・研究室の既往 3 件、2026-09-28 に Tangent-CFT を追加: 39件。全件を一次ページで書誌確認済み・引用順） %%%%%
-% 2026-10-12: Seborg et al. (2010)（自由度の定義、第 3 章）を追加して 40 件。第 1 章で Kato and Kano (2025) を引くようにしたため
-%   CombineEq を引用初出順の位置（DAEEquiv の次）へ移した。第 5 章で BM25/E5 の段落を LLM の段落より前にしたため
-%   E5 を ClaudeSonnet45 の前へ移した（main.aux の \citation 順と一致を確認）。
-% 2026-10-21: LLM 直接生成の等価判定（Claude Opus 4.8・Claude Fable 5.1）の記述を削除したので、ClaudeOpus48 と ClaudeFable51 を
-%   外した。自由度ゼロ停止の節だけで引いていた Hangos も外した（37 件）。ClaudeSonnet45 は合成ケースの説明文（第 4 章）で
-%   初めて引くので、E5（第 5 章）の前に移した。
-% 2026-10-21(2): 出典横断の説明文 113 件の書き直し（第 4 章）で Claude Opus 4.8 を使ったので、ClaudeOpus48 を戻した（38 件。
-%   第 4 章の初出順で Gemini25 と ClaudeSonnet45 の間。書誌は 2026-09-07 に確認した版のまま）。
-\begin{thebibliography}{99}
-
-\bibitem{DigitalTwin}
-F. Tao, H. Zhang, A. Liu, A. Y. C. Nee.
-\ Digital Twin in Industry: State-of-the-Art.
-\ {\it IEEE Transactions on Industrial Informatics}, {\bf 15}, pp.2405-2415, 2019.
-
-\bibitem{simulink}
-Simulink - Simulation and Model-Based Design - MATLAB \& Simulink.
-\ \url{https://www.mathworks.com/products/simulink.html}.
-\ (Accessed on 2026/07/12).
-
-\bibitem{aspen}
-AspenTech | Asset Optimization Software.
-\ \url{https://www.aspentech.com/}.
-\ (Accessed on 2026/07/12).
-
-\bibitem{AutoPMoBCSTR}
-S. Kato, M. Kano.
-\ Towards An Automated Physical Model Builder: CSTR Case Study.
-\ {\it Computer Aided Chemical Engineering}, {\bf 49}, pp.1669-1674, 2022.
-
-\bibitem{AutoPMoBProto}
-S. Kato, M. Kano.
-\ Prototype of Automated Physical Model Builder: Challenges and Opportunities.
-\ {\it Computer Aided Chemical Engineering}, {\bf 53}, pp.2839-2844, 2024.
-
-\bibitem{VARAT}
-S. Kato, M. Kano.
-\ VARAT: Variable Annotation Tool for Documents on Manufacturing Processes.
-\ {\it Journal of Chemical Engineering of Japan}, {\bf 58}, 2454461, 2025.
-
-\bibitem{ProcessBERT}
-S. Kato, K. Kanegami, M. Kano.
-\ ProcessBERT: A Pre-trained Language Model for Judging Equivalence of Variable Definitions in Process Models.
-\ {\it IFAC-PapersOnLine}, {\bf 55}, pp.957-962, 2022.
-
-\bibitem{DAEEquiv}
-S. Kato, C. Zhang, M. Kano.
-\ Simple algorithm for judging equivalence of differential-algebraic equation systems.
-\ {\it Scientific Reports}, {\bf 13}, 11534, 2023.
-
-\bibitem{CombineEq}
-S. Kato, M. Kano.
-\ Automated physical model building from literature sources: Combining equations based on four predefined requirements.
-\ {\it Computers \& Chemical Engineering}, {\bf 200}, 109147, 2025.
-
-\bibitem{Nagayama}
-K. Nagayama, S. Kato, M. Kano.
-\ Data Augmentation Method Utilizing Template Sentences for Variable Definition Extraction.
-\ {\it Natural Language Processing and Information Systems (NLDB 2024), Lecture Notes in Computer Science}, pp.151-165, 2024.
-
-\bibitem{ZhangEquiv}
-C. Zhang, S. Kato, M. Kano.
-\ Equivalence Judgment of Equation Groups Representing Process Dynamics.
-\ {\it Computer Aided Chemical Engineering}, {\bf 49}, pp.1513-1518, 2022.
-
-\bibitem{KatoESCAPE}
-S. Kato, M. Kano.
-\ Efficient physical model building algorithm using equations extracted from documents.
-\ {\it Computer Aided Chemical Engineering}, {\bf 52}, pp.151-156, 2023.
-
-\bibitem{AIFeynman}
-S.-M. Udrescu, M. Tegmark.
-\ AI Feynman: A physics-inspired method for symbolic regression.
-\ {\it Science Advances}, {\bf 6}, eaay2631, 2020.
-
-\bibitem{SchmidtLipson}
-M. Schmidt, H. Lipson.
-\ Distilling Free-Form Natural Laws from Experimental Data.
-\ {\it Science}, {\bf 324}, pp.81-85, 2009.
-
-\bibitem{SINDy}
-S. L. Brunton, J. L. Proctor, J. N. Kutz.
-\ Discovering governing equations from data by sparse identification of nonlinear dynamical systems.
-\ {\it Proceedings of the National Academy of Sciences}, {\bf 113}, pp.3932-3937, 2016.
-
-\bibitem{ALAMO}
-A. Cozad, N. V. Sahinidis, D. C. Miller.
-\ Learning surrogate models for simulation-based optimization.
-\ {\it AIChE Journal}, {\bf 60}, pp.2211-2227, 2014.
-
-\bibitem{LLMSR}
-P. Shojaee, K. Meidani, S. Gupta, A. Barati Farimani, C. K. Reddy.
-\ LLM-SR: Scientific Equation Discovery via Programming with Large Language Models.
-\ {\it International Conference on Learning Representations}, 2025.
-
-\bibitem{Manning}
-C. D. Manning, P. Raghavan, H. Sch\"{u}tze.
-\ {\it Introduction to Information Retrieval}.
-\ Cambridge University Press, 2008.
-
-\bibitem{Salton}
-G. Salton, C. Buckley.
-\ Term-weighting approaches in automatic text retrieval.
-\ {\it Information Processing \& Management}, {\bf 24}, pp.513-523, 1988.
-
-\bibitem{BM25}
-S. Robertson, H. Zaragoza.
-\ The Probabilistic Relevance Framework: BM25 and Beyond.
-\ {\it Foundations and Trends in Information Retrieval}, {\bf 3}, pp.333-389, 2009.
-
-\bibitem{LSA}
-S. Deerwester, S. T. Dumais, G. W. Furnas, T. K. Landauer, R. Harshman.
-\ Indexing by latent semantic analysis.
-\ {\it Journal of the American Society for Information Science}, {\bf 41}, pp.391-407, 1990.
-
-\bibitem{BERT}
-J. Devlin, M. Chang, K. Lee, K. Toutanova.
-\ BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.
-\ {\it Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies}, {\bf 1}, pp.4171-4186, 2019.
-
-\bibitem{BERTrerank}
-R. Nogueira, K. Cho.
-\ Passage Re-ranking with BERT.
-\ arXiv:1901.04085, 2019.
-
-\bibitem{DPR}
-V. Karpukhin, B. O\u{g}uz, S. Min, et al.
-\ Dense Passage Retrieval for Open-Domain Question Answering.
-\ {\it Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing}, pp.6769-6781, 2020.
-
-\bibitem{LTR}
-T. Liu.
-\ Learning to Rank for Information Retrieval.
-\ {\it Foundations and Trends in Information Retrieval}, {\bf 3}, pp.225-331, 2009.
-
-\bibitem{MMR}
-J. Carbonell, J. Goldstein.
-\ The use of MMR, diversity-based reranking for reordering documents and producing summaries.
-\ {\it Proceedings of the 21st Annual International ACM SIGIR Conference on Research and Development in Information Retrieval}, pp.335-336, 1998.
-
-\bibitem{GPT3}
-T. Brown, B. Mann, N. Ryder, et al.
-\ Language Models are Few-Shot Learners.
-\ {\it Advances in Neural Information Processing Systems}, {\bf 33}, pp.1877-1901, 2020.
-
-\bibitem{Hallucination}
-Z. Ji, N. Lee, R. Frieske, et al.
-\ Survey of Hallucination in Natural Language Generation.
-\ {\it ACM Computing Surveys}, {\bf 55}, Article 248, 2023.
-
-\bibitem{MathSurvey}
-R. Zanibbi, D. Blostein.
-\ Recognition and retrieval of mathematical expressions.
-\ {\it International Journal on Document Analysis and Recognition}, {\bf 15}, pp.331-357, 2012.
-
-\bibitem{Approach0}
-W. Zhong, R. Zanibbi.
-\ Structural Similarity Search for Formulas Using Leaf-Root Paths in Operator Subtrees.
-\ {\it Advances in Information Retrieval (ECIR 2019), Lecture Notes in Computer Science}, {\bf 11437}, pp.116-129, 2019.
-
-\bibitem{TangentCFT}
-B. Mansouri, S. Rohatgi, D. W. Oard, J. Wu, C. L. Giles, R. Zanibbi.
-\ Tangent-CFT: An Embedding Model for Mathematical Formulas.
-\ {\it Proceedings of the 2019 ACM SIGIR International Conference on Theory of Information Retrieval}, pp.11-18, 2019.
-
-\bibitem{NTCIR12}
-R. Zanibbi, A. Aizawa, M. Kohlhase, I. Ounis, G. Topi\'{c}, K. Davila.
-\ NTCIR-12 MathIR Task Overview.
-\ {\it Proceedings of the 12th NTCIR Conference on Evaluation of Information Access Technologies}, pp.299-308, 2016.
-
-\bibitem{ARQMath}
-R. Zanibbi, D. W. Oard, A. Agarwal, B. Mansouri.
-\ Overview of ARQMath 2020: CLEF Lab on Answer Retrieval for Questions on Math.
-\ {\it Experimental IR Meets Multilinguality, Multimodality, and Interaction (CLEF 2020), Lecture Notes in Computer Science}, {\bf 12260}, pp.169-193, 2020.
-
-\bibitem{Seborg}
-D. E. Seborg, T. F. Edgar, D. A. Mellichamp, F. J. Doyle III.
-\ {\it Process Dynamics and Control}, 3rd edition.
-\ John Wiley \& Sons, 2010.
-
-\bibitem{Gemini25}
-G. Comanici, E. Bieber, M. Schaekermann, et al.
-\ Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities.
-\ arXiv:2507.06261, 2025.
-
-\bibitem{ClaudeOpus48}
-Anthropic.
-\ Introducing Claude Opus 4.8.
-\ \url{https://www.anthropic.com/news/claude-opus-4-8}.
-\ (Accessed on 2026/09/07).
-
-\bibitem{ClaudeSonnet45}
-Anthropic.
-\ Introducing Claude Sonnet 4.5.
-\ \url{https://www.anthropic.com/news/claude-sonnet-4-5}.
-\ (Accessed on 2026/08/31).
-
-\bibitem{E5}
-L. Wang, N. Yang, X. Huang, et al.
-\ Text Embeddings by Weakly-Supervised Contrastive Pre-training.
-\ arXiv:2212.03533, 2022.
-
-\end{thebibliography}
+%%%%% References（書誌は論文と同じ paper/cace/refs.bib。引用順） %%%%%
+% natbib の既定は目次に載せないので、jsbook の文献一覧と同じく目次に載せる
+\makeatletter
+\renewcommand{\bibsection}{\chapter*{\bibname}\@mkboth{\bibname}{}\addcontentsline{toc}{chapter}{\bibname}}
+\makeatother
+\bibliographystyle{elsarticle-num}
+\bibliography{../../paper/cace/refs}
 
 %%%%% 謝辞（最終段階で執筆） %%%%%
 %\newpage
 %\chapter*{謝辞}
 
+%%%%% 付録（40 ページに数えない） %%%%%
 \newpage
 \appendix
 \def\thechapter{Appendix \Alph{chapter}}
-\input{Appendix}
-\thispagestyle{empty}
+\makeatletter
+\@addtoreset{figure}{chapter}\@addtoreset{table}{chapter}
+\renewcommand{\thefigure}{\Alph{chapter}.\arabic{figure}}
+\renewcommand{\thetable}{\Alph{chapter}.\arabic{table}}
+\makeatother
+\begingroup
+\PaperSectioning
+\input{../../paper/cace/appendix}
+\endgroup
+
+% 修論だけの付録：集めた PDF ファイルの一覧（make_thesis_appendix_tables.py が作る）
+\FloatBarrier
+\chapter{Collected PDF files}\label{app:papers}
+Table~\ref{tab:papers} lists the \NPdf{} PDF files among the sources of the equation database, which
+the three steps of \ref{app:collection} collected. The types follow the OpenAlex classification as
+of 20 October 2026.
+
+\input{appendix_papers}
 \end{document}

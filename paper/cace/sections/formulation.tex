@@ -35,7 +35,7 @@ variables. The database $\mathcal{E} = \{e_1, \dots, e_N\}$ stores five items fo
 $e_j$: its \LaTeX{} expression; its variable set $V(e_j)$, with a text that defines each symbol; a
 context text that explains the physical meaning of the equation from the passage around it; its
 source; and a domain label $\mathrm{dom}(e_j)$, a free-text name of the field or process
-(Section~\ref{sec:db}). Two variables are the same only when their symbols match exactly, both
+(\secref{sec:db}). Two variables are the same only when their symbols match exactly, both
 between the query and an equation and between two equations. The method normalizes no notation, so
 $C_A$ and $C_A(t)$ are different variables, and it does not read the definitions: two variables
 with the same symbol count as one even when their definitions differ.
@@ -45,7 +45,7 @@ the desired model at the top and presents the top 20; the engineer assembles and
 from them.
 
 To evaluate the method, each case of the benchmark designates one ground-truth set
-$\mathcal{R}_q \subset \mathcal{E}$, the equations of the requested model (Section~\ref{sec:cases}),
+$\mathcal{R}_q \subset \mathcal{E}$, the equations of the requested model (\secref{sec:cases}),
 and we write $K = |\mathcal{R}_q|$ for their number. Every equation of the database carries an
 identifier. A presented equation is correct when its identifier belongs to $\mathcal{R}_q$ and
 incorrect otherwise; we judge no equivalence between equations.

@@ -87,12 +87,12 @@ reselected input and output variables. Claude Opus 4.8 \citep{ClaudeOpus48} rewr
 of these variants, and of two of the original combinations, to match their output variables.
 
 A program formed the ground truths of the synthesized family (\NSynth{} cases,
-Section~\ref{sec:synth}).
+\secref{sec:synth}).
 
-All ground truths meet requirements~1--3 of Section~\ref{sec:formulation}. Because these
+All ground truths meet requirements~1--3 of \secref{sec:formulation}. Because these
 requirements only count variables and equations, we also checked that each unknown can be assigned
 to an equation of its own. This check, too, only counts: whether the equations then determine the
-outputs was judged on a sample alone (Section~\ref{sec:limitations}). We excluded \NExcluded{} generated cases from both training and
+outputs was judged on a sample alone (\secref{sec:limitations}). We excluded \NExcluded{} generated cases from both training and
 evaluation: \NExcludedCross{} cross-source cases in which one ground-truth equation contains input
 variables only, so that some unknowns stay undetermined once the inputs are given, and one
 single-source case whose ground truth draws on two sources. Requirement~3 holds trivially in
@@ -145,4 +145,4 @@ frequency distributions, and we select the assignment with the smallest sum of t
 Every experiment repeats this procedure over the same 10 random seeds and reports the mean and the
 standard deviation across them; the seed also fixes the initialization of the model and the choice
 of incorrect candidates. The validation cases choose the hyperparameters of the methods
-(Section~\ref{sec:compared}).
+(\secref{sec:compared}).
