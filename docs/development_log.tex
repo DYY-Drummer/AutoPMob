@@ -358,6 +358,12 @@ Retrieval 実験では、式の表現に次の2系統がある（スクリプト
 \section{更新履歴}
 %----------------------------------------------------------------------
 \begin{itemize}[nosep]
+  \item 2026-11-23（修士論文：題名を論文に合わせ、付録の図表 4 つを本文に移した）：
+    本人の指示「論文の題名に合わせて」「付録の図表は、本文の説明に役立ち、必要と思うものであれば移してよい」に対応した。
+    \textbf{題名}：表紙の英語の題名を「TRACE: Two-Stage Retrieval with Attribute-Conditioned Evaluation of Equations for Automated Physical Model Building」にした。日本語の題名は書き手の訳「TRACE：物理モデル自動構築のための属性を考慮した評価による数式の二段階検索」で、本人の確認が要る。
+    \textbf{図表}：修論でだけ、付録から本文に移した。集合の特徴量による MAP の上乗せの図（7.4 節）、3 つの選び方の MAP のばらつきの図（7.5 節）、第 1 段の候補の数と被覆率の図（8.5 節）、言語モデルによる標本の判定の表（8.7 節）の 4 つで、どれも本文が数値を引いて論じている。本文の参照は、修論では図表の番号、論文では付録を指す。論文では 4 つとも付録のままで、出力は変わらない（76 ページ）。
+    \textbf{仕組み}：4 つの図表を \texttt{paper/cace/floats/} のファイルに分け、\texttt{\textbackslash ifthesis}（修論の \texttt{main.tex} が真にする）で置き場所を切り替える。\texttt{\textbackslash thesisorpaper} は、修論と論文で違う語句を書くためのマクロである。原稿の点検は \texttt{floats/} のファイルも調べる。
+    \textbf{確認}：修論は全 101 ページ、本文 32 ページ（上限 40）で、警告はない。全テストは 871 passed、3 skipped、1 failed（\texttt{tests/test\_fig\_overview.py}。この作業と関係のない、前からの失敗）。
   \item 2026-11-18(2)（修士論文を投稿論文に合わせて書き直した。本文と付録は、論文の節のファイルをそのまま読み込む）：
     本人の指示「修論を論文に合わせて書き直して」に対応した。研究室の決まり（修論の本文は論文と同じ書き方でよい。本文は 40 ページ以下で、付録は数えない）に従い、修論の本文（1 章から結論まで）と付録 A〜J を、\texttt{paper/cace/sections/*.tex} と \texttt{paper/cace/appendix.tex} から読み込む形にした。数値は論文と同じマクロ（\texttt{numbers.tex}）、図は \texttt{paper/cace/figures/}、文献は \texttt{refs.bib} を使う。本文を直すときは、論文の節のファイルを直せば、論文と修論の両方に反映される。
     \textbf{修論の main.tex}：論文の \texttt{\textbackslash section} を章に、\texttt{\textbackslash subsection} を節に読み替える。節への参照（\texttt{\textbackslash secref}）は、参照先が章なら Chapter、節なら Section と出す（論文では Section）。表の行と図は \texttt{paper/cace/} から読む。文献は natbib と BibTeX（\texttt{elsarticle-num}、引用順の番号、上付きの「1)」）にした。行間はテンプレートの既定の 1.3、章ごとに改ページ（骨子の段階の詰めた組み方をやめた）。修論だけにあるのは、表紙と、付録 K（集めた PDF ファイル 329 個の一覧。\texttt{appendix\_papers.tex}）である。

@@ -4,3 +4,9 @@
 \newcommand{\Top}{\mathrm{Top}}
 % Single line spacing for the long tables of the appendix. Put before the font size.
 \newcommand{\tightrows}{\renewcommand{\baselinestretch}{1}}
+% The thesis sets \thesistrue. It shows some floats in the main text that the manuscript keeps in the appendix.
+\newif\ifthesis
+\providecommand{\PaperDir}{}
+\newcommand{\movedfloat}[1]{\input{\PaperDir floats/#1}}
+% \thesisorpaper{text in the thesis}{text in the manuscript}
+\newcommand{\thesisorpaper}[2]{\ifthesis#1\else#2\fi}

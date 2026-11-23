@@ -120,12 +120,15 @@ We chose $N_1$ as the smallest number of candidates, rounded up to the next thou
 every ground-truth equation of the training and validation cases. Under the weights
 $(\WText, \WVar)$ this rule gave $N_1 = \NOne$ in every split, and the candidates then held every
 ground-truth equation of the test cases as well; over all \NCases{} cases, the first-stage ranking
-places every ground-truth equation within its top \NOneAllGt{} (\ref{app:n1}). A smaller $N_1$ loses the ground-truth equations that the first
+places every ground-truth equation within its top \NOneAllGt{}
+(\thesisorpaper{Fig.~\ref{fig:n1}}{\ref{app:n1}}). A smaller $N_1$ loses the ground-truth equations that the first
 stage ranks deepest, and a larger $N_1$ adds only incorrect candidates. Within the candidates, the
 I/O Jaccard alone ranks a correct equation above an incorrect one drawn at random with probability
 \AucCandIoJac{} (Table~\ref{tab:auc}), so incorrect candidates chosen at random are mostly easy,
 which is consistent with hard negatives winning in every split. The rule does not ensure full
 coverage on unseen cases, and the $N_1$ it yields may grow with the database.
+
+\ifthesis\movedfloat{fig_n1}\fi
 
 \subsection{Training of sequential selection}\label{sec:tfdiscussion}
 
@@ -147,7 +150,7 @@ of the cross-source cases, whose style may differ from requests written by engin
 fixed the equations, inputs, and outputs of the synthesized cases. We report no manual verification
 of this data. A language model, Claude Fable~5.2 \citep{ClaudeModels}, judged \NCheckCases{} cases,
 drawn at random in proportion to the sizes of the three families, against four criteria
-(\ref{app:check}): whether the ground-truth equations describe the model that the description asks
+(\thesisorpaper{Table~\ref{tab:check}; }{}\ref{app:check}): whether the ground-truth equations describe the model that the description asks
 for (\NCheckOneYes{} cases met it), whether the output variables are the quantities that it asks
 for (\NCheckTwoYes), whether every symbol shared by two or more ground-truth equations denotes one
 quantity (\NCheckThreeYes{} of the \NCheckThreeApplicable{} cases with such a symbol), and whether
@@ -170,3 +173,5 @@ without the training cases that share an equation with a test case. Fifth, among
 alternative values of the reference-set size, the margin, the number of incorrect candidates, the
 number of epochs, or the learning rate. Sixth, the comparison with LLMs covers two models of one
 vendor, three runs per case, and one way of presenting the database.
+
+\ifthesis\movedfloat{tab_check}\fi

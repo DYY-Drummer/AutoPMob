@@ -183,3 +183,18 @@ def test_paper_figures_use_the_name_of_the_method_of_the_manuscript():
     import make_numbers as mn
     assert mf.METHOD_NAME == mn.METHOD_NAME == "TRACE"
     assert mn.build().values["ours"] == "TRACE"
+
+
+def test_word_count_ignores_the_name_of_a_float_file():
+    """\\movedfloat{名前}（修論では本文、論文では付録に置く図表）のファイル名を語に数えないこと."""
+    assert cm.word_count(r"The gain holds in all splits. \ifthesis\movedfloat{fig_mechanism}\fi") == 6
+
+
+def test_floats_shared_with_the_thesis_exist_and_are_used_once_on_each_side():
+    names = sorted(p.stem for p in (cm.HERE / "floats").glob("*.tex"))
+    assert names == ["fig_greedy", "fig_mechanism", "fig_n1", "tab_check"]
+    body = "".join(p.read_text(encoding="utf-8") for p in (cm.HERE / "sections").glob("*.tex"))
+    appendix = (cm.HERE / "appendix.tex").read_text(encoding="utf-8")
+    for n in names:
+        assert body.count("\\ifthesis\\movedfloat{%s}\\fi" % n) == 1          # 修論では本文
+        assert appendix.count("\\ifthesis\\else\\movedfloat{%s}\\fi" % n) == 1  # 論文では付録

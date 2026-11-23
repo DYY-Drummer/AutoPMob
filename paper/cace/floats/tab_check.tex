@@ -1,0 +1,19 @@
+% A float that the thesis shows in the main text and the manuscript in the appendix (\movedfloat).
+\begin{table}[htbp]\centering
+\caption{Judgments of a language model (Claude Fable~5.2) on a random sample of \NCheckCases{}
+cases: number of cases that met each criterion, out of the cases to which the criterion applies.
+The cross-source cases are divided into those that the program built and those that descend from
+the combinations written by Claude.}
+\label{tab:check}
+\tightrows\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\linewidth}ccccc@{}}
+\toprule
+ & & \multicolumn{2}{c}{Cross-source} & & \\
+\cmidrule(lr){3-4}
+Criterion & Single-source & Program & Written & Synthesized & All \\
+\midrule
+\rowsfrom{generated/tab_check}
+\bottomrule
+\end{tabular}
+\end{table}

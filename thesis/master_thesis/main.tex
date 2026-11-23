@@ -80,7 +80,8 @@
 
 % ===== 論文（paper/cace/）の節のファイルを読み込むための定義 =====
 \newcommand{\PaperDir}{../../paper/cace/}
-\input{../../paper/cace/macros}    % \todo、\Top、\tightrows
+\input{../../paper/cace/macros}    % \todo、\Top、\tightrows、\movedfloat
+\thesistrue   % 付録の図表の一部を本文に置く（paper/cace/floats/）
 \input{../../paper/cace/numbers}   % 数値のマクロと、手法の名称 \ours
 \makeatletter
 % 生成した表の行（paper/cace/generated/）
@@ -105,11 +106,11 @@
 {\huge  修士論文}
 \vspace{10mm}
 
-{\huge Equation-Set Retrieval\\ Using Equations and Context\\ Extracted from the Literature\\ for Automated Physical Model Building\\}
+{\huge TRACE: Two-Stage Retrieval\\ with Attribute-Conditioned Evaluation\\ of Equations for Automated\\ Physical Model Building\\}
 \vspace{5mm}
-{\LARGE 文献から抽出した数式と文脈を用いた\\
+{\LARGE TRACE：物理モデル自動構築のための\\
 \vspace{5mm}
-物理モデル自動構築のための数式集合検索}
+属性を考慮した評価による数式の二段階検索}
 
 \vspace{12mm}
 

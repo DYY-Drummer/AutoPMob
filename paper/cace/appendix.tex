@@ -132,22 +132,9 @@ learned greedy selection.}
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]\centering
-\includegraphics[width=\linewidth]{figures/fig_mechanism.pdf}
-\caption{MAP gain over the reranker with the seven query--equation features when the set-aware
-features are added one at a time or all three together (Setting~A), (a) by the number of
-ground-truth equations and (b) by the number of input variables, in bins that differ from those
-of Fig.~\ref{fig:characteristic}. Points show the mean over the 10 splits of the paired difference,
-and error bars its SD across the splits.}
-\label{fig:mechanism}
-\end{figure}
+\ifthesis\else\movedfloat{fig_mechanism}\fi
 
-\begin{figure}[htbp]\centering
-\includegraphics[width=\linewidth]{figures/fig_greedy_3way.pdf}
-\caption{MAP of the three selection strategies in (a) Setting~A and (b) Setting~B, on all cases
-and on the cases with eight or more ground-truth equations. Boxes show the 10 splits.}
-\label{fig:greedy}
-\end{figure}
+\ifthesis\else\movedfloat{fig_greedy}\fi
 
 \FloatBarrier
 \section{Number of first-stage candidates}\label{app:n1}
@@ -162,16 +149,7 @@ however, admits every ground-truth equation of the test cases in every split, an
 training and evaluation then takes about \TimeRatioA{} times as long as at $N_1 = 50$ (\TimeRunA{}
 against \TimeRunAFifty{} seconds in Setting~A).
 
-\begin{figure}[htbp]\centering
-\includegraphics[width=\linewidth]{figures/fig_n1_coverage.pdf}
-\caption{Number of first-stage candidates $N_1$ (log scale) and (a) the fraction of cases with
-every ground-truth equation among the candidates and (b) the candidate coverage, the fraction of
-ground-truth equations among the candidates (first-stage weights $(\WText, \WVar)$). Dotted lines
-mark the values of $N_1$ compared in Table~\ref{tab:n1}, and the solid line the $N_1 = \NOne$ of
-this study. Every ground-truth equation of every case enters the candidates at
-$N_1 = \NOneAllGt$.}
-\label{fig:n1}
-\end{figure}
+\ifthesis\else\movedfloat{fig_n1}\fi
 
 \begin{table}[htbp]\centering
 \caption{\ours{} (static reranking) with different numbers of first-stage candidates
@@ -354,24 +332,7 @@ written rules, not through a scripted call, and recorded a reason for every nega
 not seen the judgments of \secref{sec:symbols}. Whether an equation was extracted faithfully
 from its source lay outside the questions.
 
-\begin{table}[htbp]\centering
-\caption{Judgments of a language model (Claude Fable~5.2) on a random sample of \NCheckCases{}
-cases: number of cases that met each criterion, out of the cases to which the criterion applies.
-The cross-source cases are divided into those that the program built and those that descend from
-the combinations written by Claude.}
-\label{tab:check}
-\tightrows\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.36\linewidth}ccccc@{}}
-\toprule
- & & \multicolumn{2}{c}{Cross-source} & & \\
-\cmidrule(lr){3-4}
-Criterion & Single-source & Program & Written & Synthesized & All \\
-\midrule
-\rowsfrom{generated/tab_check}
-\bottomrule
-\end{tabular}
-\end{table}
+\ifthesis\else\movedfloat{tab_check}\fi
 
 Table~\ref{tab:check} gives the answers. In all, \NCheckAllMet{} of the \NCheckCases{} cases met
 all four criteria: all \NCheckSingle{} single-source cases, all \NCheckWritten{} cross-source cases that

@@ -196,7 +196,9 @@ coherence by $\DiffMapCoh$, each in all 10 splits, and domain agreement by $\Dif
 alone, so the effects of these two overlap. The MAP gain of the set-aware features is
 $\LiftMapKOne$ on the cases with one ground-truth equation, which give a candidate no other equation
 to relate to, and $\LiftMapKMin$ to $\LiftMapKMax$ at every larger number of equations, in all 10
-splits (\ref{app:bucket}).
+splits (\thesisorpaper{Fig.~\ref{fig:mechanism}}{\ref{app:bucket}}).
+
+\ifthesis\movedfloat{fig_mechanism}\fi
 
 Permutation feature importance measures, without retraining, how much the trained model relies on
 each feature. We fixed the trained ten-feature model, shuffled the values of one feature among the
@@ -222,7 +224,7 @@ each group shuffles all its features together.}
 \subsection{Sequential selection}\label{sec:greedyresults}
 
 We compared static reranking, greedy selection at inference, and learned greedy selection
-(\secref{sec:seq}) on the same 10 splits (Table~\ref{tab:greedy}; \ref{app:bucket} shows the
+(\secref{sec:seq}) on the same 10 splits (Table~\ref{tab:greedy}; \thesisorpaper{Fig.~\ref{fig:greedy}}{\ref{app:bucket}} shows the
 spread across the splits). Recall@20 hardly differs
 among the three, because the top 20 already hold nearly every ground-truth equation; the strategies
 differ in how they order the equations within the top 20. Greedy selection at inference beats
@@ -259,6 +261,8 @@ Setting B & Recall@20 & \RecBProp & \RecBInfer & \RecBGreedy \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\ifthesis\movedfloat{fig_greedy}\fi
 
 \subsection{Topic features}\label{sec:nullresult}
 

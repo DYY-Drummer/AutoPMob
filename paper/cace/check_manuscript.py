@@ -43,7 +43,7 @@ NUMBER = re.compile(r"\d{1,3}\{,\}\d{3}|\d{1,3},\d{3}|\d+\.\d+|(?<![A-Za-z0-9_\\
 # and of the prices, and the constants of the example equation in Appendix F (350, 20, 12).
 ALLOWED_INTEGERS = {"10", "12", "13", "20", "21", "30", "40", "50", "60", "100", "200", "350", "500", "512",
                     "2001", "2006", "2026"}
-NO_TEXT_COMMANDS = ("cite[a-z]*", "ref", "eqref", "label", "input", "includegraphics", "rowsfrom",
+NO_TEXT_COMMANDS = ("cite[a-z]*", "ref", "eqref", "label", "input", "includegraphics", "rowsfrom", "movedfloat",
                     "bibliography", "bibliographystyle", "setlength", "vspace", "hspace", "documentclass",
                     "usepackage", "setcounter")
 NO_TEXT = re.compile(r"\\(?:%s)\*?(?:\[[^\]]*\])*(?:\{[^{}]*\})*" % "|".join(NO_TEXT_COMMANDS))
@@ -163,7 +163,8 @@ def check(root: Path = HERE, report: list | None = None, figures: bool = True) -
     report = [] if report is None else report
     macros = read_macros((root / "numbers.tex").read_text(encoding="utf-8"))
     failures = []
-    files = [root / "main.tex"] + sorted((root / "sections").glob("*.tex")) + [root / "appendix.tex"]
+    files = ([root / "main.tex"] + sorted((root / "sections").glob("*.tex")) + [root / "appendix.tex"]
+             + sorted((root / "floats").glob("*.tex")))
     for f in files:
         tex = f.read_text(encoding="utf-8")
         name = f.relative_to(root)
