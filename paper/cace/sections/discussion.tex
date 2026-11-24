@@ -7,13 +7,15 @@ retrieval, why it outperforms the baseline, and why it outperforms the LLMs.
 
 The first stage is not the cause: with $N_1 = \NOne$ the candidates held every ground-truth
 equation (\secref{sec:nonediscussion}). The cause lies in how the second stage fills a list of
-20 equations. Its strongest feature, specificity, puts first the equations that hold only query
-variables, and in this benchmark the rule seldom excludes a ground-truth equation, because the
-query lists every variable of the ground truth in \NReqThreeTrivial{} of the \NCases{} cases. Where
-the database holds at most 20 such equations for a query, the rule suffices, and the method missed
-no ground-truth equation (\secref{sec:erroranalysis}). Where it holds more, as it does for
-\PctCovOverA\% of the cases, the method must choose among equations that all have a specificity of
-one, and its other features choose poorly. The four features that compare the variables of an
+20 equations. Its strongest feature, specificity, favors the equations that hold only query
+variables: of two listed equations with different specificity, the one with the higher value stands
+above the other in \PctPairsInOrderA\% of the pairs. In this benchmark such equations include
+nearly every ground-truth equation, because the query lists every variable of the ground truth in
+\NReqThreeTrivial{} of the \NCases{} cases. Where the database holds at most 20 such equations for
+a query, the method missed no ground-truth equation (\secref{sec:erroranalysis}). Where it holds
+more, as it does for \PctCovOverA\% of the cases, 20 places cannot take them all, and the other
+features, which must choose among them, choose poorly; a list then holds \NOneInListOverA{} such
+equations on average, beside equations of lower specificity. The four features that compare the variables of an
 equation with the query take the same values for two equations with the same variables, such as
 the linearized balances of the concentration deviation and of the temperature deviation of a
 reactor. The latent similarity, the text similarity, and the I/O Jaccard favored a missed
@@ -23,9 +25,11 @@ in about half (\secref{sec:erroranalysis}). A list therefore carries on average
 ground-truth equations that share few variables with the query, such as definitions and
 steady-state forms.
 
-Two consequences follow. First, the limit of 20 equations is part of the shortfall: the equations
-that hold only query variables, a median of \NCovMedianA{} per case, contain the whole ground truth
-in \NReqThreeTrivial{} cases, so a list of that length would be complete in them. Second,
+Two consequences follow. First, the limit of 20 equations is part of the shortfall. Had the method
+presented, for each query, as many equations as hold only query variables, and at least 20, its
+ranking would have placed every ground-truth equation of the test cases of Setting~A and all but
+\NMissedExtendedB{} of the \NMissedTwentyB{} that it missed in Setting~B. Such a list holds a
+median of \LenExtendedMedianA{} equations in Setting~A and at most \LenExtendedMaxA. Second,
 closing the gap within 20 equations needs information that the present features lack, for example
 which variable an equation determines, which would tell apart equations with the same variables.
 
@@ -135,7 +139,8 @@ be set generously, because a larger $N_1$ costs only computing time. $N_2$ trade
 effort of the engineer against the risk of leaving out an equation of the model. It should exceed
 the number of equations in the largest model expected (\MaxKSynth{} in this benchmark), and it
 should grow with the number of equations that hold only query variables, which can be counted for
-each query before any ranking (\secref{sec:whynot}).
+each query before any ranking; a list of that length would have held every ground-truth equation
+of Setting~A (\secref{sec:whynot}).
 
 \ifthesis\movedfloat{fig_n1}\fi
 

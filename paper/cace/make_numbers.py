@@ -915,6 +915,23 @@ def _results_composition(r: Registry) -> None:
             "complete retrieval is most frequent for the proposed method, then Opus 5.5, then the baseline")
     require(meths["Opus 5.5"]["by_cov"]["within"]["recall"]["mean"] < meths["baseline"]["by_cov"]["within"]["recall"]["mean"],
             "where at most 20 equations hold only query variables, Opus 5.5 is below the baseline")
+    # how far the order of a list follows specificity, and what a longer list would hold
+    od = get(a, "proposed_order", name)
+    r.add("PctPairsInOrderA", pct(od["share_pairs_in_order"]))
+    r.add("PctListsSortedA", pct(od["share_lists_sorted"]))
+    r.add("NOneInListOverA", fmt(od["over"]["n_one_mean"], 1))
+    require(od["share_pairs_in_order"] > 0.75 and od["share_lists_sorted"] < 0.5 and od["over"]["n_one_mean"] < top_n - 1,
+            "specificity orders most pairs of a list but not the whole list")
+    ext = {s: get(d, (s, "extended_list"), name) for s in ("A", "B")}
+    r.add("NMissedTwentyA", count(ext["A"]["missed_at_top_n"]))
+    r.add("NMissedTwentyB", count(ext["B"]["missed_at_top_n"]))
+    r.add("NMissedExtendedB", count(ext["B"]["missed_at_extended"]))
+    r.add("LenExtendedMedianA", count(int(ext["A"]["length_median"])))
+    r.add("LenExtendedMaxA", count(ext["A"]["length_max"]))
+    require(ext["A"]["missed_at_extended"] == 0,
+            "a list as long as the number of equations that hold only query variables holds every ground-truth equation (Setting A)")
+    require(0 < ext["B"]["missed_at_extended"] < 0.02 * ext["B"]["missed_at_top_n"],
+            "in Setting B such a list leaves a few of the missed ground-truth equations out")
     # what fills the 20 places of a list
     for meth, code in (("proposed", "Prop"), ("Opus 5.5", "Opus")):
         for part, pc in (("correct", "Correct"), ("covered", "Covered"), ("outside", "Outside")):

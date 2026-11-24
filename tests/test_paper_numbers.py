@@ -214,6 +214,10 @@ def test_sample_check_claims_stop_the_build_when_they_no_longer_hold(monkeypatch
     ("JacGtInLow", "0.70"), ("JacGtInHigh", "0.21"), ("VarsGtInLow", "4.3"), ("VarsGtInHigh", "7.3"),
     ("QueryVarsInLow", "5.7"), ("QueryVarsInHigh", "35.0"),
     ("RecKOneOpus", "0.970"), ("LeadRecKOneOpus", "0.030"), ("LeadRecKHighOpus", "0.095"),
+    # 並びと特化度、提示する数を延ばした場合
+    ("PctPairsInOrderA", "82.3"), ("PctListsSortedA", "26.9"), ("NOneInListOverA", "17.4"),
+    ("NMissedTwentyA", "660"), ("NMissedTwentyB", "664"), ("NMissedExtendedB", "5"),
+    ("LenExtendedMedianA", "26"), ("LenExtendedMaxA", "270"),
 ])
 def test_build_has_the_counts_behind_the_three_questions_of_the_discussion(built, name, value):
     assert built[name] == value

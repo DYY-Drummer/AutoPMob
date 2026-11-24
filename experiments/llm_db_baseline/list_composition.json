@@ -329,6 +329,32 @@
      }
     }
    },
+   "proposed_order": {
+    "n_records": 4229,
+    "pairs_different": 304383,
+    "pairs_in_order": 250485,
+    "share_pairs_in_order": 0.8229270360039819,
+    "share_lists_sorted": 0.26862142350437457,
+    "share_lists_ones_first": 0.349255143059825,
+    "over": {
+     "n_records": 2464,
+     "n_one_mean": 17.428165584415584,
+     "share_only_ones": 0.25811688311688313
+    },
+    "within": {
+     "n_records": 1765,
+     "share_all_ones_listed": 0.8396600566572238
+    }
+   },
+   "extended_list": {
+    "gt": 16538,
+    "missed_at_top_n": 660,
+    "missed_at_extended": 0,
+    "length_mean": 34.46086545282573,
+    "length_median": 26.0,
+    "length_max": 270,
+    "definition": "list length = max(top_n, number of database equations whose variables all belong to the query)"
+   },
    "by_k": {
     "1": {
      "proposed": 1.0,
@@ -686,6 +712,32 @@
       }
      }
     }
+   },
+   "proposed_order": {
+    "n_records": 2432,
+    "pairs_different": 164374,
+    "pairs_in_order": 137189,
+    "share_pairs_in_order": 0.8346149634370399,
+    "share_lists_sorted": 0.24136513157894737,
+    "share_lists_ones_first": 0.3059210526315789,
+    "over": {
+     "n_records": 1550,
+     "n_one_mean": 17.38064516129032,
+     "share_only_ones": 0.25290322580645164
+    },
+    "within": {
+     "n_records": 882,
+     "share_all_ones_listed": 0.6757369614512472
+    }
+   },
+   "extended_list": {
+    "gt": 13468,
+    "missed_at_top_n": 664,
+    "missed_at_extended": 5,
+    "length_mean": 37.76233552631579,
+    "length_median": 28.0,
+    "length_max": 270,
+    "definition": "list length = max(top_n, number of database equations whose variables all belong to the query)"
    },
    "by_k": {
     "1": {

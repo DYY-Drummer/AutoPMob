@@ -43,6 +43,26 @@ def covered(eq_vars: set, query_vars: set) -> bool:
     return bool(eq_vars) and eq_vars <= query_vars
 
 
+def specificity(eq_vars: set, query_vars: set) -> float:
+    """特化度：式の変数のうち、クエリの入出力変数に含まれるものの割合（変数の記録がない式は 0）."""
+    return len(eq_vars & query_vars) / len(eq_vars) if eq_vars else 0.0
+
+
+def order_stats(values: list) -> dict:
+    """1 つのリストの特化度の並び（上から順）について：値の違う 2 式の組の数、そのうち高いほうが上にある組の数、
+    リスト全体が特化度の降順か、特化度 1 の式がすべてほかの式より上にあるか、特化度 1 の式の数."""
+    pairs = [(values[i], values[j]) for i in range(len(values)) for j in range(i + 1, len(values))]
+    ones = [v == 1.0 for v in values]
+    n_one = sum(ones)
+    return {"different": sum(a != b for a, b in pairs), "in_order": sum(a > b for a, b in pairs),
+            "sorted": all(a >= b for a, b in pairs), "ones_first": all(ones[:n_one]), "n_one": n_one}
+
+
+def misses_beyond(ranks: list, length: int) -> int:
+    """正解式の順位のうち、長さ length のリストに入らないものの数."""
+    return sum(r > length for r in ranks)
+
+
 def composition(keys: list, correct: set, is_covered, top_n: int = TOP_N) -> dict:
     """1 つのリストの上位 top_n 件の内訳。keys は式のキーの並び（データベースにない ID は None）.
 
@@ -199,6 +219,47 @@ def main() -> None:
                 m["composition"] = {p: mean_sd(float(np.mean([x["comp"][p] for x in r])) for r in by_seed.values())
                                     for p in PARTS}
             st["methods"][name] = m
+
+        # 提案手法の上位 20 件の並びと特化度、提示する数を「変数がすべてクエリに含まれる式の数（20 以上）」に延ばした場合
+        # （10 通りの分割のテスト用のケースを延べで数える）
+        od = {"records": 0, "different": 0, "in_order": 0, "sorted": 0, "ones_first": 0}
+        over_n_one, over_only_ones, within_all = [], [], []
+        ext = {"gt": 0, "missed_at_top_n": 0, "missed_at_extended": 0, "lengths": []}
+        for sd in seeds:
+            for c in splits[s][sd]["test"]:
+                i = info[c]
+                v = top[c][int(sd)]
+                o = order_stats([specificity(vars_of[k], i["io"]) for k in v["top"]])
+                od["records"] += 1
+                for key in ("different", "in_order"):
+                    od[key] += o[key]
+                od["sorted"] += o["sorted"]
+                od["ones_first"] += o["ones_first"]
+                if i["n_cov"] > TOP_N:
+                    over_n_one.append(o["n_one"])
+                    over_only_ones.append(o["n_one"] == TOP_N)
+                else:
+                    within_all.append(o["n_one"] == i["n_cov"])
+                length = max(TOP_N, i["n_cov"])
+                ext["gt"] += len(v["ranks"])
+                ext["missed_at_top_n"] += misses_beyond(v["ranks"], TOP_N)
+                ext["missed_at_extended"] += misses_beyond(v["ranks"], length)
+                ext["lengths"].append(length)
+        st["proposed_order"] = {"n_records": od["records"], "pairs_different": od["different"], "pairs_in_order": od["in_order"],
+                                "share_pairs_in_order": od["in_order"] / od["different"],
+                                "share_lists_sorted": od["sorted"] / od["records"],
+                                "share_lists_ones_first": od["ones_first"] / od["records"],
+                                "over": {"n_records": len(over_n_one), "n_one_mean": float(np.mean(over_n_one)),
+                                         "share_only_ones": float(np.mean(over_only_ones))},
+                                "within": {"n_records": len(within_all), "share_all_ones_listed": float(np.mean(within_all))}}
+        lengths = np.array(ext.pop("lengths"))
+        st["extended_list"] = {**ext, "length_mean": float(lengths.mean()), "length_median": float(np.median(lengths)),
+                               "length_max": int(lengths.max()),
+                               "definition": "list length = max(top_n, number of database equations whose variables all belong to the query)"}
+        print(f"  order: pairs in order {st['proposed_order']['share_pairs_in_order']:.3f}, lists sorted "
+              f"{st['proposed_order']['share_lists_sorted']:.3f}, specificity-1 in list where over {st['proposed_order']['over']['n_one_mean']:.2f}; "
+              f"extended list: missed {ext['missed_at_top_n']} -> {ext['missed_at_extended']}, length median "
+              f"{st['extended_list']['length_median']:.0f}, max {st['extended_list']['length_max']}")
 
         # 正解式の数ごと（10 通りの分割のテスト用のケースを延べで平均）
         st["by_k"] = {}

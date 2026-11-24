@@ -41,3 +41,27 @@ def test_mean_sd_skips_missing_values_and_reports_how_many_it_used():
     assert out["sd"] == pytest.approx(0.3535533906)
     assert mean_sd([None]) == {"mean": None, "sd": None, "n": 0}
     assert mean_sd([0.5]) == {"mean": 0.5, "sd": None, "n": 1}
+
+
+# ---- 上位 20 件の並びと特化度、提示する数を延ばしたときの取りこぼし -----------------------------------
+
+from analyze_list_composition import misses_beyond, order_stats, specificity  # noqa: E402
+
+
+def test_specificity_is_the_share_of_the_variables_of_an_equation_that_the_query_lists():
+    assert specificity({"x", "y"}, {"x", "y", "z"}) == 1.0
+    assert specificity({"x", "w"}, {"x", "y"}) == 0.5
+    assert specificity(set(), {"x"}) == 0.0
+
+
+def test_order_stats_counts_pairs_in_and_out_of_the_order_of_specificity():
+    out = order_stats([1.0, 0.5, 1.0, 0.5])
+    # pairs with different values: (1,.5) (.5,1) (1,.5) (1,.5) -> 4, of which 3 put the higher value first
+    assert out == {"different": 4, "in_order": 3, "sorted": False, "ones_first": False, "n_one": 2}
+    assert order_stats([1.0, 1.0, 0.5]) == {"different": 2, "in_order": 2, "sorted": True, "ones_first": True, "n_one": 2}
+    assert order_stats([0.8, 0.5])["ones_first"] is True      # no equation with a specificity of one: nothing to violate
+
+
+def test_misses_beyond_counts_the_ground_truth_equations_ranked_below_a_list_length():
+    assert misses_beyond([1, 5, 21, 40], 20) == 2
+    assert misses_beyond([1, 5, 21, 40], 40) == 0
