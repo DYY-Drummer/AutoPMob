@@ -114,7 +114,7 @@ features decide most of the accuracy (\secref{sec:mechanism}), a query written i
 notation would lose the evidence on which the method relies. Judging whether two definitions name
 the same quantity \citep{ProcessBERT} is the natural remedy and remains future work.
 
-\subsection{Number of first-stage candidates}\label{sec:nonediscussion}
+\subsection{Numbers of candidates and of presented equations}\label{sec:nonediscussion}
 
 We chose $N_1$ as the smallest number of candidates, rounded up to the next thousand, that holds
 every ground-truth equation of the training and validation cases. Under the weights
@@ -127,6 +127,15 @@ I/O Jaccard alone ranks a correct equation above an incorrect one drawn at rando
 \AucCandIoJac{} (Table~\ref{tab:auc}), so incorrect candidates chosen at random are mostly easy,
 which is consistent with hard negatives winning in every split. The rule does not ensure full
 coverage on unseen cases, and the $N_1$ it yields may grow with the database.
+
+For another database, both the number of candidates $N_1$ and the number of presented equations,
+which we write $N_2$ and set to 20 in this study, have to be chosen anew. Where cases with known
+ground truths exist for that database, $N_1$ follows from the rule above; where none exist, it can
+be set generously, because a larger $N_1$ costs only computing time. $N_2$ trades the reading
+effort of the engineer against the risk of leaving out an equation of the model. It should exceed
+the number of equations in the largest model expected (\MaxKSynth{} in this benchmark), and it
+should grow with the number of equations that hold only query variables, which can be counted for
+each query before any ranking (\secref{sec:whynot}).
 
 \ifthesis\movedfloat{fig_n1}\fi
 
